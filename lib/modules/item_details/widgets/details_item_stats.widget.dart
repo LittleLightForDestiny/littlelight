@@ -1,4 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/modules/item_details/blocs/socket_controller.bloc.dart';
+import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
+import 'package:provider/provider.dart';
+
+import 'details_item_stat.widget.dart';
 
 const _sectionId = "item_stats";
 
@@ -7,65 +13,33 @@ class DetailsItemStatsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container();
-    // if (stats == null) return Container();
-    // super.build(context);
-    // return Container(
-    //   padding: const EdgeInsets.all(8),
-    //   child: Column(
-    //     children: <Widget>[
-    //       buildHeader(context),
-    //       visible
-    //           ? Container(
-    //               constraints: const BoxConstraints.tightFor(width: 600),
-    //               padding: const EdgeInsets.symmetric(vertical: 8),
-    //               child: Column(children: buildStats(context)))
-    //           : Container(),
-    //     ],
-    //   ),
-    // );
+    final state = context.watch<SocketControllerBloc>();
+    final stats = state.stats;
+    if (stats == null || stats.isEmpty) return Container();
+    return Container(
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Stats".translate(context).toUpperCase()),
+        content: buildContent(context),
+        persistenceID: 'item_stats',
+      ),
+    );
   }
 
-  @override
-  Widget buildHeader(BuildContext context) {
-    return Container();
-    // return getHeader(
-    //   TranslatedTextWidget(
-    //     "Stats",
-    //     uppercase: true,
-    //     textAlign: TextAlign.left,
-    //     style: const TextStyle(fontWeight: FontWeight.bold),
-    //   ),
-    // );
+  Widget buildContent(BuildContext context) {
+    return Column(
+      children: buildStats(context),
+    );
   }
 
-  @override
-  List<Widget> buildStats(context) {
-    return [];
-    //   Map<int, StatValues> statValues = getStatValues();
-
-    //   StatValues totalStat;
-    //   if (definition.itemType == DestinyItemType.Armor) {
-    //     totalStat = StatValues();
-    //     for (var stat in stats) {
-    //       var entry = statValues[stat.statTypeHash];
-    //       totalStat.equipped += entry?.equipped ?? 0;
-    //       totalStat.selected += entry?.selected ?? 0;
-    //       totalStat.masterwork += entry?.masterwork ?? 0;
-    //     }
-    //   }
-    //   return stats
-    //       .map((stat) {
-    //         if (statValues == null) return Container();
-    //         var entry = statValues[stat.statTypeHash];
-    //         return DetailsItemStatWidget(
-    //           statHash: stat.statTypeHash,
-    //           modValues: entry,
-    //           scaled:
-    //               statGroupDefinition.scaledStats.firstWhere((s) => s.statHash == stat.statTypeHash, orElse: () => null),
-    //         );
-    //       })
-    //       .followedBy(totalStat == null ? [] : [DetailsTotalStatWidget(modValues: totalStat)])
-    //       .toList();
+  List<Widget> buildStats(BuildContext context) {
+    final state = context.watch<SocketControllerBloc>();
+    final stats = state.stats;
+    if (stats == null) return [];
+    return stats
+        .map((value) => DetailsItemStatWidget(
+              modValues: value,
+            ))
+        .toList();
   }
 }

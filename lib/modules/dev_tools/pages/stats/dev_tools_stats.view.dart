@@ -1,4 +1,5 @@
 import 'package:bungie_api/destiny2.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/dev_tools/pages/stats/dev_tools_stats.bloc.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
@@ -30,6 +31,7 @@ class StatsViewItem extends StatelessWidget {
 
   Widget buildStats(BuildContext context) {
     final precalculated = item.precalculated;
+    final missing = item.stats.where((i) => !precalculated.keys.contains(i.statHash));
     return Column(
       children: <Widget>[
             Row(children: [
@@ -41,14 +43,16 @@ class StatsViewItem extends StatelessWidget {
               Expanded(child: Text("Via Plugs"))
             ]),
           ] +
-          precalculated.keys.map((key) => buildStat(context, key)).toList(),
+          precalculated.keys.map((key) => buildStat(context, key)).toList() +
+          missing.map((e) => buildStat(context, e.statHash)).toList(),
     );
   }
 
   Widget buildStat(BuildContext context, int statHash) {
     final precalculated = item.precalculated[statHash];
-    final equipped = item.stats[statHash]?.equipped ?? 0;
-    final masterwork = item.stats[statHash]?.equippedMasterwork ?? 0;
+    final stats = item.stats.firstWhereOrNull((element) => element.statHash == statHash);
+    final equipped = stats?.equipped ?? 0;
+    final masterwork = stats?.equippedMasterwork ?? 0;
     final fromPlugs = equipped + masterwork;
     final hasError = precalculated != fromPlugs;
     return DefaultTextStyle(

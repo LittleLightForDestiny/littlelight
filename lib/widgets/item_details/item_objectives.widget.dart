@@ -15,7 +15,7 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
-import 'package:little_light/widgets/common/objective.widget.dart';
+import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 
 class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   const ItemObjectivesWidget(
@@ -180,9 +180,9 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
     return Container(
         padding: const EdgeInsets.all(8),
         child: ObjectiveWidget(
-          key: Key("objective_${objective?.objectiveHash}_${objective?.progress}"),
-          definition: def,
+          objective.objectiveHash,
           objective: objective,
+          key: Key("objective_${objective?.objectiveHash}_${objective?.progress}"),
         ));
   }
 }

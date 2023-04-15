@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.bloc.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
@@ -12,6 +13,7 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ItemDetailsCoverWidget extends StatelessWidget {
@@ -24,8 +26,10 @@ class ItemDetailsCoverWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<InventoryItemDetailsBloc>();
     final hash = this.item?.itemHash;
     final definition = context.definition<DestinyInventoryItemDefinition>(hash);
+    final styleDefinition = context.definition<DestinyInventoryItemDefinition>(state.styleHash);
     final width = MediaQuery.of(context).size.width;
     final paddingTop = MediaQuery.of(context).padding.top;
     final screenshotHeight = width / (16 / 9);
@@ -35,7 +39,8 @@ class ItemDetailsCoverWidget extends StatelessWidget {
     return SliverPersistentHeader(
       pinned: true,
       delegate: ItemDetailsCoverDelegate(
-        definition: definition,
+        styleDefinition: styleDefinition,
+        itemDefinition: definition,
         minHeight: minHeight,
         maxHeight: maxHeight,
       ),
@@ -44,9 +49,10 @@ class ItemDetailsCoverWidget extends StatelessWidget {
 }
 
 class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
-  DestinyItemComponent? item;
-  DestinyInventoryItemDefinition? definition;
-  DestinyItemInstanceComponent? instanceInfo;
+  final DestinyItemComponent? item;
+  final DestinyInventoryItemDefinition? styleDefinition;
+  final DestinyInventoryItemDefinition? itemDefinition;
+  final DestinyItemInstanceComponent? instanceInfo;
   final double minHeight;
   final double maxHeight;
 
@@ -55,10 +61,11 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
 
   ItemDetailsCoverDelegate({
     this.item,
-    this.definition,
+    this.itemDefinition,
     this.instanceInfo,
     this.minHeight = 50,
     this.maxHeight = 200,
+    DestinyInventoryItemDefinition? this.styleDefinition,
   }) : super();
 
   @override
@@ -68,7 +75,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
       expandRatio = 0;
     }
     return Container(
-        color: definition?.inventory?.tierType?.getColor(context),
+        color: itemDefinition?.inventory?.tierType?.getColor(context),
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
@@ -91,7 +98,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
         height: kToolbarHeight,
         child: ItemNameBarWidget(
           item,
-          definition,
+          itemDefinition,
           instanceInfo,
           multiline: true,
           padding: EdgeInsets.only(
@@ -111,7 +118,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
         height: size,
         child: ItemIconWidget.builder(
           item: item,
-          definition: definition,
+          definition: styleDefinition ?? itemDefinition,
           instanceInfo: instanceInfo,
           iconBorderWidth: lerpDouble(1, 2, expandRatio) ?? 2,
         ));
@@ -125,7 +132,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
         width: kToolbarHeight,
         height: kToolbarHeight,
         child: BackButton(
-            color: Color.lerp(definition?.inventory?.tierType?.getTextColor(context), Colors.grey.shade300,
+            color: Color.lerp(itemDefinition?.inventory?.tierType?.getTextColor(context), Colors.grey.shade300,
                 expandRatio.clamp(0, 1))));
   }
 
@@ -148,7 +155,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
       DestinyItemType.Ship,
       DestinyItemType.Vehicle
     ];
-    if (!acceptedItemTypes.contains(definition?.itemType)) return Container();
+    if (!acceptedItemTypes.contains(itemDefinition?.itemType)) return Container();
     return Positioned(
         right: 0,
         bottom: 0 + kToolbarHeight * expandRatio,
@@ -161,7 +168,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
               onPressed: () async {},
               icon: Icon(Icons.share,
                   color: Color.lerp(
-                    definition?.inventory?.tierType?.getTextColor(context),
+                    itemDefinition?.inventory?.tierType?.getTextColor(context),
                     Colors.grey.shade300,
                     expandRatio,
                   )),
@@ -171,7 +178,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
   Widget overlay(BuildContext context, double expandRatio) {
     double width = MediaQuery.of(context).size.width;
     double opacity = expandRatio;
-    if (definition?.itemType != DestinyItemType.Subclass) {
+    if (itemDefinition?.itemType != DestinyItemType.Subclass) {
       return Container();
     }
     return Positioned(
@@ -181,7 +188,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
         child: Opacity(
             opacity: opacity,
             child: QueuedNetworkImage.fromBungie(
-              definition?.secondaryIcon,
+              itemDefinition?.secondaryIcon,
               fit: BoxFit.fitWidth,
             )));
   }
@@ -198,6 +205,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget buildBackgroundImage(BuildContext context) {
+    final definition = styleDefinition ?? this.itemDefinition;
     String? imgUrl = definition?.screenshot;
     if (definition?.itemType == DestinyItemType.Emblem) {
       imgUrl = definition?.secondarySpecial;
@@ -247,6 +255,8 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(ItemDetailsCoverDelegate oldDelegate) {
-    return maxHeight != oldDelegate.maxHeight || minHeight != oldDelegate.minHeight;
+    final isDifferentHeight = maxHeight != oldDelegate.maxHeight || minHeight != oldDelegate.minHeight;
+    final isDifferentStyle = styleDefinition?.hash != oldDelegate.styleDefinition?.hash;
+    return isDifferentHeight || isDifferentStyle;
   }
 }

@@ -11,7 +11,7 @@ import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
-import 'package:little_light/widgets/common/objective.widget.dart';
+import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class RecordObjectivesWidget extends StatefulWidget {
@@ -120,8 +120,7 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
         child: Column(
             children: definition.objectiveHashes.map((hash) {
           var objective = getRecordObjective(hash);
-          return ObjectiveWidget(
-              definition: objectiveDefinitions != null ? objectiveDefinitions[hash] : null,
+          return ObjectiveWidget(hash,
               key: Key("objective_${hash}_${objective?.progress}"),
               objective: objective,
               placeholder: definition?.displayProperties?.name ?? "",

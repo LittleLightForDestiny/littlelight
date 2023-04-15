@@ -7,7 +7,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/widgets/animations/loop_animation.dart';
 import 'package:little_light/shared/widgets/animations/ping_pong_animation.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
-import 'package:little_light/shared/widgets/notifications/transfer_notification_group.dart';
+import 'package:little_light/shared/widgets/notifications/transfer_notification_group.widget.dart';
 import 'package:provider/provider.dart';
 
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
@@ -50,7 +50,7 @@ class NotificationsWidget extends StatelessWidget {
   }
 
   Widget? buildSubjects(BuildContext context) {
-    final transferActions = _state(context).actionsByType<SingleTransferAction>();
+    final transferActions = _state(context).actionsByType<ActionNotification>();
     return TransferNotificationGroup(transferActions);
   }
 
@@ -73,7 +73,14 @@ class NotificationsWidget extends StatelessWidget {
               Text(
                 "Transferring".translate(context).toUpperCase(),
               ),
-              _state(context).actionIs<SingleTransferAction>(),
+              _state(context).actionIs<TransferNotification>(),
+            ),
+            buildMainMessageAnimation(
+              context,
+              Text(
+                "Applying plugs".translate(context).toUpperCase(),
+              ),
+              _state(context).actionIs<ApplyPlugsNotification>(),
             ),
             buildMainMessageAnimation(
               context,

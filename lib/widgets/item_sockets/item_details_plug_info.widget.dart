@@ -16,7 +16,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/item_stats/base_item_stat.widget.dart';
-import 'package:little_light/widgets/item_stats/details_item_stat.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_stat.widget.dart';
 
 class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with ProfileConsumer {
   ItemDetailsPlugInfoWidget(
@@ -40,10 +40,11 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
 
   buildStats(BuildContext context) {
     var stats = definition.investmentStats.map((s) {
-      return DetailsItemStatWidget(
-        modValues: StatValues(equipped: s.value, selected: s.value, precalculated: s.value),
-        statHash: s.statTypeHash,
-      );
+      // return DetailsItemStatWidget(
+      //   modValues: StatValues(equipped: s.value, selected: s.value, precalculated: s.value),
+      //   statHash: s.statTypeHash,
+      // );
+      return Container();
     }).toList();
     if ((stats?.length ?? 0) <= 0) return Container();
     return Column(children: [

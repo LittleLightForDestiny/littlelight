@@ -13,6 +13,8 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
+import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
+import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -669,6 +671,34 @@ class ProfileBloc extends ChangeNotifier
     } else {
       final newValue = currentValue - ItemState.Locked.value;
       item.item.state = ItemState(newValue);
+    }
+    notifyListeners();
+  }
+
+  Future<void> applyPlug(DestinyItemInfo item, int socketIndex, int plugHash) async {
+    final characterId = item.characterId ?? characters?.firstOrNull?.characterId;
+    final instanceId = item.item.itemInstanceId;
+    if (instanceId == null) throw "Can't apply plugs on an item that doesn't have a instance id";
+    if (characterId == null) throw "Can't apply plugs on an item without a characterId";
+    await bungieAPI.applySocket(instanceId, plugHash, socketIndex, characterId);
+    final sockets = item.sockets;
+    if (sockets != null) {
+      sockets[socketIndex].plugHash = plugHash;
+      final plugHashes = <int, int?>{for (var s in sockets) sockets.indexOf(s): s.plugHash};
+      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      final statGroupDef = await manifest.getDefinition<DestinyStatGroupDefinition>(def?.stats?.statGroupHash);
+      final plugDefs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes.values);
+      final stats = calculateStats(plugHashes, plugHashes, def, statGroupDef, plugDefs);
+      if (stats != null)
+        for (final s in stats) {
+          item.stats?["${s.statHash}"]?.value = s.equipped + s.equippedMasterwork;
+        }
+      final plugDef = plugDefs[plugHash];
+      final overrideStyle = shouldPlugOverrideStyleItemHash(plugDef);
+      print(overrideStyle);
+      if (overrideStyle) {
+        item.item.overrideStyleItemHash = plugHash;
+      }
     }
     notifyListeners();
   }

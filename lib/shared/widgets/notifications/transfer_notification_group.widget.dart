@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/shared/widgets/notifications/active_transfer_notification.dart';
-import 'package:little_light/shared/widgets/notifications/queued_transfer_notification.dart';
+import 'package:little_light/shared/widgets/notifications/active_apply_mod_notification.widget.dart';
+import 'package:little_light/shared/widgets/notifications/active_transfer_notification.widget.dart';
+import 'package:little_light/shared/widgets/notifications/queued_transfer_notification.widget.dart';
 
 import '../../../core/blocs/notifications/notification_actions.dart';
 
 class TransferNotificationGroup extends StatelessWidget {
-  final List<SingleTransferAction> notifications;
+  final List<ActionNotification> notifications;
   const TransferNotificationGroup(this.notifications);
 
   @override
@@ -41,10 +42,25 @@ class TransferNotificationGroup extends StatelessWidget {
     final active = notifications.where((n) => n.active).toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
-      children: active.reversed
-          .map((notification) => ActiveTransferNotificationWidget(notification,
-              key: Key("active_transfer_notification_${notification.id}")))
-          .toList(),
+      children: active.reversed.map((notification) {
+        return buildActiveNotification(context, notification);
+      }).toList(),
     );
+  }
+
+  Widget buildActiveNotification(BuildContext context, ActionNotification notification) {
+    if (notification is TransferNotification) {
+      return ActiveTransferNotificationWidget(
+        notification,
+        key: Key("active_transfer_notification_${notification.id}"),
+      );
+    }
+    if (notification is ApplyPlugsNotification) {
+      return ActiveApplyPlugsNotificationWidget(
+        notification,
+        key: Key("active_transfer_notification_${notification.id}"),
+      );
+    }
+    return Container();
   }
 }

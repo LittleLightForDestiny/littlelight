@@ -1,9 +1,12 @@
 import 'package:bungie_api/destiny2.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:provider/provider.dart';
 
@@ -31,6 +34,9 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   final ManifestService manifest;
 
   @protected
+  final WishlistsService wishlists;
+
+  @protected
   final ItemNotesService itemNotes;
 
   @protected
@@ -39,15 +45,27 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   @protected
   Map<int, DestinySocketCategoryDefinition>? categoryDefinitions;
 
+  List<StatValues>? _stats;
+
   @protected
-  Map<int, DestinyPlugSetDefinition>? plugSetDefinitions;
+  DestinyStatGroupDefinition? statGroupDefinition;
+
+  Map<int, DestinyInventoryItemDefinition>? plugDefinitions;
+
+  @protected
+  Map<int, DestinyMaterialRequirementSetDefinition>? materialRequirementDefinitions;
+
+  List<StatValues>? get stats => _stats;
 
   SocketControllerBloc(this.context)
       : manifest = context.read<ManifestService>(),
+        wishlists = getInjectedWishlistsService(),
         itemNotes = getInjecteditemNotes(),
         super();
 
   int? get itemHash => itemDefinition?.hash;
+
+  bool get isBusy;
 
   List<DestinyItemSocketCategoryDefinition>? getSocketCategories(DestinySocketCategoryStyle? category) {
     final categories = itemDefinition?.sockets?.socketCategories?.where((socketCategory) {
@@ -80,20 +98,28 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
       final categoryDefinitions = await manifest.getDefinitions<DestinySocketCategoryDefinition>(categoryHashes);
       this.categoryDefinitions = categoryDefinitions;
     }
-
-    final plugSetHashes = itemDefinition?.sockets?.socketEntries
-        ?.map((e) => [e.reusablePlugSetHash, e.randomizedPlugSetHash])
-        .flattened
-        .whereType<int>();
-    if (plugSetHashes != null) {
-      final plugSetDefinitions = await manifest.getDefinitions<DestinyPlugSetDefinition>(plugSetHashes);
-      this.plugSetDefinitions = plugSetDefinitions;
+    final statGroupDefinition =
+        await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
+    this.statGroupDefinition = statGroupDefinition;
+    final plugHashes = await getPossiblePlugHashesForItem(context, itemHash);
+    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    for (int i = 0; i < totalSockets; i++) {
+      final equipped = getEquippedPlugHashForSocket(i);
+      final available = getAvailablePlugHashesForSocket(i);
+      if (equipped != null) plugHashes.add(equipped);
+      if (available != null) plugHashes.addAll(available);
     }
-
+    final plugDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
+    this.plugDefinitions = plugDefinitions;
+    final materialRequirementHashes =
+        plugDefinitions.values.map((def) => def.plug?.insertionMaterialRequirementHash).whereType<int>();
+    final materialRequirementDefinitions =
+        await manifest.getDefinitions<DestinyMaterialRequirementSetDefinition>(materialRequirementHashes);
+    this.materialRequirementDefinitions = materialRequirementDefinitions;
     refreshStats();
   }
 
-  refreshStats() {
+  void refreshStats() {
     final itemHash = this.itemHash;
     if (itemHash == null) return;
     final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
@@ -101,19 +127,47 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     final equippedPlugHashes = Map<int, int?>.fromIterable(
       socketList,
       key: (i) => i,
-      value: (index) => getEquippedPlugHashesForSocket(index),
+      value: (index) => getEquippedPlugHashForSocket(index),
     );
     final selectedPlugHashes = Map<int, int?>.fromIterable(
       socketList,
       key: (i) => i,
-      value: (index) => getSelectedPlugHashesForSocket(index),
+      value: (index) => getSelectedPlugHashForSocket(index),
     );
 
-    calculateStats(
-      context,
-      itemHash,
+    _stats = calculateStats(
       equippedPlugHashes,
       selectedPlugHashes,
+      itemDefinition,
+      statGroupDefinition,
+      plugDefinitions,
+    );
+    notifyListeners();
+  }
+
+  List<StatComparison>? getSelectedPlugStats() {
+    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    final socketList = List<int>.generate(totalSockets, (index) => index);
+    final selectedSocketIndex = this.selectedSocketIndex;
+    if (selectedSocketIndex == null) return null;
+    final equippedPlugHash = getEquippedPlugHashForSocket(selectedSocketIndex);
+    final selectedPlugHash = getSelectedPlugHashForSocket(selectedSocketIndex);
+
+    final selectedPlugHashes = Map<int, int?>.fromIterable(
+      socketList,
+      key: (i) => i,
+      value: (index) {
+        return getSelectedPlugHashForSocket(index);
+      },
+    );
+    return comparePlugStats(
+      selectedPlugHashes,
+      selectedSocketIndex,
+      equippedPlugHash,
+      selectedPlugHash,
+      itemDefinition,
+      statGroupDefinition,
+      plugDefinitions,
     );
   }
 
@@ -137,18 +191,30 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
 
   int? get selectedSocketIndex => _selectedSocketIndex;
 
+  void toggleSocketSelection(int socketIndex) {
+    final isSameSocketIndex = _selectedSocketIndex == socketIndex;
+    if (isSameSocketIndex) {
+      _selectedSocketIndex = null;
+    } else {
+      _selectedSocketIndex = socketIndex;
+    }
+    notifyListeners();
+  }
+
   void toggleSelection(int socketIndex, int plugHash) {
     final isCurrentlySelected = isSelected(socketIndex, plugHash);
     final isSameSocketIndex = _selectedSocketIndex == socketIndex;
     if (isCurrentlySelected && isSameSocketIndex) {
       _selectedPlugHashes.remove(socketIndex);
       _selectedSocketIndex = null;
+      refreshStats();
       notifyListeners();
       return;
     }
 
     _selectedPlugHashes[socketIndex] = plugHash;
     _selectedSocketIndex = socketIndex;
+    refreshStats();
     notifyListeners();
     return;
   }
@@ -156,14 +222,10 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   Future<void> init(T object);
   Future<void> update(T object);
 
-  @protected
   List<int>? getAvailablePlugHashesForSocket(int socketIndex);
 
-  @protected
-  int? getEquippedPlugHashesForSocket(int socketIndex);
-
-  @protected
-  int? getSelectedPlugHashesForSocket(int socketIndex) => _selectedPlugHashes[socketIndex];
+  int? getEquippedPlugHashForSocket(int? socketIndex);
+  int? getSelectedPlugHashForSocket(int? socketIndex) => _selectedPlugHashes[socketIndex];
 
   int? selectedPlugForCategory(DestinyItemSocketCategoryDefinition category) {
     final categoryIsSelected = category.socketIndexes?.contains(_selectedSocketIndex) ?? false;
@@ -185,5 +247,25 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     if (notes == null) return;
     itemNotes.saveNotes(notes);
     notifyListeners();
+  }
+
+  List<DestinyObjectiveProgress>? getPlugObjectives(int plugHash);
+
+  Set<WishlistTag>? getWishlistTagsForPlug(int plugHash) {
+    final itemHash = this.itemHash;
+    if (itemHash == null) return null;
+    final tags = wishlists.getPlugTags(itemHash, plugHash);
+    return tags;
+  }
+
+  bool canApplySelectedPlug();
+
+  void applyPlug(int socketIndex, int plugHash);
+
+  void applySelectedPlug() {
+    final socketIndex = selectedSocketIndex;
+    final plugHash = getSelectedPlugHashForSocket(socketIndex);
+    if (socketIndex == null || plugHash == null) return;
+    applyPlug(socketIndex, plugHash);
   }
 }

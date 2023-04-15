@@ -8,13 +8,15 @@ import 'package:provider/provider.dart';
 
 class StatsItem {
   final DestinyItemInfo item;
-  final Map<int, StatValues> stats;
+  final List<StatValues> stats;
   final Map<int, int?> precalculated;
 
   bool get hasIssues {
-    for (final hash in precalculated.keys) {
-      final equipped = (stats[hash]?.equipped ?? 0) + (stats[hash]?.equippedMasterwork ?? 0);
-      if (precalculated[hash] != equipped) {
+    for (final stat in stats) {
+      final hash = stat.statHash;
+      final equipped = stat.equipped + stat.equippedMasterwork;
+      final precalc = precalculated[hash] ?? 0;
+      if (precalc != equipped) {
         return true;
       }
     }
@@ -29,6 +31,7 @@ class DevToolsStatsBloc extends ChangeNotifier {
   final BuildContext context;
 
   final ProfileBloc _profile;
+  final ManifestService _manifest;
 
   List<StatsItem>? allItems;
   List<StatsItem>? _itemsWithIssues;
@@ -44,6 +47,7 @@ class DevToolsStatsBloc extends ChangeNotifier {
 
   DevToolsStatsBloc(this.context)
       : _profile = context.read<ProfileBloc>(),
+        _manifest = context.read<ManifestService>(),
         super() {
     init();
   }
@@ -67,7 +71,18 @@ class DevToolsStatsBloc extends ChangeNotifier {
       final precalculated = item.stats?.map((key, value) => MapEntry(value.statHash ?? 0, value.value));
       if (itemHash == null || sockets == null || precalculated == null) continue;
       final equippedPlugHashes = <int, int?>{for (var v in sockets) sockets.indexOf(v): v.plugHash};
-      final stats = await calculateStats(context, itemHash, equippedPlugHashes, equippedPlugHashes);
+      final itemDefinition = await _manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      final statGroupDefinition =
+          await _manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
+      final plugDefinitions =
+          await _manifest.getDefinitions<DestinyInventoryItemDefinition>(equippedPlugHashes.values.toList());
+      final stats = await calculateStats(
+        equippedPlugHashes,
+        equippedPlugHashes,
+        itemDefinition,
+        statGroupDefinition,
+        plugDefinitions,
+      );
       if (stats == null) continue;
       allItems.add(StatsItem(item, stats, precalculated));
     }
