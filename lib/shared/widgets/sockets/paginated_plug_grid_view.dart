@@ -1,7 +1,8 @@
+
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/widgets/item_sockets/plug_grid_view.dart';
+import 'package:little_light/shared/widgets/sockets/plug_grid_view.dart';
 
 class PaginatedPlugGridView extends PlugGridView {
   const PaginatedPlugGridView.withItemsPerRow(
@@ -46,10 +47,7 @@ class PaginatedPlugGridView extends PlugGridView {
             height: specs.tabHeight,
             child: Row(children: [
               Builder(builder: (context) => pagingButton(context, -1)),
-              Expanded(
-                  child: Builder(
-                      builder: (context) =>
-                          buildScrollableGrid(context, specs))),
+              Expanded(child: Builder(builder: (context) => buildScrollableGrid(context, specs))),
               Builder(builder: (context) => pagingButton(context, 1)),
             ]),
           ));
@@ -65,13 +63,11 @@ Widget pagingButton(BuildContext context, [int direction = 1]) {
       animation: controller.animation!,
       builder: (context, child) {
         final currentIndex = controller.index;
-        final enabled =
-            direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
+        final enabled = direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
         return Container(
           constraints: const BoxConstraints.expand(width: 16),
           decoration: BoxDecoration(
-            border: Border.all(
-                color: LittleLightTheme.of(context).onSurfaceLayers.layer1),
+            border: Border.all(color: LittleLightTheme.of(context).onSurfaceLayers.layer1),
           ),
           alignment: Alignment.center,
           child: !enabled
@@ -84,10 +80,7 @@ Widget pagingButton(BuildContext context, [int direction = 1]) {
                       },
                       child: Container(
                           constraints: const BoxConstraints.expand(),
-                          child: Icon(
-                              direction > 0
-                                  ? FontAwesomeIcons.caretRight
-                                  : FontAwesomeIcons.caretLeft,
+                          child: Icon(direction > 0 ? FontAwesomeIcons.caretRight : FontAwesomeIcons.caretLeft,
                               size: 16)))),
         );
       });

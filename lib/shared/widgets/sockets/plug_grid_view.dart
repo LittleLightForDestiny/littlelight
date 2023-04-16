@@ -133,18 +133,19 @@ class PlugGridView extends StatelessWidget {
         },
       );
 
-  Widget buildScrollableGrid(
-      BuildContext context, PlugGridViewSpecifications specs) {
+  Widget buildScrollableGrid(BuildContext context, PlugGridViewSpecifications specs) {
     if (plugHashes.length <= specs.itemsPerPage) {
       return buildGridView(context, plugHashes, specs.itemsPerRow);
     }
-    final controller = DefaultTabController.of(context);
-    return SizedBox(
-        height: specs.tabHeight,
-        child: TabBarView(
-          controller: controller,
-          children: buildTabs(context, specs),
-        ));
+    final controller = DefaultTabController.maybeOf(context);
+    if (controller != null) {
+      return SizedBox(
+          height: specs.tabHeight,
+          child: TabBarView(
+            controller: controller,
+            children: buildTabs(context, specs),
+          ));
+    }
     return SizedBox(
         height: specs.tabHeight,
         child: DefaultTabController(
@@ -156,21 +157,16 @@ class PlugGridView extends StatelessWidget {
             ))));
   }
 
-  List<Widget> buildTabs(
-          BuildContext context, PlugGridViewSpecifications specs) =>
+  List<Widget> buildTabs(BuildContext context, PlugGridViewSpecifications specs) =>
       List.generate(specs.pageCount, (index) {
-        final plugHashes = this
-            .plugHashes
-            .skip(index * specs.itemsPerPage)
-            .take(specs.itemsPerPage);
+        final plugHashes = this.plugHashes.skip(index * specs.itemsPerPage).take(specs.itemsPerPage);
         return Container(
           padding: EdgeInsets.symmetric(horizontal: gridSpacing / 2),
           child: buildGridView(context, plugHashes, specs.itemsPerRow),
         );
       });
 
-  Widget buildGridView(
-      BuildContext context, Iterable<int?> plugHashes, int itemsPerRow) {
+  Widget buildGridView(BuildContext context, Iterable<int?> plugHashes, int itemsPerRow) {
     return GridView(
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: itemsPerRow,

@@ -9,7 +9,7 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
-import 'package:little_light/widgets/common/objective.widget.dart';
+import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class QuestInfoWidget extends BaseDestinyStatefulItemWidget {
@@ -158,7 +158,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
     if (objectiveDefinitions == null) return Container();
     var def = objectiveDefinitions[hash];
     return Column(
-      children: <Widget>[ObjectiveWidget(definition: def, forceComplete: stepIndex < currentIndex)],
+      children: <Widget>[ObjectiveWidget(hash, forceComplete: stepIndex < currentIndex)],
     );
   }
 
@@ -168,7 +168,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
     return Column(
       children: <Widget>[
         ObjectiveWidget(
-          definition: def,
+          objective.objectiveHash,
           objective: objective,
         )
       ],

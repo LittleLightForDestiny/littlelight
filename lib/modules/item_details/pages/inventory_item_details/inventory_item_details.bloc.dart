@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/modules/item_details/blocs/socket_controller.bloc.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/services/littlelight/item_notes.consumer.dart';
+import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/utils/helpers/get_transfer_destinations.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +16,7 @@ import 'package:provider/provider.dart';
 class InventoryItemDetailsBloc extends ChangeNotifier {
   final ProfileBloc _profileBloc;
   final InventoryBloc _inventoryBloc;
+  final ItemNotesService _itemNotesBloc;
   final SocketControllerBloc _socketControllerBloc;
   DestinyItemInfo? item;
   List<LoadoutItemIndex>? loadouts;
@@ -28,6 +32,7 @@ class InventoryItemDetailsBloc extends ChangeNotifier {
   InventoryItemDetailsBloc(this._context, {this.item})
       : _profileBloc = _context.read<ProfileBloc>(),
         _inventoryBloc = _context.read<InventoryBloc>(),
+        _itemNotesBloc = getInjecteditemNotes(),
         _socketControllerBloc = _context.read<SocketControllerBloc>() {
     _init();
   }
@@ -44,6 +49,13 @@ class InventoryItemDetailsBloc extends ChangeNotifier {
   }
 
   int? get itemHash => item?.itemHash;
+  int? get styleHash => item?.item.overrideStyleItemHash ?? itemHash;
+
+  String? get overrideName {
+    final notes = _itemNotesBloc.getNotesForItem(itemHash, instanceId);
+    return notes?.customName;
+  }
+
   String? get instanceId => item?.instanceId;
   int? get stackIndex => item?.stackIndex;
 
@@ -63,6 +75,10 @@ class InventoryItemDetailsBloc extends ChangeNotifier {
     this._equipDestinations = destinations?.equip;
 
     _socketControllerBloc.update(item);
+    notifyListeners();
+  }
+
+  void _updateSettings() {
     notifyListeners();
   }
 

@@ -7,7 +7,6 @@ import 'package:little_light/modules/item_details/widgets/details_plug_info.widg
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
 import 'package:little_light/shared/widgets/sockets/perk_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/item_sockets/item_details_plug_info.widget.dart';
 import 'package:provider/provider.dart';
 
 class DetailsItemPerksWidget extends StatelessWidget {

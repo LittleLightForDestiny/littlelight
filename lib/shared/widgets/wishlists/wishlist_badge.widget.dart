@@ -1,4 +1,3 @@
-// @dart=2.9
 
 import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
@@ -8,7 +7,7 @@ class WishlistBadgeWidget extends StatelessWidget {
   final WishlistTag tag;
   final double size;
 
-  const WishlistBadgeWidget({this.tag, this.size = 24});
+  const WishlistBadgeWidget(this.tag, {this.size = 24});
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +18,8 @@ class WishlistBadgeWidget extends StatelessWidget {
             aspectRatio: 1,
             child: Container(
                 alignment: Alignment.center,
-                decoration: WishlistsData.getBoxDecoration(context, tag)
-                    .copyWith(borderRadius: BorderRadius.circular(4)),
+                decoration:
+                    WishlistsData.getBoxDecoration(context, tag).copyWith(borderRadius: BorderRadius.circular(4)),
                 child: WishlistsData.getIcon(context, tag, size))));
   }
 }

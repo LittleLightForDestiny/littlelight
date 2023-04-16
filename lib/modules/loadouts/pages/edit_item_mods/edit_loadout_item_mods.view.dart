@@ -8,7 +8,7 @@ import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_sockets/mod_grid_item.dart';
-import 'package:little_light/widgets/item_sockets/paginated_plug_grid_view.dart';
+import 'package:little_light/shared/widgets/sockets/paginated_plug_grid_view.dart';
 import 'package:provider/provider.dart';
 
 const emptyLoadoutModHash = 1219897208;
