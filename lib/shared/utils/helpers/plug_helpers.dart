@@ -1,11 +1,31 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:provider/provider.dart';
 
 const _blockedForApplyingPlugCategories = [r'^.*?\.weapons\.masterworks\.trackers$'];
 const _ornamentPlugCategories = [r'^.*?skins.*?$'];
+
+bool canApplyPlug(
+  BuildContext context,
+  DestinyItemInfo item,
+  int? socketIndex,
+  int? plugHash,
+  DestinyInventoryItemDefinition? plugDef,
+  DestinyMaterialRequirementSetDefinition? materialCost,
+) {
+  if (socketIndex == null || plugHash == null) return false;
+  final allowActions = plugDef?.allowActions ?? false;
+  if (allowActions == false) return false;
+  final isEquipped = item.sockets?[socketIndex].plugHash == plugHash;
+  if (isEquipped) return false;
+  final hasMaterials = materialCost?.materials?.isNotEmpty ?? false;
+  if (hasMaterials) return false;
+  if (isPlugBlockedForApplying(context, plugDef)) return false;
+  return true;
+}
 
 bool isPlugBlockedForApplying(BuildContext context, DestinyInventoryItemDefinition? def) {
   final categoryId = def?.plug?.plugCategoryIdentifier;

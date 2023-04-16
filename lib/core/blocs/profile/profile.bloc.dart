@@ -676,7 +676,7 @@ class ProfileBloc extends ChangeNotifier
   }
 
   Future<void> applyPlug(DestinyItemInfo item, int socketIndex, int plugHash) async {
-    final characterId = item.characterId ?? characters?.firstOrNull?.characterId;
+    final characterId = item.characterId ?? characters?.lastOrNull?.characterId;
     final instanceId = item.item.itemInstanceId;
     if (instanceId == null) throw "Can't apply plugs on an item that doesn't have a instance id";
     if (characterId == null) throw "Can't apply plugs on an item without a characterId";
@@ -695,7 +695,6 @@ class ProfileBloc extends ChangeNotifier
         }
       final plugDef = plugDefs[plugHash];
       final overrideStyle = shouldPlugOverrideStyleItemHash(plugDef);
-      print(overrideStyle);
       if (overrideStyle) {
         item.item.overrideStyleItemHash = plugHash;
       }

@@ -62,20 +62,21 @@ class StatValues {
     return _interpolate(selected);
   }
 
-
-  num get equippedMasterwork {
+  int get equippedMasterwork {
     if (this.rawEquippedMasterwork == 0) return 0;
-    final maximum = scale?.maximumValue ?? double.maxFinite.floor();
+    final maximum = maximumValue;
     final equippedWithMasterwork = _interpolate((this.rawEquipped + this.rawEquippedMasterwork).clamp(0, maximum));
     return equippedWithMasterwork - equipped;
   }
 
-  num get selectedMasterwork {
+  int get selectedMasterwork {
     if (this.rawSelectedMasterwork == 0) return 0;
-    final maximum = scale?.maximumValue ?? double.maxFinite.floor();
+    final maximum = maximumValue;
     final selectedWithMasterwork = _interpolate((this.rawSelected + this.rawSelectedMasterwork).clamp(0, maximum));
     return selectedWithMasterwork - selected;
   }
+
+  int get maximumValue => scale?.maximumValue ?? double.maxFinite.floor();
 
   bool get isHiddenStat => _hiddenStats.contains(statHash);
 

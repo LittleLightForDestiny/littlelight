@@ -102,18 +102,13 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<DestinyItem
 
   @override
   bool canApplySelectedPlug() {
+    final item = this.item;
+    if (item == null) return false;
     final socketIndex = selectedSocketIndex;
     final plugHash = getSelectedPlugHashForSocket(socketIndex);
-    if (socketIndex == null || plugHash == null) return false;
-    final definition = plugDefinitions?[plugHash];
-    final allowActions = definition?.allowActions ?? false;
-    if (allowActions == false) return false;
-    if (isEquipped(socketIndex, plugHash)) return false;
-    final materialCost = materialRequirementDefinitions?[definition?.plug?.insertionMaterialRequirementHash];
-    final hasMaterials = materialCost?.materials?.isNotEmpty ?? false;
-    if (hasMaterials) return false;
-    if (isPlugBlockedForApplying(context, definition)) return false;
-    return true;
+    final plugDef = plugDefinitions?[plugHash];
+    final materialCost = materialRequirementDefinitions?[plugDef?.plug?.insertionMaterialRequirementHash];
+    return canApplyPlug(context, item, socketIndex, plugHash, plugDef, materialCost);
   }
 
   @override

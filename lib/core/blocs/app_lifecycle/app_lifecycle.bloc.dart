@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 
 class AppLifecycleBloc extends ChangeNotifier with WidgetsBindingObserver {
   AppLifecycleState _state = AppLifecycleState.resumed;
@@ -14,7 +15,7 @@ class AppLifecycleBloc extends ChangeNotifier with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
-    print("App lifecycle state has changed to $state");
+    logger.info("App lifecycle state has changed to $state");
     _state = state;
     notifyListeners();
   }
