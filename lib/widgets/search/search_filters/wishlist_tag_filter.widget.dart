@@ -4,23 +4,20 @@ import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/utils/item_filters/wishlist_tag_filter.dart';
 import 'package:little_light/utils/wishlists_data.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
+import 'package:little_light/shared/widgets/wishlists/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/base_search_filter.widget.dart';
 import 'package:flutter/material.dart';
 
-class WishlistTagsFilterWidget
-    extends BaseSearchFilterWidget<WishlistTagFilter> {
-  const WishlistTagsFilterWidget(SearchController controller)
-      : super(controller);
+class WishlistTagsFilterWidget extends BaseSearchFilterWidget<WishlistTagFilter> {
+  const WishlistTagsFilterWidget(SearchController controller) : super(controller);
 
   @override
-  _WishlistTagsFilterWidgetState createState() =>
-      _WishlistTagsFilterWidgetState();
+  _WishlistTagsFilterWidgetState createState() => _WishlistTagsFilterWidgetState();
 }
 
-class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
-    WishlistTagsFilterWidget, WishlistTagFilter, WishlistTag> {
+class _WishlistTagsFilterWidgetState
+    extends BaseSearchFilterWidgetState<WishlistTagsFilterWidget, WishlistTagFilter, WishlistTag> {
   @override
   Widget buildFilterLabel(BuildContext context) {
     return TranslatedTextWidget(
@@ -43,14 +40,10 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
     if (options.contains(null)) length = length - 1;
     if (length % 2 == 0) {
       return FractionallySizedBox(
-          widthFactor: .5,
-          child:
-              SizedBox(height: 70, child: super.buildButton(context, value)));
+          widthFactor: .5, child: SizedBox(height: 70, child: super.buildButton(context, value)));
     } else {
       return FractionallySizedBox(
-          widthFactor: 1 / 3,
-          child:
-              SizedBox(height: 70, child: super.buildButton(context, value)));
+          widthFactor: 1 / 3, child: SizedBox(height: 70, child: super.buildButton(context, value)));
     }
   }
 
@@ -85,7 +78,7 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
   Widget buildDisabledValue(BuildContext context) {
     try {
       var tag = filter.value.single;
-      return WishlistBadgesWidget(tags: {tag});
+      return WishlistBadgesWidget({tag});
     } catch (_) {}
     return TranslatedTextWidget(
       "None",

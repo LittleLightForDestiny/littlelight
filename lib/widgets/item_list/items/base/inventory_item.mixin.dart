@@ -15,14 +15,10 @@ import 'package:little_light/widgets/common/base/base_destiny_stateless_item.wid
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
-import 'package:little_light/widgets/common/wishlist_badges.widget.dart';
+import 'package:little_light/shared/widgets/wishlists/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
-mixin InventoryItemMixin
-    implements
-        BaseDestinyStatelessItemWidget,
-        ProfileConsumer,
-        ItemNotesConsumer {
+mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsumer, ItemNotesConsumer {
   WishlistsService get wishlistsService => getInjectedWishlistsService();
 
   final String uniqueId = "";
@@ -43,12 +39,7 @@ mixin InventoryItemMixin
   }
 
   Widget positionedIcon(BuildContext context) {
-    return Positioned(
-        top: padding,
-        left: padding,
-        width: iconSize,
-        height: iconSize,
-        child: itemIconHero(context));
+    return Positioned(top: padding, left: padding, width: iconSize, height: iconSize, child: itemIconHero(context));
   }
 
   Widget itemIconHero(BuildContext context) {
@@ -68,8 +59,7 @@ mixin InventoryItemMixin
   }
 
   Widget primaryStatWidget(BuildContext context) {
-    if ([DestinyItemType.Engram, DestinyItemType.Subclass]
-        .contains(definition.itemType)) {
+    if ([DestinyItemType.Engram, DestinyItemType.Subclass].contains(definition.itemType)) {
       return Container();
     }
     if (item?.bucketHash == InventoryBucket.engrams) {
@@ -79,8 +69,7 @@ mixin InventoryItemMixin
         top: titleFontSize + padding * 2 + 4,
         right: 4,
         child: Container(
-          child: PrimaryStatWidget(
-              item: item, definition: definition, instanceInfo: instanceInfo),
+          child: PrimaryStatWidget(item: item, definition: definition, instanceInfo: instanceInfo),
         ));
   }
 
@@ -123,21 +112,15 @@ mixin InventoryItemMixin
         right: iconBorderWidth,
         top: iconBorderWidth,
         child: Container(
-          padding: EdgeInsets.symmetric(
-                  horizontal: padding / 2, vertical: padding / 4)
-              .copyWith(right: padding / 4),
+          padding: EdgeInsets.symmetric(horizontal: padding / 2, vertical: padding / 4).copyWith(right: padding / 4),
           decoration: const BoxDecoration(
-              color: Colors.black54,
-              borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))),
+              color: Colors.black54, borderRadius: BorderRadius.only(bottomLeft: Radius.circular(8))),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: <Widget>[
               Text(
                 "T$total",
-                style: TextStyle(
-                    fontSize: titleFontSize,
-                    fontWeight: FontWeight.w500,
-                    color: textColor),
+                style: TextStyle(fontSize: titleFontSize, fontWeight: FontWeight.w500, color: textColor),
               )
             ],
           ),
@@ -151,11 +134,7 @@ mixin InventoryItemMixin
   Widget nameBar(BuildContext context) {
     return ItemNameBarWidget(item, definition, instanceInfo,
         trailing: namebarTrailingWidget(context),
-        padding: EdgeInsets.only(
-            left: iconSize + padding * 2,
-            top: padding,
-            bottom: padding,
-            right: 2));
+        padding: EdgeInsets.only(left: iconSize + padding * 2, top: padding, bottom: padding, right: 2));
   }
 
   background(BuildContext context) {
@@ -166,15 +145,13 @@ mixin InventoryItemMixin
         right: 0,
         child: Container(
             color: Theme.of(context).cardTheme.color,
-            padding: EdgeInsets.only(
-                top: titleFontSize + padding * 2, left: iconSize),
+            padding: EdgeInsets.only(top: titleFontSize + padding * 2, left: iconSize),
             child: wishlistBackground(context)));
   }
 
   Widget wishlistBackground(BuildContext context) {
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
-    final tags = wishlistsService.getWishlistBuildTags(
-        itemHash: item?.itemHash, reusablePlugs: reusable);
+    final tags = wishlistsService.getWishlistBuildTags(itemHash: item?.itemHash, reusablePlugs: reusable);
     if (tags == null) return Container();
     if (tags.contains(WishlistTag.PVE) && tags.contains(WishlistTag.PVP)) {
       return Image.asset(
@@ -211,14 +188,12 @@ mixin InventoryItemMixin
   Widget namebarTrailingWidget(BuildContext context) {
     List<Widget> items = [];
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
-    final wishlistTags = wishlistsService.getWishlistBuildTags(
-        itemHash: item?.itemHash, reusablePlugs: reusable);
+    final wishlistTags = wishlistsService.getWishlistBuildTags(itemHash: item?.itemHash, reusablePlugs: reusable);
     var notes = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId);
     var tags = itemNotes.tagsByIds(notes?.tags);
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
     if (locked) {
-      items.add(Container(
-          child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));
+      items.add(Container(child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));
     }
     if (tags != null) {
       items.addAll(tags.map((t) => ItemTagWidget(
@@ -228,7 +203,7 @@ mixin InventoryItemMixin
           )));
     }
     if (wishlistTags != null) {
-      items.add(WishlistBadgesWidget(tags: wishlistTags, size: tagIconSize));
+      items.add(WishlistBadgesWidget(wishlistTags, size: tagIconSize));
     }
     if (trailing != null) {
       items.add(trailing);

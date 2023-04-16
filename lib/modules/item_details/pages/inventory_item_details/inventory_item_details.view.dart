@@ -2,7 +2,9 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/item_details/blocs/socket_controller.bloc.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_intrinsic_perk.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_mods.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_perks.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_stats.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_transfer_block.widget.dart';
 import 'package:little_light/modules/item_details/widgets/item_details_cover.widget.dart';
 import 'package:little_light/modules/item_details/widgets/lock_status.widget.dart';
@@ -48,10 +50,11 @@ class InventoryItemDetailsView extends StatelessWidget {
         ),
         buildTransferOptions(context),
         buildLockState(context),
+        ...buildIntrinsicPerks(context),
+        ...buildArmorEnergy(context),
+        buildStats(context),
         ...buildSupers(context),
         ...buildAbilities(context),
-        ...buildArmorEnergy(context),
-        ...buildIntrinsicPerks(context),
         ...buildReusablePerks(context),
         ...buildMods(context),
       ].whereType<Widget>().toList(),
@@ -106,6 +109,10 @@ class InventoryItemDetailsView extends StatelessWidget {
         .toList();
   }
 
+  Widget buildStats(BuildContext context) {
+    return SliverToBoxAdapter(child: DetailsItemStatsWidget());
+  }
+
   List<Widget> buildReusablePerks(BuildContext context) {
     final reusable = socketState.getSocketCategories(DestinySocketCategoryStyle.Reusable) ?? [];
     final all = reusable;
@@ -141,7 +148,7 @@ class InventoryItemDetailsView extends StatelessWidget {
     final all = reusable;
     return all
         .map(
-          (e) => SliverToBoxAdapter(child: DetailsItemPerksWidget(e)),
+          (e) => SliverToBoxAdapter(child: DetailsItemModsWidget(e)),
         )
         .toList();
   }

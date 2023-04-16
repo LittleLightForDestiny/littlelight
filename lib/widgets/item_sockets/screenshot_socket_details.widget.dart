@@ -24,7 +24,7 @@ import 'package:little_light/widgets/item_sockets/selectable_perk.widget.dart';
 import 'package:little_light/widgets/item_stats/screenshot_socket_item_stats.widget.dart';
 
 import 'item_socket.controller.dart';
-import 'plug_grid_view.dart';
+import '../../shared/widgets/sockets/plug_grid_view.dart';
 
 class ScreenshotSocketDetailsWidget extends BaseSocketDetailsWidget {
   final double pixelSize;
@@ -36,12 +36,10 @@ class ScreenshotSocketDetailsWidget extends BaseSocketDetailsWidget {
       : super(item: item, definition: parentDefinition, controller: controller);
 
   @override
-  _ScreenshotPerkDetailsWidgetState createState() =>
-      _ScreenshotPerkDetailsWidgetState();
+  _ScreenshotPerkDetailsWidgetState createState() => _ScreenshotPerkDetailsWidgetState();
 }
 
-class _ScreenshotPerkDetailsWidgetState
-    extends BaseSocketDetailsWidgetState<ScreenshotSocketDetailsWidget>
+class _ScreenshotPerkDetailsWidgetState extends BaseSocketDetailsWidgetState<ScreenshotSocketDetailsWidget>
     with PlugWishlistTagIconsMixin {
   @override
   void initState() {
@@ -52,45 +50,37 @@ class _ScreenshotPerkDetailsWidgetState
   @override
   Widget build(BuildContext context) {
     if (definition == null) return Container();
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: <Widget>[
-          buildOptions(context),
-          Container(
-            height: widget.pixelSize * 16,
-          ),
-          Container(
-            height: widget.pixelSize * 5,
-            color: Colors.grey.shade400,
-          ),
-          Container(
-              padding: EdgeInsets.all(16 * widget.pixelSize),
-              color: Colors.black,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(
-                    definition?.displayProperties?.name?.toUpperCase() ?? "",
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+      buildOptions(context),
+      Container(
+        height: widget.pixelSize * 16,
+      ),
+      Container(
+        height: widget.pixelSize * 5,
+        color: Colors.grey.shade400,
+      ),
+      Container(
+          padding: EdgeInsets.all(16 * widget.pixelSize),
+          color: Colors.black,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(
+                definition?.displayProperties?.name?.toUpperCase() ?? "",
+                style: TextStyle(fontSize: 30 * widget.pixelSize, fontWeight: FontWeight.w500),
+              ),
+              if (definition?.itemTypeDisplayName != null)
+                Text(definition?.itemTypeDisplayName ?? "",
                     style: TextStyle(
-                        fontSize: 30 * widget.pixelSize,
-                        fontWeight: FontWeight.w500),
-                  ),
-                  if (definition?.itemTypeDisplayName != null)
-                    Text(definition?.itemTypeDisplayName ?? "",
-                        style: TextStyle(
-                            fontSize: 24 * widget.pixelSize,
-                            color: Colors.grey.shade500,
-                            fontWeight: FontWeight.w300))
-                ],
-              )),
-          Container(
-              padding: EdgeInsets.symmetric(
-                  horizontal: 16 * widget.pixelSize,
-                  vertical: 8 * widget.pixelSize),
-              color: Colors.black.withOpacity(.7),
-              child: buildContent(context)),
-          buildResourceCost(context)
-        ]);
+                        fontSize: 24 * widget.pixelSize, color: Colors.grey.shade500, fontWeight: FontWeight.w300))
+            ],
+          )),
+      Container(
+          padding: EdgeInsets.symmetric(horizontal: 16 * widget.pixelSize, vertical: 8 * widget.pixelSize),
+          color: Colors.black.withOpacity(.7),
+          child: buildContent(context)),
+      buildResourceCost(context)
+    ]);
   }
 
   @override
@@ -102,35 +92,27 @@ class _ScreenshotPerkDetailsWidgetState
           (def) => Container(
               decoration: BoxDecoration(
                 color: Colors.black.withOpacity(.7),
-                border: Border(
-                    top: BorderSide(color: Colors.grey.shade500, width: 1)),
+                border: Border(top: BorderSide(color: Colors.grey.shade500, width: 1)),
               ),
               padding: EdgeInsets.all(16 * widget.pixelSize),
               child: Column(
-                children:
-                    def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
+                children: def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
                   return Row(
                     children: <Widget>[
                       SizedBox(
                           width: 24 * widget.pixelSize,
                           height: 24 * widget.pixelSize,
-                          child: ManifestImageWidget<
-                              DestinyInventoryItemDefinition>(m.itemHash)),
+                          child: ManifestImageWidget<DestinyInventoryItemDefinition>(m.itemHash)),
                       Expanded(
                         child: Container(
                           padding: EdgeInsets.only(left: 8 * widget.pixelSize),
                           child: ManifestText<DestinyInventoryItemDefinition>(
                             m.itemHash,
-                            style: TextStyle(
-                                fontWeight: FontWeight.w300,
-                                fontSize: 22 * widget.pixelSize),
+                            style: TextStyle(fontWeight: FontWeight.w300, fontSize: 22 * widget.pixelSize),
                           ),
                         ),
                       ),
-                      Text("${m.count}",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w300,
-                              fontSize: widget.pixelSize * 22))
+                      Text("${m.count}", style: TextStyle(fontWeight: FontWeight.w300, fontSize: widget.pixelSize * 22))
                     ],
                   );
                 }).toList(),
@@ -143,12 +125,10 @@ class _ScreenshotPerkDetailsWidgetState
   @override
   Widget buildOptions(BuildContext context) {
     var index = controller.selectedSocketIndex;
-    var cat = itemDefinition?.sockets?.socketCategories?.firstWhere(
-        (s) => s?.socketIndexes?.contains(index),
-        orElse: () => null);
+    var cat = itemDefinition?.sockets?.socketCategories
+        ?.firstWhere((s) => s?.socketIndexes?.contains(index), orElse: () => null);
 
-    var isExoticPerk = DestinyData.socketCategoryIntrinsicPerkHashes
-        .contains(cat?.socketCategoryHash);
+    var isExoticPerk = DestinyData.socketCategoryIntrinsicPerkHashes.contains(cat?.socketCategoryHash);
     if (isExoticPerk) {
       return Container();
     }
@@ -174,24 +154,20 @@ class _ScreenshotPerkDetailsWidgetState
     return DefaultTabController(
         length: tabCount,
         child: SizedBox(
-            height: rowHeight * rowCount +
-                (rowCount > 1 ? 8 * widget.pixelSize : 0),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Builder(builder: (context) => pagingButton(context, -1)),
-                  SizedBox(
-                      width: 520 * widget.pixelSize,
-                      child: PlugGridView.withItemsPerRow(
-                        plugs,
-                        maxRows: 2,
-                        itemsPerRow: 5,
-                        gridSpacing: 8 * widget.pixelSize,
-                        itemBuilder: (h) => buildMod(
-                            context, controller.selectedSocketIndex, h),
-                      )),
-                  Builder(builder: (context) => pagingButton(context, 1)),
-                ])));
+            height: rowHeight * rowCount + (rowCount > 1 ? 8 * widget.pixelSize : 0),
+            child: Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
+              Builder(builder: (context) => pagingButton(context, -1)),
+              SizedBox(
+                  width: 520 * widget.pixelSize,
+                  child: PlugGridView.withItemsPerRow(
+                    plugs,
+                    maxRows: 2,
+                    itemsPerRow: 5,
+                    gridSpacing: 8 * widget.pixelSize,
+                    itemBuilder: (h) => buildMod(context, controller.selectedSocketIndex, h),
+                  )),
+              Builder(builder: (context) => pagingButton(context, 1)),
+            ])));
   }
 
   Widget pagingButton(BuildContext context, [int direction = 1]) {
@@ -202,12 +178,10 @@ class _ScreenshotPerkDetailsWidgetState
         animation: controller.animation,
         builder: (context, child) {
           final currentIndex = controller.index;
-          final enabled =
-              direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
+          final enabled = direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
           return Container(
             constraints: BoxConstraints.expand(width: 32 * widget.pixelSize),
-            decoration:
-                BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
+            decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300)),
             padding: const EdgeInsets.all(0),
             alignment: Alignment.center,
             child: !enabled
@@ -220,10 +194,7 @@ class _ScreenshotPerkDetailsWidgetState
                         },
                         child: Container(
                             constraints: const BoxConstraints.expand(),
-                            child: Icon(
-                                direction > 0
-                                    ? FontAwesomeIcons.caretRight
-                                    : FontAwesomeIcons.caretLeft,
+                            child: Icon(direction > 0 ? FontAwesomeIcons.caretRight : FontAwesomeIcons.caretLeft,
                                 size: 30 * widget.pixelSize)))),
           );
         });
@@ -238,21 +209,16 @@ class _ScreenshotPerkDetailsWidgetState
     return Wrap(
       runSpacing: 6 * widget.pixelSize,
       spacing: 6 * widget.pixelSize,
-      children: plugs
-          .map((h) => buildPerk(context, controller.selectedSocketIndex, h))
-          .toList(),
+      children: plugs.map((h) => buildPerk(context, controller.selectedSocketIndex, h)).toList(),
     );
   }
 
   @override
   Widget buildMod(BuildContext context, int socketIndex, int plugItemHash) {
     bool isSelected = plugItemHash == controller.selectedPlugHash;
-    Color borderColor = isSelected
-        ? Theme.of(context).colorScheme.onSurface
-        : Colors.grey.shade300.withOpacity(.5);
+    Color borderColor = isSelected ? Theme.of(context).colorScheme.onSurface : Colors.grey.shade300.withOpacity(.5);
 
-    BorderSide borderSide =
-        BorderSide(color: borderColor, width: 3 * widget.pixelSize);
+    BorderSide borderSide = BorderSide(color: borderColor, width: 3 * widget.pixelSize);
     var def = controller.plugDefinitions[plugItemHash];
     var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
     var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
@@ -267,13 +233,12 @@ class _ScreenshotPerkDetailsWidgetState
               shape: ContinuousRectangleBorder(side: borderSide),
               padding: const EdgeInsets.all(0),
               child: Stack(children: [
-                ManifestImageWidget<DestinyInventoryItemDefinition>(
-                    plugItemHash),
+                ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
                 energyType == DestinyEnergyType.Any
                     ? Container()
                     : Positioned.fill(
-                        child: ManifestImageWidget<DestinyStatDefinition>(
-                            DestinyData.getEnergyTypeCostHash(energyType))),
+                        child:
+                            ManifestImageWidget<DestinyStatDefinition>(DestinyData.getEnergyTypeCostHash(energyType))),
                 energyCost == 0
                     ? Container()
                     : Positioned(
@@ -303,12 +268,10 @@ class _ScreenshotPerkDetailsWidgetState
     int equippedHash = controller.socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
 
-    bool isSelectedOnSocket =
-        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
 
-    final canRoll = widget.item == null &&
-        controller.canRollPerk(socketIndex, plugItemHash);
+    final canRoll = widget.item == null && controller.canRollPerk(socketIndex, plugItemHash);
 
     return SizedBox(
         width: 80 * widget.pixelSize,
@@ -339,47 +302,35 @@ class _ScreenshotPerkDetailsWidgetState
       buildStats(context),
       buildApplyButton(context)
     ];
-    return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: items.toList());
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: items.toList());
   }
 
   Widget buildDescription(BuildContext context) {
-    if ((definition?.displayProperties?.description?.length ?? 0) == 0)
-      return Container();
+    if ((definition?.displayProperties?.description?.length ?? 0) == 0) return Container();
     return Container(
         padding: EdgeInsets.symmetric(vertical: 8 * widget.pixelSize),
         child: Text(definition?.displayProperties?.description,
-            style: TextStyle(
-                fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)));
+            style: TextStyle(fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)));
   }
 
   Widget buildPerkNotAvailable(BuildContext context) {
-    final canRoll = controller.canRollPerk(
-        controller.selectedSocketIndex, controller.selectedPlugHash);
+    final canRoll = controller.canRollPerk(controller.selectedSocketIndex, controller.selectedPlugHash);
     if (canRoll) return Container();
     return Container(
       decoration: BoxDecoration(
-          color: LittleLightTheme.of(context).errorLayers,
-          borderRadius: BorderRadius.circular(8 * widget.pixelSize)),
+          color: LittleLightTheme.of(context).errorLayers, borderRadius: BorderRadius.circular(8 * widget.pixelSize)),
       margin: EdgeInsets.all(8 * widget.pixelSize),
       padding: EdgeInsets.all(16 * widget.pixelSize),
-      child: Text(
-          "This perk isn't available on the current season anymore"
-              .translate(context),
-          style: TextStyle(
-              fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)),
+      child: Text("This perk isn't available on the current season anymore".translate(context),
+          style: TextStyle(fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300)),
     );
   }
 
   Widget buildApplyButton(BuildContext context) {
     var requirementHash = definition?.plug?.insertionMaterialRequirementHash;
-    final isApplied = controller.selectedPlugHash ==
-        controller.socketEquippedPlugHash(controller.selectedSocketIndex);
-    final canApply = controller.canApplySocket(
-        controller.selectedSocketIndex, controller.selectedPlugHash);
-    final style =
-        TextStyle(fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300);
+    final isApplied = controller.selectedPlugHash == controller.socketEquippedPlugHash(controller.selectedSocketIndex);
+    final canApply = controller.canApplySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
+    final style = TextStyle(fontSize: 24 * widget.pixelSize, fontWeight: FontWeight.w300);
     if (isApplied || !canApply || item?.itemInstanceId == null) {
       return Container();
     }
@@ -394,38 +345,30 @@ class _ScreenshotPerkDetailsWidgetState
             child: InkWell(
                 onTap: isEnabled
                     ? () {
-                        controller.applySocket(controller.selectedSocketIndex,
-                            controller.selectedPlugHash);
+                        controller.applySocket(controller.selectedSocketIndex, controller.selectedPlugHash);
                       }
                     : null,
                 child: Container(
                     alignment: Alignment.center,
                     padding: EdgeInsets.all(16 * widget.pixelSize),
-                    child: DefinitionProviderWidget<
-                        DestinyInventoryItemDefinition>(
+                    child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
                       definition.hash,
                       (def) => isEnabled
                           ? TranslatedTextWidget(
                               "Apply {modType}",
-                              replace: {
-                                "modType": def.itemTypeDisplayName.toLowerCase()
-                              },
+                              replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
                               style: style,
                             )
                           : DefaultLoadingShimmer(
                               child: TranslatedTextWidget(
                               "Applying {modType}",
-                              replace: {
-                                "modType": def.itemTypeDisplayName.toLowerCase()
-                              },
+                              replace: {"modType": def.itemTypeDisplayName.toLowerCase()},
                               style: style,
                             )),
                     )))));
     if (requirementHash != null && requirementHash != 0) {
-      return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(
-          requirementHash, (def) {
-        final materials =
-            def?.materials?.where((element) => (element.count ?? 0) > 0);
+      return DefinitionProviderWidget<DestinyMaterialRequirementSetDefinition>(requirementHash, (def) {
+        final materials = def?.materials?.where((element) => (element.count ?? 0) > 0);
         if (materials?.isNotEmpty ?? true) {
           return Container();
         }
@@ -455,8 +398,7 @@ class _ScreenshotPerkDetailsWidgetState
       var description = TranslatedTextWidget(
         "Energy Cost",
         uppercase: true,
-        style: TextStyle(
-            fontWeight: FontWeight.w300, fontSize: widget.pixelSize * 26),
+        style: TextStyle(fontWeight: FontWeight.w300, fontSize: widget.pixelSize * 26),
       );
       return Row(children: <Widget>[icon, value, description]);
     }
@@ -503,8 +445,7 @@ class _ScreenshotPerkDetailsWidgetState
                   SizedBox(
                     height: 64 * widget.pixelSize,
                     width: 64 * widget.pixelSize,
-                    child: ManifestImageWidget<DestinySandboxPerkDefinition>(
-                        p.perkHash),
+                    child: ManifestImageWidget<DestinySandboxPerkDefinition>(p.perkHash),
                   ),
                   Container(
                     width: 16 * widget.pixelSize,
@@ -512,9 +453,7 @@ class _ScreenshotPerkDetailsWidgetState
                   Expanded(
                       child: ManifestText<DestinySandboxPerkDefinition>(
                     p.perkHash,
-                    style: TextStyle(
-                        fontSize: 22 * widget.pixelSize,
-                        fontWeight: FontWeight.w300),
+                    style: TextStyle(fontSize: 22 * widget.pixelSize, fontWeight: FontWeight.w300),
                     textExtractor: (def) => def.displayProperties?.description,
                   )),
                 ],

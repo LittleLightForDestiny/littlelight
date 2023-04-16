@@ -72,7 +72,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     notifyListeners();
   }
 
-  T? getDefinitionFromCache<T>(int hash) {
+  T? getDefinitionFromCache<T>(int? hash) {
     var type = DefinitionTableNames.fromClass[T];
     return _cached["${type}_$hash"];
   }

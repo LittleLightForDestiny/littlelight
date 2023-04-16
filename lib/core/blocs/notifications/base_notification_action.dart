@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-abstract class BaseNotificationAction extends ChangeNotifier {
+abstract class BaseNotification extends ChangeNotifier {
   String get id;
   bool _shouldDismiss = false;
   bool get shouldDismiss => _shouldDismiss;
@@ -11,7 +11,7 @@ abstract class BaseNotificationAction extends ChangeNotifier {
   }
 }
 
-class BaseErrorAction extends BaseNotificationAction {
+class BaseErrorAction extends BaseNotification {
   BaseErrorAction();
   @override
   String get id => "error-action";

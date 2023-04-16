@@ -1,8 +1,9 @@
 import 'package:bungie_api/destiny2.dart';
-import 'package:flutter/material.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
-import 'package:provider/provider.dart';
 import 'package:collection/collection.dart';
+
+enum StatType { NoBar, Direction, Normal }
+
+enum StatDifferenceType { Positive, Negative, Neutral }
 
 const List<int> _hiddenStats = [
   1345609583, // Aim Assistance
@@ -10,14 +11,20 @@ const List<int> _hiddenStats = [
   3555269338, // Zoom
 ];
 
+const List<int> _directionStats = [
+  2715839340, // Recoil Direction
+];
+
 class StatValues {
+  int statHash;
   int rawEquipped;
   int rawSelected;
   int rawEquippedMasterwork;
   int rawSelectedMasterwork;
   final DestinyStatDisplayDefinition? scale;
 
-  StatValues({
+  StatValues(
+    this.statHash, {
     this.rawEquipped = 0,
     this.rawSelected = 0,
     this.rawEquippedMasterwork = 0,
@@ -25,7 +32,15 @@ class StatValues {
     this.scale,
   });
 
-  num get equipped {
+  StatDifferenceType get diffType {
+    final equipped = this.rawEquipped + this.rawEquippedMasterwork;
+    final selected = this.rawSelected + this.rawSelectedMasterwork;
+    if (selected > equipped) return StatDifferenceType.Positive;
+    if (selected < equipped) return StatDifferenceType.Negative;
+    return StatDifferenceType.Neutral;
+  }
+
+  int get equipped {
     final equippedWithMasterwork = this.rawEquipped + this.rawEquippedMasterwork;
     final equipped = this.rawEquipped;
     final maximum = scale?.maximumValue ?? double.maxFinite.floor();
@@ -36,7 +51,7 @@ class StatValues {
     return _interpolate(equipped);
   }
 
-  num get selected {
+  int get selected {
     final selectedWithMasterwork = this.rawSelected + this.rawSelectedMasterwork;
     final selected = this.rawSelected;
     final maximum = scale?.maximumValue ?? double.maxFinite.floor();
@@ -46,6 +61,7 @@ class StatValues {
     }
     return _interpolate(selected);
   }
+
 
   num get equippedMasterwork {
     if (this.rawEquippedMasterwork == 0) return 0;
@@ -61,7 +77,9 @@ class StatValues {
     return selectedWithMasterwork - selected;
   }
 
-  num _interpolate(int value) {
+  bool get isHiddenStat => _hiddenStats.contains(statHash);
+
+  int _interpolate(int value) {
     final interpolation = scale?.displayInterpolation?.toList();
     if (interpolation == null) return value;
     interpolation.sort((a, b) {
@@ -90,6 +108,7 @@ class StatValues {
     final upperWeight = upperBound.weight ?? 0;
     if (factor == 0) return lowerWeight;
     final displayValue = lowerWeight + (upperWeight - lowerWeight) * factor;
+
     // Banker's round the result
     final displayValueFloor = displayValue.floor();
     if (displayValue - displayValueFloor == .5 && (displayValueFloor % 2) == 0) {
@@ -97,41 +116,61 @@ class StatValues {
     }
     return displayValue.round();
   }
+
+  StatType get type {
+    if (_directionStats.contains(this.statHash)) return StatType.Direction;
+    if (scale?.displayAsNumeric ?? false) return StatType.NoBar;
+    return StatType.Normal;
+  }
 }
 
-Future<Map<int, StatValues>?> calculateStats(
-  BuildContext context,
-  int itemHash,
+class StatComparison {
+  final int statHash;
+  final int equipped;
+  final int selected;
+  final int diff;
+
+  final StatDifferenceType selectedDiffType;
+  final StatDifferenceType equippedDiffType;
+  final StatDifferenceType diffType;
+
+  StatComparison({
+    required this.statHash,
+    required this.equipped,
+    required this.selected,
+    required this.diff,
+    required this.selectedDiffType,
+    required this.equippedDiffType,
+    required this.diffType,
+  });
+}
+
+List<StatValues>? calculateStats(
   Map<int, int?> equippedPlugHashes,
   Map<int, int?> selectedPlugHashes,
-) async {
-  final manifest = context.read<ManifestService>();
+  DestinyInventoryItemDefinition? itemDefinition,
+  DestinyStatGroupDefinition? statGroupDefinition,
+  Map<int, DestinyInventoryItemDefinition>? plugDefinitions,
+) {
   Map<int, StatValues> map = {};
-  final stats = await getAvailableStats(context, itemHash);
+  final stats = getAvailableStats(itemDefinition, statGroupDefinition);
   if (stats == null) return null;
 
-  final itemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
-  final statGroupDefinition =
-      await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
   final scaledStats = statGroupDefinition?.scaledStats;
 
   for (var s in stats) {
     final statHash = s.statTypeHash;
     if (statHash == null) continue;
     final scale = scaledStats?.firstWhereOrNull((element) => element.statHash == statHash);
-    map[statHash] = StatValues(rawEquipped: s.value ?? 0, rawSelected: s.value ?? 0, scale: scale);
+    map[statHash] = StatValues(statHash, rawEquipped: s.value ?? 0, rawSelected: s.value ?? 0, scale: scale);
   }
-
-  final plugDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(
-    equippedPlugHashes.values.toList() + selectedPlugHashes.values.toList(),
-  );
 
   for (final socketIndex in equippedPlugHashes.keys) {
     final equippedPlugHash = equippedPlugHashes[socketIndex];
     final selectedPlugHash = selectedPlugHashes[socketIndex];
 
-    final equippedDef = plugDefinitions[equippedPlugHash];
-    final selectedDef = plugDefinitions[selectedPlugHash];
+    final equippedDef = plugDefinitions?[equippedPlugHash];
+    final selectedDef = plugDefinitions?[selectedPlugHash];
 
     final equippedStats = equippedDef?.investmentStats ?? [];
     final selectedStats = selectedDef?.investmentStats ?? [];
@@ -154,33 +193,36 @@ Future<Map<int, StatValues>?> calculateStats(
       final equippedIsMasterwork = equippedDef?.plug?.uiPlugLabel?.contains('masterwork') ?? false;
       final selectedIsMasterwork = selectedDef?.plug?.uiPlugLabel?.contains('masterwork') ?? false;
       final equippedValue = equippedIsConditionallyActive || equippedIsMasterwork ? 0 : equippedStat?.value;
-      final equippedMasterWorkValue = equippedIsConditionallyActive || !equippedIsMasterwork ? 0 : equippedStat?.value;
+      final equippedMasterworkValue = equippedIsConditionallyActive || !equippedIsMasterwork ? 0 : equippedStat?.value;
       final selectedValue = selectedIsConditionallyActive || selectedIsMasterwork ? 0 : selectedStat?.value;
-      final selectedMasterWorkValue = selectedIsConditionallyActive || !selectedIsMasterwork ? 0 : selectedStat?.value;
-      final values = map[statHash] ?? StatValues();
+      final selectedMasterworkValue = selectedIsConditionallyActive || !selectedIsMasterwork ? 0 : selectedStat?.value;
+      final values = map[statHash] ?? StatValues(statHash);
       values.rawEquipped += equippedValue ?? 0;
-      values.rawEquippedMasterwork += equippedMasterWorkValue ?? 0;
-      values.rawSelected += selectedValue ?? equippedValue ?? 0;
-      values.rawSelectedMasterwork += selectedMasterWorkValue ?? equippedMasterWorkValue ?? 0;
-      if (itemHash == 3089417789 && equippedIsConditionallyActive) {
-        print(equippedValue);
-      }
+      values.rawEquippedMasterwork += equippedMasterworkValue ?? 0;
+      values.rawSelected += (selectedPlugHash != null ? selectedValue : equippedValue) ?? 0;
+      values.rawSelectedMasterwork +=
+          (selectedPlugHash != null ? selectedMasterworkValue : equippedMasterworkValue) ?? 0;
     }
   }
-  return map;
+  final ordered = map.values.toList();
+  ordered.sort((a, b) {
+    final orderA = stats.indexWhere((element) => element.statTypeHash == a.statHash);
+    final orderB = stats.indexWhere((element) => element.statTypeHash == b.statHash);
+    return orderA.compareTo(orderB);
+  });
+  return ordered;
 }
 
-Future<List<DestinyItemInvestmentStatDefinition>?> getAvailableStats(BuildContext context, int itemHash) async {
-  final manifest = context.read<ManifestService>();
-  final itemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
-  final statGroupDefinition =
-      await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
+List<DestinyItemInvestmentStatDefinition>? getAvailableStats(
+  DestinyInventoryItemDefinition? itemDefinition,
+  DestinyStatGroupDefinition? statGroupDefinition,
+) {
   final scaledStats = statGroupDefinition?.scaledStats;
   if (scaledStats == null) {
     return null;
   }
-  var statWhitelist = scaledStats.map((s) => s.statHash).toList();
-  var noBarStats = scaledStats.where((s) => s.displayAsNumeric ?? false).map((s) => s.statHash).toList();
+  final statWhitelist = scaledStats.map((s) => s.statHash).toList();
+  final noBarStats = scaledStats.where((s) => s.displayAsNumeric ?? false).map((s) => s.statHash).toList();
   statWhitelist.addAll(_hiddenStats);
   List<DestinyItemInvestmentStatDefinition> stats =
       itemDefinition?.investmentStats?.where((stat) => statWhitelist.contains(stat.statTypeHash)).toList() ?? [];
@@ -219,4 +261,107 @@ Future<List<DestinyItemInvestmentStatDefinition>?> getAvailableStats(BuildContex
     return posA.compareTo(posB);
   });
   return stats;
+}
+
+List<StatComparison> comparePlugStats(
+  Map<int, int?> basePlugHashes,
+  int socketIndex,
+  int? equippedPlugHash,
+  int? selectedPlugHash,
+  DestinyInventoryItemDefinition? itemDefinition,
+  DestinyStatGroupDefinition? statGroupDefinition,
+  Map<int, DestinyInventoryItemDefinition>? plugDefinitions,
+) {
+  final baseHashes = basePlugHashes.map((key, value) => MapEntry(
+        key,
+        key == socketIndex ? null : value,
+      ));
+  final equippedHashes = basePlugHashes.map((key, value) => MapEntry(
+        key,
+        key == socketIndex ? equippedPlugHash : value,
+      ));
+  final selectedHashes = basePlugHashes.map((key, value) => MapEntry(
+        key,
+        key == socketIndex ? selectedPlugHash : value,
+      ));
+  final equippedValues = calculateStats(
+    baseHashes,
+    equippedHashes,
+    itemDefinition,
+    statGroupDefinition,
+    plugDefinitions,
+  );
+  final selectedValues = calculateStats(
+    baseHashes,
+    selectedHashes,
+    itemDefinition,
+    statGroupDefinition,
+    plugDefinitions,
+  );
+  final selectedDef = plugDefinitions?[selectedPlugHash];
+  final equippedDef = plugDefinitions?[equippedPlugHash];
+  final selectedStatHashes =
+      selectedDef?.investmentStats?.map((e) => e.statTypeHash).whereType<int>().toList() ?? <int>[];
+  final equippedStatHashes =
+      equippedDef?.investmentStats?.map((e) => e.statTypeHash).whereType<int>().toList() ?? <int>[];
+  final statHashes = (selectedStatHashes + equippedStatHashes).toSet();
+  final results = <StatComparison>[];
+  for (final statHash in statHashes) {
+    final equippedStat = equippedValues?.firstWhereOrNull((element) => element.statHash == statHash);
+    final selectedStat = selectedValues?.firstWhereOrNull((element) => element.statHash == statHash);
+    final equippedValue = equippedStat == null
+        ? 0
+        : (equippedStat.selected + equippedStat.selectedMasterwork) -
+            (equippedStat.equipped + equippedStat.equippedMasterwork);
+    final selectedValue = selectedStat == null
+        ? 0
+        : (selectedStat.selected + selectedStat.selectedMasterwork) -
+            (selectedStat.equipped + selectedStat.equippedMasterwork);
+    final rawEquipped = ((equippedStat?.rawSelected ?? 0) + (equippedStat?.rawSelectedMasterwork ?? 0)) -
+        ((equippedStat?.rawEquipped ?? 0) + (equippedStat?.rawEquippedMasterwork ?? 0));
+    final rawSelected = ((selectedStat?.rawSelected ?? 0) + (selectedStat?.rawSelectedMasterwork ?? 0)) -
+        ((selectedStat?.rawEquipped ?? 0) + (selectedStat?.rawEquippedMasterwork ?? 0));
+
+    final diffType = rawSelected == rawEquipped
+        ? StatDifferenceType.Neutral
+        : rawSelected > rawEquipped
+            ? StatDifferenceType.Positive
+            : StatDifferenceType.Negative;
+
+    final comparison = StatComparison(
+      statHash: statHash,
+      equipped: equippedValue,
+      selected: selectedValue,
+      diff: selectedValue - equippedValue,
+      equippedDiffType: equippedStat?.diffType ?? StatDifferenceType.Neutral,
+      selectedDiffType: selectedStat?.diffType ?? StatDifferenceType.Neutral,
+      diffType: diffType,
+    );
+    results.add(comparison);
+  }
+  final scaledStats = statGroupDefinition?.scaledStats;
+  final noBarStats = scaledStats?.where((s) => s.displayAsNumeric ?? false).map((s) => s.statHash).toList();
+  final orderedStatHashes = scaledStats?.map((i) => i.statHash).toList();
+  results.sort((a, b) {
+    final isNoBarStatA = noBarStats?.contains(a.statHash) ?? false;
+    final isNoBarStatB = noBarStats?.contains(b.statHash) ?? false;
+    final isHiddenA = _hiddenStats.contains(a.statHash);
+    final isHiddenB = _hiddenStats.contains(b.statHash);
+    final valA = isNoBarStatA
+        ? 2
+        : isHiddenA
+            ? 1
+            : 0;
+    final valB = isNoBarStatB
+        ? 2
+        : isHiddenB
+            ? 1
+            : 0;
+    final result = valA.compareTo(valB);
+    if (result != 0) return result;
+    final posA = orderedStatHashes?.indexOf(a.statHash) ?? 0;
+    final posB = orderedStatHashes?.indexOf(b.statHash) ?? 0;
+    return posA.compareTo(posB);
+  });
+  return results;
 }

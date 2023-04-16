@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/notifications/base_notification_action.dart';
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
