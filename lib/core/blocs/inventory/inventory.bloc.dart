@@ -674,7 +674,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     }
     if (isOnPostmaster) {
       try {
-        print('pulling from postmaster');
+        logger.info('pulling from postmaster');
         notification?.currentStep = TransferSteps.PullFromPostmaster;
         await _profileBloc.pullFromPostMaster(itemInfo, stackSize);
       } on BungieApiException catch (e) {
@@ -690,7 +690,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     }
     if (shouldMoveToVault) {
       try {
-        print('moving to vault');
+        logger.info('moving to vault');
         notification?.currentStep = TransferSteps.MoveToVault;
         if (destinationCharacterId == null) throw ("Missing destination character when equipping");
         await _profileBloc.transferItem(itemInfo, stackSize, true, destinationCharacterId);
@@ -707,7 +707,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     }
     if (shouldMoveToCharacter) {
       try {
-        print('moving to profile');
+        logger.info('moving to profile');
         notification?.currentStep = TransferSteps.MoveToCharacter;
         if (destinationCharacterId == null) throw ("Missing destination character when equipping");
         await _profileBloc.transferItem(itemInfo, stackSize, false, destinationCharacterId);
@@ -723,7 +723,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       return;
     }
     notification?.success();
-    print('done');
+    logger.info('done');
   }
 
   DestinyItemInfo? _findCurrentlyEquipped(int bucketHash, String characterId) {

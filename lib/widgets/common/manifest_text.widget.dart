@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/number/to_decimal.dart';
 import 'package:provider/provider.dart';
@@ -71,7 +72,7 @@ class ManifestText<T> extends StatelessWidget with ManifestConsumer {
         });
       }
     } catch (e) {
-      print(e);
+      logger.error(e);
       return "";
     }
     if (resultText == null) return "";

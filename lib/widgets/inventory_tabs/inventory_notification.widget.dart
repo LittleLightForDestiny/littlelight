@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -100,7 +101,7 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
 
   Widget buildMessage(BuildContext context) {
     final _latestEvent = this._latestEvent;
-    print(_latestEvent);
+    logger.info(_latestEvent);
     if (_latestEvent is ErrorNotificationEvent) {
       return buildErrorMessage(context, _latestEvent);
     }

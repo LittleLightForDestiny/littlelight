@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/navigator_key.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/widgets/dialogs/bungie_api_exception.dialog.dart';
@@ -46,11 +47,7 @@ class ExceptionHandler with AuthConsumer {
   }
 
   Future<void> handleException(dynamic error, StackTrace? stackTrace) async {
-    final relevantStackTrace = stackTrace?.toString().split('\n').where((s) => s.contains('package:little_light'));
-    print(error);
-    if (relevantStackTrace != null) {
-      print(relevantStackTrace.join('\n'));
-    }
+    logger.error(error, error: error, stack: stackTrace);
 
     if (error is BungieApiException) {
       final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;

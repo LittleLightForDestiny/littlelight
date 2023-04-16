@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -19,19 +20,14 @@ import 'package:little_light/utils/item_with_owner.dart';
 class InventoryUtils {
   static ProfileBloc get _profile => getInjectedProfileService();
   static ManifestService get _manifest => getInjectedManifestService();
-  static int interpolateStat(
-      int investmentValue, List<InterpolationPoint> displayInterpolation) {
+  static int interpolateStat(int investmentValue, List<InterpolationPoint> displayInterpolation) {
     var interpolation = displayInterpolation.toList();
     interpolation.sort((a, b) => a.value.compareTo(b.value));
-    var upperBound = interpolation.firstWhere(
-        (point) => point.value >= investmentValue,
-        orElse: () => null);
-    var lowerBound = interpolation.lastWhere(
-        (point) => point.value <= investmentValue,
-        orElse: () => null);
+    var upperBound = interpolation.firstWhere((point) => point.value >= investmentValue, orElse: () => null);
+    var lowerBound = interpolation.lastWhere((point) => point.value <= investmentValue, orElse: () => null);
 
     if (upperBound == null && lowerBound == null) {
-      print('Invalid displayInterpolation');
+      logger.info('Invalid displayInterpolation');
       return investmentValue;
     }
     if (lowerBound == null) {
@@ -39,26 +35,20 @@ class InventoryUtils {
     } else if (upperBound == null) {
       return lowerBound.weight;
     }
-    var factor = (investmentValue - lowerBound.value) /
-        max((upperBound.value - lowerBound.value).abs(), 1);
+    var factor = (investmentValue - lowerBound.value) / max((upperBound.value - lowerBound.value).abs(), 1);
 
-    var displayValue =
-        lowerBound.weight + (upperBound.weight - lowerBound.weight) * factor;
+    var displayValue = lowerBound.weight + (upperBound.weight - lowerBound.weight) * factor;
     return displayValue.round();
   }
 
-  static Future<List<ItemWithOwner>> sortDestinyItems(
-      Iterable<ItemWithOwner> items,
-      {List<ItemSortParameter> sortingParams,
-      bool sortTags = true}) async {
+  static Future<List<ItemWithOwner>> sortDestinyItems(Iterable<ItemWithOwner> items,
+      {List<ItemSortParameter> sortingParams, bool sortTags = true}) async {
     if (sortingParams == null) {
       final userSettings = getInjectedUserSettings();
       sortingParams = userSettings.itemOrdering;
     }
-    await _manifest.getDefinitions<DestinyInventoryItemDefinition>(
-        items.map((i) => i?.item?.itemHash));
-    List<BaseItemSorter> sorters =
-        sortingParams.map((p) => p.sorter).where((s) => s != null).toList();
+    await _manifest.getDefinitions<DestinyInventoryItemDefinition>(items.map((i) => i?.item?.itemHash));
+    List<BaseItemSorter> sorters = sortingParams.map((p) => p.sorter).where((s) => s != null).toList();
     if (sortTags) {
       sorters = <BaseItemSorter>[PriorityTagsSorter()] + sorters;
     }
@@ -81,40 +71,25 @@ class InventoryUtils {
     for (var slot in loadout.slots.values) {
       final generic = slot.genericEquipped;
       if (generic != null) {
-        final def =
-            await _manifest.getDefinition<DestinyInventoryItemDefinition>(
-                generic.item?.itemHash);
-        final bucket =
-            await _manifest.getDefinition<DestinyInventoryBucketDefinition>(
-                def.inventory.bucketTypeHash);
+        final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(generic.item?.itemHash);
+        final bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
         final instance = _profile.getInstanceInfo(generic.item.itemInstanceId);
-        print(
-            "---------------------------------------------------------------");
-        print(bucket.displayProperties.name);
-        print(
-            "---------------------------------------------------------------");
-        print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
-        print(
-            "---------------------------------------------------------------");
+        logger.info("---------------------------------------------------------------");
+        logger.info(bucket.displayProperties.name);
+        logger.info("---------------------------------------------------------------");
+        logger.info("${def.displayProperties.name} ${instance?.primaryStat?.value}");
+        logger.info("---------------------------------------------------------------");
       }
       final classSpecific = slot.classSpecificEquipped[classType];
       if (classSpecific != null) {
-        final def =
-            await _manifest.getDefinition<DestinyInventoryItemDefinition>(
-                classSpecific.item.itemHash);
-        final bucket =
-            await _manifest.getDefinition<DestinyInventoryBucketDefinition>(
-                def.inventory.bucketTypeHash);
-        final instance =
-            _profile.getInstanceInfo(classSpecific.item.itemInstanceId);
-        print(
-            "---------------------------------------------------------------");
-        print(bucket.displayProperties.name);
-        print(
-            "---------------------------------------------------------------");
-        print("${def.displayProperties.name} ${instance?.primaryStat?.value}");
-        print(
-            "---------------------------------------------------------------");
+        final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(classSpecific.item.itemHash);
+        final bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
+        final instance = _profile.getInstanceInfo(classSpecific.item.itemInstanceId);
+        logger.info("---------------------------------------------------------------");
+        logger.info(bucket.displayProperties.name);
+        logger.info("---------------------------------------------------------------");
+        logger.info("${def.displayProperties.name} ${instance?.primaryStat?.value}");
+        logger.info("---------------------------------------------------------------");
       }
     }
   }

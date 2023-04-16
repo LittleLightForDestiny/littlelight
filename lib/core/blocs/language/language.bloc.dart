@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/language_info.dart';
 import 'package:little_light/core/blocs/language/timeago_messages/cn_messages.dart';
 import 'package:little_light/core/blocs/language/timeago_messages/de_messages.dart';
@@ -161,7 +162,7 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
       var raw = req.body;
       translation = Map<String, String>.from(jsonDecode(raw));
     } catch (e) {
-      print("couldn't fetch translations from repository");
+      logger.error("couldn't fetch translations from repository");
       return null;
     }
 

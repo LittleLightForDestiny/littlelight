@@ -2,6 +2,7 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:provider/provider.dart';
@@ -88,7 +89,7 @@ class DevToolsStatsBloc extends ChangeNotifier {
     }
     this.allItems = allItems;
     this._itemsWithIssues = allItems.where((element) => element.hasIssues).toList();
-    print("${this._itemsWithIssues?.length} of ${this.allItems?.length} items with issues");
+    logger.info("${this._itemsWithIssues?.length} of ${this.allItems?.length} items with issues");
     notifyListeners();
   }
 }

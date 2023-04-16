@@ -1,14 +1,14 @@
 import 'dart:io';
 
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:sqflite/sqflite.dart';
 
 import 'language_storage.keys.dart';
 import 'storage.base.dart';
 
 setupLanguageStorageService() async {
-  GetIt.I.registerFactoryParam<LanguageStorage, String, void>(
-      (accountID, _) => LanguageStorage._internal(accountID));
+  GetIt.I.registerFactoryParam<LanguageStorage, String, void>((accountID, _) => LanguageStorage._internal(accountID));
 }
 
 class LanguageStorage extends StorageBase<LanguageStorageKeys> {
@@ -24,8 +24,7 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
     return "$dbRoot/$basePath/manifest.db";
   }
 
-  set manifestVersion(String? manifestVersion) =>
-      setString(LanguageStorageKeys.manifestVersion, manifestVersion);
+  set manifestVersion(String? manifestVersion) => setString(LanguageStorageKeys.manifestVersion, manifestVersion);
   String? get manifestVersion => getString(LanguageStorageKeys.manifestVersion);
 
   Future<void> saveManifestDatabase(List<int> data) async {
@@ -47,13 +46,11 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
 
   Future<Map<String, String>?> getTranslations() async {
     try {
-      final Map<String, dynamic>? json =
-          await getJson(LanguageStorageKeys.littleLightTranslation);
+      final Map<String, dynamic>? json = await getJson(LanguageStorageKeys.littleLightTranslation);
       if (json == null) return null;
       return Map<String, String>.from(json);
     } catch (e) {
-      print("can't parse translations");
-      print(e);
+      logger.error("can't parse translations", error: e);
     }
     return null;
   }

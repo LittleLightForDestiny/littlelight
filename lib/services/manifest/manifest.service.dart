@@ -8,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/parse.exception.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
@@ -218,7 +219,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
       sqflite.Database database = await sqflite.openDatabase(dbFile.path, readOnly: true);
       _db = database;
     } catch (e) {
-      print(e);
+      logger.error(e);
       return null;
     }
 

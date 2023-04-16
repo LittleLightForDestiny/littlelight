@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/router/route_parser.dart';
 import 'package:little_light/core/routes/login_route.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/dev_mode/pages/login/dev_mode_login.page.dart';
 import 'package:little_light/dev_mode/pages/main/dev_mode_main.page.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -20,7 +21,7 @@ class DevModeRouter {
     try {
       await closeInAppWebView();
     } catch (e) {
-      print("can't close webview");
+      logger.info("can't close webview");
     }
   }
 }

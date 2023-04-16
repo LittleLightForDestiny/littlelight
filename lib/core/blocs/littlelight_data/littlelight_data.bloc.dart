@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/network_error.exception.dart';
 import 'package:little_light/exceptions/parse.exception.dart';
 import 'package:little_light/models/collaborators.dart';
@@ -48,7 +49,7 @@ class LittleLightDataBloc extends ChangeNotifier with StorageConsumer {
       globalStorage.saveFeaturedWishlists(data);
       return data;
     } catch (e) {
-      print("can't parse featured wishlists");
+      logger.error("can't parse featured wishlists");
       throw ParseException(contents, e);
     }
   }
@@ -62,7 +63,7 @@ class LittleLightDataBloc extends ChangeNotifier with StorageConsumer {
       globalStorage.saveCollaborators(data);
       return data;
     } catch (e) {
-      print("can't parse collaborators");
+      logger.error("can't parse collaborators");
       throw ParseException(contents, e);
     }
   }
@@ -83,7 +84,7 @@ class LittleLightDataBloc extends ChangeNotifier with StorageConsumer {
       data = GameData.fromJson(contents);
       globalStorage.saveGameData(data);
     } catch (e) {
-      print("can't parse game data");
+      logger.error("can't parse game data");
       throw ParseException(contents, e);
     }
     return data;

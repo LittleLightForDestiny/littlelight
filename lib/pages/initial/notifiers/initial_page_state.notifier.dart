@@ -5,6 +5,7 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/exceptions/network_error.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
@@ -77,7 +78,7 @@ class InitialPageStateNotifier
     try {
       await initServices(_context);
     } catch (e, stackTrace) {
-      print("initServicesError: $e");
+      logger.error("initServicesError", error: e, stack: stackTrace);
       analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
@@ -261,7 +262,7 @@ class InitialPageStateNotifier
     try {
       await initPostLoadingServices(_context);
     } catch (e, stackTrace) {
-      print("initPostLoadingServicesError: $e");
+      logger.error("initPostLoadingServicesError", error: e, stack: stackTrace);
       analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
@@ -271,7 +272,7 @@ class InitialPageStateNotifier
     try {
       await wishlistsService.checkForUpdates();
     } catch (e, stackTrace) {
-      print("non breaking error: $e");
+      logger.error("non breaking error", error: e, stack: stackTrace);
       analytics.registerNonFatal(e, stackTrace);
     }
 

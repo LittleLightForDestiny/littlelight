@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,8 +31,7 @@ abstract class StorageBase<T> with AnalyticsConsumer {
   String getFilePath(T? key, {StoredFileExtensions? extension}) {
     var trailingSlash = (basePath.length) > 0 ? "/" : "";
     String keyPath = getKeyPath(key);
-    final fileExtension =
-        extension?.extension != null ? ".${extension?.extension}" : "";
+    final fileExtension = extension?.extension != null ? ".${extension?.extension}" : "";
     return "$_fileRoot/$basePath$trailingSlash$keyPath$fileExtension";
   }
 
@@ -58,8 +58,7 @@ abstract class StorageBase<T> with AnalyticsConsumer {
       error = e;
       stack = stackTrace;
     }
-    analytics.registerNonFatal(error, stack,
-        additionalInfo: {"reason": "Coudn't find file root"});
+    analytics.registerNonFatal(error, stack, additionalInfo: {"reason": "Coudn't find file root"});
     return null;
   }
 }
@@ -107,7 +106,7 @@ extension StorageOperations<T> on StorageBase<T> {
     try {
       return DateTime.parse(dateString);
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
     return null;
   }
@@ -128,8 +127,7 @@ extension StorageOperations<T> on StorageBase<T> {
         String contents = await cached.readAsString();
         return contents;
       } catch (e, stackTrace) {
-        analytics.registerNonFatal(e, stackTrace,
-            additionalInfo: {"reason": "Couldn't read file"});
+        analytics.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't read file"});
       }
     }
     return null;
@@ -144,8 +142,7 @@ extension StorageOperations<T> on StorageBase<T> {
 
       await file.writeAsString(contents);
     } catch (e, stackTrace) {
-      analytics.registerNonFatal(e, stackTrace,
-          additionalInfo: {"reason": "Couldn't write file"});
+      analytics.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't write file"});
     }
   }
 
@@ -158,8 +155,7 @@ extension StorageOperations<T> on StorageBase<T> {
     try {
       return jsonDecode(contents);
     } catch (e) {
-      print("error decoding file:$_path/$key");
-      print(e);
+      logger.error("error decoding file:$_path/$key", error: e);
     }
     return null;
   }
@@ -207,8 +203,7 @@ extension StorageOperations<T> on StorageBase<T> {
       dynamic map = jsonDecode(json);
       return map;
     } catch (e) {
-      print("error decoding file:$_path/$key");
-      print(e);
+      logger.error("error decoding file:$_path/$key", error: e);
       return null;
     }
   }

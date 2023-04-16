@@ -13,6 +13,7 @@ import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/settings.dart';
 import 'package:bungie_api/user.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/network_error.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
@@ -328,8 +329,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
     }
 
     if (response.statusCode != 200) {
-      print("got an error status ${response.statusCode} from API");
-      print("response was: ${json ?? textResponse}");
+      logger.error("got an error status ${response.statusCode} from API", error: json ?? textResponse);
       throw BungieApiException.fromJson(json ?? {}, response.statusCode);
     }
 

@@ -19,6 +19,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
@@ -220,7 +221,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     //     try {
     //       await _transfer(item, ownerId, destination, destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
     //     } catch (e) {
-    //       print("Error transferring loadout: $e");
+    //       logger.info("Error transferring loadout: $e");
     //     }
     //   }
 
@@ -229,7 +230,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     //     try {
     //       await _equipMultiple(loadoutItemsToEquip, characterId);
     //     } catch (e) {
-    //       print("Error equipping loadout: $e");
+    //       logger.info("Error equipping loadout: $e");
     //     }
     //   }
 
@@ -244,7 +245,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     //     try {
     //       await _transfer(item, ownerId, destination, destinationCharacterId: characterId, idsToAvoid: idsToAvoid);
     //     } catch (e) {
-    //       print("Loadout Transfer Error : $e");
+    //       logger.info("Loadout Transfer Error : $e");
     //     }
     //   }
     //   _debugInventory("loadout transfer completed");
@@ -269,14 +270,14 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     // }
 
     // _debugInventory(String title) {
-    //   print('------- $title --------');
+    //   logger.info('------- $title --------');
     //   var characters = profile.characters;
     //   characters.forEach((char) {
     //     var inventory = profile.getCharacterInventory(char.characterId);
-    //     print("${char.characterId} = ${inventory.length}");
+    //     logger.info("${char.characterId} = ${inventory.length}");
     //   });
     //   var profileInventory = profile.getProfileInventory().where((item) => item.bucketHash == InventoryBucket.general);
-    //   print("vault = ${profileInventory.length}");
+    //   logger.info("vault = ${profileInventory.length}");
   }
 
   Future<List<LoadoutIndexItem>> _filterLoadoutIndexItems(
@@ -380,8 +381,8 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       int result;
       try {
         result = await bungieAPI.pullFromPostMaster(item.itemHash, stackSize, item.itemInstanceId, sourceCharacterId);
-      } catch (e) {
-        print("Coudn't pull from postmaster: $e");
+      } catch (e, stackTrace) {
+        logger.error("Coudn't pull from postmaster", error: e, stack: stackTrace);
       }
       if (result != 0) {
         throw TransferError(TransferErrorType.cantPullFromPostmaster,

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:http/http.dart' as http;
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_notes_response.dart';
@@ -14,15 +15,13 @@ import 'package:uuid/uuid.dart';
 
 final _credentialsMissingException = Exception("Credentials are missing");
 
-class LittleLightApiService
-    with AuthConsumer, StorageConsumer, AppConfigConsumer {
+class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsumer {
   String? _uuid;
   String? _secret;
 
   String get apiRoot => appConfig.littleLightApiRoot;
 
-  static final LittleLightApiService _singleton =
-      LittleLightApiService._internal();
+  static final LittleLightApiService _singleton = LittleLightApiService._internal();
   factory LittleLightApiService() {
     return _singleton;
   }
@@ -35,12 +34,9 @@ class LittleLightApiService
 
   Future<NotesResponse> fetchItemNotes() async {
     dynamic json = await _authorizedRequest("item-notes");
-    List<ItemNotes> _fetchedNotes =
-        json['notes'].map<ItemNotes>((j) => ItemNotes.fromJson(j)).toList();
+    List<ItemNotes> _fetchedNotes = json['notes'].map<ItemNotes>((j) => ItemNotes.fromJson(j)).toList();
 
-    List<ItemNotesTag> _fetchedTags = json['tags']
-        .map<ItemNotesTag>((j) => ItemNotesTag.fromJson(j))
-        .toList();
+    List<ItemNotesTag> _fetchedTags = json['tags'].map<ItemNotesTag>((j) => ItemNotesTag.fromJson(j)).toList();
     return NotesResponse(notes: _fetchedNotes, tags: _fetchedTags);
   }
 
@@ -65,8 +61,7 @@ class LittleLightApiService
   Future<List<Loadout>>? fetchLoadouts() async {
     dynamic json = await _authorizedRequest("loadout");
     List<dynamic> list = json['data'] ?? [];
-    List<Loadout> _fetchedLoadouts =
-        list.map((j) => Loadout.fromJson(j)).toList();
+    List<Loadout> _fetchedLoadouts = list.map((j) => Loadout.fromJson(j)).toList();
     return _fetchedLoadouts;
   }
 
@@ -79,12 +74,11 @@ class LittleLightApiService
   Future<int> deleteLoadout(Loadout loadout) async {
     Map<String, dynamic> body = loadout.toJson();
     dynamic json = await _authorizedRequest("loadout/delete", body: body);
-    print(json);
+    logger.info(json);
     return json["result"] ?? 0;
   }
 
-  Future<dynamic> _authorizedRequest(String path,
-      {Map<String, dynamic> body = const {}}) async {
+  Future<dynamic> _authorizedRequest(String path, {Map<String, dynamic> body = const {}}) async {
     String? membershipID = auth.currentMembershipID;
     BungieNetToken? token = await auth.getCurrentToken();
     String? accessToken = token?.accessToken;
@@ -105,10 +99,7 @@ class LittleLightApiService
     }
 
     Uri uri = Uri.parse("$apiRoot/$path");
-    Map<String, String> headers = {
-      'Authorization': accessToken,
-      'Accept': 'application/json'
-    };
+    Map<String, String> headers = {'Authorization': accessToken, 'Accept': 'application/json'};
     http.Response response;
     headers["Content-Type"] = "application/json";
     response = await http.post(uri, headers: headers, body: jsonEncode(body));

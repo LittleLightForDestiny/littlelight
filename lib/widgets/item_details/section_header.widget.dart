@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 
@@ -13,7 +14,7 @@ mixin VisibleSectionMixin<T extends StatefulWidget> on State<T> {
       label: label,
       sectionId: sectionId,
       onChanged: () {
-        print(visible);
+        logger.info(visible);
         setState(() {});
       },
     );

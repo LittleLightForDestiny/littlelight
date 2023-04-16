@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -103,7 +104,7 @@ class ProfileBloc extends ChangeNotifier
     final profile = await bungieAPI.getCurrentProfile(components.toList());
     final after = DateTime.now();
     final requestTimeInMs = after.difference(before).inMilliseconds;
-    print("Took $requestTimeInMs ms to update profile from Bungie");
+    logger.info("Took $requestTimeInMs ms to update profile from Bungie");
     if (profile == null) return;
     final newData = await _updateProfileCache(profile);
     await currentMembershipStorage.saveCachedProfile(newData);
@@ -130,7 +131,7 @@ class ProfileBloc extends ChangeNotifier
     final responseTimestamp = DateTime.tryParse(newData.responseMintedTimestamp ?? "");
     final localChange = _lastLocalChange;
     if (localChange != null && (responseTimestamp?.isBefore(localChange) ?? false)) {
-      print("last local change ($localChange) is newer than inventory state $responseTimestamp, skipping update");
+      logger.info("last local change ($localChange) is newer than inventory state $responseTimestamp, skipping update");
       return _cachedProfileResponse ?? newData;
     }
 

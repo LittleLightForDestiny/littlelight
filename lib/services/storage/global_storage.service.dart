@@ -4,6 +4,7 @@ import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
@@ -55,7 +56,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     await super.setup();
 
     if (kDebugMode) {
-      print("root storage path: ${getFilePath(null)}");
+      logger.info("root storage path: ${getFilePath(null)}");
     }
 
     _hasRunSetup = true;
@@ -70,7 +71,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   String? get currentMembershipID => getString(GlobalStorageKeys.currentMembershipID);
   set currentMembershipID(String? selectedMembershipID) {
     if (selectedMembershipID == null) {
-      print(selectedMembershipID);
+      logger.info(selectedMembershipID);
     }
     setString(GlobalStorageKeys.currentMembershipID, selectedMembershipID);
   }
@@ -157,9 +158,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       final json = parsedWishlists.toJson();
       await setJson(GlobalStorageKeys.parsedWishlists, json);
     } catch (e) {
-      print("error saving parsed wishlists");
-      print(e);
-      print(parsedWishlists);
+      logger.error("error saving parsed wishlists", error: e);
+      logger.info(parsedWishlists);
     }
   }
 
@@ -177,9 +177,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       final json = wishlists.map((e) => e.toJson()).toList();
       await setJson(GlobalStorageKeys.wishlists, json);
     } catch (e) {
-      print("error saving wishlists");
-      print(e);
-      print(wishlists);
+      logger.error("error saving wishlists", error: e);
+      logger.info(wishlists);
     }
   }
 
@@ -211,8 +210,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       if (data == null) return null;
       return WishlistFolder.fromJson(data);
     } catch (e) {
-      print("error parsing featured wishlists");
-      print(e);
+      logger.error("error parsing featured wishlists", error: e);
     }
     return null;
   }
@@ -223,8 +221,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       if (data == null) return null;
       return CollaboratorsResponse.fromJson(data);
     } catch (e) {
-      print("error parsing collaborators");
-      print(e);
+      logger.error("error parsing collaborators", error: e);
     }
     return null;
   }
@@ -235,8 +232,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       if (data == null) return null;
       return GameData.fromJson(data);
     } catch (e) {
-      print("error parsing game data");
-      print(e);
+      logger.error("error parsing game data", error: e);
     }
     return null;
   }
@@ -246,8 +242,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       dynamic json = data.toJson();
       await setJson(GlobalStorageKeys.featuredWishlists, json);
     } catch (e) {
-      print("error saving featured wishlists");
-      print(e);
+      logger.error("error saving featured wishlists", error: e);
     }
   }
 
@@ -256,8 +251,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       dynamic json = data.toJson();
       await setJson(GlobalStorageKeys.gameData, json);
     } catch (e) {
-      print("error saving game data");
-      print(e);
+      logger.error("error saving game data", error: e);
     }
   }
 
@@ -266,8 +260,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       dynamic json = data.toJson();
       await setJson(GlobalStorageKeys.gameData, json);
     } catch (e) {
-      print("error saving collaborators");
-      print(e);
+      logger.error("error saving collaborators", error: e);
     }
   }
 
