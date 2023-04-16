@@ -244,6 +244,10 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
       (_achievableAverage?[classType] ?? 0) >= (_gameData?.softCap ?? double.maxFinite);
   bool achievedPinnacleTier(DestinyClass classType) =>
       (_achievableAverage?[classType] ?? 0) >= (_gameData?.powerfulCap ?? double.maxFinite);
+  bool achievedMaxPower(DestinyClass classType) =>
+      // Use == so we show things correctly if they go over an out-of-date cap value
+      (_achievableAverage?[classType] ?? 0) == (_gameData?.pinnacleCap ?? double.maxFinite);
+
   bool goForReward(DestinyClass classType) {
     if (!achievedPowerfulTier(classType)) return false;
     final current = (getCurrentAverage(classType) ?? 0).floor();
