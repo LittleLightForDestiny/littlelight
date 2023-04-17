@@ -117,27 +117,10 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<DestinyItem
     if (item == null) return;
     _isBusy = true;
     notifyListeners();
-    final plugCount = item.sockets?.length ?? 0;
-    Map<int, int> plugs = {};
-    for (int i = 0; i < plugCount; i++) {
-      final selected = getSelectedPlugHashForSocket(i);
-      if (selected != null) plugs[i] = selected;
-    }
-    await _inventoryBloc.applyPlugs(item, plugs);
+    await _inventoryBloc.applyPlugs(item, {socketIndex: plugHash});
     _isBusy = false;
     notifyListeners();
   }
-
-  // @override
-  // void applyPlug(int socketIndex, int plugHash) async {
-  //   final item = this.item;
-  //   if (item == null) return;
-  //   _isBusy = true;
-  //   notifyListeners();
-  //   await _inventoryBloc.applyPlugs(item, {socketIndex: plugHash});
-  //   _isBusy = false;
-  //   notifyListeners();
-  // }
 
   @override
   bool get isBusy => _isBusy;

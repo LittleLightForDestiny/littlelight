@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bungie_api/models/destiny_stat_definition.dart';
 
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -60,12 +61,14 @@ class DetailsItemStatWidget extends StatelessWidget {
     );
   }
 
+  int get maxValue => modValues.maximumValue;
+
   Widget buildConstrainedBar(BuildContext context, BoxConstraints constraints) {
     final width = constraints.maxWidth / 2;
     final baseBarSize = min(modValues.equipped, modValues.selected);
     final diffBarSize = (modValues.selected - modValues.equipped);
     final masterWorkBarSize = max(modValues.selectedMasterwork, modValues.equippedMasterwork);
-    final maxBarSize = modValues.maximumValue;
+    final maxBarSize = maxValue;
     final current = modValues.selected + modValues.selectedMasterwork;
 
     if (modValues.type == StatType.Direction) {
@@ -141,4 +144,23 @@ class DetailsItemStatWidget extends StatelessWidget {
   }
 
   Color getMasterworkColor(BuildContext context) => context.theme.achievementLayers.layer0;
+}
+
+class DetailsTotalItemStatWidget extends DetailsItemStatWidget {
+  DetailsTotalItemStatWidget({required StatValues modValues}) : super(modValues: modValues);
+
+  @override
+  int get maxValue => 100;
+
+  @override
+  Widget buildLabel(BuildContext context) {
+    return Container(
+      child: Text(
+        "Total".translate(context),
+        style: context.textTheme.body.copyWith(color: getBaseColor(context)),
+        textAlign: TextAlign.end,
+        softWrap: false,
+      ),
+    );
+  }
 }

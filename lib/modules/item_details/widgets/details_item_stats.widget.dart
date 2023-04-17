@@ -27,8 +27,12 @@ class DetailsItemStatsWidget extends StatelessWidget {
   }
 
   Widget buildContent(BuildContext context) {
+    final total = buildTotalStats(context);
     return Column(
-      children: buildStats(context),
+      children: [
+        ...buildStats(context),
+        if (total != null) total,
+      ],
     );
   }
 
@@ -41,5 +45,12 @@ class DetailsItemStatsWidget extends StatelessWidget {
               modValues: value,
             ))
         .toList();
+  }
+
+  Widget? buildTotalStats(BuildContext context) {
+    final state = context.watch<SocketControllerBloc>();
+    final stat = state.totalStats;
+    if (stat == null) return null;
+    return DetailsTotalItemStatWidget(modValues: stat);
   }
 }

@@ -6,6 +6,7 @@ import 'package:little_light/services/littlelight/item_notes.service.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:provider/provider.dart';
@@ -56,6 +57,31 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   Map<int, DestinyMaterialRequirementSetDefinition>? materialRequirementDefinitions;
 
   List<StatValues>? get stats => _stats;
+
+  StatValues? get totalStats {
+    final isArmor = itemDefinition?.isArmor ?? false;
+    if (!isArmor) return null;
+    final stats = this._stats;
+    if (stats == null) return null;
+    int equipped = 0;
+    int equippedMasterWork = 0;
+    int selected = 0;
+    int selectedMasterwork = 0;
+    for (final s in stats) {
+      if (s.isHiddenStat) continue;
+      equipped += s.equipped;
+      selected += s.equipped;
+      equippedMasterWork += s.equippedMasterwork;
+      selectedMasterwork += s.selectedMasterwork;
+    }
+    return StatValues(
+      9999,
+      rawEquipped: equipped,
+      rawEquippedMasterwork: equippedMasterWork,
+      rawSelected: selected,
+      rawSelectedMasterwork: selectedMasterwork,
+    );
+  }
 
   SocketControllerBloc(this.context)
       : manifest = context.read<ManifestService>(),

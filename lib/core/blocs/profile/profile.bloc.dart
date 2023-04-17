@@ -16,6 +16,7 @@ import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
+import 'package:little_light/shared/utils/sorters/characters/character_last_played_sorter.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_sorter.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -677,6 +678,8 @@ class ProfileBloc extends ChangeNotifier
   }
 
   Future<void> applyPlug(DestinyItemInfo item, int socketIndex, int plugHash) async {
+    final characters = this.characters?.toList();
+    characters?.sort((charA, charB) => sortCharacterByLastPlayed(charA, charB));
     final characterId = item.characterId ?? characters?.lastOrNull?.characterId;
     final instanceId = item.item.itemInstanceId;
     if (instanceId == null) throw "Can't apply plugs on an item that doesn't have a instance id";
