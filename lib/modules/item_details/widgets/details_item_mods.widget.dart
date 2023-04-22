@@ -1,7 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/item_details/blocs/socket_controller.bloc.dart';
+import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/modules/item_details/widgets/details_plug_info.widget.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
 import 'package:little_light/shared/widgets/sockets/mod_icon.widget.dart';

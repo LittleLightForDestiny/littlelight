@@ -92,8 +92,8 @@ class ItemSocketController extends ChangeNotifier
 
   factory ItemSocketController.fromItem(ItemWithOwner item) {
     final profile = getInjectedProfileService();
-    final itemInstanceID = item.item.itemInstanceId;
-    final itemHash = item.item.itemHash;
+    final itemInstanceID = item.instanceId;
+    final itemHash = item.itemHash;
     if (itemInstanceID == null || itemHash == null) {
       throw ("Can't initialize without itemInstanceID");
     }

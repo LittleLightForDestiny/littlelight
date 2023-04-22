@@ -83,10 +83,10 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     final maxPower = <DestinyClass, Map<int, DestinyItemInfo>>{};
     final maxPowerNonExotic = <DestinyClass, Map<int, DestinyItemInfo>>{};
     final instancedItems = _profileBloc.allInstancedItems;
-    final hashes = instancedItems.map((i) => i.item.itemHash).whereType<int>().toList();
+    final hashes = instancedItems.map((i) => i.itemHash).whereType<int>().toList();
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     for (final item in instancedItems) {
-      final hash = item.item.itemHash;
+      final hash = item.itemHash;
       final def = defs[hash];
       final tierType = def?.inventory?.tierType;
       final characterClass = def?.classType;
@@ -112,7 +112,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   }
 
   void updatePostmaster() {
-    final allItemsInPostmaster = _profileBloc.allItems.where((i) => i.item.bucketHash == InventoryBucket.lostItems);
+    final allItemsInPostmaster = _profileBloc.allItems.where((i) => i.bucketHash == InventoryBucket.lostItems);
     final itemsInPostmaster = <String, List<DestinyItemInfo>>{};
     for (final item in allItemsInPostmaster) {
       final characterId = item.characterId;
@@ -281,7 +281,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     for (final item in items) {
       final isEquipped = item.instanceInfo?.isEquipped ?? false;
       if (item.bucketHash == InventoryBucket.subclass && !isEquipped) continue;
-      await loadout.addItem(item.item, isEquipped);
+      await loadout.addItem(item, isEquipped);
     }
     loadout.emblemHash = character.character.emblemHash;
     Navigator.of(navigatorContext).push(EditLoadoutPageRoute.createFromPreset(loadout));

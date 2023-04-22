@@ -73,7 +73,7 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
     var items = widget.searchController.filtered;
 
     for (final item in items) {
-      final itemHash = item.item.itemHash;
+      final itemHash = item.itemHash;
       final itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
       final bucketHash = itemDef.inventory.bucketTypeHash;
       _buckets.getOrCreate(bucketHash, <int, List<ItemWithOwner>>{}).getOrCreate(itemHash, <ItemWithOwner>[]).add(item);
@@ -161,12 +161,12 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
         itemBuilder: (context, index) {
           final item = duplicate.instances[index];
           return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-              item.item.itemHash,
+              item.itemHash,
               (def) => _ItemInstanceWrapper(
                     item: item,
                     definition: def,
                   ),
-              key: Key("item_${item.item.itemHash}_${item.item.itemInstanceId}_${item.ownerId}"));
+              key: Key("item_${item.itemHash}_${item.instanceId}_${item.ownerId}"));
         });
   }
 
@@ -277,7 +277,7 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
   void initState() {
     super.initState();
 
-    instance = profile.getInstanceInfo(widget.item.item.itemInstanceId);
+    instance = profile.getInstanceInfo(widget.item.instanceId);
 
     StreamSubscription<List<ItemWithOwner>> sub;
     sub = selection.broadcaster.listen((selectedItems) {
@@ -330,7 +330,7 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
     Navigator.push(
       context,
       ItemDetailsPageRoute(
-        item: widget.item,
+        item: null,
       ),
     );
   }

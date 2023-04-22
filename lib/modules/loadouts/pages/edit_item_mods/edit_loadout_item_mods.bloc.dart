@@ -1,16 +1,16 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/modules/loadouts/pages/edit_item_mods/edit_loadout_item_mods.page_route.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
-import 'package:little_light/shared/blocs/socket_controller/base_socket_controller.bloc.dart';
+import 'package:little_light/shared/blocs/socket_controller/legacy_socket_controller.bloc.dart';
 import 'package:provider/provider.dart';
 
-class EditLoadoutItemModsBloc extends BaseSocketController
-    with ManifestConsumer, ProfileConsumer {
+class EditLoadoutItemModsBloc extends LegacySocketController with ManifestConsumer, ProfileConsumer {
   final BuildContext context;
 
-  DestinyItemComponent? item;
+  DestinyItemInfo? item;
   @override
   DestinyInventoryItemDefinition? definition;
   @override
@@ -43,7 +43,7 @@ class EditLoadoutItemModsBloc extends BaseSocketController
 
     _emblemHash = emblemHash;
 
-    item = profile.getItemsByInstanceId([itemInstanceID]).first;
+    item = profile.getItemByInstanceId(itemInstanceID);
     socketStates = profile.getItemSockets(itemInstanceID);
     reusablePlugs = profile.getItemReusablePlugs(itemInstanceID);
 
@@ -52,8 +52,7 @@ class EditLoadoutItemModsBloc extends BaseSocketController
     }
 
     final itemHash = item?.itemHash;
-    definition =
-        await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
+    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
 
     await loadDefinitions();
     await computeAvailableCategories();
@@ -71,18 +70,15 @@ class EditLoadoutItemModsBloc extends BaseSocketController
     Set<int> availableCategoryHashes = {};
 
     for (var index = 0; index < socketCount; index++) {
-      final plugHashes = socketPlugHashes(index)
-          ?.where((p) => canApplyForFree(index, p))
-          .toList();
+      final plugHashes = socketPlugHashes(index)?.where((p) => canApplyForFree(index, p)).toList();
       if (plugHashes != null && plugHashes.length > 1) {
         availablePlughashesForIndexes[index] = plugHashes;
         availableSocketIndexes.add(index);
       }
     }
     for (final cat in categories) {
-      final containsValidSockets = cat.socketIndexes
-              ?.any((element) => availableSocketIndexes.contains(element)) ??
-          false;
+      final containsValidSockets =
+          cat.socketIndexes?.any((element) => availableSocketIndexes.contains(element)) ?? false;
       final categoryHash = cat.socketCategoryHash;
       if (containsValidSockets && categoryHash != null) {
         availableCategoryHashes.add(categoryHash);
@@ -94,19 +90,14 @@ class EditLoadoutItemModsBloc extends BaseSocketController
     notifyListeners();
   }
 
-  List<DestinyItemSocketCategoryDefinition>? get categories =>
-      definition?.sockets?.socketCategories
-          ?.where((element) =>
-              _availableCategoryHashes.contains(element.socketCategoryHash))
-          .toList();
+  List<DestinyItemSocketCategoryDefinition>? get categories => definition?.sockets?.socketCategories
+      ?.where((element) => _availableCategoryHashes.contains(element.socketCategoryHash))
+      .toList();
 
   int? selectedSelectedPlugHash(int index) => _selectedPlugs[index];
 
-  List<int>? availableIndexesForCategory(
-      DestinyItemSocketCategoryDefinition category) {
-    return category.socketIndexes
-        ?.where((element) => _availableSocketIndexes.contains(element))
-        .toList();
+  List<int>? availableIndexesForCategory(DestinyItemSocketCategoryDefinition category) {
+    return category.socketIndexes?.where((element) => _availableSocketIndexes.contains(element)).toList();
   }
 
   void selectSocket(int socketIndex) {
@@ -133,10 +124,8 @@ class EditLoadoutItemModsBloc extends BaseSocketController
 
   bool isSocketSelected(int socketIndex) => _selectedSocket == socketIndex;
 
-  bool isPlugSelectedForSocket(int? plugHash, int socketIndex) =>
-      _selectedPlugs[socketIndex] == plugHash;
-  bool isPlugEquippedForSocket(int? plugHash, int socketIndex) =>
-      socketEquippedPlugHash(socketIndex) == plugHash;
+  bool isPlugSelectedForSocket(int? plugHash, int socketIndex) => _selectedPlugs[socketIndex] == plugHash;
+  bool isPlugEquippedForSocket(int? plugHash, int socketIndex) => socketEquippedPlugHash(socketIndex) == plugHash;
 
   List<int?>? selectedSocketPlugs() {
     final selectedSocket = _selectedSocket;
@@ -158,8 +147,7 @@ class EditLoadoutItemModsBloc extends BaseSocketController
   int? get selectedSocketDefaultPlugHash {
     final socket = _selectedSocket;
     if (socket == null) return null;
-    final defaultPlugHash =
-        definition?.sockets?.socketEntries?[socket].singleInitialItemHash;
+    final defaultPlugHash = definition?.sockets?.socketEntries?[socket].singleInitialItemHash;
     if (defaultPlugHash != null && defaultPlugHash != 0) return defaultPlugHash;
     return selectedSelectedPlugHash(socket);
   }

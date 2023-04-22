@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
@@ -170,7 +171,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
     );
   }
 
-  Widget buildItemIcon(DestinyItemComponent? item) {
+  Widget buildItemIcon(DestinyItemInfo? item) {
     final itemHash = item?.itemHash;
     if (item == null || itemHash == null) {
       return AspectRatio(
@@ -178,7 +179,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
         child: ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552),
       );
     }
-    final instance = profile.getInstanceInfo(item.itemInstanceId);
+    final instance = profile.getInstanceInfo(item.instanceId);
     return AspectRatio(
       aspectRatio: 1,
       child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
@@ -187,7 +188,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
           item: item,
           definition: def,
           instanceInfo: instance,
-          key: Key("item_icon_${item.itemInstanceId}"),
+          key: Key("item_icon_${item.instanceId}"),
         ),
       ),
     );

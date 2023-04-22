@@ -50,7 +50,7 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsu
 
   itemIcon(BuildContext context) {
     return ItemIconWidget(
-      item,
+      null,
       definition,
       instanceInfo,
       iconBorderWidth: iconBorderWidth,

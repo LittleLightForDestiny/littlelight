@@ -5,7 +5,7 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
-abstract class BaseSocketController extends ChangeNotifier with ManifestConsumer, ProfileConsumer {
+abstract class LegacySocketController extends ChangeNotifier with ManifestConsumer, ProfileConsumer {
   DestinyInventoryItemDefinition? get definition;
   List<DestinyItemSocketState>? get socketStates;
   Map<String, List<DestinyItemPlugBase>>? get reusablePlugs;

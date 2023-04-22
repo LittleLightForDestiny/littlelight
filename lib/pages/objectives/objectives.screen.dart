@@ -143,10 +143,10 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
               item: items[objective],
               onTap: () async {
                 final item = items[objective];
-                await Navigator.push(
-                  context,
-                  ItemDetailsPageRoute(item: item),
-                );
+                // await Navigator.push(
+                //   context,
+                //   ItemDetailsPageRoute(item: item),
+                // );
                 loadObjectives();
               });
         }

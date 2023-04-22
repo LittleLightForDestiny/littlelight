@@ -6,8 +6,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 
 import 'base_item_filter.dart';
 
-class SeasonSlotFilter extends BaseItemFilter<Set<int>>
-    with LittleLightDataConsumer {
+class SeasonSlotFilter extends BaseItemFilter<Set<int>> with LittleLightDataConsumer {
   SeasonSlotFilter() : super(<int>{}, <int>{});
   List<int> seasonalSlots;
 
@@ -28,9 +27,7 @@ class SeasonSlotFilter extends BaseItemFilter<Set<int>>
       var entries = def.sockets?.socketEntries;
       if (entries == null) continue;
       for (var socket in entries) {
-        if (gameData?.seasonalModSlots
-                ?.contains(socket.singleInitialItemHash) ??
-            false) {
+        if (gameData?.seasonalModSlots?.contains(socket.singleInitialItemHash) ?? false) {
           hashes.add(socket.singleInitialItemHash);
         }
       }
@@ -44,8 +41,7 @@ class SeasonSlotFilter extends BaseItemFilter<Set<int>>
   }
 
   @override
-  bool filterItem(ItemWithOwner item,
-      {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if (value.isEmpty) {
       return true;
     }
@@ -54,8 +50,7 @@ class SeasonSlotFilter extends BaseItemFilter<Set<int>>
       var contains = false;
       if (def?.sockets?.socketEntries == null) return true;
       for (var socket in def.sockets.socketEntries) {
-        contains = contains ||
-            (seasonalSlots.contains(socket.singleInitialItemHash) ?? false);
+        contains = contains || (seasonalSlots.contains(socket.singleInitialItemHash) ?? false);
       }
       if (!contains) return true;
     }

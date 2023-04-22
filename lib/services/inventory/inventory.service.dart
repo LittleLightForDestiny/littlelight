@@ -95,36 +95,36 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
   Future<void> transferMultiple(
       List<ItemWithOwner> itemStates, ItemDestination destination, String destinationCharacterId,
       [bool skipUpdate = false]) async {
-    profile.pauseAutomaticUpdater = true;
-    List<String> idsToAvoid =
-        itemStates.where((i) => i.item.itemInstanceId != null).map((i) => i.item.itemInstanceId).toList();
-    List<int> hashesToAvoid =
-        itemStates.where((i) => i.item.itemInstanceId == null).map((i) => i.item.itemHash).toList();
-    List<int> hashes = itemStates.map((item) => item.item.itemHash).toList();
-    Map<int, DestinyInventoryItemDefinition> defs =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
-    for (var item in itemStates) {
-      String ownerId = item.ownerId;
-      DestinyInventoryItemDefinition def = defs[item.item.itemHash];
-      if (destination == ItemDestination.Character &&
-          ownerId == destinationCharacterId &&
-          item.item.bucketHash != InventoryBucket.lostItems) continue;
-      if (def.nonTransferrable) continue;
-      notifications.push(
-          NotificationEvent(NotificationType.requestedTransfer, item: item.item, characterId: destinationCharacterId));
-      try {
-        await _transfer(item.item, ownerId, destination,
-            destinationCharacterId: destinationCharacterId, idsToAvoid: idsToAvoid, hashesToAvoid: hashesToAvoid);
-      } catch (e) {
-        notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericTransferError));
-        await Future.delayed(const Duration(seconds: 3));
-      }
-    }
-    if (!skipUpdate) {
-      await Future.delayed(const Duration(seconds: 1));
-      await profile.refresh();
-      profile.pauseAutomaticUpdater = false;
-    }
+    // profile.pauseAutomaticUpdater = true;
+    // List<String> idsToAvoid =
+    //     itemStates.where((i) => i.item.itemInstanceId != null).map((i) => i.item.itemInstanceId).toList();
+    // List<int> hashesToAvoid =
+    //     itemStates.where((i) => i.item.itemInstanceId == null).map((i) => i.item.itemHash).toList();
+    // List<int> hashes = itemStates.map((item) => item.itemHash).toList();
+    // Map<int, DestinyInventoryItemDefinition> defs =
+    //     await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    // for (var item in itemStates) {
+    //   String ownerId = item.ownerId;
+    //   DestinyInventoryItemDefinition def = defs[item.itemHash];
+    //   if (destination == ItemDestination.Character &&
+    //       ownerId == destinationCharacterId &&
+    //       item.bucketHash != InventoryBucket.lostItems) continue;
+    //   if (def.nonTransferrable) continue;
+    //   notifications.push(
+    //       NotificationEvent(NotificationType.requestedTransfer, item: item.item, characterId: destinationCharacterId));
+    //   try {
+    //     await _transfer(item.item, ownerId, destination,
+    //         destinationCharacterId: destinationCharacterId, idsToAvoid: idsToAvoid, hashesToAvoid: hashesToAvoid);
+    //   } catch (e) {
+    //     notifications.push(ErrorNotificationEvent(ErrorNotificationType.genericTransferError));
+    //     await Future.delayed(const Duration(seconds: 3));
+    //   }
+    // }
+    // if (!skipUpdate) {
+    //   await Future.delayed(const Duration(seconds: 1));
+    //   await profile.refresh();
+    //   profile.pauseAutomaticUpdater = false;
+    // }
   }
 
   Future<void> equipMultiple(List<ItemWithOwner> itemStates, String destinationCharacterId) async {
@@ -317,19 +317,19 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
 
   Future<void> _transferLoadoutItems(List<LoadoutIndexItem> loadoutItems,
       {String characterID, List<String> idsToAvoid}) async {
-    final itemIDs = loadoutItems.map((e) => e.item?.itemInstanceId).whereType<String>().toList();
-    final items = profile.getItemsByInstanceId(itemIDs);
-    for (final item in items) {
-      final ownerId = profile.getItemOwner(item.itemInstanceId);
-      final destination = characterID != null ? ItemDestination.Character : ItemDestination.Vault;
-      return _transfer(
-        item,
-        ownerId,
-        destination,
-        destinationCharacterId: characterID,
-        idsToAvoid: idsToAvoid,
-      );
-    }
+    // final itemIDs = loadoutItems.map((e) => e.item?.itemInstanceId).whereType<String>().toList();
+    // final items = profile.getItemsByInstanceId(itemIDs);
+    // for (final item in items) {
+    //   final ownerId = profile.getItemOwner(item.itemInstanceId);
+    //   final destination = characterID != null ? ItemDestination.Character : ItemDestination.Vault;
+    //   return _transfer(
+    //     item,
+    //     ownerId,
+    //     destination,
+    //     destinationCharacterId: characterID,
+    //     idsToAvoid: idsToAvoid,
+    //   );
+    // }
   }
 
   Future<void> _applyLoadoutMods(List<LoadoutIndexItem> items, [String characterID]) async {
@@ -349,9 +349,9 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
   }
 
   Future<void> _equipLoadoutItems(List<LoadoutIndexItem> loadoutItems, [String characterID]) async {
-    final itemIDs = loadoutItems.map((e) => e.item?.itemInstanceId).whereType<String>().toList();
-    final items = profile.getItemsByInstanceId(itemIDs);
-    await _equipMultiple(items, characterID);
+    // final itemIDs = loadoutItems.map((e) => e.item?.itemInstanceId).whereType<String>().toList();
+    // final items = profile.getItemsByInstanceId(itemIDs);
+    // await _equipMultiple(items, characterID);
   }
 
   Future<void> _transfer(DestinyItemComponent item, String sourceCharacterId, ItemDestination destination,
@@ -545,28 +545,28 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       previouslyEquipped[bucketHash] = charEquipment.firstWhere((item) => item.bucketHash == bucketHash);
     }
     List<String> itemIds = items.map((item) => item.itemInstanceId).toList();
-    List<DestinyEquipItemResult> result = await bungieAPI.equipItems(itemIds, characterId);
-    charEquipment = profile.getCharacterEquipment(characterId);
-    List<DestinyItemComponent> charInventory = profile.getCharacterInventory(characterId);
-    for (var result in result) {
-      DestinyItemComponent newlyEquipped = profile.getItemsByInstanceId([result.itemInstanceId]).first;
-      DestinyItemInstanceComponent newlyEquippedInstance = profile.getInstanceInfo(result.itemInstanceId);
-      DestinyInventoryItemDefinition newlyEquippedDef = defs[newlyEquipped.itemHash];
-      int bucketHash = newlyEquippedDef.inventory.bucketTypeHash;
-      DestinyItemComponent previouslyEquippedItem = previouslyEquipped[bucketHash];
-      DestinyItemInstanceComponent previouslyEquippedInstance =
-          profile.getInstanceInfo(previouslyEquippedItem.itemInstanceId);
-      if (![PlatformErrorCodes.Success, PlatformErrorCodes.None].contains(result.equipStatus)) {
-        throw TransferError(TransferErrorType.cantEquip, platformError: result.equipStatus);
-      }
-      previouslyEquippedInstance.isEquipped = false;
-      charEquipment.removeWhere((item) => item.itemInstanceId == previouslyEquippedItem.itemInstanceId);
-      charInventory.add(previouslyEquippedItem);
+    // List<DestinyEquipItemResult> result = await bungieAPI.equipItems(itemIds, characterId);
+    // charEquipment = profile.getCharacterEquipment(characterId);
+    // List<DestinyItemComponent> charInventory = profile.getCharacterInventory(characterId);
+    // for (var result in result) {
+    // DestinyItemComponent newlyEquipped = profile.getItemsByInstanceId([result.itemInstanceId]).first;
+    // DestinyItemInstanceComponent newlyEquippedInstance = profile.getInstanceInfo(result.itemInstanceId);
+    // DestinyInventoryItemDefinition newlyEquippedDef = defs[newlyEquipped.itemHash];
+    // int bucketHash = newlyEquippedDef.inventory.bucketTypeHash;
+    // DestinyItemComponent previouslyEquippedItem = previouslyEquipped[bucketHash];
+    // DestinyItemInstanceComponent previouslyEquippedInstance =
+    //     profile.getInstanceInfo(previouslyEquippedItem.itemInstanceId);
+    // if (![PlatformErrorCodes.Success, PlatformErrorCodes.None].contains(result.equipStatus)) {
+    //   throw TransferError(TransferErrorType.cantEquip, platformError: result.equipStatus);
+    // }
+    // previouslyEquippedInstance.isEquipped = false;
+    // charEquipment.removeWhere((item) => item.itemInstanceId == previouslyEquippedItem.itemInstanceId);
+    // charInventory.add(previouslyEquippedItem);
 
-      newlyEquippedInstance.isEquipped = true;
-      charInventory.removeWhere((item) => item.itemInstanceId == result.itemInstanceId);
-      charEquipment.add(newlyEquipped);
-    }
+    // newlyEquippedInstance.isEquipped = true;
+    // charInventory.removeWhere((item) => item.itemInstanceId == result.itemInstanceId);
+    // charEquipment.add(newlyEquipped);
+    // }
   }
 
   _unequip(DestinyItemComponent item, String characterId, [List<String> idsToAvoid = const []]) async {
@@ -709,10 +709,10 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     } else if (!item.item.state.contains(ItemState.Locked) && locked) {
       item?.item?.state = ItemState(item.item.state.value + ItemState.Locked.value);
     }
-    var profileItem = profile.getAllItems().firstWhere(
-        (i) => i.item.itemHash == item.item.itemHash && i.item.itemInstanceId == item.item.itemInstanceId,
-        orElse: () => null);
-    profileItem.item.state = item?.item?.state;
+    // var profileItem = profile.getAllItems().firstWhere(
+    //     (i) => i.item.itemHash == item.itemHash && i.item.itemInstanceId == item.instanceId,
+    //     orElse: () => null);
+    // profileItem.item.state = item?.item?.state;
     notifications.push(NotificationEvent(NotificationType.itemStateUpdate, item: item.item));
     await bungieAPI.changeLockState(item?.item?.itemInstanceId, ownerId, locked);
   }

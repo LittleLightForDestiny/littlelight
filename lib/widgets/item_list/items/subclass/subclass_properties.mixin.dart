@@ -13,52 +13,39 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
   @override
   Widget positionedIcon(BuildContext context) {
     return Positioned(
-        top: 0,
-        left: 0,
-        width: iconSize + padding * 2,
-        height: iconSize + padding * 2,
-        child: itemIconHero(context));
+        top: 0, left: 0, width: iconSize + padding * 2, height: iconSize + padding * 2, child: itemIconHero(context));
   }
 
   @override
   Widget itemIcon(BuildContext context) {
-    return SubclassIconWidget(item, definition, instanceInfo);
+    return SubclassIconWidget(null, definition, instanceInfo);
   }
 
   @override
   Widget positionedNameBar(BuildContext context) {
-    Color damageTypeColor =
-        definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
+    Color damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     BoxDecoration decoration = BoxDecoration(
-        gradient: LinearGradient(colors: <Color>[
-      TinyColor.fromColor(damageTypeColor).saturate(30).darken(30).color,
-      Colors.transparent
-    ]));
+        gradient: LinearGradient(
+            colors: <Color>[TinyColor.fromColor(damageTypeColor).saturate(30).darken(30).color, Colors.transparent]));
     return Positioned(
       left: iconSize / 2 + padding,
       right: 0,
       top: 0,
       bottom: 0,
-      child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Container(
-              alignment: AlignmentDirectional.centerStart,
-              padding: EdgeInsets.symmetric(
-                  horizontal: iconSize / 2 + padding * 2, vertical: padding),
-              decoration: decoration,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(definition.displayProperties.name.toUpperCase(),
-                      style: TextStyle(
-                          fontSize: titleFontSize,
-                          fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-          ]),
+      child: Column(mainAxisSize: MainAxisSize.max, mainAxisAlignment: MainAxisAlignment.center, children: [
+        Container(
+          alignment: AlignmentDirectional.centerStart,
+          padding: EdgeInsets.symmetric(horizontal: iconSize / 2 + padding * 2, vertical: padding),
+          decoration: decoration,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(definition.displayProperties.name.toUpperCase(),
+                  style: TextStyle(fontSize: titleFontSize, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
+      ]),
     );
   }
 
@@ -68,14 +55,12 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
   }
 
   Color startBgColor(BuildContext context) {
-    var damageTypeColor =
-        definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
+    var damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     return TinyColor.fromColor(damageTypeColor).lighten(15).saturate(50).color;
   }
 
   Color endBgColor(BuildContext context) {
-    final damageTypeColor =
-        definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
+    final damageTypeColor = definition.talentGrid.hudDamageType?.getColorLayer(context)?.layer0;
     return TinyColor.fromColor(damageTypeColor).darken(25).desaturate(30).color;
   }
 

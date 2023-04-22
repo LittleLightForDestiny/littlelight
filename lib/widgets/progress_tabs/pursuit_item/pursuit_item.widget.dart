@@ -61,8 +61,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
 
   DestinyItemInstanceComponent instanceInfo;
 
-  String get itemInstanceId => widget.item.item.itemInstanceId;
-  int get hash => widget.item.item.itemHash;
+  String get itemInstanceId => widget.item.instanceId;
+  int get hash => widget.item.itemHash;
   DestinyItemComponent get item => widget.item.item;
   String get characterId => widget.item.ownerId;
 
@@ -160,8 +160,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
       Navigator.push(
         context,
         ItemDetailsPageRoute(
-          item: widget.item,
-        ),
+            // item: widget.item,
+            ),
       );
     }
   }
@@ -171,8 +171,8 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
       Navigator.push(
         context,
         ItemDetailsPageRoute(
-          item: widget.item,
-        ),
+            // item: widget.item,
+            ),
       );
     }
     if (widget.selectable) {
@@ -282,7 +282,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
   buildIcon(BuildContext context) {
     if (isComplete) {
       return Stack(children: [
-        Positioned.fill(child: ItemIconWidget(item, definition, instanceInfo)),
+        // Positioned.fill(child: ItemIconWidget(item, definition, instanceInfo)),
         Positioned.fill(
             child: Container(
           decoration: CornerBadgeDecoration(
@@ -293,7 +293,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
         const Positioned(right: 2, bottom: 4, child: Icon(FontAwesomeIcons.exclamation, size: 12))
       ]);
     }
-    return ItemIconWidget(item, definition, instanceInfo);
+    // return ItemIconWidget(item, definition, instanceInfo);
   }
 
   Widget buildDescription(BuildContext context) {

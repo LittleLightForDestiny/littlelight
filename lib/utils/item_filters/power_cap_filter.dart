@@ -24,12 +24,9 @@ class PowerCapFilter extends BaseItemFilter<Set<int>> {
     Set<int> powerCaps = {};
     for (var item in items) {
       var def = definitions[item.item.itemHash];
-      if (def?.quality?.versions != null &&
-          def?.quality?.currentVersion != null) {
-        var powercapHash =
-            def.quality.versions[def.quality.currentVersion].powerCapHash;
-        var powerCapDef = await manifest
-            .getDefinition<DestinyPowerCapDefinition>(powercapHash);
+      if (def?.quality?.versions != null && def?.quality?.currentVersion != null) {
+        var powercapHash = def.quality.versions[def.quality.currentVersion].powerCapHash;
+        var powerCapDef = await manifest.getDefinition<DestinyPowerCapDefinition>(powercapHash);
         var powerCap = math.min(powerCapDef.powerCap, 9000);
         powercapValues[powercapHash] = powerCap;
         powerCaps.add(powerCap);
@@ -44,14 +41,12 @@ class PowerCapFilter extends BaseItemFilter<Set<int>> {
   }
 
   @override
-  bool filterItem(ItemWithOwner item,
-      {Map<int, DestinyInventoryItemDefinition> definitions}) {
+  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
     if (value.isEmpty) {
       return true;
     }
     var def = definitions[item.item.itemHash];
-    if (def?.quality?.versions == null ||
-        def?.quality?.currentVersion == null) {
+    if (def?.quality?.versions == null || def?.quality?.currentVersion == null) {
       if (value.contains(-1)) return true;
       return false;
     }

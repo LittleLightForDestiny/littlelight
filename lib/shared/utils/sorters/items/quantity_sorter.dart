@@ -8,8 +8,8 @@ class QuantitySorter extends ItemSorter {
 
   @override
   int sort(DestinyItemInfo a, DestinyItemInfo b) {
-    final quantityA = a.item.quantity ?? 0;
-    final quantityB = b.item.quantity ?? 0;
+    final quantityA = a.quantity;
+    final quantityB = b.quantity;
     return direction.asInt * quantityA.compareTo(quantityB);
   }
 }

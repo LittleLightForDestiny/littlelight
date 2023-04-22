@@ -57,7 +57,7 @@ abstract class BaseActiveNotificationWidget<T extends ActionNotification> extend
   }
 
   Widget buildNotificationContent(BuildContext context, T notification) {
-    final hash = notification.item.item.itemHash;
+    final hash = notification.item.itemHash;
     if (hash == null) return Container();
     final transferProgress = buildTransferProgress(context, notification);
     final additionalInfo = buildAdditionalInfo(context, notification);

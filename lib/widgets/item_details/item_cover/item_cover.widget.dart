@@ -129,7 +129,7 @@ class ItemCoverDelegate extends SliverPersistentHeaderDelegate {
         child: Hero(
             tag: "item_icon_${tag}_$uniqueId",
             child: ItemIconWidget.builder(
-              item: item,
+              item: null,
               definition: definition,
               instanceInfo: instanceInfo,
               iconBorderWidth: lerpDouble(1, 2, expandRatio) ?? 2,

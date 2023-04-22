@@ -20,7 +20,7 @@ class DetailsTransferBlockWidget extends StatelessWidget {
       final destinations = transferDestinations;
       if (destinations == null) return Container();
       return StackTransferWidget(
-        total: item.item.quantity ?? 1,
+        total: item.quantity,
         onTransferPressed: (stackSize, destination) {
           onAction?.call(TransferActionType.Transfer, destination, stackSize);
         },

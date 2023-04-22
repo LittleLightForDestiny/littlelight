@@ -38,6 +38,7 @@ bool isPlugBlockedForApplying(BuildContext context, DestinyInventoryItemDefiniti
 bool shouldPlugOverrideStyleItemHash(DestinyInventoryItemDefinition? def) {
   final categoryId = def?.plug?.plugCategoryIdentifier;
   if (categoryId == null) return false;
+  if (def?.plug?.isDummyPlug ?? false) return false;
   return _ornamentPlugCategories.any((r) {
     return RegExp(r).hasMatch(categoryId);
   });

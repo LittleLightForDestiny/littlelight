@@ -54,7 +54,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
 
   @override
   Widget build(BuildContext context) {
-    final itemHash = item.item.itemHash;
+    final itemHash = item.itemHash;
     if (itemHash == null) return emptyItem(context);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
       itemHash,
@@ -110,7 +110,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   }
 
   Widget buildTitleBarBackground(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final isMasterwork = item.item.state?.contains(ItemState.Masterwork) ?? false;
+    final isMasterwork = item.state?.contains(ItemState.Masterwork) ?? false;
     if (!isMasterwork) {
       return Container(
         color: definition?.inventory?.tierType?.getColor(context),
@@ -176,7 +176,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   }
 
   String? getWishlistBackgroundPath(BuildContext context) {
-    final itemHash = item.item.itemHash;
+    final itemHash = item.itemHash;
     final reusablePlugs = item.reusablePlugs;
     if (itemHash == null || reusablePlugs == null) return null;
     final tags = wishlistsService.getWishlistBuildTags(itemHash: itemHash, reusablePlugs: reusablePlugs);
@@ -293,7 +293,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     final subclassColor = definition?.talentGrid?.hudDamageType?.getColorLayer(context).layer0 ?? Colors.transparent;
     final bgColor = TinyColor.fromColor(subclassColor).darken(30).desaturate(5).color;
     final itemNotes = context.watch<ItemNotesBloc>();
-    final customName = itemNotes.customNameFor(item.item.itemHash, item.item.itemInstanceId)?.toUpperCase();
+    final customName = itemNotes.customNameFor(item.itemHash, item.instanceId)?.toUpperCase();
     final definitionName = definition?.displayProperties?.name?.toUpperCase();
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
@@ -320,7 +320,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
 
   Widget buildItemName(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final itemNotes = context.watch<ItemNotesBloc>();
-    final customName = itemNotes.customNameFor(item.item.itemHash, item.item.itemInstanceId)?.toUpperCase();
+    final customName = itemNotes.customNameFor(item.itemHash, item.instanceId)?.toUpperCase();
     final definitionName = definition?.displayProperties?.name?.toUpperCase();
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
@@ -337,7 +337,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   }
 
   Widget? buildLockedIcon(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final isLocked = item.item.state?.contains(ItemState.Locked) ?? false;
+    final isLocked = item.state?.contains(ItemState.Locked) ?? false;
     if (!isLocked) return null;
     final style = context.textTheme.itemNameHighDensity;
     return Container(
@@ -397,7 +397,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   }
 
   Widget? buildHeaderWishlistIcons(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final itemHash = item.item.itemHash;
+    final itemHash = item.itemHash;
     final reusablePlugs = item.reusablePlugs;
     if (itemHash == null || reusablePlugs == null) return null;
     final tags = wishlistsService.getWishlistBuildTags(itemHash: itemHash, reusablePlugs: reusablePlugs);
@@ -426,8 +426,8 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   }
 
   Widget? buildHeaderTagIcons(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final itemHash = item.item.itemHash;
-    final itemInstanceId = item.item.itemInstanceId;
+    final itemHash = item.itemHash;
+    final itemInstanceId = item.instanceId;
     if (itemHash == null) return null;
     final itemNotes = context.watch<ItemNotesBloc>();
     final tags = itemNotes.tagsFor(itemHash, itemInstanceId);
@@ -598,9 +598,9 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   }
 
   Widget buildQuantity(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final quantity = item.item.quantity;
+    final quantity = item.quantity;
     final maxCount = definition.inventory?.maxStackSize;
-    if (quantity == null) return Container();
+    if (quantity == 1) return Container();
     TextStyle? textStyle = context.textTheme.itemPrimaryStatHighDensity;
     final text = maxCount != null ? "$quantity/$maxCount" : "x$quantity";
     final isMaxValue = maxCount != null && quantity == maxCount;
@@ -624,11 +624,11 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     int vaultStackCount = 0;
     final style = context.textTheme.caption;
     for (final stack in stacks) {
-      if (stack.item.bucketHash == InventoryBucket.general) {
-        vaultCount += stack.item.quantity ?? 0;
+      if (stack.bucketHash == InventoryBucket.general) {
+        vaultCount += stack.quantity;
         vaultStackCount++;
       } else {
-        inventoryCount += stack.item.quantity ?? 0;
+        inventoryCount += stack.quantity;
         inventoryStackCount++;
       }
     }

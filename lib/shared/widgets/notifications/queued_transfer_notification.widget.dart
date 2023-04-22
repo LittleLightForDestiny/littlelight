@@ -1,4 +1,3 @@
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
@@ -11,7 +10,7 @@ class QueuedTransferNotificationWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hash = notification.item.item.itemHash;
+    final hash = notification.item.itemHash;
     if (hash == null) return Container();
     return Container(
       width: 36,

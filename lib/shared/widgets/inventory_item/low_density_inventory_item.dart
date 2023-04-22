@@ -36,7 +36,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
 
   @override
   Widget build(BuildContext context) {
-    final itemHash = item.item.itemHash;
+    final itemHash = item.itemHash;
     if (itemHash == null) return emptyItem(context);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
       itemHash,
@@ -256,7 +256,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget? buildLockedIcon(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final isLocked = item.item.state?.contains(ItemState.Locked) ?? false;
+    final isLocked = item.state?.contains(ItemState.Locked) ?? false;
     if (!isLocked) return null;
     return SizedBox(
       height: _tagIconSize,
@@ -270,7 +270,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget? buildWishlistIcons(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final itemHash = item.item.itemHash;
+    final itemHash = item.itemHash;
     final reusablePlugs = item.reusablePlugs;
     if (itemHash == null || reusablePlugs == null) return null;
     final tags = wishlistsService.getWishlistBuildTags(itemHash: itemHash, reusablePlugs: reusablePlugs);
@@ -299,8 +299,8 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget? buildHeaderTagIcons(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final itemHash = item.item.itemHash;
-    final itemInstanceId = item.item.itemInstanceId;
+    final itemHash = item.itemHash;
+    final itemInstanceId = item.instanceId;
     if (itemHash == null) return null;
     final itemNotes = context.watch<ItemNotesBloc>();
     final tags = itemNotes.tagsFor(itemHash, itemInstanceId);
@@ -372,7 +372,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget buildQuantity(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final quantity = item.item.quantity;
+    final quantity = item.quantity;
     final maxCount = definition.inventory?.maxStackSize;
     if (quantity == null) return Container();
     TextStyle? textStyle = context.textTheme.itemPrimaryStatLowDensity;

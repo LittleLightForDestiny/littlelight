@@ -958,18 +958,18 @@ packages:
     dependency: "direct main"
     description:
       name: sqflite
-      sha256: "643ab681a84d299bb5b661995668008e732f0577725b5be50d1dd25c1ed42d53"
+      sha256: e7dfb6482d5d02b661d0b2399efa72b98909e5aa7b8336e1fb37e226264ade00
       url: "https://pub.dev"
     source: hosted
-    version: "2.0.0+3"
+    version: "2.2.7"
   sqflite_common:
     dependency: transitive
     description:
       name: sqflite_common
-      sha256: bfd6973aaeeb93475bc0d875ac9aefddf7965ef22ce09790eb963992ffc5183f
+      sha256: "220831bf0bd5333ff2445eee35ec131553b804e6b5d47a4a37ca6f5eb66e282c"
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.2+2"
+    version: "2.4.4"
   stack_trace:
     dependency: transitive
     description:

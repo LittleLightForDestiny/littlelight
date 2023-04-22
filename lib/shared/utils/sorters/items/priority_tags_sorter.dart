@@ -12,8 +12,8 @@ class PriorityTagsSorter extends ItemSorter {
   @override
   int sort(DestinyItemInfo a, DestinyItemInfo b) {
     final itemNotes = context.read<ItemNotesBloc>();
-    final tagsA = itemNotes.tagIdsFor(a.item.itemHash, a.item.itemInstanceId) ?? <String>{};
-    final tagsB = itemNotes.tagIdsFor(b.item.itemHash, b.item.itemInstanceId) ?? <String>{};
+    final tagsA = itemNotes.tagIdsFor(a.itemHash, a.itemInstanceId) ?? <String>{};
+    final tagsB = itemNotes.tagIdsFor(b.itemHash, b.itemInstanceId) ?? <String>{};
     final tags = _priorityTags;
 
     int? indexA;

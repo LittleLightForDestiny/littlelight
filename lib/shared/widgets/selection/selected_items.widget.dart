@@ -28,7 +28,7 @@ class SelectedItemsWidget extends StatelessWidget {
     }
     final item = items.firstOrNull;
     if (item == null) return Container();
-    if (item.item.itemInstanceId == null) {
+    if (item.instanceId == null) {
       return buildStackedItemSelection(context, item);
     }
     return buildInstancedItemSelection(context, item);
@@ -118,8 +118,8 @@ class SelectedItemsWidget extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(onTap: () {
-              final hash = item.item.itemHash;
-              final id = item.item.itemInstanceId;
+              final hash = item.itemHash;
+              final id = item.instanceId;
               if (hash == null) return;
               selectionBloc(context).unselectItem(hash, instanceId: id, stackIndex: item.stackIndex);
             }),
@@ -140,8 +140,8 @@ class SelectedItemsWidget extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(onTap: () {
-              final hash = item.item.itemHash;
-              final id = item.item.itemInstanceId;
+              final hash = item.itemHash;
+              final id = item.instanceId;
               if (hash == null) return;
               selectionBloc(context).unselectItem(hash, instanceId: id, stackIndex: item.stackIndex);
             }),
@@ -205,9 +205,9 @@ class SelectedItemsWidget extends StatelessWidget {
   Widget buildStackTransfer(BuildContext context, DestinyItemInfo item) {
     if (selectionState(context).transferDestinations.isEmpty) return Container();
     return Container(
-        key: Key("stack-transfer-${item.item.itemHash}"),
+        key: Key("stack-transfer-${item.itemHash}"),
         child: StackTransferWidget(
-          total: item.item.quantity ?? 1,
+          total: item.quantity ?? 1,
           onTransferPressed: (stackSize, destination) {
             final items = selectionBloc(context).selectedItems;
             inventoryBloc(context).transfer(items.first, destination, stackSize: stackSize);

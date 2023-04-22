@@ -115,7 +115,7 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
     final item = await Navigator.of(context).push(SelectLoadoutItemPageRoute(
         classType: classType, idsToAvoid: idsToAvoid, bucketHash: bucketHash, emblemHash: loadout.emblemHash));
     if (item == null) return;
-    await loadout.addItem(item.item, asEquipped);
+    await loadout.addItem(item, asEquipped);
     _changed = true;
     notifyListeners();
   }
@@ -128,10 +128,7 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
     switch (option) {
       case LoadoutSlotOptionsResponse.Details:
         Navigator.of(context).push(ItemDetailsPageRoute.viewOnly(
-          item: ItemWithOwner(
-            inventoryItem,
-            null,
-          ),
+          item: inventoryItem,
         ));
         return;
       case LoadoutSlotOptionsResponse.Remove:
@@ -146,7 +143,7 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
 
       case LoadoutSlotOptionsResponse.EditMods:
         final plugs = await Navigator.of(context).push(EditLoadoutItemModsPageRoute(
-          inventoryItem.itemInstanceId!,
+          inventoryItem.instanceId!,
           emblemHash: _loadout?.emblemHash,
           plugHashes: item.itemPlugs,
         ));

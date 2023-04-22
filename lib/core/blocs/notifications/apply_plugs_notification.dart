@@ -17,7 +17,7 @@ class ApplyPlugsNotification extends ActionNotification {
   }) : super(item: item);
 
   @override
-  String get id => "apply-mods-${item.item.itemHash}-${item.item.itemInstanceId}-${createdAt.millisecondsSinceEpoch}";
+  String get id => "apply-mods-${item.itemHash}-${item.instanceId}-${createdAt.millisecondsSinceEpoch}";
 
   @override
   double get progress {

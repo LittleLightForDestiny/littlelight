@@ -1,7 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 
 class DestinyItemInfo {
-  DestinyItemComponent item;
+  DestinyItemComponent _item;
   String? characterId;
   Map<String, List<DestinyObjectiveProgress>>? plugObjectives;
   Map<String, List<DestinyItemPlugBase>>? reusablePlugs;
@@ -12,7 +12,7 @@ class DestinyItemInfo {
   int? stackIndex;
 
   DestinyItemInfo(
-    this.item, {
+    this._item, {
     this.characterId,
     this.plugObjectives,
     this.reusablePlugs,
@@ -22,20 +22,36 @@ class DestinyItemInfo {
     this.stackIndex,
   });
 
-  int get quantity => item.quantity ?? 1;
-  void set quantity(int count) => item.quantity = count;
-  int? get itemHash => item.itemHash;
-  int? get bucketHash => item.bucketHash;
+  int? get itemHash => _item.itemHash;
 
-  String? get instanceId => item.itemInstanceId;
+  int get quantity => _item.quantity ?? 1;
+  void set quantity(int count) => _item.quantity = count;
 
-  DestinyItemInfo clone() {
-    final json = this.item.toJson();
+  int? get bucketHash => _item.bucketHash;
+  set bucketHash(int? bucketHash) => _item.bucketHash = bucketHash;
 
-    final item = DestinyItemComponent.fromJson(json);
-    return DestinyItemInfo(
-      item,
-      characterId: characterId,
-    );
-  }
+  String? get instanceId => _item.itemInstanceId;
+  @deprecated
+  String? get itemInstanceId => instanceId;
+
+  ItemLocation? get location => _item.location;
+  set location(ItemLocation? location) => _item.location = location;
+
+  ItemState? get state => _item.state;
+  set state(ItemState? state) => _item.state = state;
+
+  bool? get lockable => _item.lockable;
+
+  int? get overrideStyleItemHash => _item.overrideStyleItemHash;
+  set overrideStyleItemHash(int? overrideStyleItemHash) => _item.overrideStyleItemHash = overrideStyleItemHash;
+
+  int? get versionNumber => _item.versionNumber;
+
+  String? get expirationDate => _item.expirationDate;
+
+  DestinyItemInfo clone() => DestinyItemInfo(
+        DestinyItemComponent.fromJson(_item.toJson()),
+        characterId: characterId,
+        //TODO: properly clone internal info
+      );
 }

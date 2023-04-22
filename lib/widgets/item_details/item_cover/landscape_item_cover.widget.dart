@@ -186,7 +186,7 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
         child: Hero(
             tag: "item_icon_${tag}_$uniqueId",
             child: ItemIconWidget.builder(
-              item: item?.item,
+              item: null,
               definition: definition,
               instanceInfo: instanceInfo,
               iconBorderWidth: lerpDouble(1, convertSize(3, context), expandRatio),

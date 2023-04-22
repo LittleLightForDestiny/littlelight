@@ -109,7 +109,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
           Navigator.push(
               context,
               ItemDetailsPageRoute(
-                item: item,
+                item: null,
               ));
         },
       ));

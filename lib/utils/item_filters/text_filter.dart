@@ -41,13 +41,12 @@ class TextFilter extends BaseItemFilter<String> with WishlistsConsumer, ProfileC
             ?.fold<List<int>>([], (l, r) => l.followedBy(r.map((e) => e.plugItemHash)).toList())?.toSet() ??
         <int>{});
     final wishlistBuildNotes =
-        wishlistsService.getWishlistBuildNotes(itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
-    final wishlistTags =
-        wishlistsService.getWishlistBuildTags(itemHash: item.item.itemHash, reusablePlugs: reusablePlugs);
+        wishlistsService.getWishlistBuildNotes(itemHash: item.itemHash, reusablePlugs: reusablePlugs);
+    final wishlistTags = wishlistsService.getWishlistBuildTags(itemHash: item.itemHash, reusablePlugs: reusablePlugs);
 
     var loadoutNames = loadouts
         .where(
-          (l) => l.containsItem(item.item.itemInstanceId),
+          (l) => l.containsItem(item.instanceId),
         )
         .map((l) => l.name ?? "");
 

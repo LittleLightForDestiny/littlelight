@@ -15,8 +15,8 @@ class ExpirationDateSorter extends ItemSorter {
 
   @override
   int sort(DestinyItemInfo a, DestinyItemInfo b) {
-    final expA = expirationToInt(a.item.expirationDate);
-    final expB = expirationToInt(b.item.expirationDate);
+    final expA = expirationToInt(a.expirationDate);
+    final expB = expirationToInt(b.expirationDate);
     return expA.compareTo(expB) * direction.asInt;
   }
 }

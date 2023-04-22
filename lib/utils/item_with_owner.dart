@@ -15,4 +15,8 @@ class ItemWithOwner {
   }
 
   ItemWithOwner(this.item, this._ownerId);
+
+  int? get itemHash => item.itemHash;
+
+  String? get instanceId => item.itemInstanceId;
 }

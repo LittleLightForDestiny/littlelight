@@ -27,7 +27,7 @@ class _EquipmentState {
   void add(DestinyItemInfo item) {
     final characterId = item.characterId;
     final isEquipped = item.instanceInfo?.isEquipped ?? false;
-    final currentBucket = item.item.bucketHash;
+    final currentBucket = item.bucketHash;
     if (currentBucket == null) return;
     if (characterId != null && isEquipped) {
       final equippedItems = equippedItemsInCharacters ??= {};
@@ -106,7 +106,7 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
 
     final vaultItems = <DestinyItemInfo>[];
     for (final item in items) {
-      final isOnVault = item.item.bucketHash == InventoryBucket.general;
+      final isOnVault = item.bucketHash == InventoryBucket.general;
       if (isOnVault) {
         vaultItems.add(item);
         continue;
@@ -117,9 +117,9 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
     _equipmentState = equipmentState;
     notifyListeners();
 
-    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(vaultItems.map((e) => e.item.itemHash));
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(vaultItems.map((e) => e.itemHash));
     for (final item in vaultItems) {
-      final hash = item.item.itemHash;
+      final hash = item.itemHash;
       final bucketHash = defs[hash]?.inventory?.bucketTypeHash;
       if (bucketHash == null) continue;
       equipmentState.addToVault(item, bucketHash);

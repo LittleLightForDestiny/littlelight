@@ -1,23 +1,24 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/modules/item_details/blocs/socket_controller.bloc.dart';
 import 'package:little_light/modules/item_details/widgets/details_energy_meter.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_collectible_info.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_intrinsic_perk.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_lore.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_mods.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_notes.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_perks.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_stats.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_tags.widget.dart';
-import 'package:little_light/modules/item_details/widgets/details_transfer_block.widget.dart';
 import 'package:little_light/modules/item_details/widgets/item_details_cover.widget.dart';
 import 'package:little_light/modules/item_details/widgets/lock_status.widget.dart';
+import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 
-import 'inventory_item_details.bloc.dart';
+import '../../blocs/item_details.bloc.dart';
 
 class InventoryItemDetailsView extends StatelessWidget {
-  final InventoryItemDetailsBloc bloc;
-  final InventoryItemDetailsBloc state;
+  final ItemDetailsBloc bloc;
+  final ItemDetailsBloc state;
   final SocketControllerBloc socketState;
 
   InventoryItemDetailsView(this.bloc, this.state, this.socketState);
@@ -48,9 +49,7 @@ class InventoryItemDetailsView extends StatelessWidget {
   Widget buildBody(BuildContext context) {
     return CustomScrollView(
       slivers: [
-        ItemDetailsCoverWidget(
-          item: state.item,
-        ),
+        ItemDetailsCoverWidget(),
         buildTransferOptions(context),
         buildLockState(context),
         ...buildIntrinsicPerks(context),
@@ -62,6 +61,8 @@ class InventoryItemDetailsView extends StatelessWidget {
         ...buildMods(context),
         buildItemNotes(context),
         buildItemTags(context),
+        buildLore(context),
+        buildCollectibleInfo(context),
         buildEmptySpace(context),
       ].whereType<Widget>().toList(),
     );
@@ -80,15 +81,15 @@ class InventoryItemDetailsView extends StatelessWidget {
   }
 
   Widget? buildTransferOptions(BuildContext context) {
-    final item = state.item;
-    if (item == null) return null;
-    return SliverToBoxAdapter(
-      child: DetailsTransferBlockWidget(
-        item,
-        transferDestinations: state.transferDestinations,
-        equipDestinations: state.equipDestinations,
-      ),
-    );
+    // final item = state.item;
+    // if (item == null) return null;
+    // return SliverToBoxAdapter(
+    //   child: DetailsTransferBlockWidget(
+    //     item,
+    //     transferDestinations: state.transferDestinations,
+    //     equipDestinations: state.equipDestinations,
+    //   ),
+    // );
   }
 
   Widget? buildLockState(BuildContext context) {
@@ -184,6 +185,24 @@ class InventoryItemDetailsView extends StatelessWidget {
       tags: state.tags,
       onRemoveTag: state.removeTag,
       onAddTap: state.editTags,
+    ));
+  }
+
+  Widget buildLore(BuildContext context) {
+    final hash = state.itemHash;
+    if (hash == null) return Container();
+    return SliverToBoxAdapter(
+        child: DetailsItemLoreWidget(
+      hash,
+    ));
+  }
+
+  Widget buildCollectibleInfo(BuildContext context) {
+    final hash = state.itemHash;
+    if (hash == null) return Container();
+    return SliverToBoxAdapter(
+        child: DetailsItemCollectibleInfoWidget(
+      hash,
     ));
   }
 

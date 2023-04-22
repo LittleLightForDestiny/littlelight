@@ -77,17 +77,19 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
 
   _startAutoUpdater() {
     if (_updateTimer?.isActive ?? false) return;
-    _updateTimer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (!_lifecycleBloc.isActive) return;
-      if (isBusy) return;
-      final lastUpdated = _lastUpdated;
-      if (lastUpdated == null) return;
-      final elapsedTime = DateTime.now().difference(lastUpdated);
-      if (elapsedTime > _refreshDelay) {
-        logger.info("last refresh was on $lastUpdated, auto-refreshing");
-        updateInventory();
-      }
-    });
+    _updateTimer = Timer.periodic(const Duration(seconds: 1), _timedUpdate);
+  }
+
+  void _timedUpdate(Timer timer) {
+    if (!_lifecycleBloc.isActive) return;
+    if (isBusy) return;
+    final lastUpdated = _lastUpdated;
+    if (lastUpdated == null) return;
+    final elapsedTime = DateTime.now().difference(lastUpdated);
+    if (elapsedTime > _refreshDelay) {
+      logger.info("last refresh was on $lastUpdated, auto-refreshing");
+      updateInventory();
+    }
   }
 
   Future<void> _firstLoad() async {
@@ -166,7 +168,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final sourceCharacter = _profileBloc.getCharacterById(item.characterId);
     final sourceType = item.characterId != null
         ? TransferDestinationType.character
-        : item.item.bucketHash == InventoryBucket.general
+        : item.bucketHash == InventoryBucket.general
             ? TransferDestinationType.vault
             : TransferDestinationType.profile;
     final source = TransferDestination(sourceType, character: sourceCharacter);
@@ -174,12 +176,12 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final destinationCharacter = destination.character;
     if (sourceCharacter?.characterId == destinationCharacter?.characterId &&
         sourceCharacter?.characterId != null &&
-        item.item.bucketHash != InventoryBucket.lostItems &&
+        item.bucketHash != InventoryBucket.lostItems &&
         equip == (item.instanceInfo?.isEquipped ?? false)) {
       logger.info("item is already on destination. Skipping.");
       return null;
     }
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.item.itemHash);
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     if (def?.nonTransferrable == true &&
         sourceCharacter?.characterId != destinationCharacter?.characterId &&
         destination.type != TransferDestinationType.profile) {
@@ -190,8 +192,8 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final sameItemTranfers = _actionQueue.where(
       (t) =>
           t is QueuedTransfer && //
-          t.item.item.itemInstanceId == item.item.itemInstanceId &&
-          t.item.item.itemHash == item.item.itemHash,
+          t.item.instanceId == item.instanceId &&
+          t.item.itemHash == item.itemHash,
     );
     for (final t in sameItemTranfers) {
       t.cancel(_context);
@@ -215,7 +217,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
             notification: notification,
             stackSize: stackSize,
           );
-    final instanceId = item.item.itemInstanceId;
+    final instanceId = item.instanceId;
     if (instanceId != null) {
       instanceIdsToAvoid.add(instanceId);
     }
@@ -264,7 +266,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final postmasterTransfers = running.whereType<QueuedTransfer>().where((t) => t.startedOnPostmaster);
     final busySlots = <_BusySlot>[];
     for (final transfer in postmasterTransfers) {
-      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(transfer.item.item.itemHash);
+      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(transfer.item.itemHash);
       final characterId = transfer.item.characterId;
       final bucketHash = def?.inventory?.bucketTypeHash;
       if (bucketHash == null) continue;
@@ -276,7 +278,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final equipTransfers = (waiting.toList() + running.toList()).whereType<QueuedEquip>();
     for (final transfer in equipTransfers) {
       final characterId = transfer.destination.characterId;
-      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(transfer.item.item.itemHash);
+      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(transfer.item.itemHash);
       final bucketHash = def?.inventory?.bucketTypeHash;
       if (bucketHash == null) continue;
       if (characterId == null) continue;
@@ -293,7 +295,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     }
 
     for (final transfer in waiting) {
-      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(transfer.item.item.itemHash);
+      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(transfer.item.itemHash);
       final defaultBucketHash = def?.inventory?.bucketTypeHash;
       final currentBucket = transfer.item.bucketHash;
       final isFromPostmaster = currentBucket == InventoryBucket.lostItems;
@@ -362,7 +364,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     QueuedTransfer? transfer,
     bool equip = false,
   }) async {
-    final bool isInstanced = item.item.itemInstanceId != null;
+    final bool isInstanced = item.instanceId != null;
     transfer?.start();
     if (isInstanced) {
       await _transferInstanced(
@@ -449,15 +451,16 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     bool shouldEquip = false,
   }) async {
     final itemsToPutBack = <_PutBackTransfer>[];
-    final item = itemInfo.item;
-    final itemHash = item.itemHash;
-    final itemInstanceId = item.itemInstanceId;
-    final isOnPostmaster = item.location == ItemLocation.Postmaster || item.bucketHash == InventoryBucket.lostItems;
+
+    final itemHash = itemInfo.itemHash;
+    final itemInstanceId = itemInfo.instanceId;
+    final isOnPostmaster =
+        itemInfo.location == ItemLocation.Postmaster || itemInfo.bucketHash == InventoryBucket.lostItems;
     if (itemHash == null) throw ("Missing item Hash");
     if (itemInstanceId == null) throw ("Missing item instance ID");
     final sourceCharacterId = itemInfo.characterId;
     final destinationCharacterId = destination.characterId;
-    final isOnVault = item.location == ItemLocation.Vault;
+    final isOnVault = itemInfo.location == ItemLocation.Vault;
     final shouldMoveToVault = sourceCharacterId != destinationCharacterId && !isOnVault;
     final shouldMoveToOtherCharacter = sourceCharacterId != destinationCharacterId && destinationCharacterId != null;
     final isEquipped = itemInfo.instanceInfo?.isEquipped ?? false;
@@ -659,9 +662,9 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     TransferNotification? notification,
     int stackSize = 1,
   }) async {
-    final isOnPostmaster = itemInfo.item.bucketHash == InventoryBucket.lostItems;
+    final isOnPostmaster = itemInfo.bucketHash == InventoryBucket.lostItems;
     final shouldMoveToVault = destination.type == TransferDestinationType.vault;
-    final shouldMoveToCharacter = itemInfo.item.bucketHash == InventoryBucket.general && !shouldMoveToVault;
+    final shouldMoveToCharacter = itemInfo.bucketHash == InventoryBucket.general && !shouldMoveToVault;
     final destinationCharacterId = _profileBloc.characters?.firstOrNull?.characterId;
 
     notification?.createSteps(
@@ -742,16 +745,16 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final characterId = itemInfo.characterId;
     if (characterId == null) return null;
     final candidates = _profileBloc.allItems.where((item) =>
-        item.item.bucketHash == itemInfo.item.bucketHash && //
-        !instanceIdsToAvoid.contains(item.item.itemInstanceId) &&
+        item.bucketHash == itemInfo.bucketHash && //
+        !instanceIdsToAvoid.contains(item.instanceId) &&
         item.characterId == characterId &&
         !(item.instanceInfo?.isEquipped ?? false));
     final character = _profileBloc.getCharacter(characterId);
-    final itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemInfo.item.itemHash);
+    final itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
     final itemTierType = itemDef?.inventory?.tierType;
 
     for (final c in candidates) {
-      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(c.item.itemHash);
+      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(c.itemHash);
       final tierType = def?.inventory?.tierType;
       final classType = def?.classType;
       final acceptableClasses = [character?.classType, DestinyClass.Unknown];
@@ -775,17 +778,17 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(def?.inventory?.bucketTypeHash);
     final availableSlots = (bucketDef?.itemCount ?? 0) - (bucketDef?.category == BucketCategory.Equippable ? 1 : 0);
     final itemsOnBucket =
-        _profileBloc.allItems.where((item) => item.item.bucketHash == bucketHash && item.characterId == characterId);
+        _profileBloc.allItems.where((item) => item.bucketHash == bucketHash && item.characterId == characterId);
     if (itemsOnBucket.length < availableSlots) return null;
     final itemToTransfer = itemsOnBucket.lastWhereOrNull((i) {
-      final avoidId = instanceIdsToAvoid.contains(i.item.itemInstanceId);
+      final avoidId = instanceIdsToAvoid.contains(i.instanceId);
       if (avoidId) return false;
-      final avoidHash = hashesToAvoid?.contains(i.item.itemHash) ?? false;
+      final avoidHash = hashesToAvoid?.contains(i.itemHash) ?? false;
       if (avoidHash) return false;
       return true;
     });
     if (itemToTransfer == null) return null;
-    final itemInstanceId = itemToTransfer.item.itemInstanceId;
+    final itemInstanceId = itemToTransfer.instanceId;
     if (itemInstanceId != null) {
       instanceIdsToAvoid.add(itemInstanceId);
     }

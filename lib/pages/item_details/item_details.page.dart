@@ -30,7 +30,6 @@ import 'package:little_light/widgets/inventory_tabs/inventory_notification.widge
 import 'package:little_light/widgets/item_details/item_collectible_info.widget.dart';
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_cover/landscape_item_cover.widget.dart';
-import 'package:little_light/widgets/item_details/item_detail_duplicates.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_loadouts.widget.dart';
 import 'package:little_light/widgets/item_details/item_level.widget.dart';
 import 'package:little_light/widgets/item_details/item_lore.widget.dart';
@@ -99,7 +98,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   String get uniqueId => routeArgs.uniqueId;
   bool get hideItemManagement => routeArgs.hideItemManagement;
 
-  ItemWithOwner get itemWithOwner {
+  DestinyItemInfo get itemWithOwner {
     final args = routeArgs;
     if (args is ItemDetailsPageArguments) {
       return args.item;
@@ -120,8 +119,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   DestinyInventoryItemDefinition definition;
-  DestinyItemComponent get item => itemInfo?.item ?? itemWithOwner?.item;
-  String get characterId => itemInfo?.characterId ?? itemWithOwner?.ownerId;
+  DestinyItemComponent get item => null;
+  String get characterId => itemInfo?.characterId;
 
   DestinyItemInstanceComponent get instanceInfo =>
       itemInfo?.instanceInfo ?? profile.getInstanceInfo(item?.itemInstanceId);
@@ -158,10 +157,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Future<void> initSocketController() async {
-    if (itemWithOwner != null && itemWithOwner?.item?.itemInstanceId != null) {
-      socketController = ItemSocketController.fromItem(itemWithOwner);
-      return;
-    }
     if (routeArgs is VendorItemDetailsPageArguments) {
       final args = routeArgs as VendorItemDetailsPageArguments;
       socketController = ItemSocketController.fromVendorItem(
@@ -279,7 +274,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
         body: Stack(children: [
       CustomScrollView(
         slivers: [
-          LandscapeItemCoverWidget(itemWithOwner, definition, instanceInfo,
+          LandscapeItemCoverWidget(null, definition, instanceInfo,
               uniqueId: uniqueId,
               socketController: socketController,
               hideTransferBlock: hideItemManagement,
@@ -437,18 +432,18 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
               ),
               onPressed: () async {
                 var loadouts = context.read<LoadoutsBloc>().loadouts;
-                var equipped = false;
+                // var equipped = false;
                 showModalBottomSheet(
                     context: context,
                     builder: (context) => LoadoutSelectSheet(
                         header: AsEquippedSwitchWidget(
                           onChanged: (value) {
-                            equipped = value;
+                            // equipped = value;
                           },
                         ),
                         loadouts: loadouts,
                         onSelect: (loadout) async {
-                          loadout.addItem(item, equipped);
+                          // loadout.addItem(item, equipped);
                           context.read<LoadoutsBloc>().saveLoadout(loadout);
                         }));
               })));
@@ -489,14 +484,15 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
 
   Widget buildDuplicates(context) {
     var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: ItemDetailDuplicatesWidget(
-          itemWithOwner,
-          definition,
-          instanceInfo,
-          duplicates: duplicates,
-        ));
+    return Container();
+    // return Container(
+    //     padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
+    //     child: ItemDetailDuplicatesWidget(
+    //       itemWithOwner,
+    //       definition,
+    //       instanceInfo,
+    //       duplicates: duplicates,
+    //     ));
   }
 
   Widget buildObjectives(BuildContext context) {

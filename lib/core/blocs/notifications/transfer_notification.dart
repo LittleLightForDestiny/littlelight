@@ -27,8 +27,7 @@ class TransferNotification extends ActionNotification {
   }) : super(item: item);
 
   @override
-  String get id =>
-      "transfer-action-${item.item.itemHash}-${item.item.itemInstanceId}-${createdAt.millisecondsSinceEpoch}";
+  String get id => "transfer-action-${item.itemHash}-${item.instanceId}-${createdAt.millisecondsSinceEpoch}";
 
   TransferNotification createSideEffect({
     required DestinyItemInfo item,

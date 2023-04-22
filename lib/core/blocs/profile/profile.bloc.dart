@@ -18,7 +18,6 @@ import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_last_played_sorter.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_sorter.dart';
-import 'package:little_light/utils/item_with_owner.dart';
 
 import 'destiny_character_info.dart';
 
@@ -34,10 +33,10 @@ class _CachedItemsContainer {
   List<DestinyItemInfo> allItems = <DestinyItemInfo>[];
 
   void add(DestinyItemInfo itemInfo, {bool groupWithSimilarItems = false}) {
-    final itemInstanceId = itemInfo.item.itemInstanceId;
+    final itemInstanceId = itemInfo.instanceId;
     if (itemInstanceId != null) itemsByInstanceId[itemInstanceId] = itemInfo;
 
-    final itemHash = itemInfo.item.itemHash;
+    final itemHash = itemInfo.itemHash;
     if (itemHash != null) {
       final items = itemsByHash[itemHash] ??= [];
       items.add(itemInfo);
@@ -49,7 +48,7 @@ class _CachedItemsContainer {
   }
 
   void remove(DestinyItemInfo itemInfo) {
-    final itemInstanceId = itemInfo.item.itemInstanceId;
+    final itemInstanceId = itemInfo.instanceId;
     if (itemInstanceId != null) itemsByInstanceId.remove(itemInstanceId);
 
     final byHash = itemsByHash[itemInfo.itemHash];
@@ -478,11 +477,6 @@ class ProfileBloc extends ChangeNotifier
 
   List<DestinyItemInfo> getItemsByHash(int hash) => _itemCache.itemsByHash[hash] ?? [];
 
-  List<DestinyItemComponent> getItemsByInstanceId(List<String?> ids) {
-    final _ids = ids.whereType<String>().toSet();
-    return _ids.map((e) => getItemByInstanceId(e)?.item).whereType<DestinyItemComponent>().toList();
-  }
-
   String? getItemOwner(String itemInstanceId) {
     String? owner;
     _cachedProfileResponse?.characterEquipment?.data?.forEach((charId, inventory) {
@@ -505,8 +499,6 @@ class ProfileBloc extends ChangeNotifier
     return _cachedProfileResponse?.profileProgression?.data?.seasonalArtifact;
   }
 
-  List<ItemWithOwner> getAllItems() => allItems.map((i) => ItemWithOwner(i.item, i.characterId)).toList();
-
   List<DestinyItemInfo> get allItems {
     return _itemCache.allItems;
   }
@@ -516,8 +508,8 @@ class ProfileBloc extends ChangeNotifier
   }
 
   Future<void> pullFromPostMaster(DestinyItemInfo itemInfo, int stackSize) async {
-    final itemHash = itemInfo.item.itemHash;
-    final itemInstanceId = itemInfo.item.itemInstanceId;
+    final itemHash = itemInfo.itemHash;
+    final itemInstanceId = itemInfo.instanceId;
     final characterId = itemInfo.characterId;
     if (itemHash == null) throw Exception('Missing itemHash');
     if (characterId == null) throw Exception('Missing characterId');
@@ -532,8 +524,8 @@ class ProfileBloc extends ChangeNotifier
   }
 
   Future<void> transferItem(DestinyItemInfo itemInfo, int stackSize, bool transferToVault, String characterId) async {
-    final itemHash = itemInfo.item.itemHash;
-    final itemInstanceId = itemInfo.item.itemInstanceId;
+    final itemHash = itemInfo.itemHash;
+    final itemInstanceId = itemInfo.instanceId;
     if (itemHash == null) throw 'TODO: specific exception';
 
     await bungieAPI.transferItem(itemHash, stackSize, transferToVault, itemInstanceId, characterId);
@@ -546,15 +538,15 @@ class ProfileBloc extends ChangeNotifier
   }
 
   Future<void> equipItem(DestinyItemInfo itemInfo) async {
-    final itemInstanceId = itemInfo.item.itemInstanceId;
+    final itemInstanceId = itemInfo.instanceId;
     final characterId = itemInfo.characterId;
-    final bucketHash = itemInfo.item.bucketHash;
+    final bucketHash = itemInfo.bucketHash;
     if (itemInstanceId == null) throw 'TODO: specific exception';
     if (characterId == null) throw 'TODO: specific exception';
     if (bucketHash == null) throw 'TODO: specific exception';
     await bungieAPI.equipItem(itemInstanceId, characterId);
     final currentlyEquipped = allItems.firstWhereOrNull((i) =>
-        i.item.bucketHash == bucketHash && //
+        i.bucketHash == bucketHash && //
         i.characterId == characterId &&
         (i.instanceInfo?.isEquipped ?? false));
     currentlyEquipped?.instanceInfo?.isEquipped = false;
@@ -571,13 +563,13 @@ class ProfileBloc extends ChangeNotifier
   }
 
   Future<void> _updateInstancedItemLocation(DestinyItemInfo itemInfo, bool toVault, String characterId) async {
-    final itemHash = itemInfo.item.itemHash!;
+    final itemHash = itemInfo.itemHash!;
     final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);
     final newLocation = toVault ? ItemLocation.Vault : ItemLocation.Inventory;
     final newBucket = toVault ? InventoryBucket.general : def?.inventory?.bucketTypeHash;
     final newCharacter = toVault ? null : characterId;
-    itemInfo.item.location = newLocation;
-    itemInfo.item.bucketHash = newBucket;
+    itemInfo.location = newLocation;
+    itemInfo.bucketHash = newBucket;
     itemInfo.characterId = newCharacter;
     notifyListeners();
     _lastLocalChange = DateTime.now().toUtc();
@@ -630,7 +622,7 @@ class ProfileBloc extends ChangeNotifier
       remainingSourceQuantity -= quantity;
       final item = itemInfo.clone();
       item.quantity = quantity;
-      item.item.bucketHash = sourceBucket;
+      item.bucketHash = sourceBucket;
       item.characterId = sourceCharacterId;
       _itemCache.add(item);
     }
@@ -651,7 +643,7 @@ class ProfileBloc extends ChangeNotifier
       remainingDestinationQuantity -= quantity;
       final item = itemInfo.clone();
       item.quantity = quantity;
-      item.item.bucketHash = destinationBucket;
+      item.bucketHash = destinationBucket;
       item.characterId = destinationCharacterId;
       _itemCache.add(item);
     }
@@ -661,18 +653,20 @@ class ProfileBloc extends ChangeNotifier
   }
 
   Future<void> changeItemLockState(DestinyItemInfo item, bool locked) async {
-    final instanceId = item.item.itemInstanceId;
+    final instanceId = item.instanceId;
     final characterId = item.characterId ?? characters?.firstOrNull?.characterId;
     if (instanceId == null) throw "Can't change lock state of an item that doesn't have a instance id";
     if (characterId == null) throw "Can't change lock state of an item without a characterId";
     await this.bungieAPI.changeLockState(instanceId, characterId, locked);
-    final currentValue = item.item.state?.value ?? 0;
+    final currentValue = item.state?.value ?? 0;
+    final isLocked = item.state?.contains(ItemState.Locked) ?? false;
+    if (locked == isLocked) return;
     if (locked) {
       final newValue = currentValue + ItemState.Locked.value;
-      item.item.state = ItemState(newValue);
+      item.state = ItemState(newValue);
     } else {
       final newValue = currentValue - ItemState.Locked.value;
-      item.item.state = ItemState(newValue);
+      item.state = ItemState(newValue);
     }
     notifyListeners();
   }
@@ -681,12 +675,13 @@ class ProfileBloc extends ChangeNotifier
     final characters = this.characters?.toList();
     characters?.sort((charA, charB) => sortCharacterByLastPlayed(charA, charB));
     final characterId = item.characterId ?? characters?.lastOrNull?.characterId;
-    final instanceId = item.item.itemInstanceId;
+    final instanceId = item.instanceId;
     if (instanceId == null) throw "Can't apply plugs on an item that doesn't have a instance id";
     if (characterId == null) throw "Can't apply plugs on an item without a characterId";
     await bungieAPI.applySocket(instanceId, plugHash, socketIndex, characterId);
     final sockets = item.sockets;
     if (sockets != null) {
+      final previousPlugHash = sockets[socketIndex].plugHash;
       sockets[socketIndex].plugHash = plugHash;
       final plugHashes = <int, int?>{for (var s in sockets) sockets.indexOf(s): s.plugHash};
       final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
@@ -697,10 +692,15 @@ class ProfileBloc extends ChangeNotifier
         for (final s in stats) {
           item.stats?["${s.statHash}"]?.value = s.equipped + s.equippedMasterwork;
         }
-      final plugDef = plugDefs[plugHash];
+      final plugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(plugHash);
+      final previousPlugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(previousPlugHash);
+      final wasOverridingStyle = shouldPlugOverrideStyleItemHash(previousPlugDef);
       final overrideStyle = shouldPlugOverrideStyleItemHash(plugDef);
+      if (wasOverridingStyle) {
+        item.overrideStyleItemHash = null;
+      }
       if (overrideStyle) {
-        item.item.overrideStyleItemHash = plugHash;
+        item.overrideStyleItemHash = plugHash;
       }
     }
     notifyListeners();

@@ -23,9 +23,7 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
     final sockets = itemInfo.sockets;
     final socketCategory = definition.sockets?.socketCategories //
         ?.firstWhereOrNull((c) => c.socketCategoryHash == categoryHash);
-    final plugs = socketCategory?.socketIndexes
-        ?.map((e) => sockets?[e])
-        .whereType<DestinyItemSocketState>();
+    final plugs = socketCategory?.socketIndexes?.map((e) => sockets?[e]).whereType<DestinyItemSocketState>();
     if (plugs == null || plugs.isEmpty) return Container();
     return Row(
       children: plugs //
@@ -41,19 +39,17 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
     return Stack(
         fit: StackFit.loose,
         children: [
-          Positioned.fill(
-              child: buildWishlistBackground(context, plugHash) ?? Container()),
+          Positioned.fill(child: buildWishlistBackground(context, plugHash) ?? Container()),
           SizedBox(
             width: plugSize,
             height: plugSize,
-            child:
-                ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash),
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash),
           ),
         ].whereType<Widget>().toList());
   }
 
   Widget? buildWishlistBackground(BuildContext context, int plugHash) {
-    final itemHash = itemInfo.item.itemHash;
+    final itemHash = itemInfo.itemHash;
     if (itemHash == null) return null;
     final tags = wishlistsService.getPlugTags(itemHash, plugHash);
     if (tags.isEmpty) return null;
@@ -62,10 +58,8 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
     if (tags.isAllAround) {
       final isGodPvE = tags.contains(WishlistTag.GodPVE);
       final isGodPvP = tags.contains(WishlistTag.GodPVP);
-      final pveBorderColor = (isGodPvE ? WishlistTag.GodPVE : WishlistTag.PVE)
-          .getBorderColor(context);
-      final pvpBorderColor = (isGodPvP ? WishlistTag.GodPVP : WishlistTag.PVP)
-          .getBorderColor(context);
+      final pveBorderColor = (isGodPvE ? WishlistTag.GodPVE : WishlistTag.PVE).getBorderColor(context);
+      final pvpBorderColor = (isGodPvP ? WishlistTag.GodPVP : WishlistTag.PVP).getBorderColor(context);
 
       return Stack(
         fit: StackFit.expand,
@@ -86,10 +80,7 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
             decoration: BoxDecoration(
               borderRadius: borderRadius,
               gradient: LinearGradient(
-                colors: [
-                  WishlistTag.PVE.getBorderColor(context),
-                  WishlistTag.PVP.getBorderColor(context)
-                ],
+                colors: [WishlistTag.PVE.getBorderColor(context), WishlistTag.PVP.getBorderColor(context)],
                 stops: const [.49, .51],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -105,11 +96,7 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
         decoration: BoxDecoration(
           borderRadius: borderRadius,
           color: WishlistTag.PVE.getColor(context),
-          border: isGodPvE
-              ? Border.all(
-                  width: borderWidth,
-                  color: WishlistTag.GodPVE.getBorderColor(context))
-              : null,
+          border: isGodPvE ? Border.all(width: borderWidth, color: WishlistTag.GodPVE.getBorderColor(context)) : null,
         ),
       );
     }
@@ -119,11 +106,7 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
         decoration: BoxDecoration(
           borderRadius: borderRadius,
           color: WishlistTag.PVP.getColor(context),
-          border: isGodPvE
-              ? Border.all(
-                  width: borderWidth,
-                  color: WishlistTag.GodPVP.getBorderColor(context))
-              : null,
+          border: isGodPvE ? Border.all(width: borderWidth, color: WishlistTag.GodPVP.getBorderColor(context)) : null,
         ),
       );
     }

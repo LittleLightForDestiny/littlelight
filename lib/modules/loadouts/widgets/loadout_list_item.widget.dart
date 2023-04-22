@@ -1,18 +1,18 @@
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
 
 enum LoadoutListItemAction { Equip, Edit, Delete }
 
@@ -209,21 +209,20 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget buildClassIcon(DestinyClass destinyClass) => CenterIconWorkaround(destinyClass.icon, size: 16);
 
-  Widget buildItem(DestinyItemComponent? item) {
+  Widget buildItem(DestinyItemInfo? item) {
     if (item == null) {
       return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: const Key("item_icon_empty"));
     }
     final profile = getInjectedProfileService();
-    final instance = profile.getInstanceInfo(item.itemInstanceId);
+    final instance = profile.getInstanceInfo(item.instanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
       item.itemHash!,
       (def) => ItemIconWidget.builder(item: item, definition: def, instanceInfo: instance),
-      key: Key("item_icon_${item.itemInstanceId}"),
+      key: Key("item_icon_${item.instanceId}"),
     );
   }
 
-  List<Widget> buildItemRow(
-      BuildContext context, IconData icon, List<int> buckets, Map<int, DestinyItemComponent?> items) {
+  List<Widget> buildItemRow(BuildContext context, IconData icon, List<int> buckets, Map<int, DestinyItemInfo?> items) {
     List<Widget> itemWidgets = [];
     itemWidgets.add(Icon(icon));
     itemWidgets.addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
@@ -241,15 +240,15 @@ class LoadoutListItemWidget extends StatelessWidget {
         .toList();
   }
 
-  Widget itemIcon(DestinyItemComponent? item) {
+  Widget itemIcon(DestinyItemInfo? item) {
     if (item == null) {
       return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: const Key("item_icon_empty"));
     }
     final profile = getInjectedProfileService();
-    final instance = profile.getInstanceInfo(item.itemInstanceId);
+    final instance = profile.getInstanceInfo(item.instanceId);
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         item.itemHash!,
         (def) => ItemIconWidget.builder(
-            item: item, definition: def, instanceInfo: instance, key: Key("item_icon_${item.itemInstanceId}")));
+            item: item, definition: def, instanceInfo: instance, key: Key("item_icon_${item.instanceId}")));
   }
 }

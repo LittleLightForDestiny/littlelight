@@ -3,31 +3,26 @@ import 'dart:ui';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
-import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.bloc.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
+import 'package:little_light/modules/item_details/blocs/item_details.bloc.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
-import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
-import 'package:little_light/widgets/common/masterwork_counter/base_masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ItemDetailsCoverWidget extends StatelessWidget {
-  final DestinyItemInfo? item;
-
   const ItemDetailsCoverWidget({
-    this.item,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final state = context.watch<InventoryItemDetailsBloc>();
-    final hash = this.item?.itemHash;
+    final state = context.watch<ItemDetailsBloc>();
+    final hash = state.itemHash;
     final definition = context.definition<DestinyInventoryItemDefinition>(hash);
     final styleDefinition = context.definition<DestinyInventoryItemDefinition>(state.styleHash);
     final width = MediaQuery.of(context).size.width;
@@ -49,7 +44,6 @@ class ItemDetailsCoverWidget extends StatelessWidget {
 }
 
 class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
-  final DestinyItemComponent? item;
   final DestinyInventoryItemDefinition? styleDefinition;
   final DestinyInventoryItemDefinition? itemDefinition;
   final DestinyItemInstanceComponent? instanceInfo;
@@ -60,7 +54,6 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
   String? get uniqueId => null;
 
   ItemDetailsCoverDelegate({
-    this.item,
     this.itemDefinition,
     this.instanceInfo,
     this.minHeight = 50,
@@ -81,8 +74,8 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
           children: <Widget>[
             background(context, expandRatio),
             overlay(context, expandRatio),
-            masterworkCounter(context, expandRatio),
-            nameBar(context, expandRatio),
+            // masterworkCounter(context, expandRatio),
+            // nameBar(context, expandRatio),
             icon(context, expandRatio),
             backButton(context, expandRatio),
           ],
@@ -91,20 +84,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget nameBar(BuildContext context, double expandRatio) {
     double leftOffset = lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio) ?? 0;
-    return Positioned(
-        left: 0,
-        bottom: 0,
-        right: 0,
-        height: kToolbarHeight,
-        child: ItemNameBarWidget(
-          item,
-          itemDefinition,
-          instanceInfo,
-          multiline: true,
-          padding: EdgeInsets.only(
-              left: leftOffset + 8, right: 8, top: (kToolbarHeight - 16) / 2, bottom: (kToolbarHeight - 16) / 2),
-          fontSize: 16,
-        ));
+    return Positioned(left: 0, bottom: 0, right: 0, height: kToolbarHeight, child: Container());
   }
 
   Widget icon(BuildContext context, double expandRatio) {
@@ -117,7 +97,6 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
         width: size,
         height: size,
         child: ItemIconWidget.builder(
-          item: item,
           definition: styleDefinition ?? itemDefinition,
           instanceInfo: instanceInfo,
           iconBorderWidth: lerpDouble(1, 2, expandRatio) ?? 2,
@@ -134,16 +113,6 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
         child: BackButton(
             color: Color.lerp(itemDefinition?.inventory?.tierType?.getTextColor(context), Colors.grey.shade300,
                 expandRatio.clamp(0, 1))));
-  }
-
-  Widget masterworkCounter(BuildContext context, double expandRatio) {
-    double leftOffset = lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio) ?? 104;
-    if (item == null) return Container();
-    return Positioned(
-        left: leftOffset,
-        bottom: kToolbarHeight * expandRatio * .8,
-        right: kToolbarHeight,
-        child: BaseMasterworkCounterWidget(item: item!));
   }
 
   Widget shareButton(BuildContext context, double expandRatio) {
@@ -216,7 +185,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
     if (imgUrl == null) {
       return Container();
     }
-    var overrideStyleItemHash = item?.overrideStyleItemHash;
+    var overrideStyleItemHash = styleDefinition?.hash;
     if (overrideStyleItemHash != null) {
       return DefinitionProviderWidget<DestinyInventoryItemDefinition>(overrideStyleItemHash, (def) {
         if (def?.plug?.isDummyPlug ?? false) {
@@ -257,6 +226,7 @@ class ItemDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
   bool shouldRebuild(ItemDetailsCoverDelegate oldDelegate) {
     final isDifferentHeight = maxHeight != oldDelegate.maxHeight || minHeight != oldDelegate.minHeight;
     final isDifferentStyle = styleDefinition?.hash != oldDelegate.styleDefinition?.hash;
+    logger.debug("currentHash: ${styleDefinition?.hash} previousHash:${oldDelegate.styleDefinition?.hash}");
     return isDifferentHeight || isDifferentStyle;
   }
 }

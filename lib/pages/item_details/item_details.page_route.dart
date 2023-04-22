@@ -1,9 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
-import 'package:little_light/pages/item_details/item_details.page.dart';
 import 'package:little_light/pages/item_details/item_details.page_container.dart';
-import 'package:little_light/utils/item_with_owner.dart';
 
 abstract class ItemDetailsPageArgumentsBase {
   final int itemHash;
@@ -13,13 +11,13 @@ abstract class ItemDetailsPageArgumentsBase {
 }
 
 class ItemDetailsPageArguments extends ItemDetailsPageArgumentsBase {
-  final ItemWithOwner item;
+  final DestinyItemInfo item;
   ItemDetailsPageArguments({
     required this.item,
     String? uniqueId,
     bool hideItemManagement = false,
   }) : super(
-          item.item.itemHash!,
+          item.itemHash!,
           uniqueId: uniqueId,
           hideItemManagement: hideItemManagement,
         );
@@ -32,7 +30,7 @@ class ItemInfoPageArguments extends ItemDetailsPageArgumentsBase {
     String? uniqueId,
     bool hideItemManagement = false,
   }) : super(
-          item.item.itemHash!,
+          item.itemHash!,
           uniqueId: uniqueId,
           hideItemManagement: hideItemManagement,
         );
@@ -75,7 +73,7 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
   }) : super(settings: settings, builder: (context) => const ItemDetailsPageContainer());
 
   factory ItemDetailsPageRoute({
-    required ItemWithOwner item,
+    required DestinyItemInfo item,
     Key? key,
     String? heroKey,
   }) =>
@@ -94,7 +92,7 @@ class ItemDetailsPageRoute extends MaterialPageRoute {
       );
 
   factory ItemDetailsPageRoute.viewOnly({
-    required ItemWithOwner item,
+    required DestinyItemInfo item,
     Key? key,
     String? heroKey,
   }) =>

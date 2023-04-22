@@ -1,40 +1,39 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/src/widgets/framework.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/modules/item_details/blocs/socket_controller.bloc.dart';
+import 'package:little_light/modules/item_details/blocs/item_details.bloc.dart';
 import 'package:little_light/modules/item_details/pages/edit_item_notes/edit_item_notes.bottomsheet.dart';
 import 'package:little_light/modules/item_tags/pages/edit_item_tags/edit_item_tags.bottomsheet.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/utils/helpers/get_transfer_destinations.dart';
 import 'package:provider/provider.dart';
 
-class InventoryItemDetailsBloc extends ChangeNotifier {
+class InventoryItemDetailsBloc extends ItemDetailsBloc {
   final ProfileBloc _profileBloc;
   final InventoryBloc _inventoryBloc;
   final ItemNotesBloc _itemNotesBloc;
   final SocketControllerBloc _socketControllerBloc;
+
+  @protected
   DestinyItemInfo? item;
-  List<LoadoutItemIndex>? loadouts;
-  final BuildContext _context;
-  bool _lockBusy = false;
 
   List<TransferDestination>? _transferDestinations;
-
-  List<TransferDestination>? get transferDestinations => _transferDestinations;
   List<TransferDestination>? _equipDestinations;
-  List<TransferDestination>? get equipDestinations => _equipDestinations;
 
-  InventoryItemDetailsBloc(this._context, {this.item})
-      : _profileBloc = _context.read<ProfileBloc>(),
-        _inventoryBloc = _context.read<InventoryBloc>(),
-        _itemNotesBloc = _context.read<ItemNotesBloc>(),
-        _socketControllerBloc = _context.read<SocketControllerBloc>() {
+  bool _lockBusy = false;
+
+  InventoryItemDetailsBloc(BuildContext context, {DestinyItemInfo? this.item})
+      : _profileBloc = context.read<ProfileBloc>(),
+        _inventoryBloc = context.read<InventoryBloc>(),
+        _itemNotesBloc = context.read<ItemNotesBloc>(),
+        _socketControllerBloc = context.read<SocketControllerBloc>(),
+        super(context) {
     _init();
   }
 
@@ -52,27 +51,6 @@ class InventoryItemDetailsBloc extends ChangeNotifier {
     super.dispose();
   }
 
-  int? get itemHash => item?.itemHash;
-  int? get styleHash => item?.item.overrideStyleItemHash ?? itemHash;
-
-  String? get customName {
-    final hash = itemHash;
-    return _itemNotesBloc.customNameFor(hash, instanceId);
-  }
-
-  String? get itemNotes {
-    final hash = itemHash;
-    return _itemNotesBloc.notesFor(hash, instanceId);
-  }
-
-  List<ItemNotesTag>? get tags {
-    final hash = itemHash;
-    return _itemNotesBloc.tagsFor(hash, instanceId);
-  }
-
-  String? get instanceId => item?.instanceId;
-  int? get stackIndex => item?.stackIndex;
-
   void _updateItem() async {
     final allItems = _profileBloc.allItems;
     final item = allItems.firstWhereOrNull((item) =>
@@ -84,7 +62,7 @@ class InventoryItemDetailsBloc extends ChangeNotifier {
     this.item = item;
     final characters = _profileBloc.characters;
     final items = [item];
-    final destinations = await getTransferDestinations(_context, characters, items);
+    final destinations = await getTransferDestinations(context, characters, items);
     this._transferDestinations = destinations?.transfer;
     this._equipDestinations = destinations?.equip;
 
@@ -92,31 +70,47 @@ class InventoryItemDetailsBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool? get isLocked {
-    final lockable = item?.item.lockable ?? false;
-    if (!lockable) return null;
-    return item?.item.state?.contains(ItemState.Locked);
+  @override
+  int? get itemHash => item?.itemHash;
+  @protected
+  String? get instanceId => item?.instanceId;
+  @protected
+  int? get stackIndex => item?.stackIndex;
+  @override
+  int? get styleHash => item?.overrideStyleItemHash ?? itemHash;
+
+  @override
+  List<TransferDestination>? get transferDestinations => _transferDestinations;
+  @override
+  List<TransferDestination>? get equipDestinations => _equipDestinations;
+
+  @override
+  String? get customName {
+    final hash = itemHash;
+    return _itemNotesBloc.customNameFor(hash, instanceId);
   }
 
-  bool get isLockBusy => _lockBusy;
-
-  void changeLockState(bool newState) async {
-    final item = this.item;
-    if (item == null) return;
-    _lockBusy = true;
-    notifyListeners();
-    await _inventoryBloc.changeItemLockState(item, newState);
-    _lockBusy = false;
-    notifyListeners();
+  @override
+  String? get itemNotes {
+    final hash = itemHash;
+    return _itemNotesBloc.notesFor(hash, instanceId);
   }
 
+  @override
+  List<ItemNotesTag>? get tags {
+    final hash = itemHash;
+    return _itemNotesBloc.tagsFor(hash, instanceId);
+  }
+
+  @override
   void editNotes() {
     final hash = this.item?.itemHash;
     final instanceId = this.item?.instanceId;
     if (hash == null) return;
-    EditItemNotesBottomSheet(hash, instanceId).show(_context);
+    EditItemNotesBottomSheet(hash, instanceId).show(context);
   }
 
+  @override
   void removeTag(ItemNotesTag tag) {
     final hash = this.item?.itemHash;
     final instanceId = this.item?.instanceId;
@@ -125,10 +119,32 @@ class InventoryItemDetailsBloc extends ChangeNotifier {
     _itemNotesBloc.removeTag(hash, instanceId, tagId);
   }
 
+  @override
   void editTags() {
     final hash = this.item?.itemHash;
     final instanceId = this.item?.instanceId;
     if (hash == null) return;
-    EditItemTagsBottomSheet(hash, instanceId).show(_context);
+    EditItemTagsBottomSheet(hash, instanceId).show(context);
+  }
+
+  @override
+  bool? get isLocked {
+    final lockable = item?.lockable ?? false;
+    if (!lockable) return null;
+    return item?.state?.contains(ItemState.Locked);
+  }
+
+  @override
+  bool get isLockBusy => _lockBusy;
+
+  @override
+  void changeLockState(bool newState) async {
+    final item = this.item;
+    if (item == null) return;
+    _lockBusy = true;
+    notifyListeners();
+    await _inventoryBloc.changeItemLockState(item, newState);
+    _lockBusy = false;
+    notifyListeners();
   }
 }

@@ -193,7 +193,7 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
           child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
               itemHash,
               (def) => ItemIconWidget(
-                    _latestEvent?.item,
+                    null,
                     def,
                     instanceInfo,
                     iconBorderWidth: 0,

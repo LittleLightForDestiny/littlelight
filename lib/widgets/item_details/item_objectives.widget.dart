@@ -8,14 +8,13 @@ import 'package:bungie_api/models/destiny_objective_progress.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
-import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
+import 'package:little_light/utils/destiny_data.dart';
+import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 
 class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   const ItemObjectivesWidget(
@@ -49,9 +48,9 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
   updateProgress() {
     var itemInstanceId = widget.item?.itemInstanceId;
     if (itemInstanceId == null) {
-      var allItems = profile.getAllItems();
-      var item = allItems.firstWhere((i) => i.item.itemHash == widget.definition?.hash, orElse: () => null);
-      itemInstanceId = item?.item?.itemInstanceId;
+      // var allItems = profile.getAllItems();
+      // var item = allItems.firstWhere((i) => i.item.itemHash == widget.definition?.hash, orElse: () => null);
+      // itemInstanceId = item?.item?.itemInstanceId;
     }
 
     itemObjectives = profile.getItemObjectives(itemInstanceId, characterId, item?.itemHash);

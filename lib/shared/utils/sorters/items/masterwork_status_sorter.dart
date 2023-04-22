@@ -9,8 +9,8 @@ class MasterworkStatusSorter extends ItemSorter {
 
   @override
   int sort(DestinyItemInfo a, DestinyItemInfo b) {
-    final mwA = a.item.state?.contains(ItemState.Masterwork) ?? false;
-    final mwB = b.item.state?.contains(ItemState.Masterwork) ?? false;
+    final mwA = a.state?.contains(ItemState.Masterwork) ?? false;
+    final mwB = b.state?.contains(ItemState.Masterwork) ?? false;
     final intA = mwA ? 1 : 0;
     final intB = mwB ? 1 : 0;
     return direction.asInt * intA.compareTo(intB);

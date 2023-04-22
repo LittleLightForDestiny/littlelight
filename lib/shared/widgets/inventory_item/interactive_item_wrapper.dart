@@ -24,8 +24,8 @@ class InteractiveItemWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (density != null) return buildWithDensity(context, density!);
-    final hash = item.item.itemHash;
-    final itemInstanceId = item.item.itemInstanceId;
+    final hash = item.itemHash;
+    final itemInstanceId = item.instanceId;
     return LayoutBuilder(
         key: Key("selectable $hash $itemInstanceId"),
         builder: (context, constraints) {
@@ -40,7 +40,7 @@ class InteractiveItemWrapper extends StatelessWidget {
   }
 
   Widget buildWithDensity(BuildContext context, InventoryItemWidgetDensity density) {
-    final hash = item.item.itemHash;
+    final hash = item.itemHash;
     if (hash == null) return Container();
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         hash,
@@ -61,11 +61,10 @@ class InteractiveItemWrapper extends StatelessWidget {
   }
 
   Widget buildSelectedBorder(BuildContext context) {
-    final hash = item.item.itemHash;
+    final hash = item.itemHash;
     if (hash == null) return Container();
-    final isSelected = context
-        .watch<SelectionBloc>()
-        .isSelected(hash, instanceId: item.item.itemInstanceId, stackIndex: item.stackIndex);
+    final isSelected =
+        context.watch<SelectionBloc>().isSelected(hash, instanceId: item.instanceId, stackIndex: item.stackIndex);
     if (!isSelected) return Container();
     return Container(
       margin: EdgeInsets.all(itemMargin - selectedBorder),

@@ -32,12 +32,12 @@ Future<_Destinations?> getTransferDestinations(
     bool canTransfer = false;
     bool canEquip = false;
     for (final item in items) {
-      final hash = item.item.itemHash;
+      final hash = item.itemHash;
       final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
       if (def == null) continue;
       final bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory?.bucketTypeHash);
-      bool isOnVault = item.item.bucketHash == InventoryBucket.general;
-      bool isOnPostmaster = item.item.bucketHash == InventoryBucket.lostItems;
+      bool isOnVault = item.bucketHash == InventoryBucket.general;
+      bool isOnPostmaster = item.bucketHash == InventoryBucket.lostItems;
 
       canTransferToProfile |= isOnVault || isOnPostmaster;
       canTransferToVault |= item.canTransfer(null, def) && !isOnVault;

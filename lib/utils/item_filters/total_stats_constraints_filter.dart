@@ -16,10 +16,8 @@ class TotalStatsConstraints {
   TotalStatsConstraints([this.min, this.max, this.includeNonArmorItems = true]);
 }
 
-class TotalStatsConstraintsFilter extends BaseItemFilter<TotalStatsConstraints>
-    with ProfileConsumer {
-  TotalStatsConstraintsFilter(
-      TotalStatsConstraints available, TotalStatsConstraints selected)
+class TotalStatsConstraintsFilter extends BaseItemFilter<TotalStatsConstraints> with ProfileConsumer {
+  TotalStatsConstraintsFilter(TotalStatsConstraints available, TotalStatsConstraints selected)
       : super(available, selected);
 
   @override
@@ -29,11 +27,10 @@ class TotalStatsConstraintsFilter extends BaseItemFilter<TotalStatsConstraints>
     availableValues.min = 9999;
     availableValues.max = -9999;
     for (var item in items) {
-      var def = definitions[item.item.itemHash];
+      var def = definitions[item.itemHash];
       if (def.itemType == DestinyItemType.Armor) {
-        var stats = profile.getPrecalculatedStats(item.item.itemInstanceId);
-        var totalStats =
-            stats.values.fold<int>(0, (t, s) => t + (s.value ?? 0));
+        var stats = profile.getPrecalculatedStats(item.instanceId);
+        var totalStats = stats.values.fold<int>(0, (t, s) => t + (s.value ?? 0));
         availableValues.min = min(availableValues.min, totalStats);
         availableValues.max = max(availableValues.max, totalStats);
       } else {
@@ -41,8 +38,7 @@ class TotalStatsConstraintsFilter extends BaseItemFilter<TotalStatsConstraints>
       }
     }
 
-    available =
-        (availableValues?.min ?? 9999) < (availableValues?.max ?? -9999);
+    available = (availableValues?.min ?? 9999) < (availableValues?.max ?? -9999);
 
     if (available) {
       value.max = min(availableValues.max, value.max ?? 9999);
@@ -53,12 +49,10 @@ class TotalStatsConstraintsFilter extends BaseItemFilter<TotalStatsConstraints>
   }
 
   @override
-  bool filterItem(ItemWithOwner item,
-      {Map<int, DestinyInventoryItemDefinition> definitions}) {
-    var def = definitions[item.item.itemHash];
-    if (def.itemType != DestinyItemType.Armor)
-      return value.includeNonArmorItems;
-    var stats = profile.getPrecalculatedStats(item.item.itemInstanceId);
+  bool filterItem(ItemWithOwner item, {Map<int, DestinyInventoryItemDefinition> definitions}) {
+    var def = definitions[item.itemHash];
+    if (def.itemType != DestinyItemType.Armor) return value.includeNonArmorItems;
+    var stats = profile.getPrecalculatedStats(item.instanceId);
     var totalStats = stats.values.fold<int>(0, (t, s) => t + (s.value ?? 0));
     if (totalStats < value.min) return false;
     if (totalStats > value.max) return false;

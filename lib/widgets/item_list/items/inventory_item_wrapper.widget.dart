@@ -254,7 +254,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
     Navigator.push(
       context,
       ItemDetailsPageRoute(
-        item: widget.item,
+        item: null,
         heroKey: uniqueId,
       ),
     );

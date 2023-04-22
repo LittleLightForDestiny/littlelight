@@ -52,10 +52,8 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
 
   Widget? buildBorder(BuildContext context) {
     final theme = LittleLightTheme.of(context);
-    final isDeepSight =
-        itemInfo.item.state?.contains(ItemState.HighlightedObjective) ?? false;
-    final isMasterwork =
-        itemInfo.item.state?.contains(ItemState.Masterwork) ?? false;
+    final isDeepSight = itemInfo.state?.contains(ItemState.HighlightedObjective) ?? false;
+    final isMasterwork = itemInfo.state?.contains(ItemState.Masterwork) ?? false;
     if (isDeepSight) {
       return Container(color: theme.highlightedObjectiveLayers.layer0);
     }
@@ -63,9 +61,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
       final isExotic = definition.inventory?.tierType == TierType.Exotic;
       final masterworkLayers = LittleLightTheme.of(context).achievementLayers;
       return Shimmer.fromColors(
-        baseColor: isExotic
-            ? theme.achievementLayers.layer1
-            : theme.achievementLayers.layer2,
+        baseColor: isExotic ? theme.achievementLayers.layer1 : theme.achievementLayers.layer2,
         highlightColor: masterworkLayers.layer3,
         period: const Duration(seconds: 5),
         child: Container(color: Colors.white),
@@ -81,10 +77,9 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   }
 
   Widget buildIconImage(BuildContext context) {
-    final overrideStyleItemHash = itemInfo.item.overrideStyleItemHash;
+    final overrideStyleItemHash = itemInfo.overrideStyleItemHash;
     if (overrideStyleItemHash != null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(
-          overrideStyleItemHash);
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(overrideStyleItemHash);
     }
     final iconImage = definition.displayProperties?.icon;
     if (iconImage != null) {
@@ -94,15 +89,12 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   }
 
   Widget? buildMasterworkOverlay(BuildContext context) {
-    final isMasterwork =
-        itemInfo.item.state?.contains(ItemState.Masterwork) ?? false;
+    final isMasterwork = itemInfo.state?.contains(ItemState.Masterwork) ?? false;
     if (!isMasterwork) return null;
     final tierType = definition.inventory?.tierType;
     if (tierType == null) return null;
     final isExotic = tierType == TierType.Exotic;
-    final imgPath = isExotic
-        ? "assets/imgs/masterwork-outline-exotic.png"
-        : "assets/imgs/masterwork-outline.png";
+    final imgPath = isExotic ? "assets/imgs/masterwork-outline-exotic.png" : "assets/imgs/masterwork-outline.png";
     final masterworkLayers = LittleLightTheme.of(context).achievementLayers;
     return Stack(
       fit: StackFit.expand,
@@ -125,10 +117,9 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   }
 
   Widget? buildSeasonOverlay(BuildContext context) {
-    final versionNumber = itemInfo.item.versionNumber;
+    final versionNumber = itemInfo.versionNumber;
     if (versionNumber == null) return null;
-    final badgeUrl =
-        definition.quality?.displayVersionWatermarkIcons?[versionNumber];
+    final badgeUrl = definition.quality?.displayVersionWatermarkIcons?[versionNumber];
     if (badgeUrl?.isEmpty ?? true) return null;
     return QueuedNetworkImage.fromBungie(
       badgeUrl,
@@ -137,8 +128,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   }
 
   Widget? buildDeepsightOverlay(BuildContext context) {
-    final isDeepSight =
-        itemInfo.item.state?.contains(ItemState.HighlightedObjective) ?? false;
+    final isDeepSight = itemInfo.state?.contains(ItemState.HighlightedObjective) ?? false;
     if (!isDeepSight) return null;
     final color = LittleLightTheme.of(context).highlightedObjectiveLayers;
     return LayoutBuilder(
@@ -162,8 +152,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
                               style: LittleLightTheme.of(context)
                                   .textTheme
                                   .button
-                                  .copyWith(
-                                      fontSize: constraints.maxWidth * .2),
+                                  .copyWith(fontSize: constraints.maxWidth * .2),
                             )
                           : Container(),
                     ),
@@ -184,14 +173,12 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
             .toList())
         .fold<List<int>>([], (list, element) => list + element);
     if (completedObjectiveHashes.isEmpty) return false;
-    final defs = await manifest
-        .getDefinitions<DestinyObjectiveDefinition>(completedObjectiveHashes);
-    return defs.values
-        .any((def) => def.uiStyle == DestinyObjectiveUiStyle.Highlighted);
+    final defs = await manifest.getDefinitions<DestinyObjectiveDefinition>(completedObjectiveHashes);
+    return defs.values.any((def) => def.uiStyle == DestinyObjectiveUiStyle.Highlighted);
   }
 
   Widget? buildCraftedWeaponOverlay(BuildContext context) {
-    final isCrafted = itemInfo.item.state?.contains(ItemState.Crafted) ?? false;
+    final isCrafted = itemInfo.state?.contains(ItemState.Crafted) ?? false;
     if (!isCrafted) return null;
     return Image.asset(
       "assets/imgs/crafted-icon-overlay.png",
@@ -211,18 +198,13 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
                 fit: BoxFit.cover,
               ),
             ),
-            Positioned.fill(
-                child: Padding(
-                    padding: EdgeInsets.all(borderSize),
-                    child: buildIconImage(context))),
+            Positioned.fill(child: Padding(padding: EdgeInsets.all(borderSize), child: buildIconImage(context))),
             Positioned.fill(
               child: Padding(
                 padding: EdgeInsets.all(borderSize),
                 child: Shimmer.fromColors(
-                    baseColor:
-                        context.theme.onSurfaceLayers.layer0.withOpacity(0),
-                    highlightColor:
-                        context.theme.onSurfaceLayers.layer0.withOpacity(1),
+                    baseColor: context.theme.onSurfaceLayers.layer0.withOpacity(0),
+                    highlightColor: context.theme.onSurfaceLayers.layer0.withOpacity(1),
                     child: Image.asset("assets/imgs/engram-placeholder.png")),
               ),
             ),

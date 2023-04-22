@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/item_details/blocs/socket_controller.bloc.dart';
+import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/modules/item_details/widgets/details_apply_plug_button.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_plug_resource_cost.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_plug_stats.widget.dart';

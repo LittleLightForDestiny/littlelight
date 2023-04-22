@@ -47,7 +47,7 @@ class LoadoutSlotOptionsDialog extends LittleLightBaseDialog with ProfileConsume
   @override
   Widget? buildBody(BuildContext context) {
     final item = context.itemArgument?.item;
-    final instanceID = item?.itemInstanceId;
+    final instanceID = item?.instanceId;
     if (instanceID == null || item == null) return Container();
     return null;
   }

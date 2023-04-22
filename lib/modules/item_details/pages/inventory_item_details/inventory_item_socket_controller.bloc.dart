@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
-import 'package:little_light/modules/item_details/blocs/socket_controller.bloc.dart';
+import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:provider/provider.dart';
 
