@@ -6,7 +6,6 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/services/profile/vendors.service.dart';
@@ -14,13 +13,7 @@ import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
 class ItemSocketController extends ChangeNotifier
-    with
-        BungieApiConsumer,
-        ProfileConsumer,
-        ManifestConsumer,
-        NotificationConsumer,
-        AnalyticsConsumer,
-        ItemNotesConsumer {
+    with BungieApiConsumer, ProfileConsumer, ManifestConsumer, NotificationConsumer, AnalyticsConsumer {
   final int _itemHash;
   final ItemWithOwner? item;
   DestinyInventoryItemDefinition? definition;
@@ -360,12 +353,6 @@ class ItemSocketController extends ChangeNotifier
     if (!favoritable) return plugHashes;
     final plugs = plugHashes?.toList();
     plugs?.sort((a, b) {
-      final favoriteA = itemNotes.getNotesForItem(a, null)?.tags?.contains("favorite") ?? false;
-      final favoriteB = itemNotes.getNotesForItem(b, null)?.tags?.contains("favorite") ?? false;
-      final valueA = favoriteA ? 1 : 0;
-      final valueB = favoriteB ? 1 : 0;
-      final favoriteOrder = valueB.compareTo(valueA);
-      if (favoriteOrder != 0) return favoriteOrder;
       final orderA = plugHashes?.indexOf(a) ?? -1;
       final orderB = plugHashes?.indexOf(b) ?? -1;
       return orderB.compareTo(orderA);

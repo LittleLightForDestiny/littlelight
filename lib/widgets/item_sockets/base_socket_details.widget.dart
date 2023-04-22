@@ -15,7 +15,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
@@ -49,7 +48,7 @@ class BaseSocketDetailsWidget extends BaseDestinyStatefulItemWidget {
 }
 
 class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends BaseDestinyItemState<T>
-    with TickerProviderStateMixin, WishlistsConsumer, ManifestConsumer, ItemNotesConsumer {
+    with TickerProviderStateMixin, WishlistsConsumer, ManifestConsumer {
   DestinyStatGroupDefinition _statGroupDefinition;
   ItemSocketController get controller => widget.controller;
   Map<int, DestinySandboxPerkDefinition> _sandboxPerkDefinitions;

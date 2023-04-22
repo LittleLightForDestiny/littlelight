@@ -9,6 +9,7 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
@@ -17,7 +18,6 @@ import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
@@ -42,14 +42,12 @@ import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
 import 'package:little_light/widgets/item_details/wishlist_builds.widget.dart';
 import 'package:little_light/widgets/item_details/wishlist_notes.widget.dart';
-import 'package:little_light/widgets/item_notes/item_details_notes.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_armor_tier.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_intrinsic_perk.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_mods.widget.dart';
 import 'package:little_light/widgets/item_sockets/details_item_perks.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_details_plug_info.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
-import 'package:little_light/widgets/item_tags/item_details_tags.widget.dart';
 import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
 import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +62,7 @@ class ItemDetailsPage extends StatefulWidget {
 }
 
 class ItemDetailScreenState extends State<ItemDetailsPage>
-    with AuthConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer, ItemNotesConsumer {
+    with AuthConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer {
   ItemDetailsPageArgumentsBase get routeArgs {
     final args = ModalRoute.of(context).settings.arguments;
     if (args is ItemDetailsPageArgumentsBase) return args;
@@ -224,7 +222,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Widget buildPortrait(BuildContext context) {
-    var customName = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId)?.customName;
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(
@@ -257,8 +254,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                           buildMods(context),
                           buildWishlistBuilds(context),
                           buildCosmetics(context),
-                          buildNotes(context),
-                          buildTags(context),
                           buildObjectives(context),
                           buildRewards(context),
                           buildQuestInfo(context),
@@ -278,7 +273,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   Widget buildLandscape(BuildContext context) {
-    var customName = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId)?.customName;
+    final itemNotes = context.watch<ItemNotesBloc>();
+    final customName = itemNotes.customNameFor(item?.itemHash, item?.itemInstanceId);
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(
@@ -314,8 +310,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                           buildMods(context),
                           buildWishlistBuilds(context),
                           buildCosmetics(context),
-                          buildNotes(context),
-                          buildTags(context),
                           buildObjectives(context),
                           buildRewards(context),
                           buildQuestInfo(context),
@@ -503,38 +497,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
           instanceInfo,
           duplicates: duplicates,
         ));
-  }
-
-  Widget buildNotes(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
-    if (item == null) return Container(height: 1);
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: ItemDetailsNotesWidget(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            characterId: characterId,
-            onUpdate: () {
-              setState(() => {});
-            },
-            key: const Key("item_notes")));
-  }
-
-  Widget buildTags(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
-    if (item == null) return Container();
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: ItemDetailsTagsWidget(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            characterId: characterId,
-            onUpdate: () {
-              setState(() => {});
-            },
-            key: const Key("item_tags_widget")));
   }
 
   Widget buildObjectives(BuildContext context) {

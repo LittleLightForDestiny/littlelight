@@ -40,8 +40,8 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
 
   void _loadLoadouts() async {
     if (_busy) return;
-    await Future.delayed(const Duration(milliseconds: 1));
     _busy = true;
+    await Future.delayed(const Duration(milliseconds: 1));
     notifyListeners();
     final localLoadouts = await currentMembershipStorage.getCachedLoadouts() ?? [];
     final loadoutsOrder = await currentMembershipStorage.getLoadoutsOrder() ?? [];

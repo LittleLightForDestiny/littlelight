@@ -1,13 +1,13 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
@@ -20,6 +20,7 @@ import 'package:little_light/shared/widgets/character/postmaster_icon.widget.dar
 import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
 import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
+import 'package:little_light/shared/widgets/tags/tag_icon.widget.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/utils/stats_total.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -42,7 +43,7 @@ const _titleBarIconSize = 24.0;
 const _iconWidth = 96.0;
 const _primaryStatIconsSize = 18.0;
 
-class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, WishlistsConsumer, ManifestConsumer {
+class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, ManifestConsumer {
   final DestinyItemInfo item;
   final bool showCharacterIcon;
   const HighDensityInventoryItem(
@@ -291,8 +292,8 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
   Widget buildSubclassTitleBar(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final subclassColor = definition?.talentGrid?.hudDamageType?.getColorLayer(context).layer0 ?? Colors.transparent;
     final bgColor = TinyColor.fromColor(subclassColor).darken(30).desaturate(5).color;
-    final customName =
-        itemNotes.getNotesForItem(item.item.itemHash, item.item.itemInstanceId)?.customName?.toUpperCase();
+    final itemNotes = context.watch<ItemNotesBloc>();
+    final customName = itemNotes.customNameFor(item.item.itemHash, item.item.itemInstanceId)?.toUpperCase();
     final definitionName = definition?.displayProperties?.name?.toUpperCase();
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
@@ -318,8 +319,8 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
   }
 
   Widget buildItemName(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final customName =
-        itemNotes.getNotesForItem(item.item.itemHash, item.item.itemInstanceId)?.customName?.toUpperCase();
+    final itemNotes = context.watch<ItemNotesBloc>();
+    final customName = itemNotes.customNameFor(item.item.itemHash, item.item.itemInstanceId)?.toUpperCase();
     final definitionName = definition?.displayProperties?.name?.toUpperCase();
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
@@ -428,25 +429,15 @@ class HighDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, W
     final itemHash = item.item.itemHash;
     final itemInstanceId = item.item.itemInstanceId;
     if (itemHash == null) return null;
-    final tags = itemNotes.getTagsForItem(itemHash, itemInstanceId);
+    final itemNotes = context.watch<ItemNotesBloc>();
+    final tags = itemNotes.tagsFor(itemHash, itemInstanceId);
     if (tags == null || tags.isEmpty) return null;
     return Row(
       children: tags
           .map((tag) {
-            final color = tag.backgroundColor;
-            final foregroundColor = tag.foregroundColor;
-            final borderColor = tag.foregroundColor;
-            final icon = tag.iconData;
             return Container(
               margin: const EdgeInsets.only(right: 4),
-              width: _titleBarIconSize,
-              height: _titleBarIconSize,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(24),
-                border: Border.all(width: 1.0, color: borderColor ?? color ?? Colors.transparent),
-              ),
-              child: Icon(icon, size: 18, color: foregroundColor),
+              child: TagIconWidget.fromTag(tag),
             );
           })
           .whereType<Widget>()

@@ -27,7 +27,6 @@ abstract class BaseAnimationBuilderState<T extends BaseAnimationBuilder> extends
 
   @override
   void dispose() {
-    controller.stop();
     controller.dispose();
     super.dispose();
   }
@@ -44,7 +43,12 @@ abstract class BaseAnimationBuilderState<T extends BaseAnimationBuilder> extends
 
   @override
   Widget build(BuildContext context) {
-    return widget.builder(controller);
+    return AnimatedBuilder(
+      animation: this.controller,
+      builder: (context, child) {
+        return widget.builder(controller);
+      },
+    );
   }
 
   void updateAnimation(AnimationController controller);

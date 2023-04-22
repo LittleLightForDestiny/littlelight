@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/utils/item_filters/item_tag_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
@@ -12,16 +11,14 @@ class ItemTagFilterWidget extends BaseSearchFilterWidget<ItemTagFilter> {
   const ItemTagFilterWidget(SearchController controller) : super(controller);
 
   @override
-  _WishlistTagsFilterWidgetState createState() =>
-      _WishlistTagsFilterWidgetState();
+  _WishlistTagsFilterWidgetState createState() => _WishlistTagsFilterWidgetState();
 }
 
-class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
-    ItemTagFilterWidget, ItemTagFilter, ItemNotesTag> with ItemNotesConsumer {
+class _WishlistTagsFilterWidgetState
+    extends BaseSearchFilterWidgetState<ItemTagFilterWidget, ItemTagFilter, ItemNotesTag> {
   @override
   Iterable<ItemNotesTag> get options {
-    var tags = itemNotes.tagsByIds(filter.availableValues);
-    return tags;
+    return [];
   }
 
   @override
@@ -34,8 +31,7 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
 
   @override
   Widget buildButtons(BuildContext context) {
-    return Column(
-        children: options.map((o) => buildButton(context, o)).toList());
+    return Column(children: options.map((o) => buildButton(context, o)).toList());
   }
 
   @override
@@ -63,8 +59,7 @@ class _WishlistTagsFilterWidgetState extends BaseSearchFilterWidgetState<
       Container(width: 4),
       ((value?.custom ?? false) && tagName != null)
           ? Text(tagName?.toUpperCase(), style: style)
-          : TranslatedTextWidget(tagName ?? "Untitled",
-              uppercase: true, style: style)
+          : TranslatedTextWidget(tagName ?? "Untitled", uppercase: true, style: style)
     ]);
   }
 

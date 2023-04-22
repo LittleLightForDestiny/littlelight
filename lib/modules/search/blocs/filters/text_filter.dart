@@ -1,10 +1,10 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/modules/search/blocs/filter_options/text_filter_options.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/string/remove_diacritics.dart';
@@ -12,13 +12,15 @@ import 'package:provider/provider.dart';
 
 import 'base_item_filter.dart';
 
-class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer, WishlistsConsumer, ItemNotesConsumer {
+class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer, WishlistsConsumer {
   List<LoadoutItemIndex>? loadouts;
+  ItemNotesBloc? itemNotesBloc;
   TextFilter({initialText = ""}) : super(TextFilterOptions());
 
   @override
   Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {
     loadouts = context.read<LoadoutsBloc>().loadouts;
+    itemNotesBloc = context.read<ItemNotesBloc>();
     return super.filter(context, items);
   }
 
@@ -61,7 +63,7 @@ class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer
         ?.where((l) => instanceId != null ? l.containsItem(instanceId) : false) //
         .map((l) => l.name);
 
-    final customName = itemNotes.getNotesForItem(hash, instanceId)?.customName?.toLowerCase();
+    final customName = itemNotesBloc?.customNameFor(hash, instanceId)?.toLowerCase();
 
     return terms.every((t) {
       var words = t.split(" ");

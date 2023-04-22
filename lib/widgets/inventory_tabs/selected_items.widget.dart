@@ -17,7 +17,6 @@ import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/multiselect_management_block.widget.dart';
-import 'package:little_light/widgets/item_list/items/quick_select_item_wrapper.widget.dart';
 
 class SelectedItemsWidget extends StatefulWidget {
   const SelectedItemsWidget({Key key}) : super(key: key);
@@ -171,13 +170,7 @@ class SelectedItemsWidgetState extends State<SelectedItemsWidget>
     if (items == null) return Container();
     if (items?.length == 1) {
       var item = items[0];
-      return Container(
-          key: ObjectKey(item),
-          child: QuickSelectItemWrapperWidget(
-            item,
-            null,
-            characterId: item?.ownerId,
-          ));
+      return Container(key: ObjectKey(item), child: Container());
     }
     var itemsPerRow = MediaQueryHelper(context).tabletOrBigger ? 20 : 10;
     return Container(

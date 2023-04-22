@@ -52,6 +52,10 @@ enum ItemTagIcon {
   BlockerGiant,
 }
 
+extension ItemTagIconData on ItemTagIcon {
+  IconData? get iconData => tagIconData[this];
+}
+
 extension DefaultTagTypeLabel on DefaultTagType {
   String getLabel(BuildContext context) {
     switch (this) {
@@ -123,6 +127,9 @@ class ItemNotesTag {
   ItemTagIcon icon;
   DefaultTagType? defaultTagType;
 
+  @JsonKey(name: 'updated_at')
+  DateTime? updatedAt;
+
   Color? get backgroundColor {
     return colorFromHex(backgroundColorHex);
   }
@@ -135,14 +142,16 @@ class ItemNotesTag {
     return tagIconData[icon];
   }
 
-  ItemNotesTag(
-      {this.custom = false,
-      this.tagId,
-      this.name = "",
-      this.backgroundColorHex = "#00000000",
-      this.foregroundColorHex = "#FFFFFFFF",
-      this.defaultTagType,
-      this.icon = ItemTagIcon.Star});
+  ItemNotesTag({
+    this.custom = false,
+    this.tagId,
+    this.name = "",
+    this.backgroundColorHex = "#00000000",
+    this.foregroundColorHex = "#FFFFFFFF",
+    this.defaultTagType,
+    this.icon = ItemTagIcon.Star,
+    this.updatedAt,
+  });
 
   factory ItemNotesTag.fromJson(dynamic json) {
     return _$ItemNotesTagFromJson(json);

@@ -13,8 +13,7 @@ class LoopAnimationBuilder extends BaseAnimationBuilder {
   State<BaseAnimationBuilder> createState() => LoopAnimationBuilderState();
 }
 
-class LoopAnimationBuilderState
-    extends BaseAnimationBuilderState<LoopAnimationBuilder> {
+class LoopAnimationBuilderState extends BaseAnimationBuilderState<LoopAnimationBuilder> {
   @override
   void updateAnimation(AnimationController controller) {
     if (widget.playing) {

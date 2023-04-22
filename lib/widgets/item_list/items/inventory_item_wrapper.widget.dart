@@ -10,13 +10,12 @@ import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
-import 'package:little_light/pages/item_search/quick_transfer.screen.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.package.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.package.dart';
-import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
@@ -31,7 +30,6 @@ import 'package:little_light/widgets/item_list/items/emblem/medium_emblem_invent
 import 'package:little_light/widgets/item_list/items/engram/empty_engram_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/engram/minimal_engram_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/loading_inventory_item_widget.dart';
-import 'package:little_light/widgets/item_list/items/quick_transfer_destination_inventory_item_widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/medium_subclass_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/subclass_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/weapon/medium_weapon_inventory_item.widget.dart';
@@ -58,8 +56,7 @@ class InventoryItemWrapperWidget extends StatefulWidget {
 }
 
 //TODO: deprecate this in favor of new item widgets
-class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
-    extends State<T>
+class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> extends State<T>
     with
         UserSettingsConsumer,
         ProfileConsumer,
@@ -67,8 +64,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         ManifestConsumer,
         NotificationConsumer,
         SelectionConsumer {
-  InventoryBloc inventoryBloc(BuildContext context) =>
-      context.read<InventoryBloc>();
+  InventoryBloc inventoryBloc(BuildContext context) => context.read<InventoryBloc>();
 
   DestinyInventoryItemDefinition definition;
   String uniqueId;
@@ -89,8 +85,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   @override
   void initState() {
     uniqueId = const Uuid().v4();
-    definition = manifest
-        .getDefinitionFromCache<DestinyInventoryItemDefinition>(item?.itemHash);
+    definition = manifest.getDefinitionFromCache<DestinyInventoryItemDefinition>(item?.itemHash);
 
     super.initState();
     if (item != null && definition == null) {
@@ -150,8 +145,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         return;
       }
     }
-    definition = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     if (mounted) {
       setState(() {});
     }
@@ -166,9 +160,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         Positioned.fill(child: buildCrossfade(context)),
         selected
             ? Container(
-                foregroundDecoration: BoxDecoration(
-                    border:
-                        Border.all(color: Colors.lightBlue.shade400, width: 2)),
+                foregroundDecoration: BoxDecoration(border: Border.all(color: Colors.lightBlue.shade400, width: 2)),
               )
             : Container(),
         buildTapHandler(context)
@@ -181,9 +173,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
       duration: const Duration(milliseconds: 500),
       firstChild: buildEmpty(context),
       secondChild: buildItem(context),
-      crossFadeState: definition == null
-          ? CrossFadeState.showFirst
-          : CrossFadeState.showSecond,
+      crossFadeState: definition == null ? CrossFadeState.showFirst : CrossFadeState.showSecond,
     );
   }
 
@@ -220,23 +210,8 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
   }
 
   void onEmptyTap(BuildContext context) async {
-    var bucketDef = await manifest
-        .getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
+    var bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.bucketHash);
     var character = profile.getCharacter(widget.characterId);
-    ItemWithOwner item = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => QuickTransferScreen(
-          context,
-          bucketDefinition: bucketDef,
-          classType: character.classType,
-          characterId: widget.characterId,
-        ),
-      ),
-    );
-    if (item != null) {
-      // await inventoryBloc(context).transfer(item.item, widget.characterId);
-    }
   }
 
   void onLongPress(context) {
@@ -321,9 +296,6 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
         }
       default:
         {
-          if (item == null && quickTransferAvailable) {
-            return const QuickTransferDestinationItemWidget();
-          }
           return const LoadingInventoryItemWidget();
         }
     }
@@ -331,8 +303,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   Widget buildMinimal(BuildContext context) {
     var type = definition?.itemType;
-    if (type == DestinyItemType.None &&
-        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+    if (type == DestinyItemType.None && definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       type = DestinyItemType.Subclass;
     }
     switch (type) {
@@ -381,8 +352,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   Widget buildMedium(BuildContext context) {
     var type = definition?.itemType;
-    if (type == DestinyItemType.None &&
-        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+    if (type == DestinyItemType.None && definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       type = DestinyItemType.Subclass;
     }
     switch (type) {
@@ -433,8 +403,7 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget>
 
   Widget buildFull(BuildContext context) {
     var type = definition?.itemType;
-    if (type == DestinyItemType.None &&
-        definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
+    if (type == DestinyItemType.None && definition?.inventory?.bucketTypeHash == InventoryBucket.subclass) {
       type = DestinyItemType.Subclass;
     }
     switch (type) {

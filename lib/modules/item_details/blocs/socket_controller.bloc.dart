@@ -1,8 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -38,7 +37,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   final WishlistsService wishlists;
 
   @protected
-  final ItemNotesService itemNotes;
+  final ItemNotesBloc itemNotes;
 
   @protected
   DestinyInventoryItemDefinition? itemDefinition;
@@ -83,10 +82,44 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     );
   }
 
+  StatValues? get usedEnergyCapacity {
+    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    int totalEquipped = 0;
+    int totalSelected = 0;
+    for (int i = 0; i < totalSockets; i++) {
+      final equippedPlug = getEquippedPlugHashForSocket(i);
+      final selectedPlug = getSelectedPlugHashForSocket(i);
+      final equippedDef = plugDefinitions?[equippedPlug];
+      final selectedDef = plugDefinitions?[selectedPlug] ?? equippedDef;
+      final equippedValue = equippedDef?.plug?.energyCost?.energyCost ?? 0;
+      final selectedValue = selectedDef?.plug?.energyCost?.energyCost ?? 0;
+      totalEquipped += equippedValue;
+      totalSelected += selectedValue;
+    }
+    return StatValues(9999, rawEquipped: totalEquipped, rawSelected: totalSelected);
+  }
+
+  StatValues? get availableEnergyCapacity {
+    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    int totalEquipped = 0;
+    int totalSelected = 0;
+    for (int i = 0; i < totalSockets; i++) {
+      final equippedPlug = getEquippedPlugHashForSocket(i);
+      final selectedPlug = getSelectedPlugHashForSocket(i);
+      final equippedDef = plugDefinitions?[equippedPlug];
+      final selectedDef = plugDefinitions?[selectedPlug] ?? equippedDef;
+      final equippedValue = equippedDef?.plug?.energyCapacity?.capacityValue ?? 0;
+      final selectedValue = selectedDef?.plug?.energyCapacity?.capacityValue ?? 0;
+      totalEquipped += equippedValue;
+      totalSelected += selectedValue;
+    }
+    return StatValues(9999, rawEquipped: totalEquipped, rawSelected: totalSelected);
+  }
+
   SocketControllerBloc(this.context)
       : manifest = context.read<ManifestService>(),
         wishlists = getInjectedWishlistsService(),
-        itemNotes = getInjecteditemNotes(),
+        itemNotes = context.read<ItemNotesBloc>(),
         super();
 
   int? get itemHash => itemDefinition?.hash;
@@ -264,14 +297,11 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   }
 
   bool isFavoritePlug(int plugHash) {
-    return itemNotes.getNotesForItem(plugHash, null)?.tags?.contains("favorite") ?? false;
+    return itemNotes.hasTag(plugHash, null, "favorite");
   }
 
   Future<void> setFavoritePlug(int plugHash, bool favorite) async {
-    final notes = itemNotes.getNotesForItem(plugHash, null, true);
-    favorite ? notes?.tags?.add("favorite") : notes?.tags?.remove("favorite");
-    if (notes == null) return;
-    itemNotes.saveNotes(notes);
+    favorite ? itemNotes.addTag(plugHash, null, 'favorite') : itemNotes.removeTag(plugHash, null, 'favorite');
     notifyListeners();
   }
 

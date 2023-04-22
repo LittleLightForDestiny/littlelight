@@ -1,17 +1,19 @@
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/shared/utils/sorters/items/item_sorter.dart';
+import 'package:provider/provider.dart';
 
-class PriorityTagsSorter extends ItemSorter with ItemNotesConsumer {
+class PriorityTagsSorter extends ItemSorter {
   List<String> _priorityTags;
 
   PriorityTagsSorter(BuildContext context, this._priorityTags) : super(context, SorterDirection.Ascending);
 
   @override
   int sort(DestinyItemInfo a, DestinyItemInfo b) {
-    final tagsA = itemNotes.getNotesForItem(a.item.itemHash, a.item.itemInstanceId)?.tags ?? <String>{};
-    final tagsB = itemNotes.getNotesForItem(b.item.itemHash, b.item.itemInstanceId)?.tags ?? <String>{};
+    final itemNotes = context.read<ItemNotesBloc>();
+    final tagsA = itemNotes.tagIdsFor(a.item.itemHash, a.item.itemInstanceId) ?? <String>{};
+    final tagsB = itemNotes.tagIdsFor(b.item.itemHash, b.item.itemInstanceId) ?? <String>{};
     final tags = _priorityTags;
 
     int? indexA;

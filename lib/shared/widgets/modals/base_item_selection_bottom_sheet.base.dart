@@ -26,8 +26,4 @@ abstract class BaseItemSelectionBottomSheet<ReturnType> extends BaseListBottomSh
   }
 
   ReturnType? indexToValue(int index);
-
-  Future<ReturnType?> show(BuildContext context) {
-    return showModalBottomSheet(context: context, builder: (context) => this);
-  }
 }

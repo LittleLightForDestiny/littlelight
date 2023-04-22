@@ -13,24 +13,21 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:little_light/shared/widgets/wishlists/wishlist_badges.widget.dart';
 import 'package:little_light/utils/socket_category_hashes.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
-import 'package:little_light/shared/widgets/wishlists/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_armor_stats.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_mods.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/item_perks.widget.dart';
-import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
 
 typedef OnItemHandler = void Function(DestinyItemComponent item, DestinyInventoryItemDefinition itemDefinition,
     DestinyItemInstanceComponent instanceInfo, String characterId);
 
-class BaseItemInstanceWidget extends BaseInventoryItemWidget
-    with WishlistsConsumer, ProfileConsumer, ItemNotesConsumer {
+class BaseItemInstanceWidget extends BaseInventoryItemWidget with WishlistsConsumer, ProfileConsumer {
   BaseItemInstanceWidget(
     DestinyItemComponent item,
     DestinyInventoryItemDefinition itemDefinition,
@@ -89,16 +86,7 @@ class BaseItemInstanceWidget extends BaseInventoryItemWidget
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
     final wishlistTags = wishlistsService.getWishlistBuildTags(itemHash: item?.itemHash, reusablePlugs: reusable);
     List<Widget> upper = [];
-    var notes = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId);
-    var tags = itemNotes.tagsByIds(notes?.tags);
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
-    if (tags != null) {
-      upper.addAll(tags.map((t) => ItemTagWidget(
-            t,
-            fontSize: tagIconSize - padding / 2,
-            padding: padding / 8,
-          )));
-    }
     if (locked) {
       upper.add(SizedBox(
           height: tagIconSize, width: tagIconSize, child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));

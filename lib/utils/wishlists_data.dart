@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
-import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
+import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 class WishlistsData {

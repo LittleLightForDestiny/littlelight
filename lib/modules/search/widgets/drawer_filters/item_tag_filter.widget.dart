@@ -1,16 +1,17 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/search/blocs/filter_options/item_tag_filter_options.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
+import 'package:provider/provider.dart';
 
 import 'base_drawer_filter.widget.dart';
 import 'filter_button.widget.dart';
 
-class ItemTagFilterWidget extends BaseDrawerFilterWidget<ItemTagFilterOptions> with ItemNotesConsumer {
+class ItemTagFilterWidget extends BaseDrawerFilterWidget<ItemTagFilterOptions> {
   @override
   Widget buildTitle(BuildContext context) {
     return Text("Item Tags".translate(context).toUpperCase());
@@ -18,9 +19,10 @@ class ItemTagFilterWidget extends BaseDrawerFilterWidget<ItemTagFilterOptions> w
 
   @override
   Widget buildOptions(BuildContext context, ItemTagFilterOptions data) {
+    final itemNotes = context.watch<ItemNotesBloc>();
     final availableValues = data.availableValues;
     final values = data.value;
-    final allTags = itemNotes.getAvailableTags();
+    final allTags = itemNotes.availableTags;
     final availableTags = allTags.where((t) => availableValues.contains(t.tagId));
     final showNone = availableValues.contains(null);
     return Column(

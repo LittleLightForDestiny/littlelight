@@ -6,9 +6,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
-import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
+
 import 'package:little_light/models/item_sort_parameter.dart';
-import 'package:little_light/pages/item_search/search.screen.dart';
+
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -189,22 +189,22 @@ class ProgressScreenState extends State<ProgressScreen>
           enableFeedback: false,
           icon: Icon(FontAwesomeIcons.search, color: Theme.of(context).colorScheme.onSurface),
           onPressed: () {
-            var char = characters[charTabController.index];
+            // var char = characters[charTabController.index];
             var types = [PseudoItemType.Pursuits];
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SearchScreen(
-                    controller: SearchController.withDefaultFilters(context,
-                        firstRunFilters: [PseudoItemTypeFilter(types, types)],
-                        preFilters: [
-                          ItemOwnerFilter({char.characterId}),
-                          PseudoItemTypeFilter(types, types),
-                        ],
-                        defaultSorting: userSettings.pursuitOrdering,
-                        availableSorters: ItemSortParameter.availablePursuitSorters),
-                  ),
-                ));
+            // Navigator.push(
+            //     context,
+            //     MaterialPageRoute(
+            //       builder: (context) => SearchScreen(
+            //         controller: SearchController.withDefaultFilters(context,
+            //             firstRunFilters: [PseudoItemTypeFilter(types, types)],
+            //             preFilters: [
+            //               ItemOwnerFilter({char.characterId}),
+            //               PseudoItemTypeFilter(types, types),
+            //             ],
+            //             defaultSorting: userSettings.pursuitOrdering,
+            //             availableSorters: ItemSortParameter.availablePursuitSorters),
+            //       ),
+            //     ));
           }),
       TabsCharacterMenuWidget(
         characters,

@@ -5,7 +5,7 @@ import 'package:little_light/core/blocs/notifications/base_notification_action.d
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/widgets/animations/loop_animation.dart';
-import 'package:little_light/shared/widgets/animations/ping_pong_animation.dart';
+import 'package:little_light/shared/widgets/animations/value_animation.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/shared/widgets/notifications/transfer_notification_group.widget.dart';
 import 'package:provider/provider.dart';
@@ -95,7 +95,7 @@ class NotificationsWidget extends StatelessWidget {
     );
   }
 
-  Widget buildMainMessageAnimation(BuildContext context, Widget widget, bool visible) => PingPongAnimationBuilder(
+  Widget buildMainMessageAnimation(BuildContext context, Widget widget, bool visible) => ValueAnimationBuilder(
         (controller) => SizeTransition(
           sizeFactor: controller,
           axis: Axis.horizontal,
@@ -111,7 +111,7 @@ class NotificationsWidget extends StatelessWidget {
       );
 
   Widget buildRefreshButtonContainer(BuildContext context) {
-    return PingPongAnimationBuilder(
+    return ValueAnimationBuilder(
       (controller) => SizeTransition(
         sizeFactor: controller,
         axis: Axis.horizontal,

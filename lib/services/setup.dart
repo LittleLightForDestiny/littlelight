@@ -3,6 +3,9 @@ import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
@@ -12,19 +15,15 @@ import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/inventory/inventory.service.dart';
-import 'package:little_light/services/littlelight/item_notes.service.dart';
-import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
-import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'https_override/https_overrides.dart';
@@ -55,7 +54,6 @@ Future<void> setupServices() async {
   await setupBungieApiService();
   await setupNotificationService();
   await setupSelectionService();
-  await setupitemNotes();
   await setupInventoryService();
   await setupDestinySettingsService();
 }

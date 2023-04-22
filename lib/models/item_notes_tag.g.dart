@@ -16,6 +16,9 @@ ItemNotesTag _$ItemNotesTagFromJson(Map<String, dynamic> json) => ItemNotesTag(
           $enumDecodeNullable(_$DefaultTagTypeEnumMap, json['defaultTagType']),
       icon: $enumDecodeNullable(_$ItemTagIconEnumMap, json['icon']) ??
           ItemTagIcon.Star,
+      updatedAt: json['updated_at'] == null
+          ? null
+          : DateTime.parse(json['updated_at'] as String),
     );
 
 Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) =>
@@ -27,6 +30,7 @@ Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) =>
       'foregroundColorHex': instance.foregroundColorHex,
       'icon': _$ItemTagIconEnumMap[instance.icon]!,
       'defaultTagType': _$DefaultTagTypeEnumMap[instance.defaultTagType],
+      'updated_at': instance.updatedAt?.toIso8601String(),
     };
 
 const _$DefaultTagTypeEnumMap = {

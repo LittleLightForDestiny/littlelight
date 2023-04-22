@@ -1,3 +1,4 @@
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -25,6 +26,7 @@ class CoreBlocsContainer extends MultiProvider {
             ChangeNotifierProvider<UserSettingsBloc>(create: (context) => getInjectedUserSettings()),
             ChangeNotifierProvider(create: (context) => AppLifecycleBloc()),
             ChangeNotifierProvider(create: (context) => OfflineModeBloc()),
+            ChangeNotifierProvider(create: (context) => ItemNotesBloc()),
             ChangeNotifierProvider<ManifestService>(
                 create: (context) => getInjectedManifestService().initContext(context)),
             ChangeNotifierProvider<LanguageBloc>(create: (context) => getInjectedLanguageService()),

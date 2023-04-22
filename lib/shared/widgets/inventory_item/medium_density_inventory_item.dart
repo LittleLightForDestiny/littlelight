@@ -1,12 +1,12 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
@@ -33,7 +33,7 @@ const _titleBarHeight = 24.0;
 const _titleBarIconSize = 16.0;
 const _iconWidth = 48.0;
 
-class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, WishlistsConsumer, ManifestConsumer {
+class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer, ManifestConsumer {
   final DestinyItemInfo item;
   final bool showCharacterIcon;
   const MediumDensityInventoryItem(
@@ -278,8 +278,8 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
   Widget buildSubclassTitleBar(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final subclassColor = definition?.talentGrid?.hudDamageType?.getColorLayer(context).layer0 ?? Colors.transparent;
     final bgColor = TinyColor.fromColor(subclassColor).darken(30).desaturate(5).color;
-    final customName =
-        itemNotes.getNotesForItem(item.item.itemHash, item.item.itemInstanceId)?.customName?.toUpperCase();
+    final itemNotes = context.watch<ItemNotesBloc>();
+    final customName = itemNotes.customNameFor(item.item.itemHash, item.item.itemInstanceId)?.toUpperCase();
     final definitionName = definition?.displayProperties?.name?.toUpperCase();
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
@@ -306,8 +306,8 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
   }
 
   Widget buildItemName(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final customName =
-        itemNotes.getNotesForItem(item.item.itemHash, item.item.itemInstanceId)?.customName?.toUpperCase();
+    final itemNotes = context.watch<ItemNotesBloc>();
+    final customName = itemNotes.customNameFor(item.item.itemHash, item.item.itemInstanceId)?.toUpperCase();
     final definitionName = definition?.displayProperties?.name?.toUpperCase();
     final itemName = (customName?.isNotEmpty ?? false) ? customName : definitionName;
     return Container(
@@ -387,7 +387,8 @@ class MediumDensityInventoryItem extends StatelessWidget with ItemNotesConsumer,
     final itemHash = item.item.itemHash;
     final itemInstanceId = item.item.itemInstanceId;
     if (itemHash == null) return null;
-    final tags = itemNotes.getTagsForItem(itemHash, itemInstanceId);
+    final itemNotes = context.watch<ItemNotesBloc>();
+    final tags = itemNotes.tagsFor(itemHash, itemInstanceId);
     if (tags == null || tags.isEmpty) return null;
     return Row(
       children: tags

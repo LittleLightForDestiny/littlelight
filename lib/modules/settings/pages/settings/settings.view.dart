@@ -3,26 +3,23 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/wishlist_index.dart';
-import 'package:little_light/modules/settings/pages/add_wishlist/add_wishlist.page_route.dart';
 import 'package:little_light/modules/settings/pages/settings/settings.bloc.dart';
 import 'package:little_light/modules/settings/widgets/settings_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/switch_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/wishlist_file_item.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/shared/utils/extensions/item_sort_parameter_type_data.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
+import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/dialogs/busy.dialog.dart';
 import 'package:little_light/widgets/dialogs/tags/select_tag.dialog.dart';
-import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
-import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
+import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 
 class SettingsView extends StatefulWidget {
@@ -34,7 +31,7 @@ class SettingsView extends StatefulWidget {
   _SettingsViewState createState() => _SettingsViewState();
 }
 
-class _SettingsViewState extends State<SettingsView> with UserSettingsConsumer, WishlistsConsumer, ItemNotesConsumer {
+class _SettingsViewState extends State<SettingsView> with UserSettingsConsumer, WishlistsConsumer {
   SettingsBloc get _bloc => widget._bloc;
   SettingsBloc get _state => widget._state;
   List<ItemSortParameter> itemOrdering;
@@ -279,39 +276,30 @@ class _SettingsViewState extends State<SettingsView> with UserSettingsConsumer, 
   }
 
   Widget buildPriorityTags(BuildContext context) {
-    var tags = itemNotes.tagsByIds(priorityTags);
-    return Container(
-        padding: const EdgeInsets.all(8),
-        child: Wrap(
-          crossAxisAlignment: WrapCrossAlignment.start,
-          runSpacing: 4,
-          spacing: 4,
-          children: tags
-              .map((t) => ItemTagWidget(
-                    t,
-                    includeLabel: true,
-                    padding: 4,
-                    trailing: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10), color: Theme.of(context).colorScheme.onSurface),
-                        width: 20,
-                        height: 20,
-                        alignment: Alignment.center,
-                        child:
-                            const CenterIconWorkaround(FontAwesomeIcons.solidTimesCircle, size: 16, color: Colors.red)),
-                    onClick: () {
-                      userSettings.removePriorityTag(t);
-                      setState(() {});
-                    },
-                  ))
-              .followedBy([
-            ItemTagWidget(ItemNotesTag(icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
-                includeLabel: true,
-                padding: 4,
-                trailing: const CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
-                onClick: () => openAddTagDialog(context)),
-          ]).toList(),
-        ));
+    final tags = _state.priorityTags;
+    return Container(padding: const EdgeInsets.all(8));
+
+    ///TODO: redo this
+    // child: Wrap(
+    //   crossAxisAlignment: WrapCrossAlignment.start,
+    //   runSpacing: 4,
+    //   spacing: 4,
+    //   children: tags
+    //       .map((t) => ItemTagWidget.fromNoteTag(
+    //             context,
+    //             t,
+    //             onClick: () {
+    //               userSettings.removePriorityTag(t);
+    //               setState(() {});
+    //             },
+    //           ))
+    //       .followedBy([
+    //     ItemTagWidget.fromNoteTag(context, ItemNotesTag(icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
+    //         padding: 4,
+    //         trailing: const CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
+    //         onClick: () => openAddTagDialog(context)),
+    //   ]).toList(),
+    // ));
   }
 
   void openAddTagDialog(BuildContext context) async {

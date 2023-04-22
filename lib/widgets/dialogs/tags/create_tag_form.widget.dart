@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
+import 'package:little_light/shared/widgets/tags/tag_icon.widget.dart';
 import 'package:little_light/utils/color_utils.dart';
-import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
+import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 
 class CreateTagFormWidget extends StatefulWidget {
   final ItemNotesTag tag;
@@ -34,8 +34,7 @@ const _availableColors = [
   Colors.brown,
 ];
 
-class _CreateTagFormWidgetState extends State<CreateTagFormWidget>
-    with ItemNotesConsumer {
+class _CreateTagFormWidgetState extends State<CreateTagFormWidget> {
   List<String>? colors;
   TextEditingController? tagNameController;
 
@@ -104,27 +103,24 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget>
     return Container(
         padding: const EdgeInsets.all(8),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          ItemTagWidget(widget.tag),
+          TagIconWidget.fromTag(widget.tag),
           Container(
             width: 8,
           ),
-          Flexible(
-              child: ItemTagWidget(widget.tag, includeLabel: true, padding: 4)),
+          Flexible(child: TagPillWidget.fromTag(widget.tag)),
         ]));
   }
 
   Widget buildNameField(BuildContext context) {
     return TextField(
-      decoration: InputDecoration(
-          labelText: context.translate("Tag name"),
-          floatingLabelBehavior: FloatingLabelBehavior.auto),
+      decoration:
+          InputDecoration(labelText: context.translate("Tag name"), floatingLabelBehavior: FloatingLabelBehavior.auto),
       controller: tagNameController,
       maxLength: 20,
     );
   }
 
-  Widget buildColors(BuildContext context, String currentColorHex,
-      Function(String color) onChange,
+  Widget buildColors(BuildContext context, String currentColorHex, Function(String color) onChange,
       [List<String> additionalColors = const []]) {
     return SizedBox(
         height: 150,
@@ -132,8 +128,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget>
             shrinkWrap: false,
             scrollDirection: Axis.horizontal,
             crossAxisCount: 3,
-            children:
-                additionalColors.followedBy(colors ?? <String>[]).map((c) {
+            children: additionalColors.followedBy(colors ?? <String>[]).map((c) {
               return AspectRatio(
                   aspectRatio: 1,
                   child: Container(
@@ -141,9 +136,8 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget>
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                               width: 2,
-                              color: currentColorHex == c
-                                  ? Theme.of(context).colorScheme.onSurface
-                                  : Colors.transparent)),
+                              color:
+                                  currentColorHex == c ? Theme.of(context).colorScheme.onSurface : Colors.transparent)),
                       padding: const EdgeInsets.all(3),
                       child: Material(
                         borderRadius: BorderRadius.circular(8),
@@ -157,8 +151,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget>
             }).toList()));
   }
 
-  Widget buildIcons(BuildContext context, ItemTagIcon currentIcon,
-      Function(ItemTagIcon icon) onChange) {
+  Widget buildIcons(BuildContext context, ItemTagIcon currentIcon, Function(ItemTagIcon icon) onChange) {
     return SizedBox(
         height: 150,
         child: GridView.count(
@@ -173,16 +166,13 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget>
                           borderRadius: BorderRadius.circular(8),
                           border: Border.all(
                               width: 2,
-                              color: currentIcon == i
-                                  ? Theme.of(context).colorScheme.onSurface
-                                  : Colors.transparent)),
+                              color: currentIcon == i ? Theme.of(context).colorScheme.onSurface : Colors.transparent)),
                       padding: const EdgeInsets.all(3),
                       child: Material(
                           borderRadius: BorderRadius.circular(8),
                           color: widget.tag.backgroundColor,
                           child: InkWell(
-                            child: Icon(tagIconData[i],
-                                color: widget.tag.foregroundColor),
+                            child: Icon(tagIconData[i], color: widget.tag.foregroundColor),
                             onTap: () {
                               onChange(i);
                             },

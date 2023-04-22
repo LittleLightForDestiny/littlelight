@@ -5,9 +5,7 @@ import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/models/item_notes_tag.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/models/tracked_objective.dart';
 
@@ -41,9 +39,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
   Future<void> saveCachedNotes(Map<String, ItemNotes> notes) async {
     List<dynamic> json = notes.values
         .where((element) =>
-            (element.notes?.length ?? 0) > 0 ||
-            (element.customName?.length ?? 0) > 0 ||
-            (element.tags?.length ?? 0) > 0)
+            (element.notes?.length ?? 0) > 0 || (element.customName?.length ?? 0) > 0 || (element.tags.length) > 0)
         .map((l) => l.toJson())
         .toList();
     await setJson(MembershipStorageKeys.cachedNotes, json);

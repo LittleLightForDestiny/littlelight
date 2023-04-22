@@ -60,6 +60,7 @@ class PersistentCollapsibleContainer extends StatelessWidget {
           duration: _animationDuration,
           alignment: Alignment.center,
           child: Container(
+            constraints: BoxConstraints(minWidth: double.infinity),
             padding: EdgeInsets.only(top: 8),
             child: content,
           ),

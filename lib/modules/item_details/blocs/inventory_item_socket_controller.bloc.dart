@@ -108,7 +108,13 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<DestinyItem
     final plugHash = getSelectedPlugHashForSocket(socketIndex);
     final plugDef = plugDefinitions?[plugHash];
     final materialCost = materialRequirementDefinitions?[plugDef?.plug?.insertionMaterialRequirementHash];
-    return canApplyPlug(context, item, socketIndex, plugHash, plugDef, materialCost);
+    final canApply = canApplyPlug(context, item, socketIndex, plugHash, plugDef, materialCost);
+    if (!canApply) return false;
+    final availableEnergy = availableEnergyCapacity?.equipped ?? 0;
+    final usedEnergy = usedEnergyCapacity?.equipped ?? 0;
+    final requiredEnergy = plugDef?.plug?.energyCost?.energyCost ?? 0;
+    if (usedEnergy + requiredEnergy > availableEnergy) return false;
+    return true;
   }
 
   @override

@@ -4,12 +4,12 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
+import 'package:provider/provider.dart';
 
-class ItemNameBarWidget extends BaseDestinyStatelessItemWidget
-    with ItemNotesConsumer {
+class ItemNameBarWidget extends BaseDestinyStatelessItemWidget {
   final double fontSize;
   final EdgeInsets padding;
   final bool multiline;
@@ -26,12 +26,7 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget
     this.multiline = false,
     this.fontWeight = FontWeight.w500,
     this.trailing,
-  }) : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key,
-            characterId: characterId);
+  }) : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key, characterId: characterId);
 
   @override
   Widget build(BuildContext context) {
@@ -40,23 +35,19 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget
       height: fontSize + padding.top * 2,
       alignment: Alignment.centerLeft,
       decoration: nameBarBoxDecoration(context),
-      child:
-          Material(color: Colors.transparent, child: nameBarContent(context)),
+      child: Material(color: Colors.transparent, child: nameBarContent(context)),
     );
   }
 
   BoxDecoration nameBarBoxDecoration(BuildContext context) {
     ItemState state = item?.state ?? ItemState.None;
     if (!state.contains(ItemState.Masterwork)) {
-      return BoxDecoration(
-          color: definition?.inventory?.tierType?.getColor(context));
+      return BoxDecoration(color: definition?.inventory?.tierType?.getColor(context));
     }
     return BoxDecoration(
         color: definition?.inventory?.tierType?.getColor(context),
         image: DecorationImage(
-            repeat: ImageRepeat.repeatX,
-            alignment: Alignment.topCenter,
-            image: getMasterWorkTopOverlay()));
+            repeat: ImageRepeat.repeatX, alignment: Alignment.topCenter, image: getMasterWorkTopOverlay()));
   }
 
   ExactAssetImage getMasterWorkTopOverlay() {
@@ -80,15 +71,12 @@ class ItemNameBarWidget extends BaseDestinyStatelessItemWidget
   }
 
   Widget nameBarTextField(BuildContext context) {
-    var customName = itemNotes
-        .getNotesForItem(item?.itemHash, item?.itemInstanceId)
-        ?.customName
-        ?.toUpperCase();
-    if ((customName?.length ?? 0) == 0) {
+    final itemNotes = context.watch<ItemNotesBloc>();
+    var customName = itemNotes.customNameFor(item?.itemHash, item?.itemInstanceId)?.toUpperCase();
+    if (customName?.isEmpty ?? false) {
       customName = null;
     }
-    return Text(
-        customName ?? definition?.displayProperties?.name?.toUpperCase() ?? "",
+    return Text(customName ?? definition?.displayProperties?.name?.toUpperCase() ?? "",
         overflow: TextOverflow.fade,
         maxLines: multiline ? 2 : 1,
         softWrap: multiline,

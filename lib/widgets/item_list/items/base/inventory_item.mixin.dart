@@ -7,7 +7,6 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
@@ -16,9 +15,9 @@ import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 import 'package:little_light/shared/widgets/wishlists/wishlist_badges.widget.dart';
-import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
+import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 
-mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsumer, ItemNotesConsumer {
+mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsumer {
   WishlistsService get wishlistsService => getInjectedWishlistsService();
 
   final String uniqueId = "";
@@ -189,19 +188,12 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsu
     List<Widget> items = [];
     final reusable = profile.getItemReusablePlugs(item?.itemInstanceId);
     final wishlistTags = wishlistsService.getWishlistBuildTags(itemHash: item?.itemHash, reusablePlugs: reusable);
-    var notes = itemNotes.getNotesForItem(item?.itemHash, item?.itemInstanceId);
-    var tags = itemNotes.tagsByIds(notes?.tags);
+
     var locked = item?.state?.contains(ItemState.Locked) ?? false;
     if (locked) {
       items.add(Container(child: Icon(FontAwesomeIcons.lock, size: titleFontSize * .9)));
     }
-    if (tags != null) {
-      items.addAll(tags.map((t) => ItemTagWidget(
-            t,
-            fontSize: tagIconSize - padding / 2,
-            padding: padding / 8,
-          )));
-    }
+
     if (wishlistTags != null) {
       items.add(WishlistBadgesWidget(wishlistTags, size: tagIconSize));
     }

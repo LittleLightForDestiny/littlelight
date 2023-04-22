@@ -1,10 +1,10 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
@@ -16,6 +16,7 @@ import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 import 'package:little_light/utils/stats_total.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:provider/provider.dart';
 
 import 'inventory_item_icon.dart';
 import 'utils/get_energy_capacity.dart';
@@ -24,7 +25,7 @@ import 'utils/get_subclass_super_plug_item.dart';
 const _tagIconSize = 12.0;
 const _primaryStatIconsSize = 10.0;
 
-class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, WishlistsConsumer, ManifestConsumer {
+class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, ManifestConsumer {
   final DestinyItemInfo item;
   final bool showCharacterIcon;
   const LowDensityInventoryItem(
@@ -301,7 +302,8 @@ class LowDensityInventoryItem extends StatelessWidget with ItemNotesConsumer, Wi
     final itemHash = item.item.itemHash;
     final itemInstanceId = item.item.itemInstanceId;
     if (itemHash == null) return null;
-    final tags = itemNotes.getTagsForItem(itemHash, itemInstanceId);
+    final itemNotes = context.watch<ItemNotesBloc>();
+    final tags = itemNotes.tagsFor(itemHash, itemInstanceId);
     if (tags == null || tags.isEmpty) return null;
     return Row(
       children: tags

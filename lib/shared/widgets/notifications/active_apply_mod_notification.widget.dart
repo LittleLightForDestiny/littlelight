@@ -28,7 +28,6 @@ class ActiveApplyPlugsNotificationWidget extends BaseActiveNotificationWidget<Ap
   }) : super(notification, key: key);
 
   Widget? buildTransferProgress(BuildContext context, ApplyPlugsNotification notification) {
-    logger.info(notification.plugs.keys);
     return Row(
         mainAxisSize: MainAxisSize.min,
         children: notification.plugs.entries

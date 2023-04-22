@@ -7,10 +7,8 @@ import 'package:little_light/modules/collections/pages/home/collections_root.pag
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
 import 'package:little_light/modules/progress/pages/progress/progress.page.dart';
-import 'package:little_light/modules/progress/pages/progress/progress.screen.dart';
 import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
@@ -25,8 +23,7 @@ class MainScreen extends StatefulWidget {
   MainScreenState createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen>
-    with AuthConsumer, UserSettingsConsumer, ProfileConsumer, ItemNotesConsumer {
+class MainScreenState extends State<MainScreen> with AuthConsumer, UserSettingsConsumer, ProfileConsumer {
   Widget currentScreen;
 
   @override
@@ -40,7 +37,6 @@ class MainScreenState extends State<MainScreen>
     auth.getMembershipData();
     final isOffline = context.read<OfflineModeBloc>().isOffline;
     if (isOffline) return;
-    await itemNotes.getNotes(forceFetch: true);
   }
 
   getInitScreen() async {

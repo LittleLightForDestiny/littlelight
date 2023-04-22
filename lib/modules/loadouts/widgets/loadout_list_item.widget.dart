@@ -12,7 +12,7 @@ import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/flutter/center_icon_workaround.dart';
+import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
 
 enum LoadoutListItemAction { Equip, Edit, Delete }
 

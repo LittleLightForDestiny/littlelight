@@ -1,28 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/shared/widgets/headers/header.wiget.dart';
+import 'package:little_light/shared/widgets/modals/base_bottom_sheet.base.dart';
 
-abstract class BaseListBottomSheet<ReturnType> extends StatelessWidget {
+abstract class BaseListBottomSheet<ReturnType> extends BaseBottomSheet<ReturnType> {
   const BaseListBottomSheet({Key? key}) : super(key: key);
 
   int? get itemCount;
 
-  @override
-  Widget build(BuildContext context) {
-    final header = this.buildHeader(context);
-    return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-      if (header != null)
-        Container(
-          padding: EdgeInsets.all(8),
-          child: HeaderWidget(child: header),
-        ),
-      Flexible(child: buildList(context)),
-    ]);
-  }
-
   Widget? buildHeader(BuildContext context);
 
-  Widget buildList(BuildContext context) {
+  Widget buildContent(BuildContext context) {
     final mq = MediaQuery.of(context);
     return ListView.builder(
       itemCount: itemCount,
@@ -45,12 +32,6 @@ abstract class BaseListBottomSheet<ReturnType> extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<ReturnType?> show(BuildContext context) async {
-    final result = await showModalBottomSheet(context: context, builder: (context) => this);
-    if (result is ReturnType) return result;
-    return null;
   }
 
   Widget? buildItemLabel(BuildContext context, int index);

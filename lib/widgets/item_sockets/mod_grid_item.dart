@@ -2,7 +2,6 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -10,7 +9,7 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 typedef OnTap = void Function();
 
-class ModGridItem extends StatelessWidget with ItemNotesConsumer {
+class ModGridItem extends StatelessWidget {
   final int plugHash;
   final bool selected;
   final bool equipped;
@@ -106,8 +105,6 @@ class ModGridItem extends StatelessWidget with ItemNotesConsumer {
   }
 
   Widget? buildFavoriteTag(BuildContext context) {
-    final isFavorite = itemNotes.getNotesForItem(plugHash, null)?.tags?.contains("favorite") ?? false;
-    if (!isFavorite) return null;
     return Positioned.fill(
       child: LayoutBuilder(
         builder: (context, constraints) {

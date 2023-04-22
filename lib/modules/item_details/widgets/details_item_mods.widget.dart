@@ -19,6 +19,9 @@ class DetailsItemModsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final socketCategoryHash = socketCategory.socketCategoryHash;
+    final state = context.watch<SocketControllerBloc>();
+    final sockets = state.socketsForCategory(socketCategory);
+    if (sockets == null) return Container();
     return Container(
         padding: EdgeInsets.all(4),
         child: PersistentCollapsibleContainer(

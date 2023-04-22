@@ -253,10 +253,21 @@ class LittleLightThemeData {
         thumbColor: MaterialStateColor.resolveWith((states) => _getSwitchThumbColor(states)),
       );
 
-  TextTheme get _textTheme =>
-      TextTheme(displayMedium: textTheme.title, bodyMedium: textTheme.body, labelLarge: textTheme.button);
+  TextTheme get _textTheme => TextTheme(
+        displayMedium: textTheme.title,
+        bodyMedium: textTheme.body,
+        labelLarge: textTheme.button,
+      );
 
   CardTheme get _cardTheme => CardTheme(color: colorScheme.surface);
+
+  MaterialStateTextStyle get labelStyle => MaterialStateTextStyle.resolveWith((states) {
+        final focus = states.contains(MaterialState.focused) || states.contains(MaterialState.selected);
+        if (focus) {
+          return textTheme.caption.copyWith(color: primaryLayers.layer3, fontSize: 18);
+        }
+        return textTheme.caption.copyWith(fontSize: 16);
+      });
 
   ThemeData get materialTheme => ThemeData.from(colorScheme: colorScheme).copyWith(
         primaryColor: primaryLayers,
@@ -289,6 +300,11 @@ class LittleLightThemeData {
         ),
         textTheme: _textTheme,
         switchTheme: _switchTheme,
+        inputDecorationTheme: InputDecorationTheme(
+          floatingLabelStyle: labelStyle,
+          labelStyle: labelStyle,
+          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: primaryLayers.layer3, width: 2)),
+        ),
       );
 }
 

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
+import 'package:little_light/models/item_notes.dart';
+import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/modules/settings/pages/add_wishlist/add_wishlist.page_route.dart';
@@ -9,22 +12,25 @@ import 'package:provider/provider.dart';
 import 'package:wakelock/wakelock.dart';
 
 class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
-  final BuildContext context;
+  final UserSettingsBloc _userSetttingsBloc;
+  final ItemNotesBloc _itemNotesBloc;
 
+  final BuildContext context;
   List<ItemSortParameter>? itemOrdering;
   List<ItemSortParameter>? pursuitOrdering;
-  Set<String?>? priorityTags;
+  Set<String>? _priorityTags;
   List<WishlistFile>? wishlists;
-  final UserSettingsBloc _userSetttingsBloc;
 
-  SettingsBloc(BuildContext this.context) : this._userSetttingsBloc = context.read<UserSettingsBloc>() {
+  SettingsBloc(BuildContext this.context)
+      : this._userSetttingsBloc = context.read<UserSettingsBloc>(),
+        this._itemNotesBloc = context.read<ItemNotesBloc>() {
     _init();
   }
 
   _init() async {
     itemOrdering = _userSetttingsBloc.itemOrdering;
     pursuitOrdering = _userSetttingsBloc.pursuitOrdering;
-    priorityTags = _userSetttingsBloc.priorityTags;
+    _priorityTags = _userSetttingsBloc.priorityTags?.whereType<String>().toSet();
     wishlists = await wishlistsService.getWishlists();
     notifyListeners();
   }
@@ -73,5 +79,11 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
     await wishlistsService.removeWishlist(w);
     wishlists = await wishlistsService.getWishlists();
     notifyListeners();
+  }
+
+  List<ItemNotesTag>? get priorityTags {
+    final tags = _priorityTags;
+    if (tags == null) return null;
+    return _itemNotesBloc.tagsByIds(tags);
   }
 }

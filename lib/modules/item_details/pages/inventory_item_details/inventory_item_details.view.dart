@@ -1,10 +1,13 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/item_details/blocs/socket_controller.bloc.dart';
+import 'package:little_light/modules/item_details/widgets/details_energy_meter.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_intrinsic_perk.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_mods.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_notes.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_perks.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_stats.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_tags.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_transfer_block.widget.dart';
 import 'package:little_light/modules/item_details/widgets/item_details_cover.widget.dart';
 import 'package:little_light/modules/item_details/widgets/lock_status.widget.dart';
@@ -57,6 +60,9 @@ class InventoryItemDetailsView extends StatelessWidget {
         ...buildAbilities(context),
         ...buildReusablePerks(context),
         ...buildMods(context),
+        buildItemNotes(context),
+        buildItemTags(context),
+        buildEmptySpace(context),
       ].whereType<Widget>().toList(),
     );
   }
@@ -158,8 +164,34 @@ class InventoryItemDetailsView extends StatelessWidget {
     final all = reusable;
     return all
         .map(
-          (e) => SliverToBoxAdapter(child: DetailsItemPerksWidget(e)),
+          (e) => SliverToBoxAdapter(child: DetailsEnergyMeterWidget(e)),
         )
         .toList();
+  }
+
+  Widget buildItemNotes(BuildContext context) {
+    return SliverToBoxAdapter(
+        child: DetailsItemNotesWidget(
+      customName: state.customName,
+      notes: state.itemNotes,
+      onEditTap: state.editNotes,
+    ));
+  }
+
+  Widget buildItemTags(BuildContext context) {
+    return SliverToBoxAdapter(
+        child: DetailsItemTagsWidget(
+      tags: state.tags,
+      onRemoveTag: state.removeTag,
+      onAddTap: state.editTags,
+    ));
+  }
+
+  Widget buildEmptySpace(BuildContext context) {
+    return SliverToBoxAdapter(
+      child: SizedBox(
+        height: 128,
+      ),
+    );
   }
 }

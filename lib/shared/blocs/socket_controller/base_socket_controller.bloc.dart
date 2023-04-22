@@ -1,21 +1,18 @@
-import 'package:collection/collection.dart';
 import 'package:bungie_api/destiny2.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
-abstract class BaseSocketController extends ChangeNotifier
-    with ManifestConsumer, ItemNotesConsumer, ProfileConsumer {
+abstract class BaseSocketController extends ChangeNotifier with ManifestConsumer, ProfileConsumer {
   DestinyInventoryItemDefinition? get definition;
   List<DestinyItemSocketState>? get socketStates;
   Map<String, List<DestinyItemPlugBase>>? get reusablePlugs;
 
   Map<int, DestinyPlugSetDefinition>? _plugSetDefinitions;
   Map<int, DestinyInventoryItemDefinition>? _plugDefinitions;
-  Map<int, DestinyMaterialRequirementSetDefinition>?
-      _materialRequirementSetDefinitions;
+  Map<int, DestinyMaterialRequirementSetDefinition>? _materialRequirementSetDefinitions;
 
   int? _armorTierIndex;
 
@@ -43,8 +40,7 @@ abstract class BaseSocketController extends ChangeNotifier
         .where((h) => h != 0)
         .toSet();
     if (plugSetHashes == null) return;
-    _plugSetDefinitions =
-        await manifest.getDefinitions<DestinyPlugSetDefinition>(plugSetHashes);
+    _plugSetDefinitions = await manifest.getDefinitions<DestinyPlugSetDefinition>(plugSetHashes);
 
     List<int?> socketTypeHashes = [];
     final definitionPlugHashes = itemDefinition.sockets?.socketEntries
@@ -52,18 +48,11 @@ abstract class BaseSocketController extends ChangeNotifier
           socketTypeHashes.add(socket.socketTypeHash);
           List<int?> hashes = [];
           hashes.add(socket.singleInitialItemHash);
-          hashes.addAll(
-              socket.reusablePlugItems?.map((p) => p.plugItemHash) ?? []);
-          DestinyPlugSetDefinition? reusablePlugSet =
-              _plugSetDefinitions?[socket.reusablePlugSetHash];
-          DestinyPlugSetDefinition? randomizedPlugSet =
-              _plugSetDefinitions?[socket.randomizedPlugSetHash];
-          hashes.addAll(
-              reusablePlugSet?.reusablePlugItems?.map((i) => i.plugItemHash) ??
-                  []);
-          hashes.addAll(randomizedPlugSet?.reusablePlugItems
-                  ?.map((i) => i.plugItemHash) ??
-              []);
+          hashes.addAll(socket.reusablePlugItems?.map((p) => p.plugItemHash) ?? []);
+          DestinyPlugSetDefinition? reusablePlugSet = _plugSetDefinitions?[socket.reusablePlugSetHash];
+          DestinyPlugSetDefinition? randomizedPlugSet = _plugSetDefinitions?[socket.randomizedPlugSetHash];
+          hashes.addAll(reusablePlugSet?.reusablePlugItems?.map((i) => i.plugItemHash) ?? []);
+          hashes.addAll(randomizedPlugSet?.reusablePlugItems?.map((i) => i.plugItemHash) ?? []);
           return hashes;
         })
         .whereType<int>()
@@ -71,22 +60,17 @@ abstract class BaseSocketController extends ChangeNotifier
         .toSet();
 
     plugHashes.addAll(definitionPlugHashes ?? <int>{});
-    _plugDefinitions = await manifest
-        .getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
-    DestinyItemSocketCategoryDefinition? armorTierCategory = itemDefinition
-        .sockets?.socketCategories
-        ?.firstWhereOrNull((s) => DestinyData.socketCategoryTierHashes
-            .contains(s.socketCategoryHash));
+    _plugDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
+    DestinyItemSocketCategoryDefinition? armorTierCategory = itemDefinition.sockets?.socketCategories
+        ?.firstWhereOrNull((s) => DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash));
     _armorTierIndex = armorTierCategory?.socketIndexes?.first;
 
-    final materialRequirementHashes = _plugDefinitions?.values
-        .map((p) => p.plug?.insertionMaterialRequirementHash)
-        .whereType<int>()
-        .toSet();
+    final materialRequirementHashes =
+        _plugDefinitions?.values.map((p) => p.plug?.insertionMaterialRequirementHash).whereType<int>().toSet();
 
     if (materialRequirementHashes != null) {
-      _materialRequirementSetDefinitions = await manifest.getDefinitions<
-          DestinyMaterialRequirementSetDefinition>(materialRequirementHashes);
+      _materialRequirementSetDefinitions =
+          await manifest.getDefinitions<DestinyMaterialRequirementSetDefinition>(materialRequirementHashes);
     }
 
     notifyListeners();
@@ -110,16 +94,12 @@ abstract class BaseSocketController extends ChangeNotifier
     if (!favoritable) return plugHashes;
     final plugs = plugHashes?.toList();
     plugs?.sort((a, b) {
-      final favoriteA =
-          itemNotes.getNotesForItem(a, null)?.tags?.contains("favorite") ??
-              false;
-      final favoriteB =
-          itemNotes.getNotesForItem(b, null)?.tags?.contains("favorite") ??
-              false;
-      final valueA = favoriteA ? 1 : 0;
-      final valueB = favoriteB ? 1 : 0;
-      final favoriteOrder = valueB.compareTo(valueA);
-      if (favoriteOrder != 0) return favoriteOrder;
+      // final favoriteA = itemNotes.hasTag(a, null, "favorite");
+      // final favoriteB = itemNotes.hasTag(b, null, "favorite");
+      // final valueA = favoriteA ? 1 : 0;
+      // final valueB = favoriteB ? 1 : 0;
+      // final favoriteOrder = valueB.compareTo(valueA);
+      // if (favoriteOrder != 0) return favoriteOrder;
       final orderA = plugHashes?.indexOf(a) ?? -1;
       final orderB = plugHashes?.indexOf(b) ?? -1;
       return orderB.compareTo(orderA);
@@ -143,11 +123,7 @@ abstract class BaseSocketController extends ChangeNotifier
     }
 
     if ((entry?.reusablePlugItems?.length ?? 0) > 0) {
-      return entry?.reusablePlugItems
-          ?.map((p) => p.plugItemHash)
-          .whereType<int>()
-          .where((h) => h != 0)
-          .toList();
+      return entry?.reusablePlugItems?.map((p) => p.plugItemHash).whereType<int>().where((h) => h != 0).toList();
     }
 
     if ((entry?.singleInitialItemHash ?? 0) != 0) {
@@ -159,8 +135,7 @@ abstract class BaseSocketController extends ChangeNotifier
 
   bool isSocketFavoritable(int socketIndex) {
     final categories = definition?.sockets?.socketCategories
-        ?.where(
-            (element) => element.socketIndexes?.contains(socketIndex) ?? false)
+        ?.where((element) => element.socketIndexes?.contains(socketIndex) ?? false)
         .map((s) => s.socketCategoryHash)
         .toSet();
 
@@ -181,22 +156,16 @@ abstract class BaseSocketController extends ChangeNotifier
     final hashes = <int>[];
     final plugSources = entry?.plugSources;
 
-    final isPlugSet =
-        (plugSources?.contains(SocketPlugSources.CharacterPlugSet) ?? false) ||
-            (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false);
+    final isPlugSet = (plugSources?.contains(SocketPlugSources.CharacterPlugSet) ?? false) ||
+        (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false);
     final plugSetHash = entry?.reusablePlugSetHash;
     if (isPlugSet && plugSetHash != null) {
       var plugSet = profile.getPlugSets(plugSetHash);
-      hashes.addAll(plugSet
-          .where((p) => p.canInsert ?? false)
-          .map((p) => p.plugItemHash)
-          .where((p) {
+      hashes.addAll(plugSet.where((p) => p.canInsert ?? false).map((p) => p.plugItemHash).where((p) {
         if (_armorTierIndex == null) return true;
         var def = _plugDefinitions?[p];
-        var energyType =
-            def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-        return (energyType == armorEnergyType ||
-            energyType == DestinyEnergyType.Any);
+        var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+        return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
       }).whereType<int>());
     }
 
@@ -220,10 +189,8 @@ abstract class BaseSocketController extends ChangeNotifier
         .where((p) {
           if (_armorTierIndex == null) return true;
           var def = _plugDefinitions?[p];
-          var energyType =
-              def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-          return (energyType == armorEnergyType ||
-              energyType == DestinyEnergyType.Any);
+          var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+          return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
         })
         .whereType<int>()
         .toList();
@@ -252,8 +219,7 @@ abstract class BaseSocketController extends ChangeNotifier
   List<int>? randomizedPlugHashes(int socketIndex) {
     var entry = definition?.sockets?.socketEntries?.elementAt(socketIndex);
     if ((entry?.randomizedPlugSetHash ?? 0) == 0) return <int>[];
-    if (!(_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ??
-        false)) return <int>[];
+    if (!(_plugSetDefinitions?.containsKey(entry?.randomizedPlugSetHash) ?? false)) return <int>[];
     final hashes = _plugSetDefinitions?[entry?.randomizedPlugSetHash]
         ?.reusablePlugItems
         ?.map((p) => p.plugItemHash)
@@ -264,9 +230,7 @@ abstract class BaseSocketController extends ChangeNotifier
 
   bool canApplyPlug(int socketIndex, int plugHash) {
     final state = socketStates?[socketIndex];
-    final isVisible = state?.isVisible ??
-        definition?.sockets?.socketEntries?[socketIndex].defaultVisible ??
-        false;
+    final isVisible = state?.isVisible ?? definition?.sockets?.socketEntries?[socketIndex].defaultVisible ?? false;
     if (!isVisible) {
       return false;
     }
@@ -276,13 +240,11 @@ abstract class BaseSocketController extends ChangeNotifier
   bool canApplyForFree(int socketIndex, int plugHash) {
     final canApply = canApplyPlug(socketIndex, plugHash);
     if (!canApply) return false;
-    final materialRequirementHash =
-        _plugDefinitions?[plugHash]?.plug?.insertionMaterialRequirementHash;
+    final materialRequirementHash = _plugDefinitions?[plugHash]?.plug?.insertionMaterialRequirementHash;
     if (materialRequirementHash == null || materialRequirementHash == 0) {
       return true;
     }
-    final materials =
-        _materialRequirementSetDefinitions?[materialRequirementHash]?.materials;
+    final materials = _materialRequirementSetDefinitions?[materialRequirementHash]?.materials;
     if (materials == null) return true;
     for (var m in materials) {
       final count = m.count ?? 0;

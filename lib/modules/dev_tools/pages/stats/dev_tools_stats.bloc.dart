@@ -16,7 +16,7 @@ class StatsItem {
     for (final hash in precalculated.keys) {
       // Ignore stats: Ghost Energy Capacity, Mod Cost, Speed
       if ([237763788, 514071887, 1501155019].contains(hash)) continue;
-      final equipped = (stats[hash]?.equipped ?? 0) + (stats[hash]?.equippedMasterwork ?? 0);
+      final equipped = (stats[hash].equipped) + (stats[hash].equippedMasterwork);
       if (precalculated[hash] != equipped) {
         return true;
       }
