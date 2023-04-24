@@ -9,7 +9,6 @@ import 'package:little_light/modules/loadouts/pages/select_item/select_loadout_i
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/utils/item_with_owner.dart';
 import 'package:provider/provider.dart';
 
 import 'edit_loadout.page_route.dart';

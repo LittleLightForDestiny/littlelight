@@ -1,15 +1,10 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
+import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
-import 'package:little_light/widgets/common/manifest_image.widget.dart';
-import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
-import 'package:tinycolor2/tinycolor2.dart';
 
 class DetailsApplyPlugButtonWidget extends StatelessWidget {
   final int plugHash;

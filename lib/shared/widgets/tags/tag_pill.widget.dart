@@ -118,7 +118,7 @@ class TagPillWidget extends StatelessWidget {
         alignment: Alignment.center,
         width: _tagIconSize,
         height: _tagIconSize,
-        child: CenterIconWorkaround(icon, color: foreground, size: _tagIconSize));
+        child: CenterIconWorkaround(icon, color: foreground, size: _tagIconSize * .9));
   }
 
   Widget buildBg(BuildContext context, Widget contents) {
@@ -132,7 +132,7 @@ class TagPillWidget extends StatelessWidget {
           onTap: onTap,
           customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_tagIconSize)),
           child: Container(
-            padding: EdgeInsets.all(4).copyWith(left: 8),
+            padding: EdgeInsets.all(4),
             child: contents,
           )),
     );

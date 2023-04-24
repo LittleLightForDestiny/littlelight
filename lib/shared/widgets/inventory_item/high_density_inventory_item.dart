@@ -826,7 +826,6 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
               physics: const NeverScrollableScrollPhysics(),
               child: InventoryItemPerks(
                 item,
-                definition: definition,
                 categoryHash: categoryHash,
               ));
         });
@@ -840,7 +839,6 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
           if (categoryHash == null) return Container();
           return InventoryItemMods(
             item,
-            definition: definition,
             categoryHash: categoryHash,
             plugMargin: const EdgeInsets.only(left: 1),
           );
@@ -881,7 +879,6 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
                               ),
                             InventoryItemMods(
                               item,
-                              definition: definition,
                               plugSize: 24,
                               categoryHash: c.hash ?? 0,
                             ),

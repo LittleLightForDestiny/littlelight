@@ -6,6 +6,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:provider/provider.dart';
 
 const _blockedForApplyingPlugCategories = [r'^.*?\.weapons\.masterworks\.trackers$'];
+const _trackerPlugCategories = [r'^.*?\.weapons\.masterworks\.trackers$'];
 const _ornamentPlugCategories = [r'^.*?skins.*?$'];
 
 bool canApplyPlug(
@@ -31,6 +32,14 @@ bool isPlugBlockedForApplying(BuildContext context, DestinyInventoryItemDefiniti
   final categoryId = def?.plug?.plugCategoryIdentifier;
   if (categoryId == null) return false;
   return _blockedForApplyingPlugCategories.any((r) {
+    return RegExp(r).hasMatch(categoryId);
+  });
+}
+
+bool isTrackerPlug(BuildContext context, DestinyInventoryItemDefinition? def) {
+  final categoryId = def?.plug?.plugCategoryIdentifier;
+  if (categoryId == null) return false;
+  return _trackerPlugCategories.any((r) {
     return RegExp(r).hasMatch(categoryId);
   });
 }

@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
-import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/modules/settings/pages/settings/settings.bloc.dart';
@@ -15,11 +14,9 @@ import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/shared/utils/extensions/item_sort_parameter_type_data.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
-import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/dialogs/busy.dialog.dart';
 import 'package:little_light/widgets/dialogs/tags/select_tag.dialog.dart';
-import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 import 'package:little_light/widgets/option_sheets/free_slots_slider.widget.dart';
 
 class SettingsView extends StatefulWidget {

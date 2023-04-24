@@ -22,7 +22,7 @@ class DetailsItemLoreWidget extends StatelessWidget {
         padding: EdgeInsets.all(4),
         child: PersistentCollapsibleContainer(
           title: Text("Lore".translate(context).toUpperCase()),
-          persistenceID: 'item_lore',
+          persistenceID: 'item lore',
           content: buildContent(context, loreDef),
         ));
   }

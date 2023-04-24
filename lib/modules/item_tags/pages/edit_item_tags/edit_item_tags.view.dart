@@ -123,6 +123,7 @@ class EditItemTagsView extends StatelessWidget {
           child: Material(
             color: Colors.transparent,
             child: InkWell(
+              customBorder: CircleBorder(),
               onTap: onTap,
             ),
           ),

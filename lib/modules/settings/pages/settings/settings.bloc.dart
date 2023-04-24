@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
-import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/wishlist_index.dart';

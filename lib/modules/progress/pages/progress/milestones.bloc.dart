@@ -5,8 +5,6 @@ import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:provider/provider.dart';
 
-const _raidActivityTypeHash = 2043403989;
-
 class MilestonesBloc extends ChangeNotifier with ManifestConsumer {
   final ProfileBloc _profileBloc;
   final BuildContext context;

@@ -34,6 +34,10 @@ extension DestinyInventoryItemDefinitionHelper on DestinyInventoryItemDefinition
       itemType == DestinyItemType.Emblem || //
       inventory?.bucketTypeHash == InventoryBucket.emblems;
 
+  bool get isQuestStep =>
+      this.itemType == DestinyItemType.QuestStep || //
+      inventory?.bucketTypeHash == InventoryBucket.pursuits;
+
   bool get isEngram =>
       itemType == DestinyItemType.Engram || //
       inventory?.bucketTypeHash == InventoryBucket.engrams;

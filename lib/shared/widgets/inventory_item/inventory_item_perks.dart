@@ -4,33 +4,46 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/wishlist_tag_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
-  final DestinyInventoryItemDefinition definition;
   final DestinyItemInfo itemInfo;
   final int categoryHash;
   final double plugSize;
+  final bool includeUnequipped;
   InventoryItemPerks(
     this.itemInfo, {
-    required this.definition,
     required this.categoryHash,
     this.plugSize = 20,
+    this.includeUnequipped = false,
   });
   @override
   Widget build(BuildContext context) {
+    final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
     final sockets = itemInfo.sockets;
-    final socketCategory = definition.sockets?.socketCategories //
+    final socketCategory = definition?.sockets?.socketCategories //
         ?.firstWhereOrNull((c) => c.socketCategoryHash == categoryHash);
-    final plugs = socketCategory?.socketIndexes?.map((e) => sockets?[e]).whereType<DestinyItemSocketState>();
-    if (plugs == null || plugs.isEmpty) return Container();
+    final socket = socketCategory?.socketIndexes;
+    final reusable = itemInfo.reusablePlugs;
+    if (socket == null || socket.isEmpty) return Container();
     return Row(
-      children: plugs //
-          .where((p) => (p.isVisible ?? false) && (p.isEnabled ?? false))
-          .map((p) => buildPlug(context, p.plugHash))
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: socket //
+          .where((p) => (sockets?[p].isVisible ?? false) && (sockets?[p].isEnabled ?? false))
+          .map((p) =>
+              includeUnequipped ? buildSocket(context, reusable?["$p"]) : buildPlug(context, sockets?[p].plugHash))
           .whereType<Widget>()
           .toList(),
+    );
+  }
+
+  Widget? buildSocket(BuildContext context, List<DestinyItemPlugBase>? plugs) {
+    if (plugs == null) return Container();
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: plugs.map((e) => buildPlug(context, e.plugItemHash)).whereType<Widget>().toList(),
     );
   }
 

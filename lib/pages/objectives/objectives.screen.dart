@@ -9,7 +9,6 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/tracked_objective.dart';
-import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/pages/triumphs/widgets/record_item.widget.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';

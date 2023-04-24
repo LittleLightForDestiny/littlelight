@@ -73,7 +73,7 @@ class InventoryUtils {
       if (generic != null) {
         final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(generic.item?.itemHash);
         final bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
-        final instance = _profile.getInstanceInfo(generic.item.itemInstanceId);
+        final instance = _profile.getInstanceInfo(generic.item.instanceId);
         logger.info("---------------------------------------------------------------");
         logger.info(bucket.displayProperties.name);
         logger.info("---------------------------------------------------------------");
@@ -84,7 +84,7 @@ class InventoryUtils {
       if (classSpecific != null) {
         final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(classSpecific.item.itemHash);
         final bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
-        final instance = _profile.getInstanceInfo(classSpecific.item.itemInstanceId);
+        final instance = _profile.getInstanceInfo(classSpecific.item.instanceId);
         logger.info("---------------------------------------------------------------");
         logger.info(bucket.displayProperties.name);
         logger.info("---------------------------------------------------------------");

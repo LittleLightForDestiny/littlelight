@@ -26,7 +26,7 @@ class DetailsItemTagsWidget extends StatelessWidget {
         padding: EdgeInsets.all(4),
         child: PersistentCollapsibleContainer(
           title: Text("Item Tags".translate(context).toUpperCase()),
-          persistenceID: 'item_tags',
+          persistenceID: 'item tags',
           content: buildContent(context),
         ));
   }

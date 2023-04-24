@@ -16,7 +16,6 @@ import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
-import 'package:little_light/widgets/item_list/items/base/base_item_instance.widget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
@@ -292,9 +291,9 @@ class _ItemInstanceWrapperState extends State<_ItemInstanceWrapper>
   @override
   Widget build(BuildContext context) {
     return Stack(children: [
-      Positioned.fill(
-          child: BaseItemInstanceWidget(widget.item.item, widget.definition, instance,
-              characterId: widget.item.ownerId, uniqueId: null)),
+      // Positioned.fill(
+      //     child: BaseItemInstanceWidget(widget.item.item, widget.definition, instance,
+      //         characterId: widget.item.ownerId, uniqueId: null)),
       selected
           ? Positioned.fill(
               child: Container(

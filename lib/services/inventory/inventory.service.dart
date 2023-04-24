@@ -11,14 +11,12 @@ import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:bungie_api/enums/tier_type.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
-import 'package:bungie_api/models/destiny_equip_item_result.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
-import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
@@ -336,7 +334,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     final futures = <Future<void>>[];
     for (final item in items) {
       final plugs = item?.itemPlugs;
-      final id = item.item?.itemInstanceId;
+      final id = item.item?.instanceId;
       if (id == null) continue;
       if (plugs.isEmpty) continue;
       for (final socketIndex in plugs.keys) {

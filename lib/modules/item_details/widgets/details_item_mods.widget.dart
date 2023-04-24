@@ -26,7 +26,7 @@ class DetailsItemModsWidget extends StatelessWidget {
         padding: EdgeInsets.all(4),
         child: PersistentCollapsibleContainer(
           title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
-          persistenceID: 'item_mods_$socketCategoryHash',
+          persistenceID: 'item mods $socketCategoryHash',
           content: buildContent(context),
         ));
   }

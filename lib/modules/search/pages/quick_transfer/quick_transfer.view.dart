@@ -13,11 +13,11 @@ import 'package:little_light/widgets/multisection_scrollview/multisection_scroll
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 
 class QuickTransferView extends StatelessWidget {
-  final QuickTransferBloc _bloc;
-  final QuickTransferBloc _state;
+  final QuickTransferBloc bloc;
+  final QuickTransferBloc state;
   const QuickTransferView(
-    this._bloc,
-    this._state, {
+    this.bloc,
+    this.state, {
     Key? key,
   }) : super(key: key);
 
@@ -64,7 +64,7 @@ class QuickTransferView extends StatelessWidget {
   }
 
   Widget buildResultList(BuildContext context) {
-    final items = _state.items;
+    final items = state.items;
     if (items == null) return LoadingAnimWidget();
     final mq = MediaQuery.of(context);
     final screenWidth = mq.size.width;

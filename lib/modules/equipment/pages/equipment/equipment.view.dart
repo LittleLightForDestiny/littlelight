@@ -55,23 +55,23 @@ extension on InventoryTab {
 }
 
 class EquipmentView extends StatelessWidget {
-  final EquipmentBloc _bloc;
-  final EquipmentBloc _state;
+  final EquipmentBloc bloc;
+  final EquipmentBloc state;
 
   const EquipmentView(
-    this._bloc,
-    this._state, {
+    this.bloc,
+    this.state, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final characters = _state.characters;
+    final characters = state.characters;
     if (characters == null) return Container();
     final characterCount = characters.length;
     final viewPadding = MediaQuery.of(context).viewPadding;
     return PageStorage(
-      bucket: _state.pageStorageBucket,
+      bucket: state.pageStorageBucket,
       child: CustomTabControllerBuilder(
         InventoryTab.values.length,
         builder: (context, typeTabController) => CustomTabControllerBuilder(
@@ -168,7 +168,7 @@ class EquipmentView extends StatelessWidget {
   }
 
   Widget buildTabHeader(BuildContext context, CustomTabController characterTabController) {
-    final characters = _state.characters;
+    final characters = state.characters;
     if (characters == null) return buildLoadingAppBar(context);
     return CustomTabPassiveView(
         controller: characterTabController,
@@ -185,7 +185,7 @@ class EquipmentView extends StatelessWidget {
 
   Widget buildTabContent(
       BuildContext context, CustomTabController characterTabController, CustomTabController typeTabController) {
-    final characters = _state.characters;
+    final characters = state.characters;
     if (characters == null) return Container();
     return CustomTabPassiveView(
       controller: characterTabController,
@@ -206,12 +206,12 @@ class EquipmentView extends StatelessWidget {
 
   Widget buildCharacterTabContent(BuildContext context, InventoryTab tab, DestinyCharacterInfo character) {
     final bucketHashes = tab.bucketHashes;
-    final currencies = _state.relevantCurrencies;
+    final currencies = state.relevantCurrencies;
     final buckets = bucketHashes
         .map((h) => EquipmentCharacterBucketContent(
               h,
-              equipped: _state.getEquippedItem(character, h),
-              unequipped: _state.getUnequippedItems(character, h) ?? [],
+              equipped: state.getEquippedItem(character, h),
+              unequipped: state.getUnequippedItems(character, h) ?? [],
             ))
         .toList();
     return EquipmentCharacterTabContentWidget(
@@ -226,7 +226,7 @@ class EquipmentView extends StatelessWidget {
     final bucketHashes = tab.bucketHashes;
     final buckets = bucketHashes
         .map((h) {
-          final items = _state.getVaultItems(h) ?? [];
+          final items = state.getVaultItems(h) ?? [];
           if (items.isEmpty) return null;
           return EquipmentVaultBucketContent(
             h,
@@ -252,7 +252,7 @@ class EquipmentView extends StatelessWidget {
   }
 
   Widget buildCharacterContextMenuButton(BuildContext context, CustomTabController characterTabController) {
-    final characters = _state.characters;
+    final characters = state.characters;
     final viewPadding = MediaQuery.of(context).viewPadding;
     if (characters == null) return Container();
     return Builder(

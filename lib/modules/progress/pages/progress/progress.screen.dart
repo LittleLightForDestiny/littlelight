@@ -6,24 +6,19 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
-
-import 'package:little_light/models/item_sort_parameter.dart';
-
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/utils/item_filters/item_owner_filter.dart';
+import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 import 'package:little_light/utils/item_filters/pseudo_item_type_filter.dart';
 import 'package:little_light/widgets/common/animated_character_background.widget.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
-import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_pursuits_list.widget.dart';
 import 'package:little_light/widgets/progress_tabs/character_ranks_list.widget.dart';
-import 'package:little_light/widgets/search/search.controller.dart';
 
 class ProgressScreen extends StatefulWidget {
   @override
@@ -107,7 +102,7 @@ class ProgressScreenState extends State<ProgressScreen>
             child: buildTypeTabBar(context),
           ),
           const InventoryNotificationWidget(key: Key('inventory_notification_widget')),
-          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: const SelectedItemsWidget()),
+          Positioned(bottom: screenPadding.bottom, left: 0, right: 0, child: SelectedItemsWidget()),
         ],
       ),
     );

@@ -14,14 +14,12 @@ import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
+import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 import 'package:little_light/widgets/common/expiry_date.widget.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/small_objective.widget.dart';
-import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 
 class PursuitItemWidget extends StatefulWidget {
   final Widget trailing;

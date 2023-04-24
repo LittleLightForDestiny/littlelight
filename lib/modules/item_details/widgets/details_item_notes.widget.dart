@@ -16,7 +16,7 @@ class DetailsItemNotesWidget extends StatelessWidget {
         padding: EdgeInsets.all(4),
         child: PersistentCollapsibleContainer(
           title: Text("Item Notes".translate(context).toUpperCase()),
-          persistenceID: 'item_notes',
+          persistenceID: 'item notes',
           content: buildContent(context),
         ));
   }

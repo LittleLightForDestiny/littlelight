@@ -30,7 +30,7 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<DestinyItem
   }
 
   @override
-  Future<void> update(object) async {
+  Future<void> update(DestinyItemInfo item) async {
     this.item = item;
     this.refreshStats();
   }

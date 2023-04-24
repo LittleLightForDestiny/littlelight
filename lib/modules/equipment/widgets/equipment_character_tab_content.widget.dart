@@ -79,7 +79,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
                     .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
-            padding: const EdgeInsets.all(8).copyWith(top: 0),
+            padding: const EdgeInsets.all(8).copyWith(top: 0, bottom: 64),
             scrollViewKey: scrollViewKey,
           ),
         );

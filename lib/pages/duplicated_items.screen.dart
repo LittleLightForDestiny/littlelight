@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
-import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
+import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 import 'package:little_light/utils/item_filters/text_filter.dart';
-import 'package:little_light/widgets/inventory_tabs/selected_items.widget.dart';
 import 'package:little_light/widgets/item_list/duplicated_item_list.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/search/search_filters/pseudo_item_type_filter.widget.dart';
@@ -42,7 +41,7 @@ class DuplicatedItemsScreenState extends State<DuplicatedItemsScreen>
         body: Stack(children: [
           Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
             Expanded(child: DuplicatedItemListWidget(searchController: widget.searchController)),
-            const SelectedItemsWidget(),
+            SelectedItemsWidget(),
             PseudoItemTypeFilterWidget(widget.searchController),
           ]),
         ]));

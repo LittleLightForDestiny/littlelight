@@ -207,7 +207,7 @@ class SelectedItemsWidget extends StatelessWidget {
     return Container(
         key: Key("stack-transfer-${item.itemHash}"),
         child: StackTransferWidget(
-          total: item.quantity ?? 1,
+          total: item.quantity,
           onTransferPressed: (stackSize, destination) {
             final items = selectionBloc(context).selectedItems;
             inventoryBloc(context).transfer(items.first, destination, stackSize: stackSize);

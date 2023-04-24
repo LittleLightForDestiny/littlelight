@@ -11,7 +11,6 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/wishlist_corner_badge.decoration.dart';
 import 'package:little_light/widgets/item_list/items/base/base_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/minimal_info_label.mixin.dart';
-import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 
 class MinimalBaseInventoryItemWidget extends BaseInventoryItemWidget with MinimalInfoLabelMixin, ProfileConsumer {
   MinimalBaseInventoryItemWidget(DestinyItemComponent item, DestinyInventoryItemDefinition itemDefinition,

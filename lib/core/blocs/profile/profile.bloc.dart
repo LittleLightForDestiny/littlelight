@@ -86,6 +86,8 @@ class ProfileBloc extends ChangeNotifier
 
   _CachedItemsContainer _itemCache = _CachedItemsContainer();
 
+  DateTime? get lastUpdate => _lastLocalChange;
+
   ProfileBloc._internal();
 
   clearCached() {
@@ -668,6 +670,7 @@ class ProfileBloc extends ChangeNotifier
       final newValue = currentValue - ItemState.Locked.value;
       item.state = ItemState(newValue);
     }
+    _lastLocalChange = DateTime.now().toUtc();
     notifyListeners();
   }
 
@@ -680,6 +683,12 @@ class ProfileBloc extends ChangeNotifier
     if (characterId == null) throw "Can't apply plugs on an item without a characterId";
     await bungieAPI.applySocket(instanceId, plugHash, socketIndex, characterId);
     final sockets = item.sockets;
+    final currentItem = allItems.firstWhereOrNull((i) =>
+            i.instanceId == item.instanceId && //
+            item.itemHash == item.itemHash &&
+            item.stackIndex == item.stackIndex) ??
+        item;
+    item = currentItem;
     if (sockets != null) {
       final previousPlugHash = sockets[socketIndex].plugHash;
       sockets[socketIndex].plugHash = plugHash;
@@ -703,6 +712,7 @@ class ProfileBloc extends ChangeNotifier
         item.overrideStyleItemHash = plugHash;
       }
     }
+    _lastLocalChange = DateTime.now().toUtc();
     notifyListeners();
   }
 }

@@ -30,7 +30,7 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
         padding: EdgeInsets.all(4),
         child: PersistentCollapsibleContainer(
           title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
-          persistenceID: 'item_perks_$socketCategoryHash',
+          persistenceID: 'item perks $socketCategoryHash',
           content: buildContent(context),
         ));
   }

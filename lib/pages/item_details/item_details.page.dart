@@ -1,14 +1,12 @@
 // @dart=2.9
 
 import 'package:bungie_api/enums/destiny_item_type.dart';
-import 'package:bungie_api/enums/item_state.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
@@ -16,39 +14,24 @@ import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/media_query_helper.dart';
-import 'package:little_light/utils/socket_category_hashes.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
-import 'package:little_light/widgets/item_details/item_collectible_info.widget.dart';
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_cover/landscape_item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_loadouts.widget.dart';
 import 'package:little_light/widgets/item_details/item_level.widget.dart';
-import 'package:little_light/widgets/item_details/item_lore.widget.dart';
 import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
 import 'package:little_light/widgets/item_details/item_vendor_info.widget.dart';
-import 'package:little_light/widgets/item_details/main_info/item_main_info.widget.dart';
-import 'package:little_light/widgets/item_details/management_block.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
 import 'package:little_light/widgets/item_details/wishlist_builds.widget.dart';
 import 'package:little_light/widgets/item_details/wishlist_notes.widget.dart';
-import 'package:little_light/widgets/item_sockets/details_armor_tier.widget.dart';
-import 'package:little_light/widgets/item_sockets/details_item_intrinsic_perk.widget.dart';
-import 'package:little_light/widgets/item_sockets/details_item_mods.widget.dart';
-import 'package:little_light/widgets/item_sockets/details_item_perks.widget.dart';
-import 'package:little_light/widgets/item_sockets/item_details_plug_info.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
-import 'package:little_light/widgets/option_sheets/as_equipped_switch.widget.dart';
-import 'package:little_light/widgets/option_sheets/loadout_select_sheet.widget.dart';
 import 'package:provider/provider.dart';
 
 class ItemDetailsPage extends StatefulWidget {
@@ -225,35 +208,27 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
-            ItemMainInfoWidget(
-              item,
-              definition,
-              instanceInfo,
-              characterId: characterId,
-            ),
           ]
                   .followedBy(loaded
                       ? [
-                          buildManagementBlock(context),
-                          buildLockInfo(context),
-                          buildActionButtons(context),
+                          // buildLockInfo(context),
+                          // buildActionButtons(context),
                           buildLoadouts(context),
-                          buildWishlistNotes(context),
-                          buildDuplicates(context),
+                          // buildWishlistNotes(context),
+                          // buildDuplicates(context),
                           buildItemLevel(context),
-                          buildIntrinsicPerk(context),
-                          buildModInfo(context),
+                          // buildIntrinsicPerk(context),
+                          // buildModInfo(context),
                           // buildStats(context),
-                          buildPerks(context),
-                          buildArmorTier(context),
-                          buildMods(context),
+                          // buildPerks(context),
+                          // buildArmorTier(context),
+                          // buildMods(context),
                           buildWishlistBuilds(context),
-                          buildCosmetics(context),
+                          // buildCosmetics(context),
                           buildObjectives(context),
                           buildRewards(context),
                           buildQuestInfo(context),
-                          buildLore(context),
-                          buildCollectibleInfo(context),
+                          // buildLore(context),
                           Container(height: 50)
                         ]
                       : [LoadingAnimWidget()])
@@ -282,34 +257,26 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),
-            ItemMainInfoWidget(
-              item,
-              definition,
-              instanceInfo,
-              characterId: characterId,
-            ),
           ]
                   .followedBy(loaded
                       ? [
                           buildWishlistNotes(context),
-                          buildManagementBlock(context),
-                          buildLockInfo(context),
-                          buildActionButtons(context),
-                          buildDuplicates(context),
+                          // buildLockInfo(context),
+                          // buildActionButtons(context),
+                          // buildDuplicates(context),
                           buildItemLevel(context),
-                          buildIntrinsicPerk(context),
-                          buildModInfo(context),
+                          // buildIntrinsicPerk(context),
+                          // buildModInfo(context),
                           // buildStats(context),
-                          buildPerks(context),
-                          buildArmorTier(context),
-                          buildMods(context),
+                          // buildPerks(context),
+                          // buildArmorTier(context),
+                          // buildMods(context),
                           buildWishlistBuilds(context),
-                          buildCosmetics(context),
+                          // buildCosmetics(context),
                           buildObjectives(context),
                           buildRewards(context),
                           buildQuestInfo(context),
-                          buildLore(context),
-                          buildCollectibleInfo(context),
+                          // buildLore(context),
                           Container(height: 50)
                         ]
                       : [LoadingAnimWidget()])
@@ -365,134 +332,8 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
         ));
   }
 
-  Widget buildManagementBlock(BuildContext context) {
-    if (hideItemManagement) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: ManagementBlockWidget(
-          item,
-          definition,
-          instanceInfo,
-          characterId: characterId,
-        ));
-  }
-
-  Widget buildLockInfo(BuildContext context) {
-    if (item?.lockable != true) return Container();
-    var locked = item?.state?.contains(ItemState.Locked);
-    return Container(
-        padding: const EdgeInsets.all(8),
-        child: Row(
-          children: <Widget>[
-            Icon(locked ? FontAwesomeIcons.lock : FontAwesomeIcons.unlock, size: 14),
-            Container(
-              width: 4,
-            ),
-            Expanded(
-                child: locked
-                    ? TranslatedTextWidget(
-                        "Item Locked",
-                        uppercase: true,
-                      )
-                    : TranslatedTextWidget(
-                        "Item Unlocked",
-                        uppercase: true,
-                      )),
-            ElevatedButton(
-              child: locked
-                  ? TranslatedTextWidget(
-                      "Unlock",
-                      uppercase: true,
-                    )
-                  : TranslatedTextWidget(
-                      "Lock",
-                      uppercase: true,
-                    ),
-              onPressed: () async {
-                var itemWithOwner = ItemWithOwner(item, characterId);
-                inventory.changeLockState(itemWithOwner, !locked);
-                setState(() {});
-              },
-            )
-          ],
-        ));
-  }
-
-  Widget buildActionButtons(BuildContext context) {
-    if (hideItemManagement || item == null) return Container();
-    List<Widget> buttons = [];
-    if (InventoryBucket.loadoutBucketHashes.contains(definition?.inventory?.bucketTypeHash)) {
-      buttons.add(Expanded(
-          child: ElevatedButton(
-              child: TranslatedTextWidget(
-                "Add to Loadout",
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-              onPressed: () async {
-                var loadouts = context.read<LoadoutsBloc>().loadouts;
-                // var equipped = false;
-                showModalBottomSheet(
-                    context: context,
-                    builder: (context) => LoadoutSelectSheet(
-                        header: AsEquippedSwitchWidget(
-                          onChanged: (value) {
-                            // equipped = value;
-                          },
-                        ),
-                        loadouts: loadouts,
-                        onSelect: (loadout) async {
-                          // loadout.addItem(item, equipped);
-                          context.read<LoadoutsBloc>().saveLoadout(loadout);
-                        }));
-              })));
-    }
-    if (definition?.collectibleHash != null || definition?.equippable == true) {
-      buttons.add(Expanded(
-          child: ElevatedButton(
-              child: TranslatedTextWidget(
-                "View in Collections",
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              ),
-              onPressed: () async {
-                Navigator.push(
-                  context,
-                  ItemDetailsPageRoute.definition(hash: definition.hash),
-                );
-              })));
-    }
-    if (buttons.isEmpty) {
-      return Container();
-    }
-    buttons = buttons
-        .expand((b) {
-          return [b, Container(width: 8)];
-        })
-        .take(buttons.length * 2 - 1)
-        .toList();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(padding: const EdgeInsets.symmetric(horizontal: 8), child: Row(children: buttons.toList())));
-  }
-
   Widget buildLoadouts(BuildContext context) {
     return ItemDetailLoadoutsWidget(item, definition, instanceInfo, loadouts: loadouts);
-  }
-
-  Widget buildDuplicates(context) {
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container();
-    // return Container(
-    //     padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-    //     child: ItemDetailDuplicatesWidget(
-    //       itemWithOwner,
-    //       definition,
-    //       instanceInfo,
-    //       duplicates: duplicates,
-    //     ));
   }
 
   Widget buildObjectives(BuildContext context) {
@@ -520,110 +361,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                 characterId: characterId, key: const Key("item_rewards_widget"))));
   }
 
-  Widget buildModInfo(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
-    if (definition.itemType != DestinyItemType.Mod) return Container();
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: ItemDetailsPlugInfoWidget(
-          item: item,
-          definition: definition,
-        ));
-  }
-
-  Widget buildPerks(BuildContext context) {
-    var perksCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => SocketCategoryHashes.perks.contains(s.socketCategoryHash), orElse: () => null);
-    if (perksCategory == null || socketController == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: DetailsItemPerksWidget(
-              controller: socketController,
-              definition: definition,
-              item: item,
-              category: perksCategory,
-              key: const Key('perks_widget'),
-            )));
-  }
-
-  Widget buildIntrinsicPerk(BuildContext context) {
-    var intrinsicperkCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryIntrinsicPerkHashes.contains(s.socketCategoryHash),
-        orElse: () => null);
-    if (intrinsicperkCategory == null || socketController == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: DetailsItemIntrinsicPerkWidget(
-              controller: socketController,
-              definition: definition,
-              item: item,
-              category: intrinsicperkCategory,
-              key: const Key('perks_widget'),
-            )));
-  }
-
-  Widget buildArmorTier(BuildContext context) {
-    var tierCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => DestinyData.socketCategoryTierHashes.contains(s.socketCategoryHash), orElse: () => null);
-    if (tierCategory == null || socketController == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: DetailsArmorTierWidget(
-              controller: socketController,
-              definition: definition,
-              item: item,
-              category: tierCategory,
-              key: const Key('armor_tier_widget'),
-            )));
-  }
-
-  Widget buildMods(BuildContext context) {
-    var modsCategory = definition.sockets?.socketCategories
-        ?.firstWhere((s) => SocketCategoryHashes.mods.contains(s.socketCategoryHash), orElse: () => null);
-    if (modsCategory == null || socketController == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        margin: const EdgeInsets.only(top: 8),
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: DetailsItemModsWidget(
-              controller: socketController,
-              definition: definition,
-              item: item,
-              category: modsCategory,
-              key: const Key('mods_widget'),
-            )));
-  }
-
-  Widget buildCosmetics(BuildContext context) {
-    var modsCategory = definition.sockets?.socketCategories?.firstWhere(
-        (s) => DestinyData.socketCategoryCosmeticModHashes.contains(s.socketCategoryHash),
-        orElse: () => null);
-    if (modsCategory == null || socketController == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: DetailsItemModsWidget(
-              controller: socketController,
-              definition: definition,
-              item: item,
-              category: modsCategory,
-              key: const Key('perks_widget'),
-            )));
-  }
-
   Widget buildQuestInfo(BuildContext context) {
     if (definition?.itemType == DestinyItemType.QuestStep) {
       var screenPadding = MediaQuery.of(context).padding;
@@ -638,21 +375,5 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                   characterId: characterId)));
     }
     return Container();
-  }
-
-  buildLore(BuildContext context) {
-    if (definition?.loreHash == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: ItemLoreWidget(definition.loreHash));
-  }
-
-  buildCollectibleInfo(BuildContext context) {
-    if (definition?.collectibleHash == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: ItemCollectibleInfoWidget(definition.collectibleHash));
   }
 }

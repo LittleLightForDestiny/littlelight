@@ -22,7 +22,7 @@ class DetailsItemCollectibleInfoWidget extends StatelessWidget {
         padding: EdgeInsets.all(4),
         child: PersistentCollapsibleContainer(
           title: Text("How to get".translate(context).toUpperCase()),
-          persistenceID: 'item_collectible_info',
+          persistenceID: 'item collectible info',
           content: buildContent(context, collectibleDef),
         ));
   }

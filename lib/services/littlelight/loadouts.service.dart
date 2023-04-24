@@ -26,11 +26,6 @@ class LoadoutsService with StorageConsumer {
     }
   }
 
-  Future<List<String>> _getLoadoutsOrder() async {
-    final order = await currentMembershipStorage.getLoadoutsOrder();
-    return order ?? <String>[];
-  }
-
   Future<void> saveLoadoutsOrder(List<String> loadoutIds) async {
     List<String>? order = loadoutIds.toList().reversed.toList();
     await currentMembershipStorage.saveLoadoutsOrder(order);

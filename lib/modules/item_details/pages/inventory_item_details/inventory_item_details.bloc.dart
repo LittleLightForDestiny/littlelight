@@ -6,12 +6,17 @@ import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/item_notes_tag.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/modules/item_details/blocs/item_details.bloc.dart';
 import 'package:little_light/modules/item_details/pages/edit_item_notes/edit_item_notes.bottomsheet.dart';
 import 'package:little_light/modules/item_tags/pages/edit_item_tags/edit_item_tags.bottomsheet.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/utils/helpers/get_transfer_destinations.dart';
+import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:provider/provider.dart';
 
 class InventoryItemDetailsBloc extends ItemDetailsBloc {
@@ -19,20 +24,25 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   final InventoryBloc _inventoryBloc;
   final ItemNotesBloc _itemNotesBloc;
   final SocketControllerBloc _socketControllerBloc;
+  final ManifestService _manifestBloc;
+  final WishlistsService _wishlists;
 
   @protected
-  DestinyItemInfo? item;
+  DestinyItemInfo? _item;
 
   List<TransferDestination>? _transferDestinations;
   List<TransferDestination>? _equipDestinations;
 
   bool _lockBusy = false;
 
-  InventoryItemDetailsBloc(BuildContext context, {DestinyItemInfo? this.item})
-      : _profileBloc = context.read<ProfileBloc>(),
+  InventoryItemDetailsBloc(BuildContext context, {DestinyItemInfo? item})
+      : _item = item,
+        _profileBloc = context.read<ProfileBloc>(),
         _inventoryBloc = context.read<InventoryBloc>(),
         _itemNotesBloc = context.read<ItemNotesBloc>(),
         _socketControllerBloc = context.read<SocketControllerBloc>(),
+        _manifestBloc = context.read<ManifestService>(),
+        _wishlists = getInjectedWishlistsService(),
         super(context) {
     _init();
   }
@@ -40,7 +50,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   _init() {
     _profileBloc.addListener(_updateItem);
     _itemNotesBloc.addListener(notifyListeners);
-    _socketControllerBloc.init(this.item);
+    _socketControllerBloc.init(this._item);
     _updateItem();
   }
 
@@ -59,7 +69,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
         item.stackIndex == this.stackIndex);
     if (item == null) return;
 
-    this.item = item;
+    this._item = item;
     final characters = _profileBloc.characters;
     final items = [item];
     final destinations = await getTransferDestinations(context, characters, items);
@@ -67,17 +77,30 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     this._equipDestinations = destinations?.equip;
 
     _socketControllerBloc.update(item);
+
+    _updateKillTracker();
+
+    notifyListeners();
+  }
+
+  void _updateKillTracker() async {
+    final plugHashes = this.item?.sockets?.map((s) => s.plugHash);
+    if (plugHashes == null) return;
+    final defs = await _manifestBloc.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
+    final trackerDef = defs.values.firstWhereOrNull((def) => isTrackerPlug(context, def));
+    final objective = this.item?.plugObjectives?["${trackerDef?.hash}"]?.firstOrNull;
+    _killTracker = objective;
     notifyListeners();
   }
 
   @override
-  int? get itemHash => item?.itemHash;
+  int? get itemHash => _item?.itemHash;
   @protected
-  String? get instanceId => item?.instanceId;
+  String? get instanceId => _item?.instanceId;
   @protected
-  int? get stackIndex => item?.stackIndex;
+  int? get stackIndex => _item?.stackIndex;
   @override
-  int? get styleHash => item?.overrideStyleItemHash ?? itemHash;
+  int? get styleHash => _item?.overrideStyleItemHash ?? itemHash;
 
   @override
   List<TransferDestination>? get transferDestinations => _transferDestinations;
@@ -104,16 +127,16 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
   @override
   void editNotes() {
-    final hash = this.item?.itemHash;
-    final instanceId = this.item?.instanceId;
+    final hash = this._item?.itemHash;
+    final instanceId = this._item?.instanceId;
     if (hash == null) return;
     EditItemNotesBottomSheet(hash, instanceId).show(context);
   }
 
   @override
   void removeTag(ItemNotesTag tag) {
-    final hash = this.item?.itemHash;
-    final instanceId = this.item?.instanceId;
+    final hash = this._item?.itemHash;
+    final instanceId = this._item?.instanceId;
     final tagId = tag.tagId;
     if (hash == null || tagId == null) return;
     _itemNotesBloc.removeTag(hash, instanceId, tagId);
@@ -121,17 +144,17 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
   @override
   void editTags() {
-    final hash = this.item?.itemHash;
-    final instanceId = this.item?.instanceId;
+    final hash = this._item?.itemHash;
+    final instanceId = this._item?.instanceId;
     if (hash == null) return;
     EditItemTagsBottomSheet(hash, instanceId).show(context);
   }
 
   @override
   bool? get isLocked {
-    final lockable = item?.lockable ?? false;
+    final lockable = _item?.lockable ?? false;
     if (!lockable) return null;
-    return item?.state?.contains(ItemState.Locked);
+    return _item?.state?.contains(ItemState.Locked);
   }
 
   @override
@@ -139,12 +162,32 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
   @override
   void changeLockState(bool newState) async {
-    final item = this.item;
+    final item = this._item;
     if (item == null) return;
     _lockBusy = true;
     notifyListeners();
     await _inventoryBloc.changeItemLockState(item, newState);
     _lockBusy = false;
     notifyListeners();
+  }
+
+  @override
+  DestinyItemInfo? get item => _item;
+
+  DestinyObjectiveProgress? _killTracker;
+
+  @override
+  DestinyObjectiveProgress? get killTracker => _killTracker;
+
+  @override
+  Set<WishlistTag>? get wishlistTags {
+    final hash = item?.itemHash;
+    final plugs = item?.reusablePlugs;
+    if (hash == null || plugs == null) return null;
+    return _wishlists.getWishlistBuildTags(itemHash: hash, reusablePlugs: plugs);
+  }
+
+  List<DestinyItemInfo>? get duplicates {
+    return this.item?.duplicates?.where((element) => element != this.item).toList();
   }
 }

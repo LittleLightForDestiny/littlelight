@@ -23,25 +23,25 @@ import 'progress.bloc.dart';
 enum ProgressTab { Milestones, Pursuits, Ranks }
 
 class ProgressView extends StatelessWidget {
-  final ProgressBloc _bloc;
-  final ProgressBloc _state;
-  final MilestonesBloc _milestonesState;
+  final ProgressBloc bloc;
+  final ProgressBloc state;
+  final MilestonesBloc milestonesState;
 
   const ProgressView(
-    this._bloc,
-    this._state,
-    this._milestonesState, {
+    this.bloc,
+    this.state,
+    this.milestonesState, {
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final characters = _state.characters;
+    final characters = state.characters;
     if (characters == null) return Container();
     final characterCount = characters.length;
     final viewPadding = MediaQuery.of(context).viewPadding;
     return PageStorage(
-      bucket: _state.pageStorageBucket,
+      bucket: state.pageStorageBucket,
       child: CustomTabControllerBuilder(
         ProgressTab.values.length,
         builder: (context, typeTabController) => CustomTabControllerBuilder(
@@ -138,7 +138,7 @@ class ProgressView extends StatelessWidget {
   }
 
   Widget buildTabHeader(BuildContext context, CustomTabController characterTabController) {
-    final characters = _state.characters;
+    final characters = state.characters;
     if (characters == null) return buildLoadingAppBar(context);
     return CustomTabPassiveView(
         controller: characterTabController,
@@ -154,7 +154,7 @@ class ProgressView extends StatelessWidget {
 
   Widget buildTabContent(
       BuildContext context, CustomTabController characterTabController, CustomTabController typeTabController) {
-    final characters = _state.characters;
+    final characters = state.characters;
     if (characters == null) return Container();
     return CustomTabPassiveView(
       controller: characterTabController,
@@ -182,8 +182,8 @@ class ProgressView extends StatelessWidget {
   }
 
   Widget buildMilestonesTabContent(BuildContext context, ProgressTab tab, DestinyCharacterInfo character) {
-    final currencies = _state.relevantCurrencies;
-    final milestones = _milestonesState.getMilestones(character);
+    final currencies = state.relevantCurrencies;
+    final milestones = milestonesState.getMilestones(character);
     if (milestones == null) return LoadingAnimWidget();
     return CharacterMilestonesTabContentWidget(
       character,
@@ -195,11 +195,11 @@ class ProgressView extends StatelessWidget {
 
   Widget buildPursuitTabContent(BuildContext context, ProgressTab tab, DestinyCharacterInfo character) {
     final bucketHashes = [InventoryBucket.pursuits];
-    final currencies = _state.relevantCurrencies;
+    final currencies = state.relevantCurrencies;
     final buckets = bucketHashes
         .map((h) => PursuitCharacterBucketContent(
               h,
-              items: _state.getUnequippedItems(character, h) ?? [],
+              items: state.getUnequippedItems(character, h) ?? [],
             ))
         .toList();
     return PursuitsCharacterTabContentWidget(
@@ -222,7 +222,7 @@ class ProgressView extends StatelessWidget {
   }
 
   Widget buildCharacterContextMenuButton(BuildContext context, CustomTabController characterTabController) {
-    final characters = _state.characters;
+    final characters = state.characters;
     final viewPadding = MediaQuery.of(context).viewPadding;
     if (characters == null) return Container();
     return Builder(

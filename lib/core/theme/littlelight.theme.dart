@@ -108,8 +108,8 @@ class LittleLightTextTheme {
   final TextStyle itemPrimaryStatMediumDensity;
   final TextStyle itemPrimaryStatLowDensity;
   final TextStyle caption;
-
-  TextStyle itemNameMediumDensity;
+  final TextStyle itemNameMediumDensity;
+  final TextStyle primaryStatName;
 
   LittleLightTextTheme({
     required this.title,
@@ -125,6 +125,7 @@ class LittleLightTextTheme {
     required this.itemPrimaryStatMediumDensity,
     required this.itemPrimaryStatLowDensity,
     required this.itemNameMediumDensity,
+    required this.primaryStatName,
   });
 }
 
@@ -142,6 +143,7 @@ class LittleLightThemeData {
         itemNameHighDensity: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         itemNameMediumDensity: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
         caption: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: onSurfaceLayers.layer0),
+        primaryStatName: TextStyle(fontSize: 16, fontWeight: FontWeight.w200, color: onSurfaceLayers.layer0),
         itemPrimaryStatHighDensity: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
         itemPrimaryStatMediumDensity:
             TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),

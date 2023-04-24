@@ -9,8 +9,6 @@ import 'package:little_light/shared/widgets/sockets/perk_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
 
-const _sectionId = "intrinsic_perks";
-
 class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
   final DestinyItemSocketCategoryDefinition category;
 
@@ -26,7 +24,7 @@ class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
         child: PersistentCollapsibleContainer(
           title: ManifestText<DestinySocketCategoryDefinition>(category.socketCategoryHash),
           content: buildContent(context),
-          persistenceID: 'intrinsic_perks_${category.socketCategoryHash}',
+          persistenceID: 'intrinsic perks ${category.socketCategoryHash}',
         ));
   }
 

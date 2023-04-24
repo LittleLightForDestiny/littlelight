@@ -4,7 +4,6 @@ import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/modules/progress/widgets/milestone_item.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/character/character_info.widget.dart';
-import 'package:little_light/shared/widgets/containers/height_keeper.widget.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
 

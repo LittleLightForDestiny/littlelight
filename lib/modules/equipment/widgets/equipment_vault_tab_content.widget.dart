@@ -56,7 +56,7 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
                 .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
-            padding: const EdgeInsets.all(8).copyWith(top: 0),
+            padding: const EdgeInsets.all(8).copyWith(top: 0, bottom: 64),
           ),
         );
       },

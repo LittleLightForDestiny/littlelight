@@ -6,8 +6,6 @@ import 'package:provider/provider.dart';
 
 import 'details_item_stat.widget.dart';
 
-const _sectionId = "item_stats";
-
 class DetailsItemStatsWidget extends StatelessWidget {
   const DetailsItemStatsWidget({Key? key}) : super(key: key);
 
@@ -21,7 +19,7 @@ class DetailsItemStatsWidget extends StatelessWidget {
       child: PersistentCollapsibleContainer(
         title: Text("Stats".translate(context).toUpperCase()),
         content: buildContent(context),
-        persistenceID: 'item_stats',
+        persistenceID: 'item stats',
       ),
     );
   }

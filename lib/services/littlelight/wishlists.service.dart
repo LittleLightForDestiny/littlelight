@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:bungie_api/destiny2.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/exceptions/not_initialized.exception.dart';
@@ -37,14 +38,12 @@ extension on ParsedWishlistItem {
   }
 }
 
-final _notInitializedException =
-    NotInitializedException("_parsedWishlists was not initialized");
+final _notInitializedException = NotInitializedException("_parsedWishlists was not initialized");
 
-class WishlistsService with StorageConsumer {
+class WishlistsService extends ChangeNotifier with StorageConsumer {
   ParsedWishlist? _parsedWishlists;
   Future<List<WishlistFile>?> getWishlists() => globalStorage.getWishlists();
-  Future<void> setWishlists(List<WishlistFile> wishlists) async =>
-      await globalStorage.setWishlists(wishlists);
+  Future<void> setWishlists(List<WishlistFile> wishlists) async => await globalStorage.setWishlists(wishlists);
   WishlistsService._internal();
 
   Future<void> checkForUpdates([bool forceUpdate = false]) async {
@@ -112,18 +111,14 @@ class WishlistsService with StorageConsumer {
       final content = await http.get(uri);
       final json = jsonDecode(content.body);
       LittleLightWishlist.fromJson(json);
-      return WishlistFile(
-          name: json["name"], description: json["description"], url: url);
+      return WishlistFile(name: json["name"], description: json["description"], url: url);
     } catch (e) {
       return null;
     }
   }
 
-  Set<String> getWishlistBuildNotes(
-      {required int itemHash,
-      Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
-    final builds =
-        getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
+  Set<String> getWishlistBuildNotes({required int itemHash, Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
+    final builds = getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
     final descriptions = <String>{};
     for (final build in builds) {
       final description = build.description?.trim() ?? "";
@@ -136,11 +131,11 @@ class WishlistsService with StorageConsumer {
   }
 
   Set<WishlistTag> getWishlistBuildTags({
-    required int itemHash,
+    required int? itemHash,
     required Map<String, List<DestinyItemPlugBase>>? reusablePlugs,
   }) {
-    final builds =
-        getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
+    if (itemHash == null) return {};
+    final builds = getWishlistBuilds(itemHash: itemHash, reusablePlugs: reusablePlugs);
     final tags = builds.map((e) => e.tags.toList());
     if (tags.isEmpty) return <WishlistTag>{};
     final tagsSet = tags.reduce((value, element) => value + element).toSet();
@@ -155,8 +150,7 @@ class WishlistsService with StorageConsumer {
 
   Set<WishlistTag> getPlugTags(int itemHash, int plugItemHash) {
     if (_parsedWishlists == null) throw _notInitializedException;
-    return _parsedWishlists?.items[itemHash]?.perks[plugItemHash] ??
-        <WishlistTag>{};
+    return _parsedWishlists?.items[itemHash]?.perks[plugItemHash] ?? <WishlistTag>{};
   }
 
   Future<List<WishlistFile>> addWishlist(WishlistFile wishlist) async {
@@ -177,8 +171,7 @@ class WishlistsService with StorageConsumer {
   }
 
   List<ParsedWishlistBuild> getWishlistBuilds(
-      {required int itemHash,
-      Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
+      {required int itemHash, Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
     if (_parsedWishlists == null) throw _notInitializedException;
     final wishlistItem = _parsedWishlists?.items[itemHash];
     if (reusablePlugs == null) {
@@ -191,8 +184,7 @@ class WishlistsService with StorageConsumer {
         .toSet();
     if (availablePlugs.isEmpty) return [];
     final builds = wishlistItem?.builds.where((build) {
-      return build.plugs.every((element) =>
-          element.any((e) => availablePlugs.contains(e)) || element.isEmpty);
+      return build.plugs.every((element) => element.any((e) => availablePlugs.contains(e)) || element.isEmpty);
     });
 
     return builds?.toList() ?? [];

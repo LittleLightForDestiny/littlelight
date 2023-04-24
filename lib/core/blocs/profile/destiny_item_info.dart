@@ -31,8 +31,10 @@ class DestinyItemInfo {
   set bucketHash(int? bucketHash) => _item.bucketHash = bucketHash;
 
   String? get instanceId => _item.itemInstanceId;
-  @deprecated
-  String? get itemInstanceId => instanceId;
+  int? get primaryStatValue => instanceInfo?.primaryStat?.value;
+
+  int? get damageTypeHash => instanceInfo?.damageTypeHash;
+  DamageType? get damageType => instanceInfo?.damageType;
 
   ItemLocation? get location => _item.location;
   set location(ItemLocation? location) => _item.location = location;

@@ -104,7 +104,7 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
     if (stats == null) return SizedBox();
     return SmallArmorStatsWidget(
       stats,
-      textWidth: 22,
+      textWidth: 24,
     );
   }
 

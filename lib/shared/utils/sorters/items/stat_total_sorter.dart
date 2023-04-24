@@ -1,4 +1,3 @@
-import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
 

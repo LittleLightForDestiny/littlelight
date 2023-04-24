@@ -7,7 +7,6 @@ import 'package:bungie_api/models/destiny_record_component.dart';
 import 'package:bungie_api/models/destiny_record_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
-import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';

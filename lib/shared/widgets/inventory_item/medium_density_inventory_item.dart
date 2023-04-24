@@ -677,7 +677,6 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
                 item,
                 plugSize: 20,
                 plugMargin: const EdgeInsets.only(left: 1),
-                definition: definition,
                 categoryHash: categoryHash,
               ));
         });

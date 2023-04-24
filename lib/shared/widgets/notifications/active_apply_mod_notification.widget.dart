@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/shared/widgets/notifications/base_active_notification.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';

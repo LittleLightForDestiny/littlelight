@@ -128,7 +128,7 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
                   ? DefinitionProviderWidget<DestinyInventoryItemDefinition>(
                       itemHash,
                       (def) => ItemIconWidget(item?.item, def, null),
-                      key: Key('slot_item_${item?.item?.itemInstanceId}'),
+                      key: Key('slot_item_${item?.item?.instanceId}'),
                     )
                   : ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552)),
           icon,
