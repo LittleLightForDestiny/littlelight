@@ -17,6 +17,7 @@ import 'package:little_light/modules/item_details/widgets/details_item_stats.wid
 import 'package:little_light/modules/item_details/widgets/details_item_tags.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_transfer_block.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_cover.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_wishlist_builds.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_wishlist_info.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_lock_status.widget.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
@@ -82,6 +83,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         buildDuplicates(context),
         buildItemNotes(context),
         buildItemTags(context),
+        buildWishlistBuilds(context),
         buildLore(context),
         buildCollectibleInfo(context),
         buildEmptySpace(context, hasFooter: hasFooter),
@@ -183,7 +185,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final all = reusable;
     return all
         .map(
-          (e) => SliverToBoxAdapter(child: DetailsItemPerksWidget(e)),
+          (e) => SliverToBoxAdapter(child: DetailsItemModsWidget(e)),
         )
         .toList();
   }
@@ -232,18 +234,31 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     ));
   }
 
-  Widget buildLore(BuildContext context) {
+  Widget? buildWishlistBuilds(BuildContext context) {
+    final builds = state.wishlistBuilds;
+    if (builds == null) return null;
+    return SliverToBoxAdapter(
+        child: DetailsWishlistBuildsWidget(
+      builds,
+      socketState: socketState,
+      viewAllBuilds: bloc.showAllWishlistBuilds,
+      enableViewAllBuilds: true,
+      onToggleViewAllBuilds: (value) => bloc.showAllWishlistBuilds = value,
+    ));
+  }
+
+  Widget? buildLore(BuildContext context) {
     final hash = state.itemHash;
-    if (hash == null) return Container();
+    if (hash == null) return null;
     return SliverToBoxAdapter(
         child: DetailsItemLoreWidget(
       hash,
     ));
   }
 
-  Widget buildCollectibleInfo(BuildContext context) {
+  Widget? buildCollectibleInfo(BuildContext context) {
     final hash = state.itemHash;
-    if (hash == null) return Container();
+    if (hash == null) return null;
     return SliverToBoxAdapter(
         child: DetailsItemCollectibleInfoWidget(
       hash,

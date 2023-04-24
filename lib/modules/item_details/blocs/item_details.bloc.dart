@@ -9,6 +9,8 @@ import 'package:little_light/modules/item_details/pages/inventory_item_details/i
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:provider/provider.dart';
 
+const _allWishlistsBuildsVisibilityKey = 'all wishlists builds';
+
 abstract class ItemDetailsBloc extends ChangeNotifier {
   @protected
   final BuildContext context;
@@ -41,6 +43,7 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
   void editTags();
 
   Set<WishlistTag>? get wishlistTags;
+  Map<String, Map<WishlistTag, List<ParsedWishlistBuild>>>? get wishlistBuilds;
 
   bool? get isLocked;
   bool get isLockBusy;
@@ -81,5 +84,14 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
       instanceId: instanceId,
       stackIndex: stackIndex,
     );
+  }
+
+  bool get showAllWishlistBuilds => userSettingsBloc.getSectionVisibleState(
+        _allWishlistsBuildsVisibilityKey,
+        defaultValue: false,
+      );
+  set showAllWishlistBuilds(bool value) {
+    userSettingsBloc.setSectionVisibleState(_allWishlistsBuildsVisibilityKey, value);
+    notifyListeners();
   }
 }

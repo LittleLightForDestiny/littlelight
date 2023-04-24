@@ -17,6 +17,7 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/utils/helpers/get_transfer_destinations.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
+import 'package:little_light/shared/utils/helpers/wishlist_helpers.dart';
 import 'package:provider/provider.dart';
 
 class InventoryItemDetailsBloc extends ItemDetailsBloc {
@@ -32,6 +33,9 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
   List<TransferDestination>? _transferDestinations;
   List<TransferDestination>? _equipDestinations;
+
+  Map<String, Map<WishlistTag, List<ParsedWishlistBuild>>>? _allWishlistBuilds;
+  Map<String, Map<WishlistTag, List<ParsedWishlistBuild>>>? _matchedWishlistBuilds;
 
   bool _lockBusy = false;
 
@@ -77,6 +81,11 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     this._equipDestinations = destinations?.equip;
 
     _socketControllerBloc.update(item);
+
+    final allWishlists = _wishlists.getWishlistBuilds(itemHash: item.itemHash);
+    final matchedWishlists = _wishlists.getWishlistBuilds(itemHash: item.itemHash, reusablePlugs: item.reusablePlugs);
+    _allWishlistBuilds = allWishlists.isNotEmpty ? organizeWishlists(allWishlists) : null;
+    _matchedWishlistBuilds = matchedWishlists.isNotEmpty ? organizeWishlists(matchedWishlists) : null;
 
     _updateKillTracker();
 
@@ -189,5 +198,12 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
   List<DestinyItemInfo>? get duplicates {
     return this.item?.duplicates?.where((element) => element != this.item).toList();
+  }
+
+  @override
+  Map<String, Map<WishlistTag, List<ParsedWishlistBuild>>>? get wishlistBuilds {
+    if (_allWishlistBuilds?.isEmpty ?? true) return null;
+    if (showAllWishlistBuilds) return _allWishlistBuilds;
+    return _matchedWishlistBuilds ?? {};
   }
 }

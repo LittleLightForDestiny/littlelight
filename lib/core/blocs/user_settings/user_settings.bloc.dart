@@ -103,12 +103,12 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
     notifyListeners();
   }
 
-  bool getSectionVisibleState(String id) {
+  bool getSectionVisibleState(String id, {bool defaultValue = true}) {
     id = removeDiacritics(id).toLowerCase();
     try {
-      return _detailsSectionDisplayVisibility![id] ?? true;
+      return _detailsSectionDisplayVisibility?[id] ?? defaultValue;
     } catch (e) {}
-    return true;
+    return defaultValue;
   }
 
   void setSectionVisibleState(String key, bool visible) {

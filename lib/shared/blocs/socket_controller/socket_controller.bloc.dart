@@ -1,4 +1,3 @@
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
@@ -25,6 +24,23 @@ class PlugSocket {
 }
 
 abstract class SocketControllerBloc<T> extends ChangeNotifier {
+  Set<int> get allAvailablePlugHashes {
+    final length = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    return List.generate(length, (index) => getAvailablePlugHashesForSocket(index))
+        .whereType<List<int>>()
+        .fold<List<int>>([], (set, value) => set + value).toSet();
+  }
+
+  Set<int> get allEquippedPlugHashes {
+    final length = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    return List.generate(length, (index) => getEquippedPlugHashForSocket(index)).whereType<int>().toSet();
+  }
+
+  Set<int> get allSelectedPlugHashes {
+    final length = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    return List.generate(length, (index) => getSelectedPlugHashForSocket(index)).whereType<int>().toSet();
+  }
+
   Map<int, int?> _selectedPlugHashes = {};
   int? _selectedSocketIndex;
 

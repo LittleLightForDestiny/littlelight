@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_advanced_switch/flutter_advanced_switch.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 
-typedef BoolCallback = void Function(bool);
+typedef BoolCallback = void Function(bool value);
 
 enum LLSwitchSize {
   small,
