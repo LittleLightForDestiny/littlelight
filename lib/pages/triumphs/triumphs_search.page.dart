@@ -29,10 +29,7 @@ class TriumphsSearchPageState<T extends TriumphsSearchPage> extends State<T>
   }
 
   loadItems() async {
-    items = (await manifest.searchDefinitions<DestinyRecordDefinition>(
-            [_searchFieldController.text]))
-        .values
-        .toList();
+    items = (await manifest.searchDefinitions<DestinyRecordDefinition>([_searchFieldController.text])).values.toList();
     setState(() {});
   }
 
@@ -60,9 +57,7 @@ class TriumphsSearchPageState<T extends TriumphsSearchPage> extends State<T>
     var item = items?[index];
     if (item == null) return Container();
     return Stack(children: [
-      SizedBox(
-          height: 120,
-          child: RecordItemWidget(key: Key("${item.hash}"), hash: item.hash)),
+      SizedBox(height: 120, child: RecordItemWidget(key: Key("${item.hash}"), presentationNodeHash: item.hash)),
     ]);
   }
 

@@ -40,7 +40,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
     with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer {
   DestinyMilestoneDefinition definition;
   DestinyMilestone milestone;
-  int get hash => widget.milestone.milestoneHash;
+  int get presentationNodeHash => widget.milestone.milestoneHash;
   bool fullyLoaded = false;
   Map<int, bool> activitiesOpened = {};
 
@@ -55,7 +55,7 @@ class MilestoneItemWidgetState<T extends MilestoneItemWidget> extends State<T>
 
   update() {
     if (!mounted) return;
-    milestone = profile.getCharacterProgression(widget.characterId).milestones["$hash"];
+    milestone = profile.getCharacterProgression(widget.characterId).milestones["$presentationNodeHash"];
     setState(() {});
   }
 

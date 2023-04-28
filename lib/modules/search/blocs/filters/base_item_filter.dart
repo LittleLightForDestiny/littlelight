@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/search/blocs/filter_options/base_filter_values_options.dart';
 
 abstract class BaseItemFilter<T extends BaseFilterOptions> {
@@ -8,8 +8,7 @@ abstract class BaseItemFilter<T extends BaseFilterOptions> {
   BaseItemFilter(this.data);
 
   @mustCallSuper
-  Future<List<DestinyItemInfo>> filter(
-      BuildContext context, List<DestinyItemInfo> items) async {
+  Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {
     if (!data.available || !data.enabled) return items.toList();
     final result = <DestinyItemInfo>[];
     for (final item in items) {

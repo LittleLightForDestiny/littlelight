@@ -2,7 +2,8 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
@@ -42,8 +43,8 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     notifyListeners();
   }
 
-  Map<DestinyClass, Map<int, DestinyItemInfo>>? _maxPowerEquipments;
-  Map<DestinyClass, Map<int, DestinyItemInfo>>? _maxEquippable;
+  Map<DestinyClass, Map<int, InventoryItemInfo>>? _maxPowerEquipments;
+  Map<DestinyClass, Map<int, InventoryItemInfo>>? _maxEquippable;
   Map<DestinyClass, double>? _currentAverage;
   Map<DestinyClass, double>? _achievableAverage;
   Map<DestinyClass, double>? _equippableAverage;
@@ -80,8 +81,8 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   void updateLoadouts() async {
     _maxPowerEquipments = null;
     _maxEquippable = null;
-    final maxPower = <DestinyClass, Map<int, DestinyItemInfo>>{};
-    final maxPowerNonExotic = <DestinyClass, Map<int, DestinyItemInfo>>{};
+    final maxPower = <DestinyClass, Map<int, InventoryItemInfo>>{};
+    final maxPowerNonExotic = <DestinyClass, Map<int, InventoryItemInfo>>{};
     final instancedItems = _profileBloc.allInstancedItems;
     final hashes = instancedItems.map((i) => i.itemHash).whereType<int>().toList();
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
@@ -127,7 +128,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   double _getEquipmentAverage(Map<int, DestinyItemInfo> maxPowerEquipment) {
     final totalPower = maxPowerEquipment //
         .values
-        .map<int>((e) => e.instanceInfo?.primaryStat?.value ?? 0)
+        .map<int>((e) => e.primaryStatValue ?? 0)
         .fold<int>(0, (total, current) => total + current);
     final itemCount = maxPowerEquipment.length;
     return totalPower / itemCount;
@@ -142,7 +143,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   double _getAchievableAverage(Map<int, DestinyItemInfo> maxPowerEquipment) {
     final equipmentPower = maxPowerEquipment //
         .values
-        .map((e) => (e.instanceInfo?.primaryStat?.value ?? 0));
+        .map((e) => (e.primaryStatValue ?? 0));
     int totalPower = equipmentPower.fold(0, (total, current) => total + current);
     final itemCount = maxPowerEquipment.length;
     int currentBase;
@@ -153,9 +154,9 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     return totalPower / itemCount;
   }
 
-  Map<int, DestinyItemInfo> _getMaxEquippableLoadout(
-    Map<int, DestinyItemInfo> maxPower,
-    Map<int, DestinyItemInfo> maxNonExotic,
+  Map<int, InventoryItemInfo> _getMaxEquippableLoadout(
+    Map<int, InventoryItemInfo> maxPower,
+    Map<int, InventoryItemInfo> maxNonExotic,
   ) {
     const weaponHashes = InventoryBucket.weaponBucketHashes;
     const armorHashes = InventoryBucket.armorBucketHashes;
@@ -166,8 +167,8 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
         element.value != maxNonExotic[element.key] && //
         armorHashes.contains(element.key));
     if (exoticWeapons.length <= 1 && exoticArmors.length <= 1) return maxPower;
-    final equippableItems = Map<int, DestinyItemInfo>.from(maxNonExotic);
-    MapEntry<int, DestinyItemInfo>? exoticWeapon = exoticWeapons.firstOrNull;
+    final equippableItems = Map<int, InventoryItemInfo>.from(maxNonExotic);
+    MapEntry<int, InventoryItemInfo>? exoticWeapon = exoticWeapons.firstOrNull;
     int weaponDiff = 0;
     for (final exotic in exoticWeapons) {
       final current = equippableItems[exotic.key];
@@ -183,7 +184,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
       equippableItems[exoticWeapon.key] = exoticWeapon.value;
     }
 
-    MapEntry<int, DestinyItemInfo>? exoticArmor = exoticArmors.firstOrNull;
+    MapEntry<int, InventoryItemInfo>? exoticArmor = exoticArmors.firstOrNull;
     int armorDiff = 0;
     for (final exotic in exoticArmors) {
       final current = equippableItems[exotic.key];
@@ -215,7 +216,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
       return;
     }
     final bucketHash = definition.inventory?.bucketTypeHash;
-    final itemPower = item.instanceInfo?.primaryStat?.value;
+    final itemPower = item.primaryStatValue;
     final tierType = definition.inventory?.tierType;
     if (bucketHash == null) return;
     if (!_equipmentBuckets.contains(bucketHash)) return;
@@ -224,7 +225,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
 
     final characterMaxPower = map[characterClass] ??= {};
     final bucketMaxPower = characterMaxPower[bucketHash] ??= item;
-    final currentItemMaxPower = bucketMaxPower.instanceInfo?.primaryStat?.value;
+    final currentItemMaxPower = bucketMaxPower.primaryStatValue;
     if (currentItemMaxPower != null && itemPower > currentItemMaxPower) {
       characterMaxPower[bucketHash] = item;
     }
@@ -237,8 +238,8 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   double? getAchievableAverage(DestinyClass classType) => _achievableAverage?[classType];
   double? getEquippableAverage(DestinyClass classType) => _equippableAverage?[classType];
 
-  Map<int, DestinyItemInfo>? getMaxPowerItems(DestinyClass classType) => _maxPowerEquipments?[classType];
-  Map<int, DestinyItemInfo>? getEquippableMaxPowerItems(DestinyClass classType) => _maxEquippable?[classType];
+  Map<int, InventoryItemInfo>? getMaxPowerItems(DestinyClass classType) => _maxPowerEquipments?[classType];
+  Map<int, InventoryItemInfo>? getEquippableMaxPowerItems(DestinyClass classType) => _maxEquippable?[classType];
 
   bool achievedPowerfulTier(DestinyClass classType) =>
       (_achievableAverage?[classType] ?? 0) >= (_gameData?.softCap ?? double.maxFinite);

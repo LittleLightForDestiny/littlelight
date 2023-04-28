@@ -1,4 +1,5 @@
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
@@ -34,8 +35,8 @@ class QuickTransferPage extends StatelessWidget {
         Provider<ItemInteractionHandlerBloc>(create: (context) {
           final bloc = context.read<QuickTransferBloc>();
           return ItemInteractionHandlerBloc(
-            onTap: (item) => bloc.onItemTap(item),
-            onHold: (item) => bloc.onItemHold(item),
+            onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
+            onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
           );
         }),
       ],

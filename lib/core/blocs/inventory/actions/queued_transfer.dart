@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
 
@@ -15,7 +15,7 @@ class QueuedTransfer extends QueuedAction<TransferNotification> {
   final TransferDestination destination;
   final int stackSize;
   QueuedTransfer({
-    required DestinyItemInfo item,
+    required InventoryItemInfo item,
     required TransferNotification? notification,
     required this.destination,
     this.stackSize = 1,

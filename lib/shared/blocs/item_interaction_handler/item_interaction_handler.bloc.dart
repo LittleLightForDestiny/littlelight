@@ -1,8 +1,7 @@
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 
 typedef OnItemInteraction = void Function(DestinyItemInfo);
-typedef OnEmptySlotInteraction = void Function(
-    int bucketHash, String characterId);
+typedef OnEmptySlotInteraction = void Function(int bucketHash, String characterId);
 
 class ItemInteractionHandlerBloc {
   final OnItemInteraction? onTap;

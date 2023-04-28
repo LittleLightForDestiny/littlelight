@@ -55,16 +55,10 @@ class DetailsItemModsWidget extends StatelessWidget {
   Widget buildOptions(BuildContext context) {
     final state = context.watch<SocketControllerBloc>();
     final bloc = context.read<SocketControllerBloc>();
-    final sockets = state.socketsForCategory(socketCategory);
-    final socketIndex = state.selectedSocketIndex;
-    final isSocketFromCurrentCategory = sockets?.any((element) => element.index == socketIndex) ?? false;
-    if (socketIndex == null)
-      return AnimatedContainer(
-        duration: _animationDuration,
-      );
-    if (!isSocketFromCurrentCategory) return AnimatedContainer(duration: _animationDuration);
-    final plugHashes = state.getAvailablePlugHashesForSocket(socketIndex);
-    if (plugHashes == null) return AnimatedContainer(duration: _animationDuration);
+    final socket = state.selectedSocketForCategory(socketCategory);
+    if (socket == null) return AnimatedContainer(duration: _animationDuration);
+    final plugHashes = socket.availablePlugHashes;
+    final socketIndex = socket.index;
     return AnimatedContainer(
       duration: _animationDuration,
       key: Key("mod_options_$socketIndex"),

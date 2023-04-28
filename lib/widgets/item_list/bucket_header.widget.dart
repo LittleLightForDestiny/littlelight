@@ -9,13 +9,18 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/item_list/bucket_display_options_selector.widget.dart';
 
 class BucketHeaderWidget extends StatefulWidget {
-  final int hash;
+  final int presentationNodeHash;
   final int itemCount;
   final bool isVault;
   final bool isEquippable;
   final Function onChanged;
   const BucketHeaderWidget(
-      {this.hash, this.itemCount = 0, this.isVault = false, this.isEquippable = false, this.onChanged, Key key})
+      {this.presentationNodeHash,
+      this.itemCount = 0,
+      this.isVault = false,
+      this.isEquippable = false,
+      this.onChanged,
+      Key key})
       : super(key: key);
   @override
   BucketHeaderWidgetState createState() => BucketHeaderWidgetState();
@@ -33,7 +38,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> wit
   }
 
   fetchDefinition() async {
-    bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.hash);
+    bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(widget.presentationNodeHash);
     if (mounted) {
       setState(() {});
     }
@@ -59,7 +64,10 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> wit
   buildTrailing(BuildContext context) {
     return Row(children: [
       BucketDisplayOptionsSelectorWidget(
-          hash: widget.hash, isVault: widget.isVault, isEquippable: widget.isEquippable, onChanged: widget.onChanged),
+          presentationNodeHash: widget.presentationNodeHash,
+          isVault: widget.isVault,
+          isEquippable: widget.isEquippable,
+          onChanged: widget.onChanged),
       Container(width: 8),
       buildCount(context),
     ]);
@@ -67,7 +75,7 @@ class BucketHeaderWidgetState<T extends BucketHeaderWidget> extends State<T> wit
 
   buildCount(BuildContext context) {
     int bucketSize = bucketDef?.itemCount ?? 9;
-    if (widget.hash == InventoryBucket.subclass) {
+    if (widget.presentationNodeHash == InventoryBucket.subclass) {
       bucketSize = 4;
     }
     if (widget.isVault) {

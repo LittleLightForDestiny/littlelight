@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.bloc.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.view.dart';
 import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
@@ -14,8 +15,8 @@ class EquipmentPage extends StatelessWidget {
         Provider<ItemInteractionHandlerBloc>(create: (context) {
           final bloc = context.read<EquipmentBloc>();
           return ItemInteractionHandlerBloc(
-            onTap: (item) => bloc.onItemTap(item),
-            onHold: (item) => bloc.onItemHold(item),
+            onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
+            onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
             onEmptySlotTap: (bucketHash, characterId) => bloc.openSearch(bucketHash, characterId),
           );
         }),

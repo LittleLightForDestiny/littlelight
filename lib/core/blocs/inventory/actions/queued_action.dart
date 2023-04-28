@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 
 import '../../notifications/notification_actions.dart';
-import '../../profile/destiny_item_info.dart';
 
 abstract class QueuedAction<AN extends ActionNotification> {
   bool _started = false;
@@ -11,7 +11,7 @@ abstract class QueuedAction<AN extends ActionNotification> {
   bool _cancelled = false;
   bool get cancelled => _cancelled;
 
-  final DestinyItemInfo item;
+  final InventoryItemInfo item;
   final AN? notification;
   final Completer<void> future = Completer<void>();
 

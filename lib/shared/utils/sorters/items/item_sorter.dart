@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 export 'package:little_light/models/item_sort_parameter.dart';
 

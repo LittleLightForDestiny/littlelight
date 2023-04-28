@@ -1,4 +1,5 @@
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.bloc.dart';
 import 'package:little_light/modules/progress/pages/progress/milestones.bloc.dart';
 import 'package:little_light/modules/progress/pages/progress/progress.bloc.dart';
@@ -23,8 +24,8 @@ class ProgressPage extends StatelessWidget {
         Provider<ItemInteractionHandlerBloc>(create: (context) {
           final bloc = context.read<EquipmentBloc>();
           return ItemInteractionHandlerBloc(
-            onTap: (item) => bloc.onItemTap(item),
-            onHold: (item) => bloc.onItemHold(item),
+            onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
+            onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
             onEmptySlotTap: (bucketHash, characterId) => bloc.openSearch(bucketHash, characterId),
           );
         }),

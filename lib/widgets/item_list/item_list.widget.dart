@@ -185,7 +185,7 @@ class ItemListWidgetState extends State<ItemListWidget>
     return SliverSection(
         itemBuilder: (context, _) => BucketHeaderWidget(
             key: Key("bucketheader_${widget.characterId}_${bucket.bucketHash}"),
-            hash: bucket.bucketHash,
+            presentationNodeHash: bucket.bucketHash,
             itemCount: itemCount,
             isEquippable: bucket.equipped != null,
             onChanged: () {

@@ -4,7 +4,6 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/utils/helpers/wishlist_helpers.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
 import 'package:little_light/shared/widgets/ui/switch.dart';
@@ -14,19 +13,23 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 const _perkIconSize = 32.0;
 
 class DetailsWishlistBuildsWidget extends StatelessWidget {
-  final MappedWishlists builds;
-  final SocketControllerBloc? socketState;
+  final MappedWishlistBuilds builds;
   final bool enableViewAllBuilds;
   final bool viewAllBuilds;
   final BoolCallback? onToggleViewAllBuilds;
+  final Set<int>? allSelectedPlugHashes;
+  final Set<int>? allEquippedPlugHashes;
+  final Set<int>? allAvailablePlugHashes;
 
   const DetailsWishlistBuildsWidget(
     this.builds, {
     Key? key,
-    this.socketState,
     this.enableViewAllBuilds = false,
     this.viewAllBuilds = false,
     this.onToggleViewAllBuilds,
+    this.allSelectedPlugHashes,
+    this.allEquippedPlugHashes,
+    this.allAvailablePlugHashes,
   }) : super(key: key);
 
   @override
@@ -166,17 +169,17 @@ class DetailsWishlistBuildsWidget extends StatelessWidget {
 
   Widget buildWishlistPlug(BuildContext context, int plugHash) {
     final def = context.definition<DestinyInventoryItemDefinition>(plugHash);
-    final selected = socketState?.allSelectedPlugHashes.contains(plugHash) ?? false;
-    final equipped = socketState?.allEquippedPlugHashes.contains(plugHash) ?? false;
-    final available = !equipped && (socketState?.allAvailablePlugHashes.contains(plugHash) ?? false);
+    final selected = allSelectedPlugHashes?.contains(plugHash) ?? false;
+    final equipped = allEquippedPlugHashes?.contains(plugHash) ?? false;
+    final available = !equipped && (allAvailablePlugHashes?.contains(plugHash) ?? false);
     final enhanced = def?.inventory?.tierType == TierType.Common;
     return Container(
         margin: EdgeInsets.only(right: 2, bottom: 2),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(_perkIconSize),
           border: selected ? Border.all(color: context.theme.onSurfaceLayers, width: .5) : null,
-          color: equipped
-              ? context.theme.primaryLayers.layer1
+          color: (equipped || selected)
+              ? context.theme.primaryLayers.layer1.withOpacity(selected ? 1 : .7)
               : available
                   ? context.theme.primaryLayers.layer1.withOpacity(.4)
                   : Colors.transparent,

@@ -1,5 +1,5 @@
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/modules/item_details/blocs/item_details.bloc.dart';
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.bloc.dart';
@@ -10,7 +10,7 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 import 'package:provider/provider.dart';
 
 class InventoryItemDetailsPage extends StatelessWidget {
-  final DestinyItemInfo item;
+  final InventoryItemInfo item;
 
   const InventoryItemDetailsPage(this.item, {Key? key}) : super(key: key);
 
@@ -23,8 +23,8 @@ class InventoryItemDetailsPage extends StatelessWidget {
         Provider<ItemInteractionHandlerBloc>(create: (context) {
           final bloc = context.read<ItemDetailsBloc>();
           return ItemInteractionHandlerBloc(
-            onTap: (item) => bloc.onDuplicateItemTap(item),
-            onHold: (item) => bloc.onDuplicateItemHold(item),
+            onTap: (item) => item is InventoryItemInfo ? bloc.onDuplicateItemTap(item) : null,
+            onHold: (item) => item is InventoryItemInfo ? bloc.onDuplicateItemHold(item) : null,
           );
         }),
       ],

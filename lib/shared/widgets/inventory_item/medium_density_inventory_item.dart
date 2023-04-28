@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
@@ -252,7 +252,7 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
     return Container(
       padding: const EdgeInsets.all(2),
       width: _iconWidth,
-      child: InventoryItemIcon(item, definition: definition, borderSize: 1.5),
+      child: InventoryItemIcon(item, borderSize: 1.5),
     );
   }
 
@@ -504,9 +504,9 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
   }
 
   Widget buildWeaponMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final damageType = item.instanceInfo?.damageType;
+    final damageType = item.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
-    final powerLevel = item.instanceInfo?.primaryStat?.value;
+    final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     final ammoType = definition.equippingBlock?.ammoType;
     return Row(
@@ -534,7 +534,7 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
   }
 
   Widget buildArmorMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final powerLevel = item.instanceInfo?.primaryStat?.value;
+    final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -574,7 +574,7 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
   }
 
   Widget buildPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final primaryStatValue = item.instanceInfo?.primaryStat?.value;
+    final primaryStatValue = item.primaryStatValue;
     if (primaryStatValue == null) return Container();
     final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     return Text(
@@ -596,7 +596,6 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
   Widget buildQuantity(BuildContext context, DestinyInventoryItemDefinition definition) {
     final quantity = item.quantity;
     final maxCount = definition.inventory?.maxStackSize;
-    if (quantity == null) return Container();
     TextStyle? textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     final isMaxValue = maxCount != null && quantity == maxCount;
     if (isMaxValue) {
@@ -616,8 +615,8 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
   }
 
   Widget? buildEngramMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final itemLevel = item.instanceInfo?.itemLevel;
-    final quality = item.instanceInfo?.quality ?? 0;
+    final itemLevel = item.itemLevel;
+    final quality = item.quality ?? 0;
     if (itemLevel == null) return null;
     final level = itemLevel * 10 + quality;
     final textStyle = context.textTheme.itemPrimaryStatHighDensity;

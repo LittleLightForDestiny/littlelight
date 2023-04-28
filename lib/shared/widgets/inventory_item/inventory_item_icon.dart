@@ -1,6 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
@@ -12,13 +12,11 @@ import 'package:shimmer/shimmer.dart';
 
 class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   @deprecated
-  final DestinyInventoryItemDefinition? definition;
   final DestinyItemInfo itemInfo;
   final double borderSize;
   final Color? overrideBorderColor;
   InventoryItemIcon(
     this.itemInfo, {
-    this.definition,
     this.borderSize = 2,
     this.overrideBorderColor,
   });

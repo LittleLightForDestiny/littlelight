@@ -8,7 +8,7 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
-import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -18,16 +18,9 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatefulItemWidget {
   final List<LoadoutItemIndex> loadouts;
 
   const ItemDetailLoadoutsWidget(
-      DestinyItemComponent item,
-      DestinyInventoryItemDefinition definition,
-      DestinyItemInstanceComponent instanceInfo,
-      {Key key,
-      this.loadouts})
-      : super(
-            item: item,
-            definition: definition,
-            instanceInfo: instanceInfo,
-            key: key);
+      DestinyItemComponent item, DestinyInventoryItemDefinition definition, DestinyItemInstanceComponent instanceInfo,
+      {Key key, this.loadouts})
+      : super(item: item, definition: definition, instanceInfo: instanceInfo, key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -37,9 +30,7 @@ class ItemDetailLoadoutsWidget extends BaseDestinyStatefulItemWidget {
 
 const _sectionId = "item_loadouts";
 
-class ItemDetailLoadoutsWidgetState
-    extends BaseDestinyItemState<ItemDetailLoadoutsWidget>
-    with VisibleSectionMixin {
+class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoadoutsWidget> with VisibleSectionMixin {
   @override
   String get sectionId => _sectionId;
 
@@ -73,8 +64,7 @@ class ItemDetailLoadoutsWidgetState
       axisDirection: AxisDirection.down,
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
-      children:
-          widget.loadouts.map((e) => buildLoadoutItem(e, context)).toList(),
+      children: widget.loadouts.map((e) => buildLoadoutItem(e, context)).toList(),
     );
   }
 
@@ -107,8 +97,7 @@ class ItemDetailLoadoutsWidgetState
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                Navigator.of(context)
-                    .push(EquipLoadoutPageRoute(loadout.assignedId));
+                Navigator.of(context).push(EquipLoadoutPageRoute(loadout.assignedId));
               },
             ),
           ))

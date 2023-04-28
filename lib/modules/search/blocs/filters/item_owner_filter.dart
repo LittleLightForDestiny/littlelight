@@ -1,5 +1,5 @@
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/search/blocs/filter_options/item_owner_filter_options.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 
@@ -14,8 +14,7 @@ class ItemOwnerFilter extends BaseItemFilter<ItemOwnerFilterOptions> {
         );
 
   @override
-  Future<List<DestinyItemInfo>> filter(
-      BuildContext context, List<DestinyItemInfo> items) async {
+  Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {
     if (data.value.isEmpty) {
       return items;
     }

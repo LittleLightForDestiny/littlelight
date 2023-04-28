@@ -60,7 +60,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
   DestinyItemInstanceComponent instanceInfo;
 
   String get itemInstanceId => widget.item.instanceId;
-  int get hash => widget.item.itemHash;
+  int get presentationNodeHash => widget.item.itemHash;
   DestinyItemComponent get item => widget.item.item;
   String get characterId => widget.item.ownerId;
 
@@ -85,7 +85,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
   }
 
   Future<void> loadDefinitions() async {
-    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
+    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(presentationNodeHash);
     if ((itemObjectives?.length ?? 0) > 0) {
       objectiveDefinitions =
           await manifest.getDefinitions<DestinyObjectiveDefinition>(itemObjectives?.map((o) => o.objectiveHash));
@@ -269,7 +269,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
 
   updateProgress() {
     instanceInfo = profile.getInstanceInfo(itemInstanceId);
-    itemObjectives = profile.getItemObjectives(itemInstanceId, characterId, hash);
+    itemObjectives = profile.getItemObjectives(itemInstanceId, characterId, presentationNodeHash);
     setState(() {});
   }
 

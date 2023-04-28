@@ -82,7 +82,6 @@ abstract class BaseActiveNotificationWidget<T extends ActionNotification> extend
                 (def) => def != null
                     ? InventoryItemIcon(
                         notification.item,
-                        definition: def,
                         borderSize: .5,
                       )
                     : Container(),

@@ -19,8 +19,8 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class MetricItemWidget extends StatefulWidget {
-  final int hash;
-  const MetricItemWidget({Key key, this.hash}) : super(key: key);
+  final int presentationNodeHash;
+  const MetricItemWidget({Key key, this.presentationNodeHash}) : super(key: key);
 
   @override
   MetricItemWidgetState createState() {
@@ -28,17 +28,14 @@ class MetricItemWidget extends StatefulWidget {
   }
 }
 
-class MetricItemWidgetState extends State<MetricItemWidget>
-    with AuthConsumer, ProfileConsumer, ManifestConsumer {
+class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, ProfileConsumer, ManifestConsumer {
   DestinyMetricDefinition _definition;
   Map<int, DestinyObjectiveDefinition> objectiveDefinitions;
   DestinyLoreDefinition loreDefinition;
   bool isTracking = false;
 
   DestinyMetricDefinition get definition {
-    return manifest
-            .getDefinitionFromCache<DestinyMetricDefinition>(widget.hash) ??
-        _definition;
+    return manifest.getDefinitionFromCache<DestinyMetricDefinition>(widget.presentationNodeHash) ?? _definition;
   }
 
   DestinyMetricComponent get metric {
@@ -55,7 +52,7 @@ class MetricItemWidgetState extends State<MetricItemWidget>
   updateTrackStatus() async {
     var objectives = await ObjectivesService().getTrackedObjectives();
     var tracked = objectives.firstWhere(
-        (o) => o.hash == widget.hash && o.type == TrackedObjectiveType.Triumph,
+        (o) => o.hash == widget.presentationNodeHash && o.type == TrackedObjectiveType.Triumph,
         orElse: () => null);
     isTracking = tracked != null;
     if (!mounted) return;
@@ -64,8 +61,7 @@ class MetricItemWidgetState extends State<MetricItemWidget>
 
   loadDefinitions() async {
     if (definition == null) {
-      _definition =
-          await manifest.getDefinition<DestinyMetricDefinition>(widget.hash);
+      _definition = await manifest.getDefinition<DestinyMetricDefinition>(widget.presentationNodeHash);
       if (!mounted) return;
       setState(() {});
     }
@@ -93,10 +89,7 @@ class MetricItemWidgetState extends State<MetricItemWidget>
         decoration: BoxDecoration(
           border: Border.all(color: foregroundColor, width: 1),
         ),
-        child: Row(children: [
-          Expanded(child: buildContent(context)),
-          buildBadge(context)
-        ]));
+        child: Row(children: [Expanded(child: buildContent(context)), buildBadge(context)]));
   }
 
   Widget buildBadge(BuildContext context) {
@@ -107,8 +100,7 @@ class MetricItemWidgetState extends State<MetricItemWidget>
         icons.add(ManifestImageWidget<DestinyTraitDefinition>(t));
       }
     }
-    icons.add(QueuedNetworkImage(
-        imageUrl: BungieApiService.url(definition?.displayProperties?.icon)));
+    icons.add(QueuedNetworkImage(imageUrl: BungieApiService.url(definition?.displayProperties?.icon)));
     return Container(
         width: 28,
         margin: const EdgeInsets.only(right: 8),
@@ -117,22 +109,17 @@ class MetricItemWidgetState extends State<MetricItemWidget>
           Positioned(
               top: 0,
               bottom: 8,
-              child: ManifestImageWidget<DestinyPresentationNodeDefinition>(
-                  definition.parentNodeHashes[0])),
-          Positioned(
-              left: 2, right: 2, bottom: 20, child: Column(children: icons))
+              child: ManifestImageWidget<DestinyPresentationNodeDefinition>(definition.parentNodeHashes[0])),
+          Positioned(left: 2, right: 2, bottom: 20, child: Column(children: icons))
         ]));
   }
 
   buildContent(BuildContext context) {
     return Container(
         padding: const EdgeInsets.all(8),
-        child:
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          buildTitle(context),
-          buildObjective(context),
-          Expanded(child: buildDescription(context))
-        ]));
+        child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [buildTitle(context), buildObjective(context), Expanded(child: buildDescription(context))]));
   }
 
   buildTitle(BuildContext context) {
@@ -148,8 +135,7 @@ class MetricItemWidgetState extends State<MetricItemWidget>
 
   buildDescription(BuildContext context) {
     if (definition == null) return Container();
-    if ((definition?.displayProperties?.description?.length ?? 0) == 0)
-      return Container();
+    if ((definition?.displayProperties?.description?.length ?? 0) == 0) return Container();
 
     return Container(
         alignment: Alignment.bottomLeft,
@@ -157,10 +143,7 @@ class MetricItemWidgetState extends State<MetricItemWidget>
           definition.displayProperties.description.replaceAll("\n\n", "\n"),
           softWrap: true,
           overflow: TextOverflow.fade,
-          style: TextStyle(
-              color: foregroundColor,
-              fontWeight: FontWeight.w300,
-              fontSize: 13),
+          style: TextStyle(color: foregroundColor, fontWeight: FontWeight.w300, fontSize: 13),
         ));
   }
 

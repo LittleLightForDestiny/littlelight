@@ -3,7 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
-import 'package:little_light/modules/collections/pages/home/collections_root.page.dart';
+import 'package:little_light/modules/collections/pages/home/collections_home.page.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
 import 'package:little_light/modules/progress/pages/progress/progress.page.dart';
@@ -50,7 +50,7 @@ class MainScreenState extends State<MainScreen> with AuthConsumer, UserSettingsC
         break;
 
       case LittleLightPersistentPage.Collections:
-        currentScreen = CollectionsRootPage();
+        currentScreen = CollectionsHomePage();
         break;
 
       case LittleLightPersistentPage.Triumphs:

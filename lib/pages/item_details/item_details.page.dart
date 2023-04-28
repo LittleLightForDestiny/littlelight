@@ -8,7 +8,7 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
@@ -18,7 +18,7 @@ import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
-import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
@@ -29,8 +29,6 @@ import 'package:little_light/widgets/item_details/item_objectives.widget.dart';
 import 'package:little_light/widgets/item_details/item_vendor_info.widget.dart';
 import 'package:little_light/widgets/item_details/quest_info.widget.dart';
 import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
-import 'package:little_light/widgets/item_details/wishlist_builds.widget.dart';
-import 'package:little_light/widgets/item_details/wishlist_notes.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:provider/provider.dart';
 
@@ -105,8 +103,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   DestinyItemComponent get item => null;
   String get characterId => itemInfo?.characterId;
 
-  DestinyItemInstanceComponent get instanceInfo =>
-      itemInfo?.instanceInfo ?? profile.getInstanceInfo(item?.itemInstanceId);
+  DestinyItemInstanceComponent get instanceInfo => profile.getInstanceInfo(item?.itemInstanceId);
 
   @override
   initState() {
@@ -223,7 +220,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                           // buildPerks(context),
                           // buildArmorTier(context),
                           // buildMods(context),
-                          buildWishlistBuilds(context),
+                          // buildWishlistBuilds(context),
                           // buildCosmetics(context),
                           buildObjectives(context),
                           buildRewards(context),
@@ -260,7 +257,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
           ]
                   .followedBy(loaded
                       ? [
-                          buildWishlistNotes(context),
+                          // buildWishlistNotes(context),
                           // buildLockInfo(context),
                           // buildActionButtons(context),
                           // buildDuplicates(context),
@@ -271,7 +268,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                           // buildPerks(context),
                           // buildArmorTier(context),
                           // buildMods(context),
-                          buildWishlistBuilds(context),
+                          // buildWishlistBuilds(context),
                           // buildCosmetics(context),
                           buildObjectives(context),
                           buildRewards(context),
@@ -310,25 +307,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
           sale: vendorItem,
           vendorHash: args.vendorHash,
           definition: definition,
-        ));
-  }
-
-  Widget buildWishlistNotes(BuildContext context) {
-    if (item == null) return Container();
-    if (socketController == null) return Container();
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: WishlistNotesWidget(item, reusablePlugs: socketController.reusablePlugs));
-  }
-
-  Widget buildWishlistBuilds(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: WishlistBuildsWidget(
-          definition?.hash,
-          reusablePlugs: socketController.reusablePlugs,
         ));
   }
 

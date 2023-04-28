@@ -2,7 +2,8 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/profile/sorters.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
@@ -26,7 +27,7 @@ class _EquipmentState {
 
   void add(DestinyItemInfo item) {
     final characterId = item.characterId;
-    final isEquipped = item.instanceInfo?.isEquipped ?? false;
+    final isEquipped = item.isEquipped ?? false;
     final currentBucket = item.bucketHash;
     if (currentBucket == null) return;
     if (characterId != null && isEquipped) {
@@ -161,7 +162,7 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
         .toList();
   }
 
-  void onItemTap(DestinyItemInfo item) {
+  void onItemTap(InventoryItemInfo item) {
     final hash = item.itemHash;
     final instanceId = item.instanceId;
     final stackIndex = item.stackIndex;

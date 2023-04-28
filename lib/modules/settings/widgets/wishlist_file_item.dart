@@ -23,14 +23,14 @@ class WishlistFileItem extends SettingsOptionWidget {
 
   @override
   Widget? buildTrailing(BuildContext context) {
-    if (isAdded && onAdd != null) {
+    if (!isAdded && onAdd != null) {
       return ElevatedButton(
         onPressed: onAdd,
         child: Text("Add".translate(context)),
         style: ButtonStyle(visualDensity: VisualDensity.compact),
       );
     }
-    if (!isAdded && onRemove != null) {
+    if (isAdded && onRemove != null) {
       return ElevatedButton(
         onPressed: onRemove,
         child: Text("Remove".translate(context)),

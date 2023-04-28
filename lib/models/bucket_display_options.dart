@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 
 part 'bucket_display_options.g.dart';
 
@@ -43,8 +43,7 @@ extension ListParameters on BucketDisplayOptions {
     }
   }
 
-  int responsiveUnequippedItemsPerRow(BuildContext context,
-      [int columnCount = 1]) {
+  int responsiveUnequippedItemsPerRow(BuildContext context, [int columnCount = 1]) {
     switch (type) {
       case BucketDisplayType.Hidden:
       case BucketDisplayType.OnlyEquipped:
@@ -55,19 +54,15 @@ extension ListParameters on BucketDisplayOptions {
         if (columnCount >= 2) {
           return MediaQueryHelper(context).responsiveValue(3, desktop: 5);
         }
-        return MediaQueryHelper(context)
-            .responsiveValue(3, tablet: 5, laptop: 8, desktop: 10);
+        return MediaQueryHelper(context).responsiveValue(3, tablet: 5, laptop: 8, desktop: 10);
       case BucketDisplayType.Small:
         if (columnCount >= 3) {
-          return MediaQueryHelper(context)
-              .responsiveValue(5, laptop: 6, desktop: 9);
+          return MediaQueryHelper(context).responsiveValue(5, laptop: 6, desktop: 9);
         }
         if (columnCount >= 2) {
-          return MediaQueryHelper(context)
-              .responsiveValue(5, tablet: 6, laptop: 9);
+          return MediaQueryHelper(context).responsiveValue(5, tablet: 6, laptop: 9);
         }
-        return MediaQueryHelper(context)
-            .responsiveValue(5, tablet: 10, laptop: 15, desktop: 25);
+        return MediaQueryHelper(context).responsiveValue(5, tablet: 10, laptop: 15, desktop: 25);
     }
   }
 }
@@ -96,13 +91,9 @@ class BucketDisplayOptions {
 }
 
 const defaultBucketDisplayOptions = {
-  "${InventoryBucket.engrams}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.lostItems}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.consumables}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.modifications}":
-      BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.engrams}": BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.lostItems}": BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.consumables}": BucketDisplayOptions(type: BucketDisplayType.Small),
+  "${InventoryBucket.modifications}": BucketDisplayOptions(type: BucketDisplayType.Small),
   "pursuits_53_null": BucketDisplayOptions(type: BucketDisplayType.Large),
 };

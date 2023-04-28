@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
@@ -268,7 +269,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     return Container(
       padding: const EdgeInsets.all(4),
       width: _iconWidth,
-      child: InventoryItemIcon(item, definition: definition),
+      child: InventoryItemIcon(item),
     );
   }
 
@@ -586,7 +587,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   }
 
   Widget buildPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final primaryStatValue = item.instanceInfo?.primaryStat?.value;
+    final primaryStatValue = item.primaryStatValue;
     if (primaryStatValue == null) return Container();
     final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     return Text(
@@ -710,9 +711,9 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   }
 
   Widget buildWeaponMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final damageType = item.instanceInfo?.damageType;
+    final damageType = item.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
-    final powerLevel = item.instanceInfo?.primaryStat?.value;
+    final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     final ammoType = definition.equippingBlock?.ammoType;
     return Row(
@@ -731,28 +732,31 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
           size: _primaryStatIconsSize,
           color: damageColor,
         ),
-        Text(
-          "$powerLevel",
-          style: textStyle.copyWith(color: damageColor),
-        ),
+        if (powerLevel != null)
+          Text(
+            "$powerLevel",
+            style: textStyle.copyWith(color: damageColor),
+          ),
       ],
     );
   }
 
   Widget buildArmorMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final powerLevel = item.instanceInfo?.primaryStat?.value;
+    final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         buildEnergyCapacity(context, definition),
-        const SizedBox(width: 4),
         buildTotalStats(context, definition),
-        const SizedBox(width: 4),
-        Text(
-          "$powerLevel",
-          style: textStyle,
-        ),
+        if (powerLevel != null)
+          Container(
+            padding: EdgeInsets.only(left: 8),
+            child: Text(
+              "$powerLevel",
+              style: textStyle,
+            ),
+          ),
       ].whereType<Widget>().toList(),
     );
   }
@@ -762,15 +766,19 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   }
 
   Widget? buildEngramMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final itemLevel = item.instanceInfo?.itemLevel;
-    final quality = item.instanceInfo?.quality ?? 0;
-    if (itemLevel == null) return null;
-    final level = itemLevel * 10 + quality;
-    final textStyle = context.textTheme.itemPrimaryStatHighDensity;
-    return Text(
-      "$level",
-      style: textStyle,
-    );
+    final item = this.item;
+    if (item is InventoryItemInfo) {
+      final itemLevel = item.instanceInfo?.itemLevel;
+      final quality = item.instanceInfo?.quality ?? 0;
+      if (itemLevel == null) return null;
+      final level = itemLevel * 10 + quality;
+      final textStyle = context.textTheme.itemPrimaryStatHighDensity;
+      return Text(
+        "$level",
+        style: textStyle,
+      );
+    }
+    return Container();
   }
 
   Widget? buildTotalStats(BuildContext context, DestinyInventoryItemDefinition definition) {
@@ -778,7 +786,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     if (total == null) return null;
     final color = getStatsTotalColor(total, context);
     return Container(
-      margin: const EdgeInsets.only(right: 4),
+      margin: const EdgeInsets.only(left: 4),
       padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 8),
       decoration: BoxDecoration(
         color: context.theme.surfaceLayers.layer0,

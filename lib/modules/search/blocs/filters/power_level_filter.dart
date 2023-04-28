@@ -1,4 +1,4 @@
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/search/blocs/filter_options/power_level_filter_options.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 
@@ -10,8 +10,7 @@ class PowerLevelFilter extends BaseItemFilter<PowerLevelFilterOptions> with Mani
 
   @override
   Future<bool> filterItem(DestinyItemInfo item) async {
-    final instanceInfo = item.instanceInfo;
-    final power = instanceInfo?.primaryStat?.value;
+    final power = item.primaryStatValue;
     if (power == null) return data.value.includePowerlessItems;
     if (power < data.value.min) return false;
     if (power > data.value.max) return false;
@@ -20,8 +19,7 @@ class PowerLevelFilter extends BaseItemFilter<PowerLevelFilterOptions> with Mani
 
   @override
   Future<void> addValue(DestinyItemInfo item) async {
-    final instanceInfo = item.instanceInfo;
-    final power = instanceInfo?.primaryStat?.value;
+    final power = item.primaryStatValue;
     if (power == null) {
       data.availableValues.includePowerlessItems = true;
       data.value.includePowerlessItems = true;

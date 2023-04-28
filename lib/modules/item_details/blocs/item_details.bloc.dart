@@ -1,15 +1,20 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
+import 'package:little_light/modules/item_details/pages/definition_item_details/definition_item_details.page_route.dart';
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
+import 'package:little_light/shared/utils/helpers/wishlist_helpers.dart';
+import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';
 import 'package:provider/provider.dart';
 
 const _allWishlistsBuildsVisibilityKey = 'all wishlists builds';
+const _allWishlistsNotesVisibilityKey = 'all wishlists notes';
 
 abstract class ItemDetailsBloc extends ChangeNotifier {
   @protected
@@ -43,7 +48,8 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
   void editTags();
 
   Set<WishlistTag>? get wishlistTags;
-  Map<String, Map<WishlistTag, List<ParsedWishlistBuild>>>? get wishlistBuilds;
+  MappedWishlistBuilds? get wishlistBuilds;
+  MappedWishlistNotes? get wishlistNotes;
 
   bool? get isLocked;
   bool get isLockBusy;
@@ -52,7 +58,7 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
   DestinyItemInfo? get item;
   List<DestinyItemInfo>? get duplicates;
 
-  void onDuplicateItemTap(DestinyItemInfo item) {
+  void onDuplicateItemTap(InventoryItemInfo item) {
     final hash = item.itemHash;
     final instanceId = item.instanceId;
     final stackIndex = item.stackIndex;
@@ -70,7 +76,7 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
     Navigator.of(context).pushReplacement(InventoryItemDetailsPageRoute(item));
   }
 
-  void onDuplicateItemHold(DestinyItemInfo item) {
+  void onDuplicateItemHold(InventoryItemInfo item) {
     final hash = item.itemHash;
     final instanceId = item.instanceId;
     final stackIndex = item.stackIndex;
@@ -93,5 +99,24 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
   set showAllWishlistBuilds(bool value) {
     userSettingsBloc.setSectionVisibleState(_allWishlistsBuildsVisibilityKey, value);
     notifyListeners();
+  }
+
+  bool get showAllWishlistNotes => userSettingsBloc.getSectionVisibleState(
+        _allWishlistsNotesVisibilityKey,
+        defaultValue: false,
+      );
+  set showAllWishlistNotes(bool value) {
+    userSettingsBloc.setSectionVisibleState(_allWishlistsNotesVisibilityKey, value);
+    notifyListeners();
+  }
+
+  void onTransferAction(TransferActionType actionType, TransferDestination destination, int stackSize);
+
+  void addToLoadout() {}
+
+  void viewInCollections() {
+    final hash = itemHash;
+    if (hash == null) return;
+    Navigator.of(context).pushReplacement(DefinitionItemDetailsPageRoute(hash));
   }
 }

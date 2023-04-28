@@ -67,26 +67,24 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
       padding: EdgeInsets.all(4),
       child: buildPlug(
         context,
-        socket.index,
+        socket,
         equippedPlugHash,
       ),
     );
   }
 
-  Widget buildPlug(BuildContext context, int socketIndex, int plugItemHash) {
+  Widget buildPlug(BuildContext context, PlugSocket socket, int plugItemHash) {
     return Column(children: [
-      buildMainInfo(context, socketIndex, plugItemHash),
+      buildMainInfo(context, socket, plugItemHash),
       buildBars(context, plugItemHash),
     ]);
   }
 
-  Widget buildMainInfo(BuildContext context, int socketIndex, int plugItemHash) {
+  Widget buildMainInfo(BuildContext context, PlugSocket socket, int plugItemHash) {
     final state = context.watch<SocketControllerBloc>();
     final equippedAvailable = state.availableEnergyCapacity?.equipped ?? 0;
     final selectedAvailable = state.availableEnergyCapacity?.selected ?? 0;
-    final options = state
-        .getAvailablePlugHashesForSocket(socketIndex) //
-        ?.where((element) => element != plugItemHash);
+    final options = socket.availablePlugHashes.where((element) => element != plugItemHash);
     final barBg = context.theme.onSurfaceLayers.layer3.mix(context.theme.surfaceLayers.layer3, 50);
     return Stack(children: [
       Row(children: [
@@ -133,7 +131,7 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
             onTap: () {
               final option = options?.firstOrNull;
               if (option == null) return;
-              context.read<SocketControllerBloc>().toggleSelection(socketIndex, option);
+              context.read<SocketControllerBloc>().toggleSelection(socket.index, option);
             },
           ),
         ),

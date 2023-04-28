@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -38,8 +38,7 @@ class DetailsItemPerksWidget extends BaseItemSocketsWidget {
 
 const _sectionId = "item_perks";
 
-class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
-    extends BaseItemSocketsWidgetState<T>
+class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget> extends BaseItemSocketsWidgetState<T>
     with WishlistsConsumer, PlugWishlistTagIconsMixin {
   bool showDetails = false;
 
@@ -53,11 +52,8 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
 
   @override
   Widget buildHeader(BuildContext context) {
-    return getHeader(ManifestText<DestinySocketCategoryDefinition>(
-        category.socketCategoryHash,
-        uppercase: true,
-        textAlign: TextAlign.left,
-        style: const TextStyle(fontWeight: FontWeight.bold)));
+    return getHeader(ManifestText<DestinySocketCategoryDefinition>(category.socketCategoryHash,
+        uppercase: true, textAlign: TextAlign.left, style: const TextStyle(fontWeight: FontWeight.bold)));
   }
 
   Widget buildDetailsSwitch(BuildContext context) {
@@ -66,9 +62,8 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
 
   @override
   Widget buildSockets(BuildContext context) {
-    Iterable<Widget> children = category.socketIndexes
-        .map((socketIndex) => buildSocketPlugs(context, socketIndex))
-        .where((w) => w != null);
+    Iterable<Widget> children =
+        category.socketIndexes.map((socketIndex) => buildSocketPlugs(context, socketIndex)).where((w) => w != null);
     var screenWidth = MediaQuery.of(context).size.width - 16;
     var dividerMargin = min(screenWidth / 50, 8.0);
     children = children.expand((w) => [
@@ -144,8 +139,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.start,
-          children:
-              plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
+          children: plugs.map((p) => buildPlug(context, socketIndex, p)).toList(),
         ));
   }
 
@@ -153,8 +147,9 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
   List<int> socketPlugHashes(int socketIndex) {
     var isRandom = controller.randomizedPlugHashes(socketIndex).isNotEmpty;
     if (controller.reusablePlugs == null && isRandom) {
-      return controller.bungieRollPlugHashes(socketIndex).followedBy(
-          [controller.socketRandomizedSelectedPlugHash(socketIndex)]).toList();
+      return controller
+          .bungieRollPlugHashes(socketIndex)
+          .followedBy([controller.socketRandomizedSelectedPlugHash(socketIndex)]).toList();
     }
 
     return super.socketPlugHashes(socketIndex);
@@ -163,8 +158,7 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
   Widget buildPlugCategoryTitle(BuildContext context, int socketIndex) {
     var hashes = socketPlugHashes(socketIndex);
     var hash = hashes.first;
-    Widget contents =
-        DefinitionProviderWidget<DestinyInventoryItemDefinition>(hash, (def) {
+    Widget contents = DefinitionProviderWidget<DestinyInventoryItemDefinition>(hash, (def) {
       if ((def?.itemTypeDisplayName?.length ?? 0) <= 1) {
         return TranslatedTextWidget(
           "Other",
@@ -200,14 +194,11 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
     return buildPlugIcon(context, socketIndex, plugItemHash);
   }
 
-  Widget buildPlugListItem(
-      BuildContext context, int socketIndex, int plugItemHash) {
+  Widget buildPlugListItem(BuildContext context, int socketIndex, int plugItemHash) {
     int equippedHash = socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
-    bool isSelectedOnSocket =
-        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
-    Color bgColor =
-        Color.lerp(DestinyData.perkColor, Colors.black, .7).withOpacity(.8);
+    bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    Color bgColor = Color.lerp(DestinyData.perkColor, Colors.black, .7).withOpacity(.8);
     Color borderColor = Colors.grey.shade300.withOpacity(.5);
     if (isEquipped) {
       bgColor = DestinyData.perkColor.withOpacity(.5);
@@ -219,20 +210,14 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
 
     final tags = wishlistsService
         .getPlugTags(controller.definition.hash, plugItemHash)
-        .where((element) => [
-              WishlistTag.GodPVE,
-              WishlistTag.PVE,
-              WishlistTag.GodPVP,
-              WishlistTag.PVP
-            ].contains(element))
+        .where(
+            (element) => [WishlistTag.GodPVE, WishlistTag.PVE, WishlistTag.GodPVP, WishlistTag.PVP].contains(element))
         .toSet();
 
     return Container(
         margin: const EdgeInsets.only(bottom: 8),
         decoration: BoxDecoration(
-            border: Border.all(color: borderColor, width: 2),
-            color: bgColor,
-            borderRadius: BorderRadius.circular(4)),
+            border: Border.all(color: borderColor, width: 2), color: bgColor, borderRadius: BorderRadius.circular(4)),
         child: Material(
           key: Key("item_perk_$plugItemHash"),
           color: Colors.transparent,
@@ -241,17 +226,12 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
                 controller.selectSocket(socketIndex, plugItemHash);
               },
               child: Container(
-                foregroundDecoration: (tags?.length ?? 0) > 0
-                    ? WishlistCornerBadgeDecoration(tags: tags, badgeSize: 14)
-                    : null,
+                foregroundDecoration:
+                    (tags?.length ?? 0) > 0 ? WishlistCornerBadgeDecoration(tags: tags, badgeSize: 14) : null,
                 padding: const EdgeInsets.all(8),
                 child: Row(children: [
                   SizedBox(
-                      width: 36,
-                      height: 36,
-                      child:
-                          ManifestImageWidget<DestinyInventoryItemDefinition>(
-                              plugItemHash)),
+                      width: 36, height: 36, child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash)),
                   Container(width: 8),
                   Expanded(
                       child: ManifestText<DestinyInventoryItemDefinition>(
@@ -263,14 +243,12 @@ class DetailsItemPerksWidgetState<T extends DetailsItemPerksWidget>
         ));
   }
 
-  Widget buildPlugIcon(
-      BuildContext context, int socketIndex, int plugItemHash) {
+  Widget buildPlugIcon(BuildContext context, int socketIndex, int plugItemHash) {
     if (plugDefinitions == null) return Container();
     var plugDef = plugDefinitions[plugItemHash];
     int equippedHash = socketEquippedPlugHash(socketIndex);
     bool isEquipped = equippedHash == plugItemHash;
-    bool isSelectedOnSocket =
-        plugItemHash == controller.socketSelectedPlugHash(socketIndex);
+    bool isSelectedOnSocket = plugItemHash == controller.socketSelectedPlugHash(socketIndex);
     bool isSelected = plugItemHash == controller.selectedPlugHash;
 
     return Container(

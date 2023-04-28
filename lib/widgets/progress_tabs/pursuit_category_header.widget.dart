@@ -14,21 +14,17 @@ class PursuitCategoryHeaderWidget extends BucketHeaderWidget {
   @override
   final Function onChanged;
   final String label;
-  const PursuitCategoryHeaderWidget(
-      {this.onChanged, Key key, this.label, int hash, int itemCount})
-      : super(key: key, hash: hash, itemCount: itemCount);
+  const PursuitCategoryHeaderWidget({this.onChanged, Key key, this.label, int hash, int itemCount})
+      : super(key: key, presentationNodeHash: hash, itemCount: itemCount);
   @override
-  PursuitCategoryHeaderWidgetState createState() =>
-      PursuitCategoryHeaderWidgetState();
+  PursuitCategoryHeaderWidgetState createState() => PursuitCategoryHeaderWidgetState();
 }
 
-class PursuitCategoryHeaderWidgetState
-    extends BucketHeaderWidgetState<PursuitCategoryHeaderWidget>
+class PursuitCategoryHeaderWidgetState extends BucketHeaderWidgetState<PursuitCategoryHeaderWidget>
     with ManifestConsumer {
   @override
   fetchDefinition() async {
-    bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(
-        InventoryBucket.pursuits);
+    bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(InventoryBucket.pursuits);
     if (mounted) {
       setState(() {});
     }
@@ -37,9 +33,9 @@ class PursuitCategoryHeaderWidgetState
   @override
   Widget buildLabel(BuildContext context) {
     TextStyle style = const TextStyle(fontWeight: FontWeight.bold);
-    if (widget.hash != null) {
+    if (widget.presentationNodeHash != null) {
       return ManifestText<DestinyItemCategoryDefinition>(
-        widget.hash,
+        widget.presentationNodeHash,
         uppercase: true,
         style: style,
       );
@@ -61,8 +57,7 @@ class PursuitCategoryHeaderWidgetState
   buildTrailing(BuildContext context) {
     return Row(children: [
       PursuitsDisplayOptionsSelectorWidget(
-          typeIdentifier: "${widget.hash}_${widget.label}",
-          onChanged: widget.onChanged),
+          typeIdentifier: "${widget.presentationNodeHash}_${widget.label}", onChanged: widget.onChanged),
       Container(width: 8),
       buildCount(context),
     ]);
@@ -71,7 +66,7 @@ class PursuitCategoryHeaderWidgetState
   @override
   buildCount(BuildContext context) {
     int bucketSize = bucketDef?.itemCount ?? 0;
-    if (widget.hash == InventoryBucket.subclass) {
+    if (widget.presentationNodeHash == InventoryBucket.subclass) {
       bucketSize = 3;
     }
     if (widget.isVault) {

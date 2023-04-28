@@ -10,7 +10,7 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/selection/selection.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/item_with_owner.dart';
-import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
@@ -178,9 +178,9 @@ class DuplicatedItemListWidgetState extends State<DuplicatedItemListWidget>
 }
 
 class _DefinitionItemWrapper extends StatefulWidget {
-  final int hash;
+  final int presentationNodeHash;
   final List<ItemWithOwner> items;
-  const _DefinitionItemWrapper(this.hash, this.items);
+  const _DefinitionItemWrapper(this.presentationNodeHash, this.items);
   @override
   State<StatefulWidget> createState() {
     return _DefinitionItemWrapperState();
@@ -208,9 +208,9 @@ class _DefinitionItemWrapperState extends State<_DefinitionItemWrapper> with Sel
 
   @override
   Widget build(BuildContext context) {
-    return Stack(key: Key("itemdef_${widget.hash}"), children: [
+    return Stack(key: Key("itemdef_${widget.presentationNodeHash}"), children: [
       DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-          widget.hash,
+          widget.presentationNodeHash,
           (def) => BaseInventoryItemWidget(
                 null,
                 def,

@@ -15,15 +15,6 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemPlugObjectives,
     DestinyComponentType.ItemReusablePlugs,
     DestinyComponentType.StringVariables,
-    // DestinyComponentType.CharacterActivities,
-    // DestinyComponentType.ProfileProgression,
-    // DestinyComponentType.ItemPlugStates,
-  ];
-
-  static const List<DestinyComponentType> inventories = [
-    DestinyComponentType.CharacterEquipment,
-    DestinyComponentType.CharacterInventories,
-    DestinyComponentType.ProfileInventories,
   ];
 
   static const List<DestinyComponentType> collections = [
@@ -35,28 +26,5 @@ class ProfileComponentGroups {
     DestinyComponentType.Records,
     DestinyComponentType.Metrics,
     DestinyComponentType.PresentationNodes,
-  ];
-
-  static const List<DestinyComponentType> everything = [
-    DestinyComponentType.Characters,
-    DestinyComponentType.CharacterActivities,
-    DestinyComponentType.CharacterProgressions,
-    DestinyComponentType.CharacterEquipment,
-    DestinyComponentType.CharacterInventories,
-    DestinyComponentType.ProfileInventories,
-    DestinyComponentType.ProfileCurrencies,
-    DestinyComponentType.ProfileProgression,
-    DestinyComponentType.ItemInstances,
-    DestinyComponentType.ItemStats,
-    DestinyComponentType.ItemObjectives,
-    DestinyComponentType.ItemSockets,
-    DestinyComponentType.ItemPlugStates,
-    DestinyComponentType.ItemPlugObjectives,
-    DestinyComponentType.ItemReusablePlugs,
-    DestinyComponentType.Collectibles,
-    DestinyComponentType.Records,
-    DestinyComponentType.Metrics,
-    DestinyComponentType.PresentationNodes,
-    DestinyComponentType.Profiles,
   ];
 }

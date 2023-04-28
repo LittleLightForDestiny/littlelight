@@ -14,7 +14,7 @@ class _ManifestImageState<T> {
 }
 
 class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
-  final int? hash;
+  final int? presentationNodeHash;
   final ExtractUrlFromData<T>? urlExtractor;
 
   final Widget? placeholder;
@@ -26,7 +26,7 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
   final Color? color;
 
   ManifestImageWidget(
-    this.hash, {
+    this.presentationNodeHash, {
     Key? key,
     this.fit = BoxFit.contain,
     this.alignment = Alignment.center,
@@ -37,14 +37,13 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
   }) : super(key: key);
 
   Future<_ManifestImageState<T>> get future async {
-    final def = await manifest.getDefinition<T>(hash);
+    final def = await manifest.getDefinition<T>(presentationNodeHash);
     return _ManifestImageState(def, true);
   }
 
   Widget buildShimmer(BuildContext context) => const DefaultLoadingShimmer();
 
-  Widget buildPlaceholder(BuildContext context) =>
-      placeholder ?? buildShimmer(context);
+  Widget buildPlaceholder(BuildContext context) => placeholder ?? buildShimmer(context);
 
   String? getUrl(BuildContext context, T definition) {
     if (urlExtractor != null) return urlExtractor!(definition);
@@ -60,13 +59,11 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
         final loaded = snapshot.data?.finished ?? false;
         final definition = snapshot.data?.definition;
         if (!loaded) return buildPlaceholder(context);
-        if (definition == null)
-          return noIconPlaceholder ?? buildPlaceholder(context);
+        if (definition == null) return noIconPlaceholder ?? buildPlaceholder(context);
 
         final url = getUrl(context, definition);
         final bungieUrl = BungieApiService.url(url);
-        if (bungieUrl == null || bungieUrl.isEmpty)
-          return noIconPlaceholder ?? buildPlaceholder(context);
+        if (bungieUrl == null || bungieUrl.isEmpty) return noIconPlaceholder ?? buildPlaceholder(context);
         return QueuedNetworkImage(
           imageUrl: bungieUrl,
           fit: fit,

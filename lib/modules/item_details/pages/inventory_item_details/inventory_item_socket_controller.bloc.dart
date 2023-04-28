@@ -1,18 +1,18 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:provider/provider.dart';
 
-class InventoryItemSocketControllerBloc extends SocketControllerBloc<DestinyItemInfo> {
+class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryItemInfo> {
   InventoryBloc _inventoryBloc;
   ProfileBloc _profileBloc;
 
   @protected
-  DestinyItemInfo? item;
+  InventoryItemInfo? item;
 
   bool _isBusy = false;
 
@@ -22,7 +22,7 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<DestinyItem
         super(context);
 
   @override
-  Future<void> init(DestinyItemInfo item) async {
+  Future<void> init(InventoryItemInfo item) async {
     final hash = item.itemHash;
     this.item = item;
     if (hash == null) return;
@@ -30,7 +30,7 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<DestinyItem
   }
 
   @override
-  Future<void> update(DestinyItemInfo item) async {
+  Future<void> update(InventoryItemInfo item) async {
     this.item = item;
     this.refreshStats();
   }
@@ -130,4 +130,7 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<DestinyItem
 
   @override
   bool get isBusy => _isBusy;
+
+  @override
+  List<int>? getRandomPlugHashesForSocket(int selectedIndex) => null;
 }

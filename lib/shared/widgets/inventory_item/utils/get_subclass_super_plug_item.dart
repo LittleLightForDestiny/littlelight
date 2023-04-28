@@ -1,6 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 
 Future<DestinyInventoryItemDefinition?> getSubclassSuperPlugItem(

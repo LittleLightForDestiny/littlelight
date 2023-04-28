@@ -12,7 +12,7 @@ import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/pages/triumphs/widgets/record_item.widget.dart';
 import 'package:little_light/services/littlelight/objectives.service.dart';
 import 'package:little_light/utils/item_with_owner.dart';
-import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item/tracked_pursuit_item.widget.dart';
@@ -132,7 +132,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
     TrackedObjective objective = objectives[index];
     switch (objective.type) {
       case TrackedObjectiveType.Triumph:
-        return RecordItemWidget(key: Key("objective_${objective.hash}"), hash: objective.hash);
+        return RecordItemWidget(key: Key("objective_${objective.hash}"), presentationNodeHash: objective.hash);
 
       case TrackedObjectiveType.Item:
         if (items[objective] != null) {

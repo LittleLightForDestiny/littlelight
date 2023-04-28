@@ -20,6 +20,7 @@ import 'package:little_light/modules/item_details/widgets/details_item_cover.wid
 import 'package:little_light/modules/item_details/widgets/details_wishlist_builds.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_wishlist_info.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_lock_status.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_wishlist_notes.widget.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
@@ -73,6 +74,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         buildWishlistInfo(context),
         buildLockState(context),
         buildActions(context),
+        buildDuplicates(context),
         ...buildIntrinsicPerks(context),
         ...buildArmorEnergy(context),
         buildStats(context),
@@ -80,10 +82,10 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         ...buildAbilities(context),
         ...buildReusablePerks(context),
         ...buildMods(context),
-        buildDuplicates(context),
+        buildWishlistBuilds(context),
+        buildWishlistNotes(context),
         buildItemNotes(context),
         buildItemTags(context),
-        buildWishlistBuilds(context),
         buildLore(context),
         buildCollectibleInfo(context),
         buildEmptySpace(context, hasFooter: hasFooter),
@@ -140,8 +142,8 @@ abstract class BaseItemDetailsView extends StatelessWidget {
   Widget? buildActions(BuildContext context) {
     return SliverToBoxAdapter(
         child: DetailsItemActionsWidget(
-      onAddToLoadout: () => {},
-      onViewInCollections: () => {},
+      onAddToLoadout: bloc.addToLoadout,
+      onViewInCollections: bloc.viewInCollections,
     ));
   }
 
@@ -216,7 +218,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     return SliverToBoxAdapter(child: DetailsItemDuplicatesWidget(items));
   }
 
-  Widget buildItemNotes(BuildContext context) {
+  Widget? buildItemNotes(BuildContext context) {
     return SliverToBoxAdapter(
         child: DetailsItemNotesWidget(
       customName: state.customName,
@@ -225,7 +227,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     ));
   }
 
-  Widget buildItemTags(BuildContext context) {
+  Widget? buildItemTags(BuildContext context) {
     return SliverToBoxAdapter(
         child: DetailsItemTagsWidget(
       tags: state.tags,
@@ -240,10 +242,24 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     return SliverToBoxAdapter(
         child: DetailsWishlistBuildsWidget(
       builds,
-      socketState: socketState,
+      allAvailablePlugHashes: socketState.allAvailablePlugHashes,
+      allSelectedPlugHashes: socketState.allSelectedPlugHashes,
+      allEquippedPlugHashes: socketState.allEquippedPlugHashes,
       viewAllBuilds: bloc.showAllWishlistBuilds,
       enableViewAllBuilds: true,
       onToggleViewAllBuilds: (value) => bloc.showAllWishlistBuilds = value,
+    ));
+  }
+
+  Widget? buildWishlistNotes(BuildContext context) {
+    final notes = state.wishlistNotes;
+    if (notes == null) return null;
+    return SliverToBoxAdapter(
+        child: DetailsWishlistNotesWidget(
+      notes,
+      viewAllNotes: bloc.showAllWishlistNotes,
+      enableViewAllNotes: true,
+      onToggleViewAllNotes: (value) => bloc.showAllWishlistNotes = value,
     ));
   }
 
@@ -299,6 +315,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
           item,
           transferDestinations: state.transferDestinations,
           equipDestinations: state.equipDestinations,
+          onAction: bloc.onTransferAction,
         ),
         SizedBox(
           height: mqPadding.bottom,

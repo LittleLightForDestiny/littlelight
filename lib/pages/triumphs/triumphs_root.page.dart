@@ -11,13 +11,13 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
-import 'package:little_light/utils/media_query_helper.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/layouts/presentation_nodes_tabs_scaffold.dart';
 import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
-import 'package:little_light/widgets/presentation_nodes/presentation_node_item.widget.dart';
+import 'package:little_light/shared/widgets/presentation_nodes/presentation_node_item.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 
 typedef OnPresentationNodeSelect = void Function(DestinyPresentationNodeChildEntry node);
@@ -295,16 +295,17 @@ class TriumphsRootPageState extends PresentationNodesTabsScaffoldState<TriumphsR
   Widget buildPresentationNode(BuildContext context, DestinyPresentationNodeChildEntry node,
       {OnPresentationNodeSelect? onSelect}) {
     return PresentationNodeItemWidget(
-        hash: node.presentationNodeHash,
-        onPressed: () {
-          onSelect?.call(node);
-        });
+      node.presentationNodeHash,
+      onTap: () {
+        onSelect?.call(node);
+      },
+    );
   }
 
   Widget buildSealNodeItem(BuildContext context, DestinyPresentationNodeChildEntry node,
       {OnPresentationNodeSelect? onSelect}) {
     return SealItemWidget(
-        hash: node.presentationNodeHash,
+        presentationNodeHash: node.presentationNodeHash,
         onPressed: () {
           onSelect?.call(node);
         });

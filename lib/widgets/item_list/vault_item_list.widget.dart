@@ -16,8 +16,7 @@ import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart
 import 'bucket_header.widget.dart';
 
 class VaultItemListWidget extends ItemListWidget {
-  const VaultItemListWidget(
-      {EdgeInsets padding, List<int> bucketHashes, Key key})
+  const VaultItemListWidget({EdgeInsets padding, List<int> bucketHashes, Key key})
       : super(key: key, padding: padding, bucketHashes: bucketHashes);
   @override
   VaultItemListWidgetState createState() => VaultItemListWidgetState();
@@ -34,23 +33,18 @@ class VaultItemListWidgetState extends ItemListWidgetState
   @override
   buildIndex() async {
     if (!mounted) return;
-    List<DestinyItemComponent> itemsOnVault = profile
-        .getProfileInventory()
-        .where((i) => i.bucketHash == InventoryBucket.general)
-        .toList();
-    bucketDefs = await manifest
-        .getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketHashes);
+    List<DestinyItemComponent> itemsOnVault =
+        profile.getProfileInventory().where((i) => i.bucketHash == InventoryBucket.general).toList();
+    bucketDefs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(widget.bucketHashes);
     Map<int, DestinyInventoryItemDefinition> itemDefs =
-        await manifest.getDefinitions<DestinyInventoryItemDefinition>(
-            itemsOnVault.map((i) => i.itemHash));
+        await manifest.getDefinitions<DestinyInventoryItemDefinition>(itemsOnVault.map((i) => i.itemHash));
     buckets = [];
     for (int bucketHash in widget.bucketHashes) {
       List<DestinyItemComponent> unequipped = itemsOnVault.where((item) {
         var def = itemDefs[item.itemHash];
         return def?.inventory?.bucketTypeHash == bucketHash;
       }).toList();
-      unequipped = (await InventoryUtils.sortDestinyItems(
-              unequipped.map((i) => ItemWithOwner(i, null))))
+      unequipped = (await InventoryUtils.sortDestinyItems(unequipped.map((i) => ItemWithOwner(i, null))))
           .map((i) => i.item)
           .toList();
 
@@ -74,18 +68,14 @@ class VaultItemListWidgetState extends ItemListWidgetState
 
   @override
   SliverSection buildBucketHeaderSliver(ListBucket bucket) {
-    final itemCount =
-        (bucket.equipped != null ? 1 : 0) + (bucket.unequipped?.length ?? 0);
+    final itemCount = (bucket.equipped != null ? 1 : 0) + (bucket.unequipped?.length ?? 0);
     if (itemCount == 0) {
-      return SliverSection(
-          itemCount: 1,
-          itemHeight: 0,
-          itemBuilder: (context, index) => Container());
+      return SliverSection(itemCount: 1, itemHeight: 0, itemBuilder: (context, index) => Container());
     }
     return SliverSection(
         itemBuilder: (context, _) => BucketHeaderWidget(
               key: Key("bucketheader_vault_${bucket.bucketHash}"),
-              hash: bucket.bucketHash,
+              presentationNodeHash: bucket.bucketHash,
               itemCount: itemCount,
               onChanged: () {
                 setState(() {});
@@ -102,8 +92,7 @@ class VaultItemListWidgetState extends ItemListWidgetState
   }
 
   @override
-  int getItemCountPerRow(
-      BuildContext context, BucketDisplayOptions bucketOptions) {
+  int getItemCountPerRow(BuildContext context, BucketDisplayOptions bucketOptions) {
     return bucketOptions.responsiveUnequippedItemsPerRow(context);
   }
 }

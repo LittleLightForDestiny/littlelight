@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
@@ -7,20 +8,20 @@ import 'package:little_light/shared/utils/helpers/get_transfer_destinations.dart
 import 'package:provider/provider.dart';
 
 class _SelectedItemIdentifier {
-  int hash;
+  int itemHash;
   String? instanceId;
   int? stackIndex;
 
-  _SelectedItemIdentifier(this.hash, {this.instanceId, this.stackIndex});
+  _SelectedItemIdentifier(this.itemHash, {this.instanceId, this.stackIndex});
 
   String get id {
     if (instanceId != null) {
-      return "$hash-$instanceId";
+      return "$itemHash-$instanceId";
     }
     if (stackIndex != null) {
-      return "$hash-$stackIndex";
+      return "$itemHash-$stackIndex";
     }
-    return "$hash";
+    return "$itemHash";
   }
 
   @override
@@ -48,7 +49,7 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   List<_SelectedItemIdentifier> _selectedIdentifers = [];
-  List<DestinyItemInfo> _selectedItems = [];
+  List<InventoryItemInfo> _selectedItems = [];
   List<TransferDestination> _transferDestinations = [];
   List<TransferDestination> _equipDestinations = [];
 
@@ -67,6 +68,14 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
       return _SelectedItemIdentifier(hash, instanceId: item.instanceId, stackIndex: item.stackIndex);
     }).whereType<_SelectedItemIdentifier>();
     _selectedIdentifers.addAll(identifiers);
+    _internalUpdate();
+  }
+
+  void unselectItems(List<DestinyItemInfo> items) {
+    for (final i in items) {
+      _selectedIdentifers.removeWhere((element) =>
+          element.instanceId == i.instanceId && element.stackIndex == i.stackIndex && element.itemHash == i.itemHash);
+    }
     _internalUpdate();
   }
 
@@ -102,13 +111,13 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
           final instanceId = id.instanceId;
           final stackIndex = id.stackIndex ?? 0;
           if (instanceId != null) return _profile.getItemByInstanceId(instanceId);
-          final items = _profile.getItemsByHash(id.hash);
+          final items = _profile.getItemsByHash(id.itemHash);
           if (items.length > stackIndex) {
             return items[stackIndex];
           }
           return null;
         })
-        .whereType<DestinyItemInfo>()
+        .whereType<InventoryItemInfo>()
         .toList();
   }
 
@@ -125,8 +134,15 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
     return _selectedIdentifers.contains(id);
   }
 
+  bool isItemSelected(DestinyItemInfo item) {
+    final hash = item.itemHash;
+    if (hash == null) return false;
+    final id = _SelectedItemIdentifier(hash, instanceId: item.instanceId, stackIndex: item.stackIndex);
+    return _selectedIdentifers.contains(id);
+  }
+
   bool get hasSelection => _selectedItems.isNotEmpty;
-  List<DestinyItemInfo> get selectedItems => _selectedItems;
+  List<InventoryItemInfo> get selectedItems => _selectedItems;
   List<TransferDestination> get transferDestinations => _transferDestinations;
   List<TransferDestination> get equipDestinations => _equipDestinations;
 }

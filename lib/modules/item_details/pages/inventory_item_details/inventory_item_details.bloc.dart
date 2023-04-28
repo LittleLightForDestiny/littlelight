@@ -1,9 +1,9 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
@@ -18,6 +18,7 @@ import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/utils/helpers/get_transfer_destinations.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/wishlist_helpers.dart';
+import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';
 import 'package:provider/provider.dart';
 
 class InventoryItemDetailsBloc extends ItemDetailsBloc {
@@ -29,17 +30,20 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   final WishlistsService _wishlists;
 
   @protected
-  DestinyItemInfo? _item;
+  InventoryItemInfo? _item;
 
   List<TransferDestination>? _transferDestinations;
   List<TransferDestination>? _equipDestinations;
 
-  Map<String, Map<WishlistTag, List<ParsedWishlistBuild>>>? _allWishlistBuilds;
-  Map<String, Map<WishlistTag, List<ParsedWishlistBuild>>>? _matchedWishlistBuilds;
+  MappedWishlistBuilds? _allWishlistBuilds;
+  MappedWishlistBuilds? _matchedWishlistBuilds;
+
+  MappedWishlistNotes? _allWishlistNotes;
+  MappedWishlistNotes? _matchedWishlistNotes;
 
   bool _lockBusy = false;
 
-  InventoryItemDetailsBloc(BuildContext context, {DestinyItemInfo? item})
+  InventoryItemDetailsBloc(BuildContext context, {InventoryItemInfo? item})
       : _item = item,
         _profileBloc = context.read<ProfileBloc>(),
         _inventoryBloc = context.read<InventoryBloc>(),
@@ -84,8 +88,12 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
     final allWishlists = _wishlists.getWishlistBuilds(itemHash: item.itemHash);
     final matchedWishlists = _wishlists.getWishlistBuilds(itemHash: item.itemHash, reusablePlugs: item.reusablePlugs);
-    _allWishlistBuilds = allWishlists.isNotEmpty ? organizeWishlists(allWishlists) : null;
-    _matchedWishlistBuilds = matchedWishlists.isNotEmpty ? organizeWishlists(matchedWishlists) : null;
+
+    _allWishlistBuilds = allWishlists.isNotEmpty ? organizeWishlistBuilds(allWishlists) : null;
+    _matchedWishlistBuilds = matchedWishlists.isNotEmpty ? organizeWishlistBuilds(matchedWishlists) : null;
+
+    _allWishlistNotes = allWishlists.isNotEmpty ? organizeWishlistNotes(allWishlists) : null;
+    _matchedWishlistNotes = matchedWishlists.isNotEmpty ? organizeWishlistNotes(matchedWishlists) : null;
 
     _updateKillTracker();
 
@@ -181,7 +189,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   }
 
   @override
-  DestinyItemInfo? get item => _item;
+  InventoryItemInfo? get item => _item;
 
   DestinyObjectiveProgress? _killTracker;
 
@@ -196,14 +204,33 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     return _wishlists.getWishlistBuildTags(itemHash: hash, reusablePlugs: plugs);
   }
 
-  List<DestinyItemInfo>? get duplicates {
+  List<InventoryItemInfo>? get duplicates {
     return this.item?.duplicates?.where((element) => element != this.item).toList();
   }
 
   @override
-  Map<String, Map<WishlistTag, List<ParsedWishlistBuild>>>? get wishlistBuilds {
+  MappedWishlistBuilds? get wishlistBuilds {
     if (_allWishlistBuilds?.isEmpty ?? true) return null;
     if (showAllWishlistBuilds) return _allWishlistBuilds;
     return _matchedWishlistBuilds ?? {};
+  }
+
+  @override
+  MappedWishlistNotes? get wishlistNotes {
+    if (_allWishlistNotes?.isEmpty ?? true) return null;
+    if (showAllWishlistNotes) return _allWishlistNotes;
+    return _matchedWishlistNotes ?? {};
+  }
+
+  @override
+  void onTransferAction(TransferActionType actionType, TransferDestination destination, int stackSize) async {
+    final item = this.item;
+    if (item == null) return;
+    if (actionType == TransferActionType.Transfer) {
+      _inventoryBloc.transfer(item, destination);
+    } else {
+      _inventoryBloc.equip(item, destination);
+    }
+    Navigator.of(context).pop();
   }
 }

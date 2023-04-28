@@ -78,6 +78,15 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     return _cached["${type}_$hash"];
   }
 
+  Map<int, T?> getDefinitionsFromCache<T>(Iterable<int?> hashes) {
+    var type = DefinitionTableNames.fromClass[T];
+    final map = <int, T>{
+      for (final h in hashes)
+        if (h != null) h: _cached["${type}_$h"]
+    };
+    return map;
+  }
+
   Future<DestinyManifest> _getManifestInfo() async {
     if (_manifestInfo != null) {
       return _manifestInfo!;

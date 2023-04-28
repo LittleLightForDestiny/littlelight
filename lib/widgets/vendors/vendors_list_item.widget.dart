@@ -25,20 +25,19 @@ class VendorsListItemWidget extends StatefulWidget {
 
   final DestinyVendorComponent vendor;
 
-  const VendorsListItemWidget({Key key, this.characterId, this.vendor})
-      : super(key: key);
+  const VendorsListItemWidget({Key key, this.characterId, this.vendor}) : super(key: key);
 
   @override
   VendorsListItemWidgetState createState() => VendorsListItemWidgetState();
 }
 
-class VendorsListItemWidgetState<T extends VendorsListItemWidget>
-    extends State<T> with AutomaticKeepAliveClientMixin, ManifestConsumer {
+class VendorsListItemWidgetState<T extends VendorsListItemWidget> extends State<T>
+    with AutomaticKeepAliveClientMixin, ManifestConsumer {
   DestinyVendorDefinition definition;
   List<DestinyVendorCategory> _categories;
   Map<String, DestinyVendorSaleItemComponent> _sales;
 
-  int get hash => widget.vendor.vendorHash;
+  int get presentationNodeHash => widget.vendor.vendorHash;
 
   @override
   void initState() {
@@ -52,13 +51,10 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
   }
 
   Future<void> loadDefinitions() async {
-    definition = await manifest
-        .getDefinition<DestinyVendorDefinition>(widget.vendor.vendorHash);
+    definition = await manifest.getDefinition<DestinyVendorDefinition>(widget.vendor.vendorHash);
     var _service = VendorsService();
-    _categories = await _service.getVendorCategories(
-        widget.characterId, widget.vendor.vendorHash);
-    _sales = await _service.getVendorSales(
-        widget.characterId, widget.vendor.vendorHash);
+    _categories = await _service.getVendorCategories(widget.characterId, widget.vendor.vendorHash);
+    _sales = await _service.getVendorSales(widget.characterId, widget.vendor.vendorHash);
     if (mounted) {
       setState(() {});
     }
@@ -75,8 +71,7 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
     if (def.identifier.contains('multipurchase')) {
       return false; //eververse weird bright engrams
     }
-    if (def.identifier.contains('categories.featured') &&
-        !def.identifier.contains('bright_dust')) {
+    if (def.identifier.contains('categories.featured') && !def.identifier.contains('bright_dust')) {
       return false; //eververse weird menus
     }
     if (def.identifier.contains('categories.campaigns')) {
@@ -110,19 +105,15 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
   Widget build(BuildContext context) {
     super.build(context);
     if (definition == null) {
-      return Container(
-          height: 200, color: Theme.of(context).colorScheme.secondaryContainer);
+      return Container(height: 200, color: Theme.of(context).colorScheme.secondaryContainer);
     }
     return Stack(children: [
       Container(
         decoration: BoxDecoration(
             color: LittleLightTheme.of(context).surfaceLayers.layer1,
-            border: Border.all(
-                color: LittleLightTheme.of(context).surfaceLayers.layer3,
-                width: 1)),
+            border: Border.all(color: LittleLightTheme.of(context).surfaceLayers.layer3, width: 1)),
         child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [buildHeader(context), buildContent(context)]),
+            crossAxisAlignment: CrossAxisAlignment.stretch, children: [buildHeader(context), buildContent(context)]),
       ),
       Positioned.fill(
           child: Material(
@@ -132,9 +123,8 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
                   await Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => VendorDetailsScreen(
-                            vendor: widget.vendor,
-                            characterId: widget.characterId)),
+                        builder: (context) =>
+                            VendorDetailsScreen(vendor: widget.vendor, characterId: widget.characterId)),
                   );
                 },
               )))
@@ -147,11 +137,7 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
         height: 72,
         child: Stack(
           children: <Widget>[
-            Positioned(
-                top: 0,
-                right: 0,
-                bottom: 0,
-                child: buildHeaderBackground(context)),
+            Positioned(top: 0, right: 0, bottom: 0, child: buildHeaderBackground(context)),
             buildHeaderInfo(context)
           ],
         ));
@@ -182,8 +168,7 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
           AspectRatio(
             aspectRatio: 1,
             child: QueuedNetworkImage(
-              imageUrl:
-                  BungieApiService.url(definition.displayProperties.mapIcon),
+              imageUrl: BungieApiService.url(definition.displayProperties.mapIcon),
             ),
           ),
           Container(
@@ -212,16 +197,11 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
     if (categories.isEmpty) return Container();
     return Container(
         padding: const EdgeInsets.all(8),
-        child: Wrap(
-            spacing: 16,
-            runSpacing: 16,
-            children:
-                categories.map((c) => buildCategory(context, c)).toList()));
+        child: Wrap(spacing: 16, runSpacing: 16, children: categories.map((c) => buildCategory(context, c)).toList()));
   }
 
   Widget buildCategory(BuildContext context, DestinyVendorCategory category) {
-    var catDefinition =
-        definition.displayCategories[category.displayCategoryIndex];
+    var catDefinition = definition.displayCategories[category.displayCategoryIndex];
 
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Container(
@@ -235,33 +215,27 @@ class VendorsListItemWidgetState<T extends VendorsListItemWidget>
     ]);
   }
 
-  Widget buildCategoryItems(
-      BuildContext context, DestinyVendorCategory category) {
+  Widget buildCategoryItems(BuildContext context, DestinyVendorCategory category) {
     return Wrap(
         runSpacing: 4,
         spacing: 4,
         alignment: WrapAlignment.start,
         children: category.itemIndexes.reversed
-            .map((index) =>
-                buildItem(context, definition.itemList[index], index))
+            .map((index) => buildItem(context, definition.itemList[index], index))
             .toList());
   }
 
-  Widget buildItem(
-      BuildContext context, DestinyVendorItemDefinition item, int index) {
+  Widget buildItem(BuildContext context, DestinyVendorItemDefinition item, int index) {
     var sale = _sales["$index"];
     return Container(
-        decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300, width: 1)),
+        decoration: BoxDecoration(border: Border.all(color: Colors.grey.shade300, width: 1)),
         width: 36,
         height: 36,
         child: Stack(
           children: <Widget>[
-            ManifestImageWidget<DestinyInventoryItemDefinition>(item.itemHash,
-                key: Key("item_${item.itemHash}")),
+            ManifestImageWidget<DestinyInventoryItemDefinition>(item.itemHash, key: Key("item_${item.itemHash}")),
             sale.saleStatus != VendorItemStatus.Success
-                ? Positioned.fill(
-                    child: Container(color: Colors.black.withOpacity(.6)))
+                ? Positioned.fill(child: Container(color: Colors.black.withOpacity(.6)))
                 : Container()
           ],
         ));

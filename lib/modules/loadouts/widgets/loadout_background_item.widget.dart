@@ -10,8 +10,8 @@ import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class LoadoutBackgroundItemWidget extends StatefulWidget {
-  final int hash;
-  const LoadoutBackgroundItemWidget({Key key, this.hash}) : super(key: key);
+  final int presentationNodeHash;
+  const LoadoutBackgroundItemWidget({Key key, this.presentationNodeHash}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -19,8 +19,7 @@ class LoadoutBackgroundItemWidget extends StatefulWidget {
   }
 }
 
-class LoadoutBackgroundItemWidgetState
-    extends State<LoadoutBackgroundItemWidget> with ManifestConsumer {
+class LoadoutBackgroundItemWidgetState extends State<LoadoutBackgroundItemWidget> with ManifestConsumer {
   DestinyInventoryItemDefinition definition;
 
   @override
@@ -30,10 +29,8 @@ class LoadoutBackgroundItemWidgetState
   }
 
   void loadDefinitions() async {
-    var collectible =
-        await manifest.getDefinition<DestinyCollectibleDefinition>(widget.hash);
-    definition = await manifest
-        .getDefinition<DestinyInventoryItemDefinition>(collectible?.itemHash);
+    var collectible = await manifest.getDefinition<DestinyCollectibleDefinition>(widget.presentationNodeHash);
+    definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(collectible?.itemHash);
     setState(() {});
   }
 

@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/collections/pages/home/collections_root.page.dart';
+import 'package:little_light/modules/collections/pages/home/collections_home.page.dart';
 import 'package:little_light/modules/dev_tools/pages/main/dev_tools_main.page.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
@@ -83,7 +83,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                 open(context, VendorsScreen());
               }),
               menuItem(context, Text("Collections".translate(context)), onTap: () {
-                open(context, CollectionsRootPage());
+                open(context, CollectionsHomePage());
               }),
               menuItem(context, Text("Triumphs".translate(context)), onTap: () {
                 open(context, TriumphsRootPage());

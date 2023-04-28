@@ -5,9 +5,13 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/modules/item_details/widgets/details_plug_info.widget.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
+import 'package:little_light/shared/widgets/sockets/paginated_plug_grid_view.dart';
 import 'package:little_light/shared/widgets/sockets/perk_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
+
+const _animationDuration = const Duration(milliseconds: 300);
+const _randomPerkIconHash = 29505215;
 
 class DetailsItemPerksWidget extends StatelessWidget {
   final DestinyItemSocketCategoryDefinition socketCategory;
@@ -33,10 +37,51 @@ class DetailsItemPerksWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         buildPerks(context),
+        buildRandomRolls(context),
         DetailsPlugInfoWidget(
           category: socketCategory,
         )
       ],
+    );
+  }
+
+  Widget buildRandomRolls(BuildContext context) {
+    return AnimatedSize(
+      alignment: Alignment.topCenter,
+      duration: _animationDuration,
+      child: buildOptions(context),
+    );
+  }
+
+  Widget buildOptions(BuildContext context) {
+    final state = context.watch<SocketControllerBloc>();
+    final socketIndex = state.selectedSocketIndexForCategory(socketCategory);
+    final itemHash = state.itemHash;
+    if (socketIndex == null || itemHash == null)
+      return AnimatedContainer(
+        duration: _animationDuration,
+      );
+    final plugHashes = state.getRandomPlugHashesForSocket(socketIndex);
+    if (plugHashes == null) return AnimatedContainer(duration: _animationDuration);
+    return AnimatedContainer(
+      duration: _animationDuration,
+      key: Key("mod_options_$socketIndex"),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer1,
+        borderRadius: BorderRadius.circular(4).copyWith(topLeft: Radius.zero),
+      ),
+      padding: EdgeInsets.all(8),
+      child: PaginatedPlugGridView.withExpectedItemSize(plugHashes, itemBuilder: (plugHash) {
+        if (plugHash == null) return Container();
+        final bloc = context.watch<SocketControllerBloc>();
+        return PerkIconWidget(
+          plugItemHash: plugHash,
+          itemHash: itemHash,
+          selected: state.isSelected(socketIndex, plugHash),
+          equipped: state.isEquipped(socketIndex, plugHash),
+          onTap: () => bloc.toggleSelection(socketIndex, plugHash),
+        );
+      }, expectedItemSize: PerkIconWidget.maxIconSize),
     );
   }
 
@@ -84,20 +129,41 @@ class DetailsItemPerksWidget extends StatelessWidget {
     final bloc = context.read<SocketControllerBloc>();
     final itemHash = state.itemHash;
     if (itemHash == null) return Container();
+    final hasRandomPlugs = state.getRandomPlugHashesForSocket(socket.index)?.isNotEmpty ?? false;
+    final available = socket.availablePlugHashes;
+    final selected = state.getSelectedPlugHashForSocket(socket.index);
+    final equipped = state.getEquippedPlugHashForSocket(socket.index);
+    final random = [selected, equipped].whereType<int>().firstWhereOrNull((h) => !available.contains(h));
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: socket.availablePlugHashes
-          .map((plugHash) => Container(
-              margin: EdgeInsets.all(4),
-              constraints: BoxConstraints(maxWidth: PerkIconWidget.maxIconSize, maxHeight: PerkIconWidget.maxIconSize),
-              child: PerkIconWidget(
-                plugItemHash: plugHash,
-                itemHash: itemHash,
-                selected: state.isSelected(socket.index, plugHash),
-                equipped: state.isEquipped(socket.index, plugHash),
-                onTap: () => bloc.toggleSelection(socket.index, plugHash),
-              )))
-          .toList(),
+              .map((plugHash) => Container(
+                  margin: EdgeInsets.all(4),
+                  constraints:
+                      BoxConstraints(maxWidth: PerkIconWidget.maxIconSize, maxHeight: PerkIconWidget.maxIconSize),
+                  child: PerkIconWidget(
+                    plugItemHash: plugHash,
+                    itemHash: itemHash,
+                    selected: state.isSelected(socket.index, plugHash),
+                    equipped: state.isEquipped(socket.index, plugHash),
+                    onTap: () => bloc.toggleSelection(socket.index, plugHash),
+                  )))
+              .toList() +
+          [
+            if (hasRandomPlugs)
+              Container(
+                  margin: EdgeInsets.all(4),
+                  constraints:
+                      BoxConstraints(maxWidth: PerkIconWidget.maxIconSize, maxHeight: PerkIconWidget.maxIconSize),
+                  child: PerkIconWidget(
+                    plugItemHash: random ?? _randomPerkIconHash,
+                    itemHash: itemHash,
+                    selected: selected == random && selected != null,
+                    equipped: equipped == random && equipped != null,
+                    onTap: () => bloc.toggleSocketSelection(socket.index),
+                  ))
+          ],
     );
   }
 }

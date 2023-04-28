@@ -24,22 +24,21 @@ class PlugSocket {
 }
 
 abstract class SocketControllerBloc<T> extends ChangeNotifier {
+  Set<int>? _allAvailablePlugHashes;
   Set<int> get allAvailablePlugHashes {
+    final all = _allAvailablePlugHashes;
+    if (all != null) return all;
     final length = itemDefinition?.sockets?.socketEntries?.length ?? 0;
-    return List.generate(length, (index) => getAvailablePlugHashesForSocket(index))
+    return _allAvailablePlugHashes ??= List.generate(length, (index) => getAvailablePlugHashesForSocket(index))
         .whereType<List<int>>()
         .fold<List<int>>([], (set, value) => set + value).toSet();
   }
 
-  Set<int> get allEquippedPlugHashes {
-    final length = itemDefinition?.sockets?.socketEntries?.length ?? 0;
-    return List.generate(length, (index) => getEquippedPlugHashForSocket(index)).whereType<int>().toSet();
-  }
+  Set<int>? _allEquippedPlugHashes;
+  Set<int>? get allEquippedPlugHashes => _allEquippedPlugHashes;
 
-  Set<int> get allSelectedPlugHashes {
-    final length = itemDefinition?.sockets?.socketEntries?.length ?? 0;
-    return List.generate(length, (index) => getSelectedPlugHashForSocket(index)).whereType<int>().toSet();
-  }
+  Set<int>? _allSelectedPlugHashes;
+  Set<int>? get allSelectedPlugHashes => _allSelectedPlugHashes;
 
   Map<int, int?> _selectedPlugHashes = {};
   int? _selectedSocketIndex;
@@ -205,11 +204,13 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
       key: (i) => i,
       value: (index) => getEquippedPlugHashForSocket(index),
     );
+    _allEquippedPlugHashes = equippedPlugHashes.values.whereType<int>().toSet();
     final selectedPlugHashes = Map<int, int?>.fromIterable(
       socketList,
       key: (i) => i,
       value: (index) => getSelectedPlugHashForSocket(index),
     );
+    _allSelectedPlugHashes = selectedPlugHashes.values.whereType<int>().toSet();
 
     _stats = calculateStats(
       equippedPlugHashes,
@@ -259,6 +260,16 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     return sockets;
   }
 
+  PlugSocket? selectedSocketForCategory(DestinyItemSocketCategoryDefinition category) {
+    final index = _selectedSocketIndex;
+    if (index == null) return null;
+    final categoryIsSelected = category.socketIndexes?.contains(index) ?? false;
+    if (!categoryIsSelected) return null;
+    final hashes = getAvailablePlugHashesForSocket(index);
+    if (hashes == null) return null;
+    return PlugSocket(index, hashes);
+  }
+
   bool isEquipped(int socketIndex, int plugHash);
 
   bool isSelected(int socketIndex, int plugHash) {
@@ -298,10 +309,18 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   Future<void> init(T object);
   Future<void> update(T object);
 
+  @protected
   List<int>? getAvailablePlugHashesForSocket(int socketIndex);
+  List<int>? getRandomPlugHashesForSocket(int selectedIndex);
 
   int? getEquippedPlugHashForSocket(int? socketIndex);
   int? getSelectedPlugHashForSocket(int? socketIndex) => _selectedPlugHashes[socketIndex];
+
+  int? selectedSocketIndexForCategory(DestinyItemSocketCategoryDefinition category) {
+    final categoryIsSelected = category.socketIndexes?.contains(_selectedSocketIndex) ?? false;
+    if (!categoryIsSelected) return null;
+    return _selectedSocketIndex;
+  }
 
   int? selectedPlugForCategory(DestinyItemSocketCategoryDefinition category) {
     final categoryIsSelected = category.socketIndexes?.contains(_selectedSocketIndex) ?? false;

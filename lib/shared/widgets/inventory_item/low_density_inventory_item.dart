@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
@@ -60,7 +61,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   Widget buildItemIcon(BuildContext context, DestinyInventoryItemDefinition? definition) {
     if (definition == null) return SizedBox();
     if (definition.isSubclass) return buildSubclassIcon(context, definition);
-    return InventoryItemIcon(item, definition: definition, borderSize: 1.5);
+    return InventoryItemIcon(item, borderSize: 1.5);
   }
 
   Widget buildSubclassIcon(BuildContext context, DestinyInventoryItemDefinition definition) {
@@ -144,9 +145,9 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget buildWeaponPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final damageType = item.instanceInfo?.damageType;
+    final damageType = item.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
-    final powerLevel = item.instanceInfo?.primaryStat?.value;
+    final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     final ammoType = definition.equippingBlock?.ammoType;
     return buildInfoContainer(context, [
@@ -171,7 +172,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget buildArmorPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final powerLevel = item.instanceInfo?.primaryStat?.value;
+    final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     return buildInfoContainer(context, [
       Padding(
@@ -329,9 +330,9 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget buildWeaponMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final damageType = item.instanceInfo?.damageType;
+    final damageType = item.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
-    final powerLevel = item.instanceInfo?.primaryStat?.value;
+    final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     final ammoType = definition.equippingBlock?.ammoType;
     return Row(
@@ -358,7 +359,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget buildDefaultPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final primaryStatValue = item.instanceInfo?.primaryStat?.value;
+    final primaryStatValue = item.primaryStatValue;
     if (primaryStatValue == null) return Container();
     final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     return buildInfoContainer(context, [
@@ -391,8 +392,10 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget buildEngramPrimaryStat(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final itemLevel = item.instanceInfo?.itemLevel;
-    final quality = item.instanceInfo?.quality ?? 0;
+    final item = this.item;
+
+    final itemLevel = item.itemLevel;
+    final quality = item.quality ?? 0;
     if (itemLevel == null) return Container();
     if (itemLevel == 0) return Container();
     final level = itemLevel * 10 + quality;

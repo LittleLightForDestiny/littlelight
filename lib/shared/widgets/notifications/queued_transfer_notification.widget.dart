@@ -20,7 +20,6 @@ class QueuedTransferNotificationWidget extends StatelessWidget {
         (def) => def != null
             ? InventoryItemIcon(
                 notification.item,
-                definition: def,
                 borderSize: .5,
               )
             : Container(),

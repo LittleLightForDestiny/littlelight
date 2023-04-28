@@ -1,6 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:provider/provider.dart';
@@ -105,6 +105,23 @@ Future<Set<int>> getPossiblePlugHashesForSocket(BuildContext context, int itemHa
     if (hashes != null) {
       plugHashes.addAll(hashes);
     }
+  }
+  if (plugSources.contains(SocketPlugSources.CharacterPlugSet) ||
+      plugSources.contains(SocketPlugSources.ProfilePlugSet)) {
+    final plugSetHashes = itemDefinition?.sockets?.socketEntries //
+            ?.map((s) => [s.reusablePlugSetHash, s.randomizedPlugSetHash])
+            .fold<List<int?>>([], (list, hashes) => list + hashes)
+            .whereType<int>()
+            .toSet() ??
+        <int>{};
+
+    final _plugSetDefinitions = await manifest.getDefinitions<DestinyPlugSetDefinition>(plugSetHashes);
+    final hashes = _plugSetDefinitions.values
+        .map((e) => e.reusablePlugItems?.map((e) => e.plugItemHash))
+        .fold<List<int?>>([], (list, hashes) => list + (hashes?.toList() ?? []))
+        .whereType<int>()
+        .toSet();
+    plugHashes.addAll(hashes);
   }
   return plugHashes;
 }

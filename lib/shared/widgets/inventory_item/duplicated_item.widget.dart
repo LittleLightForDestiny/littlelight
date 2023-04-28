@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -107,9 +107,9 @@ class DuplicatedItemWidget extends StatelessWidget {
   }
 
   Widget buildWeaponMainInfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final damageType = item.instanceInfo?.damageType;
+    final damageType = item.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
-    final powerLevel = item.instanceInfo?.primaryStat?.value;
+    final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     final ammoType = definition?.equippingBlock?.ammoType;
     return Row(
@@ -137,7 +137,7 @@ class DuplicatedItemWidget extends StatelessWidget {
   }
 
   Widget buildArmorMainInfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final powerLevel = item.instanceInfo?.primaryStat?.value;
+    final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,

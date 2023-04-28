@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/widgets/transfer_destinations/stack_transfer.widget.dart';
 import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';

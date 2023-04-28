@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 typedef ExtractTextFromData<T> = String? Function(T definition);
 
 class ManifestText<T> extends StatelessWidget with ManifestConsumer {
-  final int? hash;
+  final int? presentationNodeHash;
   final bool uppercase;
   final ExtractTextFromData<T>? textExtractor;
   final int? maxLines;
@@ -20,7 +20,7 @@ class ManifestText<T> extends StatelessWidget with ManifestConsumer {
   final TextDirection? textDirection;
   final double? textScaleFactor;
 
-  ManifestText(this.hash,
+  ManifestText(this.presentationNodeHash,
       {Key? key,
       this.uppercase = false,
       this.textExtractor,
@@ -51,7 +51,7 @@ class ManifestText<T> extends StatelessWidget with ManifestConsumer {
 
   String desiredText(BuildContext context) {
     String? resultText;
-    final def = context.definition<T>(hash);
+    final def = context.definition<T>(presentationNodeHash);
     final profile = context.watch<ProfileBloc>();
     try {
       if (def == null) return "";

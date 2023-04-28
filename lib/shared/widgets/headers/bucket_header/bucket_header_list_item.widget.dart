@@ -7,11 +7,11 @@ import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 class BucketHeaderListItemWidget extends StatelessWidget {
-  final int hash;
+  final int presentationNodeHash;
   final int itemCount;
   final bool isVault;
   final bool canEquip;
-  const BucketHeaderListItemWidget(this.hash,
+  const BucketHeaderListItemWidget(this.presentationNodeHash,
       {this.itemCount = 0, this.isVault = false, this.canEquip = false, Key? key})
       : super(key: key);
 
@@ -20,7 +20,7 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     return HeaderWidget(
       padding: const EdgeInsets.symmetric(horizontal: 8),
       child: DefinitionProviderWidget<DestinyInventoryBucketDefinition>(
-        hash,
+        presentationNodeHash,
         (definition) => Row(
           mainAxisSize: MainAxisSize.max,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -44,7 +44,7 @@ class BucketHeaderListItemWidget extends StatelessWidget {
   Widget buildTrailing(BuildContext context, DestinyInventoryBucketDefinition? definition) {
     return Row(children: [
       BucketDisplayOptionsSelector(
-        hash,
+        presentationNodeHash,
         canEquip: canEquip,
         isVault: isVault,
       ),

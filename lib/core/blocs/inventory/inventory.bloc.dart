@@ -11,7 +11,8 @@ import 'package:little_light/core/blocs/inventory/exceptions/inventory_exception
 import 'package:little_light/core/blocs/inventory/transfer_error_messages.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
@@ -26,7 +27,7 @@ const _refreshDelay = Duration(seconds: 30);
 const _maxConcurrentTransfers = 5;
 
 class _PutBackTransfer {
-  final DestinyItemInfo item;
+  final InventoryItemInfo item;
   final TransferDestination destination;
 
   _PutBackTransfer(this.item, this.destination);
@@ -46,6 +47,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   final NotificationsBloc _notificationsBloc;
   final ProfileBloc _profileBloc;
   final AppLifecycleBloc _lifecycleBloc;
+  final OfflineModeBloc _offlineModeBloc;
 
   DateTime? _lastUpdated;
   Timer? _updateTimer;
@@ -59,6 +61,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
 
   InventoryBloc(BuildContext context)
       : _context = context,
+        _offlineModeBloc = context.read<OfflineModeBloc>(),
         _notificationsBloc = context.read<NotificationsBloc>(),
         _profileBloc = context.read<ProfileBloc>(),
         _lifecycleBloc = context.read<AppLifecycleBloc>();
@@ -85,6 +88,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     if (isBusy) return;
     final lastUpdated = _lastUpdated;
     if (lastUpdated == null) return;
+    if (_offlineModeBloc.isOffline) return;
     final elapsedTime = DateTime.now().difference(lastUpdated);
     if (elapsedTime > _refreshDelay) {
       logger.info("last refresh was on $lastUpdated, auto-refreshing");
@@ -124,7 +128,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   Future<void> transfer(
-    DestinyItemInfo item,
+    InventoryItemInfo item,
     TransferDestination destination, {
     int stackSize = 1,
   }) async {
@@ -134,7 +138,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   Future<void> equip(
-    DestinyItemInfo item,
+    InventoryItemInfo item,
     TransferDestination destination,
   ) async {
     final action = await _addTransferToQueue(item, destination, equip: true);
@@ -142,17 +146,17 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     await action?.future.future;
   }
 
-  Future<void> applyPlugs(DestinyItemInfo item, Map<int, int> plugs) async {
+  Future<void> applyPlugs(InventoryItemInfo item, Map<int, int> plugs) async {
     final action = await _addApplyPlugsToQueue(item, plugs);
     _startActionQueue();
     await action?.future.future;
   }
 
-  Future<void> changeItemLockState(DestinyItemInfo item, bool locked) async {
+  Future<void> changeItemLockState(InventoryItemInfo item, bool locked) async {
     await _profileBloc.changeItemLockState(item, locked);
   }
 
-  Future<QueuedApplyPlugs?> _addApplyPlugsToQueue(DestinyItemInfo item, Map<int, int> plugs) async {
+  Future<QueuedApplyPlugs?> _addApplyPlugsToQueue(InventoryItemInfo item, Map<int, int> plugs) async {
     final notification = _notificationsBloc.createNotification(ApplyPlugsNotification(
       item: item,
     ));
@@ -163,7 +167,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     return action;
   }
 
-  Future<QueuedTransfer?> _addTransferToQueue(DestinyItemInfo item, TransferDestination destination,
+  Future<QueuedTransfer?> _addTransferToQueue(InventoryItemInfo item, TransferDestination destination,
       {bool equip = false, int stackSize = 1}) async {
     final sourceCharacter = _profileBloc.getCharacterById(item.characterId);
     final sourceType = item.characterId != null
@@ -325,7 +329,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     return null;
   }
 
-  Future<void> equipMultiple(List<DestinyItemInfo> items, TransferDestination destination) async {
+  Future<void> equipMultiple(List<InventoryItemInfo> items, TransferDestination destination) async {
     final actions = <QueuedTransfer>[];
     final busyBuckets = <int>{};
     final busyExoticBlocks = <String>{};
@@ -346,7 +350,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     await Future.wait(actions.map((e) => e.future.future));
   }
 
-  Future<void> transferMultiple(List<DestinyItemInfo> items, TransferDestination destination) async {
+  Future<void> transferMultiple(List<InventoryItemInfo> items, TransferDestination destination) async {
     final actions = <QueuedTransfer>[];
     for (final item in items) {
       final action = await _addTransferToQueue(item, destination, stackSize: item.quantity);
@@ -357,7 +361,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   Future<void> _transfer(
-    DestinyItemInfo item,
+    InventoryItemInfo item,
     TransferDestination destination, {
     int stackSize = 1,
     TransferNotification? notification,
@@ -389,7 +393,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   Future<void> _applyPlugs(
-    DestinyItemInfo item, {
+    InventoryItemInfo item, {
     ApplyPlugsNotification? notification,
     QueuedApplyPlugs? action,
   }) async {
@@ -428,7 +432,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   Future<void> _applyPlug(
-    DestinyItemInfo item,
+    InventoryItemInfo item,
     int socketIndex,
     int plugHash, {
     ApplyPlugsNotification? notification,
@@ -444,7 +448,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   Future<void> _transferInstanced(
-    DestinyItemInfo itemInfo,
+    InventoryItemInfo itemInfo,
     TransferDestination destination, {
     TransferNotification? notification,
     QueuedTransfer? transfer,
@@ -621,7 +625,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     }
   }
 
-  Future<DestinyItemInfo?> _findBlockingExoticFor(DestinyItemInfo item, String characterId) async {
+  Future<InventoryItemInfo?> _findBlockingExoticFor(InventoryItemInfo item, String characterId) async {
     final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     final uniqueLabel = def?.equippingBlock?.uniqueLabel;
     if (uniqueLabel == null) return null;
@@ -640,7 +644,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     return null;
   }
 
-  Future<bool> _unequipItem(DestinyItemInfo item, {bool forceNonExotic = false}) async {
+  Future<bool> _unequipItem(InventoryItemInfo item, {bool forceNonExotic = false}) async {
     try {
       final substitute = await _findSubstitute(item, forceNonExotic: forceNonExotic);
       if (substitute == null) {
@@ -656,7 +660,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   Future<void> _transferUninstanced(
-    DestinyItemInfo itemInfo,
+    InventoryItemInfo itemInfo,
     TransferDestination destination, {
     QueuedTransfer? transfer,
     TransferNotification? notification,
@@ -729,7 +733,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     logger.info('done');
   }
 
-  DestinyItemInfo? _findCurrentlyEquipped(int bucketHash, String characterId) {
+  InventoryItemInfo? _findCurrentlyEquipped(int bucketHash, String characterId) {
     return _profileBloc.allItems.firstWhereOrNull((element) {
       final isEquipped = element.instanceInfo?.isEquipped ?? false;
       if (!isEquipped) return false;
@@ -741,7 +745,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     });
   }
 
-  Future<DestinyItemInfo?> _findSubstitute(DestinyItemInfo itemInfo, {bool forceNonExotic = false}) async {
+  Future<InventoryItemInfo?> _findSubstitute(InventoryItemInfo itemInfo, {bool forceNonExotic = false}) async {
     final characterId = itemInfo.characterId;
     if (characterId == null) return null;
     final candidates = _profileBloc.allItems.where((item) =>
@@ -766,7 +770,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     return null;
   }
 
-  Future<DestinyItemInfo?> _makeRoomOnCharacter(
+  Future<InventoryItemInfo?> _makeRoomOnCharacter(
     String characterId,
     int itemHash, {
     List<int>? hashesToAvoid,

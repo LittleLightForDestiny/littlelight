@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/profile/destiny_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
 import 'package:little_light/shared/widgets/inventory_item/duplicated_item.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
