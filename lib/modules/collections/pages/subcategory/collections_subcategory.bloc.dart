@@ -1,198 +1,51 @@
 import 'package:bungie_api/destiny2.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/core/blocs/profile/profile.bloc.dart';
-import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
-import 'package:little_light/core/blocs/selection/selection.bloc.dart';
-import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
-import 'package:little_light/models/item_info/definition_item_info.dart';
-import 'package:little_light/models/item_info/destiny_item_info.dart';
-import 'package:little_light/models/item_info/inventory_item_info.dart';
+import 'package:little_light/modules/collections/blocs/base_collections.bloc.dart';
 import 'package:little_light/modules/collections/pages/subcategory/collections_subcategory.page_route.dart';
-import 'package:little_light/modules/item_details/pages/definition_item_details/definition_item_details.page_route.dart';
-import 'package:little_light/services/analytics/analytics.consumer.dart';
-import 'package:little_light/services/analytics/analytics.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
-import 'package:little_light/shared/utils/helpers/presentation_node_helpers.dart';
-import 'package:provider/provider.dart';
 
 const _page = LittleLightPersistentPage.Collections;
 
-class CollectionsSubcategoryBloc extends ChangeNotifier {
-  final BuildContext context;
-  final ProfileBloc _profileBloc;
-  final UserSettingsBloc _userSettings;
-  final AnalyticsService _analytics;
-  final ManifestService _manifest;
-  final SelectionBloc _selectionBloc;
-  final int categoryPresentationNodeHash;
-
-  List<int>? _parentNodeHashes;
-
-  Map<int, CollectibleData>? _collectiblesData;
-  Map<int, DefinitionItemInfo>? _genericItems;
-  Map<int, List<InventoryItemInfo>>? _inventoryItems;
+class CollectionsSubcategoryBloc extends CollectionsBloc {
+  @override
   List<int>? get parentNodeHashes => _parentNodeHashes;
+  final List<int>? _parentNodeHashes;
 
-  DestinyPresentationNodeDefinition? _rootNodeDefinition;
-  DestinyPresentationNodeDefinition? get rootNode => _rootNodeDefinition;
+  @override
+  List<DestinyPresentationNodeDefinition>? get tabNodes =>
+      [_rootNode].whereType<DestinyPresentationNodeDefinition>().toList();
 
-  Map<String, DestinyCharacterInfo>? _characters;
+  @override
+  DestinyPresentationNodeDefinition? get rootNode => _rootNode;
+  DestinyPresentationNodeDefinition? _rootNode;
+  final int rootNodeHash;
 
-  List<DestinyPresentationNodeDefinition>? get tabNodes {
-    final node = rootNode;
-    if (node != null) return [node];
-    return null;
-  }
+  CollectionsSubcategoryBloc(BuildContext context, int this.rootNodeHash, {List<int>? parentNodeHashes})
+      : this._parentNodeHashes = parentNodeHashes,
+        super(context);
 
-  Map<int, PresentationNodeProgressData?>? _presentationNodesCompletionData;
-
-  CollectionsSubcategoryBloc(BuildContext this.context, this.categoryPresentationNodeHash)
-      : this._profileBloc = context.read<ProfileBloc>(),
-        this._userSettings = context.read<UserSettingsBloc>(),
-        this._analytics = getInjectedAnalyticsService(),
-        this._manifest = context.read<ManifestService>(),
-        this._selectionBloc = context.read<SelectionBloc>(),
-        super() {
-    _init();
-  }
-
-  _init() {
-    _profileBloc.includeComponentsInNextRefresh(ProfileComponentGroups.collections);
-    _profileBloc.refresh();
-    _userSettings.startingPage = _page;
-    _analytics.registerPageOpen(_page);
-    _profileBloc.addListener(_update);
-    _update();
-    loadDefinitions();
-  }
-
-  void loadDefinitions() async {
-    final rootNodeDef = await _manifest.getDefinition<DestinyPresentationNodeDefinition>(categoryPresentationNodeHash);
-    final parentNodes = [rootNodeDef?.parentNodeHashes?.firstOrNull].whereType<int>().toList();
-    while (true) {
-      final categoryHash = parentNodes.first;
-      final def = await _manifest.getDefinition<DestinyPresentationNodeDefinition>(categoryHash);
-      final parentHash = def?.parentNodeHashes?.firstOrNull;
-      if (parentHash == null) break;
-      parentNodes.insert(0, parentHash);
-    }
-    this._parentNodeHashes = parentNodes;
-    this._rootNodeDefinition = rootNodeDef;
-
-    final collectibleHashes =
-        _rootNodeDefinition?.children?.collectibles?.map((e) => e.collectibleHash).whereType<int>() ?? <int>[];
-
-    final collectibleDefinitions = await _manifest.getDefinitions<DestinyCollectibleDefinition>(collectibleHashes);
-    final itemHashes = collectibleDefinitions.values.map((c) => c.itemHash);
-    final itemDefinitions = await _manifest.getDefinitions<DestinyInventoryItemDefinition>(itemHashes);
-
-    final genericItems = Map<int, DefinitionItemInfo>();
-    for (final h in collectibleHashes) {
-      final itemHash = collectibleDefinitions[h]?.itemHash;
-      final def = itemDefinitions[itemHash];
-      if (def == null) continue;
-      final item = DefinitionItemInfo.fromDefinition(def);
-      genericItems[h] = item;
-    }
-    _genericItems = genericItems;
-
-    _update();
+  @override
+  Future<void> loadDefinitions() async {
+    await loadNodeDefinitions([rootNodeHash]);
+    final rootNode = nodeDefinitions[rootNodeHash];
+    _rootNode = rootNode;
   }
 
   @override
-  void dispose() {
-    _profileBloc.removeListener(_update);
-    super.dispose();
+  void openPresentationNode(int? presentationNodeHash, {List<int>? parentHashes}) {
+    if (presentationNodeHash == null) return;
+    Navigator.of(context).push(
+      CollectionsSubcategoryPageRoute(presentationNodeHash, parentNodeHashes: [
+        if (parentHashes != null) ...parentHashes,
+        presentationNodeHash,
+      ]),
+    );
   }
 
-  void _update() {
-    final presentationNodeHash = _rootNodeDefinition?.hash;
-    final presentationNodeChildHashes =
-        _rootNodeDefinition?.children?.presentationNodes?.map((e) => e.presentationNodeHash) ?? <int?>[];
-    final presentationNodeHashes = [presentationNodeHash, ...presentationNodeChildHashes].whereType<int>();
-
-    final collectibleHashes =
-        _rootNodeDefinition?.children?.collectibles?.map((e) => e.collectibleHash).whereType<int>() ?? <int>[];
-
-    _presentationNodesCompletionData = {
-      for (final h in presentationNodeHashes) h: getPresentationNodeCompletionData(_profileBloc, h)
-    };
-
-    _collectiblesData = {
-      for (final h in collectibleHashes) h: getCollectibleData(_profileBloc, h),
-    };
-
-    _inventoryItems = {
-      for (final h in collectibleHashes) h: _profileBloc.getItemsByHash(_genericItems?[h]?.itemHash),
-    };
-
-    final characterEntries = _profileBloc.characters?.map((e) => MapEntry(e.characterId ?? "", e));
-    _characters = characterEntries != null ? Map.fromEntries(characterEntries) : null;
-
-    _profileBloc.includeComponentsInNextRefresh(ProfileComponentGroups.collections);
-    notifyListeners();
-  }
-
-  PresentationNodeProgressData? getProgress(int presentationNodeHash) =>
-      _presentationNodesCompletionData?[presentationNodeHash];
-
-  Map<String, DestinyCharacterInfo>? get characters => _characters;
-
-  void openPresentationNode(int presentationNodeHash) {
-    Navigator.of(context).push(CollectionsSubcategoryPageRoute(presentationNodeHash));
-  }
-
-  bool isUnlocked(int hash) {
-    final data = _collectiblesData?[hash];
-    if (data == null) return true;
-    final values = [data.profile, ...data.characters.values].whereType<DestinyCollectibleComponent>();
-    if (values.isEmpty) return true;
-    return values.any((element) => !(element.state?.contains(DestinyCollectibleState.NotAcquired) ?? false));
-  }
-
-  DefinitionItemInfo? getGenericItem(int hash) => _genericItems?[hash];
-  List<InventoryItemInfo>? getInventoryItems(int hash) => _inventoryItems?[hash];
-
-  void onItemTap(DestinyItemInfo item) {
-    final hash = item.itemHash;
-
-    if (hash == null) return;
-
-    if (_selectionBloc.hasSelection || _userSettings.tapToSelect) {
-      final items = _profileBloc.getItemsByHash(hash);
-      if (items.isEmpty) return;
-      final areAllSelected = items.every((element) => _selectionBloc.isItemSelected(element));
-      if (areAllSelected) {
-        _selectionBloc.unselectItems(items);
-      } else {
-        _selectionBloc.selectItems(items);
-      }
-      return;
-    }
-
-    Navigator.of(context).push(DefinitionItemDetailsPageRoute(hash));
-  }
-
-  void onItemHold(DestinyItemInfo item) {
-    final hash = item.itemHash;
-    if (hash == null) return;
-
-    if (_userSettings.tapToSelect) {
-      Navigator.of(context).push(DefinitionItemDetailsPageRoute(hash));
-      return;
-    }
-
-    final items = _profileBloc.getItemsByHash(hash);
-    if (items.isEmpty) return;
-
-    final allSelected = items.every((element) => _selectionBloc.isItemSelected(element));
-    if (allSelected) {
-      _selectionBloc.unselectItems(items);
-    } else {
-      _selectionBloc.selectItems(items);
-    }
+  @override
+  Future<void> update() async {
+    final hashes = tabNodes?.map((e) => e.hash);
+    if (hashes == null) return;
+    await updatePresentationNodeChildren(hashes);
   }
 }

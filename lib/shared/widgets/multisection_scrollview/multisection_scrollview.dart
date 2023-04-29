@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 
 class MultiSectionScrollView extends StatefulWidget {
   final EdgeInsets? padding;

@@ -4,6 +4,11 @@ import 'collections_subcategory.page.dart';
 
 class CollectionsSubcategoryPageRoute extends MaterialPageRoute {
   CollectionsSubcategoryPageRoute(
-    int categoryPresentationNodeHash,
-  ) : super(builder: (context) => CollectionsSubcategoryPage(categoryPresentationNodeHash));
+    int categoryPresentationNodeHash, {
+    List<int>? parentNodeHashes,
+  }) : super(
+            builder: (context) => CollectionsSubcategoryPage(
+                  categoryPresentationNodeHash,
+                  parentNodeHashes: parentNodeHashes,
+                ));
 }

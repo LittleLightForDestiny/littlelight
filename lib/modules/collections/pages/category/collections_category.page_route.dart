@@ -3,6 +3,11 @@ import 'package:little_light/modules/collections/pages/category/collections_cate
 
 class CollectionsCategoryPageRoute extends MaterialPageRoute {
   CollectionsCategoryPageRoute(
-    int categoryPresentationNodeHash,
-  ) : super(builder: (context) => CollectionsCategoryPage(categoryPresentationNodeHash));
+    int categoryPresentationNodeHash, {
+    List<int>? parentNodeHashes,
+  }) : super(
+            builder: (context) => CollectionsCategoryPage(
+                  categoryPresentationNodeHash,
+                  parentNodeHashes: parentNodeHashes,
+                ));
 }

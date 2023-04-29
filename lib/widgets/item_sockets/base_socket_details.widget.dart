@@ -25,7 +25,6 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/shared/widgets/wishlists/wishlist_badges.widget.dart';
-import 'package:little_light/widgets/item_stats/item_details_socket_item_stats.widget.dart';
 
 import 'item_socket.controller.dart';
 
@@ -329,14 +328,7 @@ class BaseSocketDetailsWidgetState<T extends BaseSocketDetailsWidget> extends Ba
     return Container();
   }
 
-  buildStats(BuildContext context) {
-    return ItemDetailSocketItemStatsWidget(
-      definition: itemDefinition,
-      plugDefinition: definition,
-      item: item,
-      socketController: controller,
-    );
-  }
+  buildStats(BuildContext context) {}
 
   bool get shouldShowStats {
     var statWhitelist = _statGroupDefinition?.scaledStats?.map((s) => s.statHash)?.toList() ?? [];

@@ -1,3 +1,4 @@
+
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

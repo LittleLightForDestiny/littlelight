@@ -9,8 +9,8 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
-import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
-import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:little_light/widgets/progress_tabs/rank_item.widget.dart';
 
 import 'faction_rank_item.widget.dart';
@@ -21,15 +21,11 @@ class CharacterRanksListWidget extends StatefulWidget {
   const CharacterRanksListWidget({Key key, this.characterId}) : super(key: key);
 
   @override
-  _CharacterRanksListWidgetState createState() =>
-      _CharacterRanksListWidgetState();
+  _CharacterRanksListWidgetState createState() => _CharacterRanksListWidgetState();
 }
 
 class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
-    with
-        AutomaticKeepAliveClientMixin,
-        LittleLightDataConsumer,
-        ProfileConsumer {
+    with AutomaticKeepAliveClientMixin, LittleLightDataConsumer, ProfileConsumer {
   List<DestinyProgression> ranks;
   List<DestinyFactionProgression> progressions;
   bool fullyLoaded = false;
@@ -55,9 +51,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       progressionsRoot.progressions["${gameData.ranks.valor}"],
       progressionsRoot.progressions["${gameData.ranks.infamy}"]
     ];
-    progressions = progressionsRoot.factions.values
-        .where((p) => p.factionHash != null)
-        .toList();
+    progressions = progressionsRoot.factions.values.where((p) => p.factionHash != null).toList();
     if (mounted) {
       setState(() {});
       fullyLoaded = true;
@@ -105,8 +99,7 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
       ],
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
-      padding:
-          const EdgeInsets.all(4) + screenPadding.copyWith(top: 0, bottom: 0),
+      padding: const EdgeInsets.all(4) + screenPadding.copyWith(top: 0, bottom: 0),
     );
     // return StaggeredGrid.count(
     // padding: EdgeInsets.all(4).copyWith(

@@ -9,8 +9,8 @@ import 'package:little_light/shared/widgets/inventory_item/empty_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
-import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
-import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:provider/provider.dart';
 
 class EquipmentVaultBucketContent {

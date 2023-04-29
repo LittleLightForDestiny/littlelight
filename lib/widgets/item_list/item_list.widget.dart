@@ -17,8 +17,8 @@ import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
-import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
-import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 
 import 'bucket_header.widget.dart';
 import 'items/inventory_item_wrapper.widget.dart';

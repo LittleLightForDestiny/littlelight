@@ -17,8 +17,8 @@ import 'package:little_light/widgets/item_list/bucket_header.widget.dart';
 import 'package:little_light/widgets/item_list/character_info.widget.dart';
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
 import 'package:little_light/widgets/item_list/items/inventory_item_wrapper.widget.dart';
-import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
-import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 
 const _suppressEmptySpaces = [
   InventoryBucket.consumables,

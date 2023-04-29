@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/modules/collections/blocs/base_collections.bloc.dart';
 import 'package:provider/provider.dart';
 
 import 'collections_home.bloc.dart';
@@ -9,11 +10,11 @@ class CollectionsHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => CollectionsHomeBloc(context)),
+        ChangeNotifierProvider<CollectionsBloc>(create: (context) => CollectionsHomeBloc(context)),
       ],
       builder: (context, _) => CollectionsHomeView(
-        context.read<CollectionsHomeBloc>(),
-        context.watch<CollectionsHomeBloc>(),
+        context.read<CollectionsBloc>(),
+        context.watch<CollectionsBloc>(),
       ),
     );
   }

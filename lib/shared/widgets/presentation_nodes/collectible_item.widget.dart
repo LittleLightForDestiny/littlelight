@@ -11,7 +11,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:provider/provider.dart';
 
 class CollectibleItemWidget extends StatelessWidget {
-  final int collectibleHash;
+  final int? collectibleHash;
   final DestinyItemInfo? genericItem;
   final List<DestinyItemInfo>? items;
   final bool isUnlocked;
@@ -74,10 +74,11 @@ class CollectibleItemWidget extends StatelessWidget {
 
   Widget buildIcon(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(border: Border.all(width: 1, color: context.theme.onSurfaceLayers.layer3)),
+      padding: EdgeInsets.all(2),
+      color: context.theme.onSurfaceLayers.layer1,
       margin: EdgeInsets.only(right: 8),
-      width: 72,
-      height: 72,
+      width: 88,
+      height: 88,
       child: ManifestImageWidget<DestinyCollectibleDefinition>(collectibleHash),
     );
   }

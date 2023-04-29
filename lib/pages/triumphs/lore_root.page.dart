@@ -1,6 +1,6 @@
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/modules/collections/widgets/category_breadcrumb.widget.dart';
+import 'package:little_light/shared/widgets/presentation_nodes/category_breadcrumb.widget.dart';
 
 import 'package:little_light/pages/triumphs/lore.page_route.dart';
 import 'package:little_light/pages/triumphs/widgets/triumph_list.widget.dart';

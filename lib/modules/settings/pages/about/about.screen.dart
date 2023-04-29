@@ -14,8 +14,8 @@ import 'package:little_light/services/littlelight/littlelight_data.consumer.dart
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
-import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
-import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';

@@ -9,8 +9,8 @@ import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
-import 'package:little_light/widgets/multisection_scrollview/multisection_scrollview.dart';
-import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 
 class QuickTransferView extends StatelessWidget {
   final QuickTransferBloc bloc;

@@ -11,7 +11,7 @@ import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/item_list/item_list.widget.dart';
 import 'package:little_light/widgets/item_list/vault_info.widget.dart';
-import 'package:little_light/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 
 import 'bucket_header.widget.dart';
 
