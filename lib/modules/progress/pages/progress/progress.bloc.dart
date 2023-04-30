@@ -8,6 +8,8 @@ import 'package:little_light/core/blocs/profile/sorters.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/game_data.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
+import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -120,7 +122,7 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
         .toList();
   }
 
-  void onItemTap(DestinyItemInfo item) {
+  void onItemTap(InventoryItemInfo item) {
     final hash = item.itemHash;
     final instanceId = item.instanceId;
     final stackIndex = item.stackIndex;
@@ -135,16 +137,16 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
       );
     }
 
-    Navigator.of(_context).push(ItemDetailsPageRoute.itemInfo(item: item));
+    Navigator.of(_context).push(InventoryItemDetailsPageRoute(item));
   }
 
-  void onItemHold(DestinyItemInfo item) {
+  void onItemHold(InventoryItemInfo item) {
     final hash = item.itemHash;
     final instanceId = item.instanceId;
     final stackIndex = item.stackIndex;
     if (hash == null) return;
     if (_userSettingsBloc.tapToSelect) {
-      Navigator.of(_context).push(ItemDetailsPageRoute.itemInfo(item: item));
+      Navigator.of(_context).push(InventoryItemDetailsPageRoute(item));
       return;
     }
     return _selectionBloc.toggleSelected(

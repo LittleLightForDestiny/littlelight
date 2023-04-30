@@ -19,7 +19,7 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 import 'package:little_light/widgets/common/expiry_date.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
-import 'package:little_light/widgets/common/small_objective.widget.dart';
+import 'package:little_light/shared/widgets/objectives/small_objective.widget.dart';
 
 class PursuitItemWidget extends StatefulWidget {
   final Widget trailing;
@@ -262,7 +262,7 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
     if (isComplete) return Container();
     var definition = objectiveDefinitions[objective.objectiveHash];
     return SmallObjectiveWidget(
-      definition: definition,
+      objective.objectiveHash,
       objective: objective,
     );
   }

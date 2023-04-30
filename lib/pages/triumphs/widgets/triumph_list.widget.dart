@@ -4,7 +4,7 @@ import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/pages/triumphs/widgets/record_item.widget.dart';
+import 'package:little_light/shared/widgets/presentation_nodes/record_item.widget.dart';
 
 typedef PresentationNodeTap = void Function(int presentationNodeHash);
 
@@ -34,6 +34,6 @@ class TriumphListWidget extends StatelessWidget {
   Widget buildItem(BuildContext context, int index) {
     final childNode = node.children?.records?[index];
     if (childNode == null) return Container();
-    return RecordItemWidget(presentationNodeHash: childNode.recordHash);
+    return RecordItemWidget(childNode.recordHash);
   }
 }

@@ -9,12 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/tracked_objective.dart';
-import 'package:little_light/services/littlelight/objectives.service.dart';
+import 'package:little_light/core/blocs/objectives/objectives.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';
+import 'package:provider/provider.dart';
 
 class ItemObjectivesWidget extends BaseDestinyStatefulItemWidget {
   const ItemObjectivesWidget(
@@ -114,14 +115,14 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
   }
 
   updateTrackStatus() async {
-    var objectives = await ObjectivesService().getTrackedObjectives();
-    var tracked = objectives.firstWhere(
-        (o) =>
-            o.hash == widget.definition.hash &&
-            (o.instanceId == widget.item?.itemInstanceId) &&
-            o.characterId == widget.characterId,
-        orElse: () => null);
-    isTracking = tracked != null;
+    // var objectives = await context.watch<ObjectivesBloc>().getTrackedObjectives();
+    // var tracked = objectives.firstWhere(
+    //     (o) =>
+    //         o.hash == widget.definition.hash &&
+    //         (o.instanceId == widget.item?.itemInstanceId) &&
+    //         o.characterId == widget.characterId,
+    //     orElse: () => null);
+    // isTracking = tracked != null;
     if (!mounted) return;
     setState(() {});
   }
@@ -137,13 +138,13 @@ class ItemObjectivesWidgetState extends BaseDestinyItemState<ItemObjectivesWidge
             ? Text("Stop Tracking".translate(context), key: const Key("stop_tracking"))
             : Text("Track Objectives".translate(context), key: const Key("track_objectives")),
         onPressed: () {
-          var service = ObjectivesService();
+          // var service = context.read<ObjectivesBloc>();
           if (isTracking) {
-            service.removeTrackedObjective(TrackedObjectiveType.Item, definition.hash,
-                instanceId: widget.item?.itemInstanceId, characterId: widget.characterId);
+            // service.removeTrackedObjective(TrackedObjectiveType.Item, definition.hash,
+            //     instanceId: widget.item?.itemInstanceId, characterId: widget.characterId);
           } else {
-            service.addTrackedObjective(TrackedObjectiveType.Item, definition.hash,
-                instanceId: widget.item?.itemInstanceId, characterId: widget.characterId);
+            // service.addTrackedObjective(TrackedObjectiveType.Item, definition.hash,
+            //     instanceId: widget.item?.itemInstanceId, characterId: widget.characterId);
           }
           updateTrackStatus();
         },

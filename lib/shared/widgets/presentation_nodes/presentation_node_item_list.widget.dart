@@ -7,6 +7,7 @@ import 'package:little_light/shared/widgets/multisection_scrollview/sliver_secti
 
 typedef PresentationNodeBuilder = Widget Function(BuildContext context, DestinyPresentationNodeChildEntry entry);
 typedef CollectibleBuilder = Widget Function(BuildContext context, DestinyPresentationNodeCollectibleChildEntry entry);
+typedef RecordBuilder = Widget Function(BuildContext context, DestinyPresentationNodeRecordChildEntry entry);
 
 const _itemHeight = 96.0;
 
@@ -14,11 +15,13 @@ class PresentationNodeListWidget extends StatelessWidget {
   final int? presentationNodeHash;
   final PresentationNodeBuilder? presentationNodeBuilder;
   final CollectibleBuilder? collectibleBuilder;
+  final RecordBuilder? recordBuilder;
   final EdgeInsets? padding;
   const PresentationNodeListWidget(
     this.presentationNodeHash, {
     this.presentationNodeBuilder,
     this.collectibleBuilder,
+    this.recordBuilder,
     this.padding,
     Key? key,
   }) : super(key: key);
@@ -29,11 +32,15 @@ class PresentationNodeListWidget extends StatelessWidget {
     final def = context.definition<DestinyPresentationNodeDefinition>(presentationNodeHash);
     final presentationNodeBuilder = this.presentationNodeBuilder;
     final collectibleBuilder = this.collectibleBuilder;
+    final recordBuilder = this.recordBuilder;
     final presentationNodes = def?.children?.presentationNodes //
         ?.whereType<DestinyPresentationNodeChildEntry>()
         .toList();
     final collectibles = def?.children?.collectibles //
         ?.whereType<DestinyPresentationNodeCollectibleChildEntry>()
+        .toList();
+    final records = def?.children?.records //
+        ?.whereType<DestinyPresentationNodeRecordChildEntry>()
         .toList();
     return MultiSectionScrollView(
       [
@@ -50,6 +57,13 @@ class PresentationNodeListWidget extends StatelessWidget {
             itemCount: collectibles.length,
             itemHeight: _itemHeight,
             itemBuilder: (context, index) => collectibleBuilder(context, collectibles[index]),
+          ),
+        if (recordBuilder != null && records != null)
+          SliverSection(
+            itemsPerRow: itemsPerRow,
+            itemCount: records.length,
+            itemHeight: 128.0,
+            itemBuilder: (context, index) => recordBuilder(context, records[index]),
           )
       ],
       padding: padding,

@@ -12,11 +12,12 @@ import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/services/littlelight/objectives.service.dart';
+import 'package:little_light/core/blocs/objectives/objectives.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:provider/provider.dart';
 
 class MetricItemWidget extends StatefulWidget {
   final int presentationNodeHash;
@@ -50,12 +51,12 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, P
   }
 
   updateTrackStatus() async {
-    var objectives = await ObjectivesService().getTrackedObjectives();
-    var tracked = objectives.firstWhere(
-        (o) => o.hash == widget.presentationNodeHash && o.type == TrackedObjectiveType.Triumph,
-        orElse: () => null);
-    isTracking = tracked != null;
-    if (!mounted) return;
+    // var objectives = await context.read<ObjectivesBloc>().getTrackedObjectives();
+    // var tracked = objectives.firstWhere(
+    //     (o) => o.hash == widget.presentationNodeHash && o.type == TrackedObjectiveType.Triumph,
+    //     orElse: () => null);
+    // isTracking = tracked != null;
+    // if (!mounted) return;
     setState(() {});
   }
 

@@ -7,7 +7,7 @@ import 'package:little_light/modules/collections/pages/home/collections_home.pag
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
 import 'package:little_light/modules/progress/pages/progress/progress.page.dart';
-import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
+import 'package:little_light/modules/triumphs/pages/home/triumphs_home.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
@@ -54,7 +54,7 @@ class MainScreenState extends State<MainScreen> with AuthConsumer, UserSettingsC
         break;
 
       case LittleLightPersistentPage.Triumphs:
-        currentScreen = TriumphsRootPage();
+        currentScreen = TriumphsHomePage();
         break;
 
       case LittleLightPersistentPage.Loadouts:

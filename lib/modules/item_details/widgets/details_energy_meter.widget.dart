@@ -111,7 +111,7 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
             ),
           ),
         ),
-        if (options?.isNotEmpty ?? false)
+        if (options.isNotEmpty)
           Container(
             foregroundDecoration: selectedAvailable > equippedAvailable
                 ? BoxDecoration(border: Border.all(color: context.theme.primaryLayers.layer2, width: 4))
@@ -129,7 +129,7 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
           color: Colors.transparent,
           child: InkWell(
             onTap: () {
-              final option = options?.firstOrNull;
+              final option = options.firstOrNull;
               if (option == null) return;
               context.read<SocketControllerBloc>().toggleSelection(socket.index, option);
             },

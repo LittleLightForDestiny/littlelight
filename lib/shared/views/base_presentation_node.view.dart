@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 
 abstract class BasePresentationNodeView extends StatelessWidget {
   const BasePresentationNodeView({Key? key}) : super(key: key);
-
+  bool get scrollableTabBar => false;
   List<DestinyPresentationNodeDefinition>? get tabNodes;
   String getTitle(BuildContext context);
 
@@ -100,14 +100,18 @@ abstract class BasePresentationNodeView extends StatelessWidget {
     final tabBar = TabBar(
         labelPadding: const EdgeInsets.all(0),
         indicatorColor: context.theme.onSurfaceLayers,
-        isScrollable: false,
+        isScrollable: scrollableTabBar,
         tabs: nodes.map((n) => buildTabButton(context, n)).toList());
     return PreferredSize(
         preferredSize: tabBar.preferredSize,
         child: Material(
           color: context.theme.secondarySurfaceLayers.layer1,
           elevation: 2,
-          child: Container(height: tabBar.preferredSize.height, child: tabBar),
+          child: LayoutBuilder(
+              builder: (context, constraints) => Container(
+                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                  height: tabBar.preferredSize.height,
+                  child: tabBar)),
         ));
   }
 

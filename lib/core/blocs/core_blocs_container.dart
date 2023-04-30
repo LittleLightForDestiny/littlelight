@@ -1,4 +1,5 @@
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
+import 'package:little_light/core/blocs/objectives/objectives.bloc.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
@@ -41,6 +42,7 @@ class CoreBlocsContainer extends MultiProvider {
             ChangeNotifierProvider<SelectionBloc>(create: (context) => SelectionBloc(context)),
             ChangeNotifierProvider<ContextMenuOptionsBloc>(create: (context) => ContextMenuOptionsBloc(context)),
             ChangeNotifierProvider<BucketOptionsBloc>(create: (context) => BucketOptionsBloc(context)),
+            ChangeNotifierProvider<TrackingBloc>(create: (context) => TrackingBloc(context)),
           ],
         );
 }

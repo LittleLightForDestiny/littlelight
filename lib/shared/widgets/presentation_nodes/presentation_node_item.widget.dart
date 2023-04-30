@@ -5,6 +5,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/helpers/presentation_node_helpers.dart';
+import 'package:little_light/shared/widgets/presentation_nodes/seal_info.widget.dart';
 import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -79,7 +80,7 @@ class PresentationNodeItemWidget extends StatelessWidget {
                         imageUrl: BungieApiService.url(definition?.displayProperties?.icon)!,
                       )))
           : Container(width: 20),
-      buildTitle(context),
+      buildName(context),
       Container(
         padding: EdgeInsets.only(right: 8),
         child: buildCount(context),
@@ -144,17 +145,36 @@ class PresentationNodeItemWidget extends StatelessWidget {
     );
   }
 
-  buildTitle(BuildContext context) {
+  Widget buildName(BuildContext context) {
     final definition = context.definition<DestinyPresentationNodeDefinition>(presentationNodeHash);
     final completed = progress?.getProgress(definition?.scope)?.isComplete ?? false;
     final color = completed ? context.completedColor : context.inProgressColor;
     return Expanded(
-        child: Container(
-            padding: const EdgeInsets.all(8),
-            child: Text(
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
               definition?.displayProperties?.name ?? "",
               softWrap: true,
               style: context.textTheme.highlight.copyWith(color: color),
-            )));
+            ),
+            buildTitleInfo(context),
+          ].whereType<Widget>().toList(),
+        ),
+      ),
+    );
+  }
+
+  Widget? buildTitleInfo(BuildContext context) {
+    final definition = context.definition<DestinyPresentationNodeDefinition>(presentationNodeHash);
+    final completionRecordHash = definition?.completionRecordHash;
+    if (completionRecordHash == null) return null;
+    return SealInfoWidget(
+      completionRecordHash,
+      progress: progress,
+    );
   }
 }

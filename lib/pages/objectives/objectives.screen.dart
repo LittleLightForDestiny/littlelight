@@ -9,13 +9,14 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/tracked_objective.dart';
-import 'package:little_light/pages/triumphs/widgets/record_item.widget.dart';
-import 'package:little_light/services/littlelight/objectives.service.dart';
+import 'package:little_light/shared/widgets/presentation_nodes/record_item.widget.dart';
+import 'package:little_light/core/blocs/objectives/objectives.bloc.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/progress_tabs/pursuit_item/tracked_pursuit_item.widget.dart';
+import 'package:provider/provider.dart';
 
 class ObjectivesScreen extends StatefulWidget {
   @override
@@ -42,24 +43,23 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
 
   void loadObjectives() async {
     profile.includeComponentsInNextRefresh(ProfileComponentGroups.collections + ProfileComponentGroups.triumphs);
-    ObjectivesService service = ObjectivesService();
-    objectives = (await service.getTrackedObjectives()).reversed.toList();
+    TrackingBloc service = context.read<TrackingBloc>();
     items = {};
     var itemObjectives = objectives.where((o) => o.type == TrackedObjectiveType.Item);
     var plugObjectives = objectives.where((o) => o.type == TrackedObjectiveType.Plug);
     for (var o in itemObjectives) {
-      DestinyItemComponent item = await service.findObjectiveItem(o);
-      if (item != null) {
-        final ownerID = profile.getItemOwner(item.itemInstanceId);
-        items[o] = ItemWithOwner(item, ownerID);
-      }
+      // DestinyItemComponent item = await service.findObjectiveItem(o);
+      // if (item != null) {
+      //   final ownerID = profile.getItemOwner(item.itemInstanceId);
+      //   items[o] = ItemWithOwner(item, ownerID);
+      // }
     }
     for (var o in plugObjectives) {
-      DestinyItemComponent item = await service.findObjectivePlugItem(o);
-      if (item != null) {
-        final ownerID = profile.getItemOwner(item.itemInstanceId);
-        items[o] = ItemWithOwner(item, ownerID);
-      }
+      // DestinyItemComponent item = await service.findObjectivePlugItem(o);
+      // if (item != null) {
+      //   final ownerID = profile.getItemOwner(item.itemInstanceId);
+      //   items[o] = ItemWithOwner(item, ownerID);
+      // }
     }
     setState(() {});
   }
@@ -132,7 +132,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
     TrackedObjective objective = objectives[index];
     switch (objective.type) {
       case TrackedObjectiveType.Triumph:
-        return RecordItemWidget(key: Key("objective_${objective.hash}"), presentationNodeHash: objective.hash);
+        return RecordItemWidget(objective.hash, key: Key("objective_${objective.hash}"));
 
       case TrackedObjectiveType.Item:
         if (items[objective] != null) {

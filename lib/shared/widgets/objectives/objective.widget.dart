@@ -191,7 +191,7 @@ class ObjectiveWidget extends StatelessWidget {
 
   Color? getBarColor(BuildContext context) {
     if (parentCompleted == true) {
-      return context.theme.successLayers.layer0;
+      return color ?? barColor ?? context.theme.successLayers.layer0;
     }
     return barColor ?? context.theme.successLayers.layer0;
   }

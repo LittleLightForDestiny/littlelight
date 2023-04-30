@@ -28,7 +28,7 @@ import 'package:provider/provider.dart';
 
 import 'https_override/https_overrides.dart';
 import 'littlelight/littlelight_api.service.dart';
-import 'littlelight/objectives.service.dart';
+import '../core/blocs/objectives/objectives.bloc.dart';
 import 'manifest/manifest.service.dart';
 
 final getItCoreInstance = GetIt.asNewInstance();
@@ -69,7 +69,6 @@ initServices(BuildContext context) async {
   auth.setup();
   await language.init(context);
   await LittleLightApiService().reset();
-  await ObjectivesService().reset();
   await manifest.setup();
 }
 

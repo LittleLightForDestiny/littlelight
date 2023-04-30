@@ -371,6 +371,14 @@ class ProfileBloc extends ChangeNotifier
     return _cachedProfileResponse?.profileCollectibles?.data?.collectibles?["$collectibleHash"];
   }
 
+  DestinyRecordComponent? getProfileRecord(int? recordHash) {
+    return _cachedProfileResponse?.profileRecords?.data?.records?["$recordHash"];
+  }
+
+  DestinyRecordComponent? getCharacterRecord(String? characterId, int? recordHash) {
+    return _cachedProfileResponse?.profileRecords?.data?.records?["$recordHash"];
+  }
+
   @deprecated
   Map<String, DestinyPresentationNodeComponent>? getProfilePresentationNodes() {
     return _cachedProfileResponse?.profilePresentationNodes?.data?.nodes;

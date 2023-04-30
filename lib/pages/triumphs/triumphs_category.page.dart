@@ -102,8 +102,8 @@ class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<Trium
     return PresentationNodeListWidget(
       node: node,
       onItemTap: (nodeHash) {
-        Navigator.of(context).push(TriumphsPageRoute(
-            parentCategoryHashes: parentNodeHashes + [node.hash!, nodeHash], categoryPresentationNodeHash: nodeHash));
+        // Navigator.of(context).push(TriumphsPageRoute(
+        //     parentCategoryHashes: parentNodeHashes + [node.hash!, nodeHash], categoryPresentationNodeHash: nodeHash));
       },
     );
   }

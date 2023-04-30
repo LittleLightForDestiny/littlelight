@@ -10,11 +10,12 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/littlelight/objectives.service.dart';
+import 'package:little_light/core/blocs/objectives/objectives.bloc.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/record_detail_objectives.dart';
+import 'package:provider/provider.dart';
 
 class RecordDetailScreen extends StatefulWidget {
   final DestinyRecordDefinition definition;
@@ -61,11 +62,10 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
   }
 
   updateTrackStatus() async {
-    var objectives = await ObjectivesService().getTrackedObjectives();
-    var tracked = objectives.firstWhere(
-        (o) => o.hash == widget.definition.hash && o.type == TrackedObjectiveType.Triumph,
-        orElse: () => null);
-    isTracking = tracked != null;
+    // var tracked = objectives.firstWhere(
+    //     (o) => o.hash == widget.definition.hash && o.type == TrackedObjectiveType.Triumph,
+    //     orElse: () => null);
+    // isTracking = tracked != null;
     if (!mounted) return;
     setState(() {});
   }
@@ -190,11 +190,11 @@ class RecordDetailScreenState extends State<RecordDetailScreen> with AuthConsume
             ? Text("Stop Tracking".translate(context), key: const Key("stop_tracking"))
             : Text("Track Objectives".translate(context), key: const Key("track_objectives")),
         onPressed: () {
-          var service = ObjectivesService();
+          var service = context.read<TrackingBloc>();
           if (isTracking) {
-            service.removeTrackedObjective(TrackedObjectiveType.Triumph, definition.hash);
+            // service.removeTrackedObjective(TrackedObjectiveType.Triumph, definition.hash);
           } else {
-            service.addTrackedObjective(TrackedObjectiveType.Triumph, definition.hash);
+            // service.addTrackedObjective(TrackedObjectiveType.Triumph, definition.hash);
           }
           updateTrackStatus();
         },

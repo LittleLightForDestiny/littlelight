@@ -112,14 +112,22 @@ abstract class CollectionsBloc extends ChangeNotifier {
   @protected
   Future<void> updatePresentationNodeChildren(Iterable<int?> presentationNodeHashes) async {
     final nodeDefs = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(presentationNodeHashes);
-    final childHashes = nodeDefs.values.map((e) {
+    final nodeChildHashes = nodeDefs.values.map((e) {
       final nodeHash = e.hash;
       final childHashes = e.children?.presentationNodes?.map((e) => e.presentationNodeHash) ?? <int?>[];
       return [nodeHash, ...childHashes];
     }).fold<List<int?>>([], (previousValue, element) => previousValue + element).whereType<int>();
 
     final completionData = _presentationNodesCompletionData ??= {};
-    completionData.addEntries(childHashes.map((e) => MapEntry(e, getPresentationNodeCompletionData(profileBloc, e))));
+    completionData
+        .addEntries(nodeChildHashes.map((e) => MapEntry(e, getPresentationNodeCompletionData(profileBloc, e))));
+
+    final collectibleChildHashes = nodeDefs.values.map((e) {
+      final childHashes = e.children?.collectibles?.map((e) => e.collectibleHash) ?? <int?>[];
+      return childHashes.toList();
+    }).fold<List<int?>>([], (previousValue, element) => previousValue + element).whereType<int>();
+    final collectibleData = _collectiblesData ??= {};
+    collectibleData.addEntries(collectibleChildHashes.map((e) => MapEntry(e, getCollectibleData(profileBloc, e))));
   }
 
   PresentationNodeProgressData? getProgress(int? presentationNodeHash) =>

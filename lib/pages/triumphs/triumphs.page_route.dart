@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/triumphs/triumphs_category.page.dart';
 import 'package:little_light/pages/triumphs/triumphs_search.page.dart';
-
-import 'triumphs_root.page.dart';
 
 class TriumphsPageRouteArguments {
   final List<int>? parentCategoryHashes;
@@ -25,27 +22,27 @@ class TriumphsPageRouteArguments {
   }
 }
 
-class TriumphsPageRoute extends MaterialPageRoute {
-  TriumphsPageRoute({
-    List<int>? parentCategoryHashes,
-    int? categoryPresentationNodeHash,
-    int? subcategoryPresentationNodeHash,
-    int? badgeCategoryHash,
-  }) : super(
-            settings: RouteSettings(
-                arguments: TriumphsPageRouteArguments(
-                    parentCategoryHashes: parentCategoryHashes,
-                    categoryPresentationNodeHash: categoryPresentationNodeHash,
-                    subcategoryPresentationNodeHash:
-                        subcategoryPresentationNodeHash,
-                    badgeCategoryHash: badgeCategoryHash)),
-            builder: (context) {
-              if (categoryPresentationNodeHash != null) {
-                return TriumphsCategoryPage();
-              }
-              return TriumphsRootPage();
-            });
-}
+// class TriumphsPageRoute extends MaterialPageRoute {
+//   TriumphsPageRoute({
+//     List<int>? parentCategoryHashes,
+//     int? categoryPresentationNodeHash,
+//     int? subcategoryPresentationNodeHash,
+//     int? badgeCategoryHash,
+//   }) : super(
+//             settings: RouteSettings(
+//                 arguments: TriumphsPageRouteArguments(
+//                     parentCategoryHashes: parentCategoryHashes,
+//                     categoryPresentationNodeHash: categoryPresentationNodeHash,
+//                     subcategoryPresentationNodeHash:
+//                         subcategoryPresentationNodeHash,
+//                     badgeCategoryHash: badgeCategoryHash)),
+//             builder: (context) {
+//               if (categoryPresentationNodeHash != null) {
+//                 return TriumphsCategoryPage();
+//               }
+//               // return TriumphsRootPage();
+//             });
+// }
 
 class TriumphsSearchPageRoute extends MaterialPageRoute {
   TriumphsSearchPageRoute()

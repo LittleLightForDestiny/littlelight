@@ -42,6 +42,55 @@ class CollectibleData {
   });
 }
 
+extension RecordIsCompleted on DestinyRecordComponent {
+  bool get isCompleted {
+    final state = this.state;
+    if (state == null) return false;
+    final intervalObjectives = this.intervalObjectives ?? [];
+    return state.contains(DestinyRecordState.RecordRedeemed) ||
+        !state.contains(DestinyRecordState.ObjectiveNotCompleted) ||
+        (intervalObjectives.every((element) => element.complete ?? false) && intervalObjectives.isNotEmpty);
+  }
+}
+
+class RecordProgressData {
+  final DestinyRecordComponent? profile;
+  final Map<String, DestinyRecordComponent?> characters;
+  final bool tracking;
+
+  bool? _isCompleted;
+
+  bool isCompleted(DestinyScope? scope) {
+    final isCompleted = _isCompleted;
+    if (isCompleted != null) return isCompleted;
+    scope ??= DestinyScope.Profile;
+    if (scope == DestinyScope.Profile) {
+      return _isCompleted = profile?.isCompleted ?? false;
+    }
+    final characters = this.characters;
+    return _isCompleted = characters.values.any((element) => element?.isCompleted ?? false);
+  }
+
+  DestinyRecordComponent? _mostAdvancedProgress;
+
+  DestinyRecordComponent? getProgress(DestinyScope? scope) {
+    final progress = _mostAdvancedProgress;
+    if (progress != null) return progress;
+
+    scope ??= DestinyScope.Profile;
+    if (scope == DestinyScope.Profile) {
+      return _mostAdvancedProgress = profile;
+    }
+    return _mostAdvancedProgress = characters.values.firstOrNull;
+  }
+
+  RecordProgressData({
+    required this.profile,
+    required this.characters,
+    required this.tracking,
+  });
+}
+
 PresentationNodeProgressData getPresentationNodeCompletionData(ProfileBloc profile, int presentationNodeHash) {
   final profileProgress = profile.getProfilePresentationNode(presentationNodeHash);
   final characterIds = profile.characters?.map((c) => c.characterId).whereType<String>() ?? <String>[];
@@ -82,5 +131,21 @@ CollectibleData getCollectibleData(ProfileBloc profile, int collectibleHash) {
   return CollectibleData(
     profile: profileCollectible,
     characters: charactersCollectibles,
+  );
+}
+
+RecordProgressData getRecordData(ProfileBloc profile, int recordHash) {
+  final profileRecord = profile.getProfileRecord(recordHash);
+  final characterIds = profile.characters?.map((c) => c.characterId).whereType<String>() ?? <String>[];
+
+  final charactersRecords = <String, DestinyRecordComponent?>{
+    for (final c in characterIds) c: profile.getCharacterRecord(c, recordHash)
+  };
+
+  return RecordProgressData(
+    profile: profileRecord,
+    characters: charactersRecords,
+    //TODO:implement tracking properly
+    tracking: recordHash.isEven,
   );
 }
