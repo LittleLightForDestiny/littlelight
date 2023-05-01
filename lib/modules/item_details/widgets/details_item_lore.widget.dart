@@ -34,7 +34,7 @@ class DetailsItemLoreWidget extends StatelessWidget {
     return Container(
         padding: EdgeInsets.all(8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-          if (subtitle != null)
+          if (subtitle != null && subtitle.isNotEmpty)
             Container(
               child: SelectableText(
                 subtitle,

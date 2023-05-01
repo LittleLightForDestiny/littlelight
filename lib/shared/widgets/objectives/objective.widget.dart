@@ -184,7 +184,7 @@ class ObjectiveWidget extends StatelessWidget {
         color: Theme.of(context).colorScheme.secondaryContainer,
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
-          widthFactor: max(0.01, min(progress / total, 1)),
+          widthFactor: (progress / total).clamp(0, 1),
           child: Container(color: color),
         ));
   }

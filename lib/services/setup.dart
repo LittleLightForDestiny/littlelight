@@ -54,7 +54,6 @@ Future<void> setupServices() async {
   await setupBungieApiService();
   await setupNotificationService();
   await setupSelectionService();
-  await setupInventoryService();
   await setupDestinySettingsService();
 }
 

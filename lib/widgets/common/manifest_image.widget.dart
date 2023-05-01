@@ -14,7 +14,7 @@ class _ManifestImageState<T> {
 }
 
 class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
-  final int? presentationNodeHash;
+  final int? definitionHash;
   final ExtractUrlFromData<T>? urlExtractor;
 
   final Widget? placeholder;
@@ -26,7 +26,7 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
   final Color? color;
 
   ManifestImageWidget(
-    this.presentationNodeHash, {
+    this.definitionHash, {
     Key? key,
     this.fit = BoxFit.contain,
     this.alignment = Alignment.center,
@@ -37,7 +37,7 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
   }) : super(key: key);
 
   Future<_ManifestImageState<T>> get future async {
-    final def = await manifest.getDefinition<T>(presentationNodeHash);
+    final def = await manifest.getDefinition<T>(definitionHash);
     return _ManifestImageState(def, true);
   }
 

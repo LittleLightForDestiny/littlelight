@@ -1,7 +1,7 @@
 import 'package:bungie_api/models/destiny_record_definition.dart';
 import 'package:flutter/material.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/shared/widgets/presentation_nodes/record_item.widget.dart';
+import 'package:little_light/modules/triumphs/widgets/record_item.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';

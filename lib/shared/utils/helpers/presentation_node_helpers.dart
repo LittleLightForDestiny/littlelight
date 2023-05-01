@@ -141,7 +141,6 @@ RecordProgressData getRecordData(ProfileBloc profile, int recordHash) {
   final charactersRecords = <String, DestinyRecordComponent?>{
     for (final c in characterIds) c: profile.getCharacterRecord(c, recordHash)
   };
-
   return RecordProgressData(
     profile: profileRecord,
     characters: charactersRecords,

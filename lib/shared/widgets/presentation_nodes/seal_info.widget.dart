@@ -17,6 +17,7 @@ class SealInfoWidget extends StatelessWidget {
     final objectiveDefinition = context.definition<DestinyObjectiveDefinition>(objectiveHash);
     if (objectiveDefinition == null) return Container();
     return Container(
+        margin: EdgeInsets.only(top: 8),
         width: 180,
         child: Column(
           children: [
@@ -42,6 +43,7 @@ class SealInfoWidget extends StatelessWidget {
     return Container(
         alignment: Alignment.centerLeft,
         height: 8.0,
+        margin: EdgeInsets.only(bottom: 2),
         color: bgColor.withOpacity(.5),
         child: FractionallySizedBox(widthFactor: progress.clamp(0, 1), child: Container(color: color)));
   }
@@ -66,8 +68,15 @@ class SealInfoWidget extends StatelessWidget {
           border: Border.all(color: color, width: 2),
           color: color.withOpacity(.5),
         ),
-        child: Row(
-            children: [Expanded(child: Text(title ?? "")), buildSealProgress(context, objectiveDef: objectiveDef)]));
+        child: Row(children: [
+          Expanded(
+              child: Text(
+            title ?? "",
+            softWrap: false,
+            overflow: TextOverflow.fade,
+          )),
+          buildSealProgress(context, objectiveDef: objectiveDef)
+        ]));
   }
 
   Widget buildSealProgress(BuildContext context, {DestinyObjectiveDefinition? objectiveDef}) {

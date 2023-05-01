@@ -368,7 +368,7 @@ class ProfileBloc extends ChangeNotifier
   }
 
   DestinyCollectibleComponent? getCharacterCollectible(String? characterId, int? collectibleHash) {
-    return _cachedProfileResponse?.profileCollectibles?.data?.collectibles?["$collectibleHash"];
+    return _cachedProfileResponse?.characterCollectibles?.data?[characterId]?.collectibles?["$collectibleHash"];
   }
 
   DestinyRecordComponent? getProfileRecord(int? recordHash) {
@@ -376,7 +376,7 @@ class ProfileBloc extends ChangeNotifier
   }
 
   DestinyRecordComponent? getCharacterRecord(String? characterId, int? recordHash) {
-    return _cachedProfileResponse?.profileRecords?.data?.records?["$recordHash"];
+    return _cachedProfileResponse?.characterRecords?.data?[characterId]?.records?["$recordHash"];
   }
 
   @deprecated

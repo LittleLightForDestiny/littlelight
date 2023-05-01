@@ -38,6 +38,7 @@ class CollectionsHomeView extends BasePresentationNodeView {
   Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node, EdgeInsets padding) {
     return PresentationNodeListWidget(
       node.hash,
+      padding: padding,
       presentationNodeBuilder: (context, entry) => PresentationNodeItemWidget(
         entry.presentationNodeHash,
         progress: state.getProgress(entry.presentationNodeHash),

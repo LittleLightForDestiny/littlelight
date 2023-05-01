@@ -111,10 +111,10 @@ abstract class BaseItemDetailsView extends StatelessWidget {
   }
 
   Widget? buildDescription(BuildContext context) {
-    final item = state.item;
-    if (item == null) return null;
+    final itemHash = state.itemHash;
+    if (itemHash == null) return null;
     return SliverToBoxAdapter(
-      child: DetailsItemDescriptionWidget(item),
+      child: DetailsItemDescriptionWidget(itemHash),
     );
   }
 

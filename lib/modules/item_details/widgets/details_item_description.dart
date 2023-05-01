@@ -1,18 +1,17 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class DetailsItemDescriptionWidget extends StatelessWidget {
-  final DestinyItemInfo item;
+  final int itemHash;
 
-  DetailsItemDescriptionWidget(this.item);
+  DetailsItemDescriptionWidget(this.itemHash);
 
   Widget build(BuildContext context) {
-    final definition = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
+    final definition = context.definition<DestinyInventoryItemDefinition>(itemHash);
     if (definition == null) return Container();
     final type = definition.itemTypeAndTierDisplayName;
     final description = definition.displayProperties?.description;
@@ -67,7 +66,7 @@ class DetailsItemDescriptionWidget extends StatelessWidget {
               height: 96,
               width: 96,
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                item.itemHash,
+                itemHash,
               ),
             ),
             SizedBox(
@@ -76,7 +75,7 @@ class DetailsItemDescriptionWidget extends StatelessWidget {
             Container(
               height: 96,
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                item.itemHash,
+                itemHash,
                 urlExtractor: (def) => def.secondaryIcon,
               ),
             ),
@@ -91,7 +90,7 @@ class DetailsItemDescriptionWidget extends StatelessWidget {
               Container(
                 height: 96,
                 child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                  item.itemHash,
+                  itemHash,
                   urlExtractor: (def) => def.secondarySpecial,
                 ),
               ),
@@ -100,7 +99,7 @@ class DetailsItemDescriptionWidget extends StatelessWidget {
                 left: 36,
                 height: 96,
                 child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                  item.itemHash,
+                  itemHash,
                   urlExtractor: (def) => def.secondaryOverlay,
                 ),
               )

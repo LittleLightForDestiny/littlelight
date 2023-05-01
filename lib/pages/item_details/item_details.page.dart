@@ -21,7 +21,6 @@ import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
-import 'package:little_light/widgets/item_details/item_cover/item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_cover/landscape_item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_loadouts.widget.dart';
 import 'package:little_light/widgets/item_details/item_level.widget.dart';
@@ -201,7 +200,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
         body: Stack(children: [
       CustomScrollView(
         slivers: [
-          ItemCoverWidget(item, definition, instanceInfo),
+          // ItemCoverWidget(item, definition, instanceInfo),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),

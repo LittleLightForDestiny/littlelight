@@ -9,7 +9,7 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/tracked_objective.dart';
-import 'package:little_light/shared/widgets/presentation_nodes/record_item.widget.dart';
+import 'package:little_light/modules/triumphs/widgets/record_item.widget.dart';
 import 'package:little_light/core/blocs/objectives/objectives.bloc.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
