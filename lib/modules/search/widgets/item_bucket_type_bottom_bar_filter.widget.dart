@@ -26,7 +26,9 @@ class ItemBucketTypeBottomBarFilterWidget extends BaseFilterWidget<ItemBucketTyp
     final bottomPadding = context.mediaQuery.viewPadding.bottom;
     return Container(
       height: bottomPadding + kToolbarHeight,
-      color: context.theme.surfaceLayers,
+      decoration: BoxDecoration(
+          color: context.theme.surfaceLayers,
+          border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3))),
       child: Row(
           children: data?.availableValues //
                   .map((type) => buildButton(

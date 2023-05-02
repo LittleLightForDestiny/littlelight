@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_character_tab_content.widget.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_type_tab_menu.widget.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_vault_tab_content.widget.dart';
@@ -115,8 +116,11 @@ class EquipmentView extends StatelessWidget {
                       ]),
                     ),
                     SelectedItemsWidget(),
-                    SizedBox(
+                    Container(
                       height: kToolbarHeight + viewPadding.bottom,
+                      decoration: BoxDecoration(
+                          color: context.theme.surfaceLayers,
+                          border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3))),
                       child: Stack(children: [
                         Row(
                           children: [

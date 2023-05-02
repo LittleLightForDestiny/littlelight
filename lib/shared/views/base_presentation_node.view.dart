@@ -160,7 +160,8 @@ abstract class BasePresentationNodeView extends StatelessWidget {
     if (!hasSelection) return Container();
     return Column(children: [
       SelectedItemsWidget(),
-      if (bottomPadding > 0) BusyIndicatorBottomGradientWidget(),
+      if (bottomPadding > 0)
+        Container(color: context.theme.surfaceLayers.layer1, child: BusyIndicatorBottomGradientWidget()),
     ]);
   }
 }
