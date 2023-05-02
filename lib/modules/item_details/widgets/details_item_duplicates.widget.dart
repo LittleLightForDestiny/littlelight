@@ -4,6 +4,8 @@ import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
 import 'package:little_light/shared/widgets/inventory_item/duplicated_item.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 
 typedef OnItemAction = void Function(DestinyItemInfo);
 
@@ -26,23 +28,24 @@ class DetailsItemDuplicatesWidget extends StatelessWidget {
   }
 
   Widget buildContent(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4),
-      height: DuplicatedItemWidget.expectedSize.height,
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: items
-              .map(
-                (e) => Container(
-                  width: DuplicatedItemWidget.expectedSize.width,
-                  margin: EdgeInsets.only(right: 4),
-                  child: InteractiveItemWrapper(DuplicatedItemWidget(e), item: e),
-                ),
-              )
-              .toList(),
-        ),
-      ),
-    );
+    return LayoutBuilder(builder: (context, constraints) {
+      final perRow = (constraints.maxWidth / DuplicatedItemWidget.expectedSize.width).floor();
+      return MultiSectionScrollView(
+        [
+          SliverSection.fixedHeight(
+              itemsPerRow: perRow,
+              itemCount: items.length,
+              itemBuilder: (_, index) => InteractiveItemWrapper(
+                    DuplicatedItemWidget(items[index]),
+                    item: items[index],
+                    itemMargin: 1,
+                  ),
+              itemHeight: DuplicatedItemWidget.expectedSize.height),
+        ],
+        shrinkWrap: true,
+        mainAxisSpacing: 1,
+        crossAxisSpacing: 1,
+      );
+    });
   }
 }
