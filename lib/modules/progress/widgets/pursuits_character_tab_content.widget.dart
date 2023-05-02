@@ -13,7 +13,6 @@ import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrap
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
-import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -24,97 +23,119 @@ const _pursuitDisplayOptions = {
   BucketDisplayType.Small,
 };
 
-class PursuitCharacterBucketContent {
+class QuestsCharacterContent {
   final int? categoryHash;
   final List<DestinyItemInfo> items;
 
-  PursuitCharacterBucketContent(
+  QuestsCharacterContent(
     this.categoryHash, {
     required this.items,
   });
 }
 
 const _characterInfoHeight = 128.0;
+const _bountyCategoryHash = 1784235469;
 
 class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestConsumer {
   final DestinyCharacterInfo character;
-  final List<PursuitCharacterBucketContent> buckets;
+  final List<QuestsCharacterContent> quests;
+  final List<DestinyItemInfo>? bounties;
   final List<DestinyItemComponent>? currencies;
   final Key? scrollViewKey;
 
-  ItemSectionOptionsBloc bucketOptionsState(BuildContext context) => context.watch<ItemSectionOptionsBloc>();
+  ItemSectionOptionsBloc sectionOptionsState(BuildContext context) => context.watch<ItemSectionOptionsBloc>();
 
   const PursuitsCharacterTabContentWidget(
     this.character, {
     Key? key,
-    required this.buckets,
+    required this.quests,
+    required this.bounties,
     this.currencies,
     this.scrollViewKey,
   }) : super(key: key);
 
-  Future<Map<int, DestinyInventoryBucketDefinition>> get bucketDefs async {
-    final hashes = buckets.map((e) => e.categoryHash).whereType<int>().toList();
-    final defs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(hashes);
-    return defs;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<Map<int, DestinyInventoryBucketDefinition>>(
-      future: bucketDefs,
-      builder: (context, snapshot) {
-        final defs = snapshot.data;
-        if (defs == null) {
-          return Center(child: LoadingAnimWidget());
-        }
-        return LayoutBuilder(
-          key: Key("character_tab_${character.characterId}"),
-          builder: (context, constraints) => MultiSectionScrollView(
-            [
-                  SliverSection.fixedHeight(
-                    itemBuilder: (context, _) => CharacterInfoWidget(
-                      character,
-                      currencies: currencies,
-                    ),
-                    itemHeight: _characterInfoHeight,
-                  )
-                ] +
-                buckets //
-                    .map<List<SliverSection>>(
-                        (e) => buildQuestSections(context, e, constraints, defs[e.categoryHash])) //
-                    .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
-            crossAxisSpacing: 0,
-            mainAxisSpacing: 0,
-            padding: const EdgeInsets.all(8).copyWith(top: 0),
-            scrollViewKey: scrollViewKey,
+    return LayoutBuilder(
+      key: Key("character_tab_${character.characterId}"),
+      builder: (context, constraints) => MultiSectionScrollView(
+        [
+          SliverSection.fixedHeight(
+            itemBuilder: (context, _) => CharacterInfoWidget(
+              character,
+              currencies: currencies,
+            ),
+            itemHeight: _characterInfoHeight,
           ),
-        );
-      },
+          ...buildBountiesSections(context, constraints),
+          for (final q in quests) ...buildQuestSections(context, q, constraints)
+        ],
+        crossAxisSpacing: 0,
+        mainAxisSpacing: 0,
+        padding: const EdgeInsets.all(8).copyWith(top: 0),
+        scrollViewKey: scrollViewKey,
+      ),
     );
   }
 
-  List<SliverSection> buildQuestSections(
+  List<SliverSection> buildBountiesSections(
     BuildContext context,
-    PursuitCharacterBucketContent bucketContent,
     BoxConstraints constraints,
-    DestinyInventoryBucketDefinition? bucketDef,
   ) {
-    final unequipped = bucketContent.items;
-    final categoryHash = bucketContent.categoryHash;
-    final defaultDisplayType = BucketDisplayType.Large;
-    final displayType = bucketOptionsState(context)
-        .getDisplayTypeForItemSection('pursuit ${categoryHash}', defaultValue: defaultDisplayType);
+    final items = this.bounties;
+    if (items == null || items.isEmpty) return [];
+    final defaultDisplayType = BucketDisplayType.Small;
+    final sectionId = 'bounties';
+    final displayType =
+        sectionOptionsState(context).getDisplayTypeForItemSection(sectionId, defaultValue: defaultDisplayType);
     final unequippedDensity = displayType.unequippedDensity;
-    final useBucketCount = bucketDef?.hasTransferDestination == true && bucketDef?.scope == BucketScope.Character;
-    final bucketDefCount = (bucketDef?.itemCount ?? 10);
     final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
-    final unequippedCount = ((useBucketCount ? bucketDefCount : unequipped.length) / idealCount).ceil() * idealCount;
+    final unequippedCount = (items.length / idealCount).ceil() * idealCount;
     return [
       SliverSection.fixedHeight(
         itemCount: 1,
         itemHeight: 48,
         itemBuilder: (_, __) => ItemSectionHeaderWidget(
-          sectionIdentifier: 'pursuit ${categoryHash}',
+          sectionIdentifier: sectionId,
+          title: ManifestText<DestinyItemCategoryDefinition>(_bountyCategoryHash),
+          defaultType: defaultDisplayType,
+          availableOptions: _pursuitDisplayOptions,
+          canEquip: false,
+        ),
+      ),
+      if (unequippedDensity != null)
+        buildItemSection(
+          context,
+          items,
+          unequippedDensity,
+          idealCount,
+          unequippedCount,
+        ),
+    ].whereType<SliverSection>().toList();
+  }
+
+  List<SliverSection> buildQuestSections(
+    BuildContext context,
+    QuestsCharacterContent bucketContent,
+    BoxConstraints constraints,
+  ) {
+    final items = bucketContent.items;
+    final categoryHash = bucketContent.categoryHash;
+    final defaultDisplayType = BucketDisplayType.Large;
+    final sectionId = 'quest ${categoryHash}';
+    final displayType = sectionOptionsState(context).getDisplayTypeForItemSection(
+      sectionId,
+      defaultValue: defaultDisplayType,
+    );
+    final unequippedDensity = displayType.unequippedDensity;
+    final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
+    final unequippedCount = (items.length / idealCount).ceil() * idealCount;
+    return [
+      SliverSection.fixedHeight(
+        itemCount: 1,
+        itemHeight: 48,
+        itemBuilder: (_, __) => ItemSectionHeaderWidget(
+          sectionIdentifier: sectionId,
           title: ManifestText<DestinyTraitDefinition>(categoryHash),
           defaultType: defaultDisplayType,
           availableOptions: _pursuitDisplayOptions,
@@ -124,26 +145,20 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
       if (unequippedDensity != null)
         buildItemSection(
           context,
-          bucketContent,
-          unequipped,
+          items,
           unequippedDensity,
           idealCount,
           unequippedCount,
-          bucketDefCount,
-          bucketDef?.hasTransferDestination == true,
         ),
     ].whereType<SliverSection>().toList();
   }
 
   SliverSection? buildItemSection(
     BuildContext context,
-    PursuitCharacterBucketContent bucketContent,
     List<DestinyItemInfo> items,
     InventoryItemWidgetDensity? density,
     int itemsPerRow,
     int itemCount,
-    int bucketCount,
-    bool canTransfer,
   ) {
     if (density == null) return null;
     final itemHeight = density.itemHeight;

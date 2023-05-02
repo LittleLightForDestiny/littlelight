@@ -197,16 +197,18 @@ class ProgressView extends StatelessWidget {
   }
 
   Widget buildPursuitTabContent(BuildContext context, ProgressTab tab, DestinyCharacterInfo character) {
-    final bucketHashes = state.pursuitCategoriesFor(character);
+    final questCategories = state.pursuitCategoriesFor(character);
     final currencies = state.relevantCurrencies;
-    final buckets = bucketHashes
-            ?.map((h) => PursuitCharacterBucketContent(h, items: state.getQuestsForCategory(character, h) ?? []))
+    final quests = questCategories
+            ?.map((h) => QuestsCharacterContent(h, items: state.getQuestsForCategory(character, h) ?? []))
             .toList() ??
         [];
+    final bounties = state.bountiesFor(character);
     return PursuitsCharacterTabContentWidget(
       character,
       scrollViewKey: PageStorageKey("character_tab_${tab.name}_${character.characterId}"),
-      buckets: buckets,
+      bounties: bounties,
+      quests: quests,
       currencies: currencies,
     );
   }

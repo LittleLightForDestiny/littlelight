@@ -188,4 +188,8 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
   List<int?>? pursuitCategoriesFor(DestinyCharacterInfo character) {
     return _equipmentState.pursuits[character.characterId]?.questCategories;
   }
+
+  List<DestinyItemInfo>? bountiesFor(DestinyCharacterInfo character) {
+    return _equipmentState.pursuits[character.characterId]?.bounties;
+  }
 }
