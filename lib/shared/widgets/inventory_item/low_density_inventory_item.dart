@@ -3,9 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/models/item_info/inventory_item_info.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
@@ -277,13 +276,14 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
     final tags = wishlistsService.getWishlistBuildTags(itemHash: itemHash, reusablePlugs: reusablePlugs);
     if (tags.isEmpty) return null;
     return Row(
+      mainAxisSize: MainAxisSize.min,
       children: tags
           .map((tag) {
             final color = tag.getColor(context);
             final borderColor = tag.getBorderColor(context);
             final icon = tag.getIcon(context);
             return Container(
-              margin: const EdgeInsets.only(right: 2, bottom: 2),
+              margin: const EdgeInsets.only(left: 2, bottom: 2),
               width: _tagIconSize,
               height: _tagIconSize,
               decoration: BoxDecoration(

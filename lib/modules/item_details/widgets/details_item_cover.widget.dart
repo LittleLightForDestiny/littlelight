@@ -34,7 +34,7 @@ class DetailsItemCoverWidget extends StatelessWidget {
     final screenshotHeight = width / (16 / 9);
     final minHeight = paddingTop + kToolbarHeight;
     final hasScreenshot = (definition?.screenshot?.length ?? 0) > 0;
-    final maxHeight = hasScreenshot ? kToolbarHeight + screenshotHeight : kToolbarHeight;
+    final maxHeight = hasScreenshot ? kToolbarHeight + screenshotHeight : kToolbarHeight + paddingTop;
     return SliverPersistentHeader(
       pinned: true,
       delegate: DetailsItemCoverDelegate(
