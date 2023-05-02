@@ -7,39 +7,39 @@ import 'package:little_light/shared/widgets/overlay/show_overlay.dart';
 import 'package:provider/provider.dart';
 
 class BucketDisplayOptionsSelector extends StatelessWidget {
-  final int bucketHash;
-  final bool isVault;
-  final bool canEquip;
+  final String identifier;
+  final BucketDisplayType defaultType;
+  final Set<BucketDisplayType> availableOptions;
 
   const BucketDisplayOptionsSelector(
-    this.bucketHash, {
-    this.isVault = false,
-    this.canEquip = false,
+    this.identifier, {
     Key? key,
+    this.defaultType = BucketDisplayType.Medium,
+    required this.availableOptions,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final currentType = getCurrentType(context);
+    final canEquip = availableOptions.contains(BucketDisplayType.OnlyEquipped);
     return Material(
       color: Colors.transparent,
       child: InkWell(
         child: Container(
           width: 48,
           alignment: Alignment.center,
-          child: Icon(getCurrentType(context).equippableIcon, size: 24),
+          child: Icon(canEquip ? currentType.equippableIcon : currentType.nonEquippableIcon, size: 24),
         ),
         onTap: () => openMenu(context),
       ),
     );
   }
 
-  BucketDisplayType getCurrentType(BuildContext context) => isVault
-      ? context.watch<BucketOptionsBloc>().getDisplayTypeForVaultBucket(bucketHash)
-      : context.watch<BucketOptionsBloc>().getDisplayTypeForCharacterBucket(bucketHash);
+  BucketDisplayType getCurrentType(BuildContext context) =>
+      context.watch<ItemSectionOptionsBloc>().getDisplayTypeForItemSection(identifier, defaultValue: defaultType);
 
-  void setCurrentType(BuildContext context, BucketDisplayType type) => isVault
-      ? context.read<BucketOptionsBloc>().setDisplayTypeForVaultBucket(bucketHash, type)
-      : context.read<BucketOptionsBloc>().setDisplayTypeForCharacterBucket(bucketHash, type);
+  void setCurrentType(BuildContext context, BucketDisplayType type) =>
+      context.read<ItemSectionOptionsBloc>().setDisplayTypeForItemSection(identifier, type);
 
   void openMenu(BuildContext context) {
     showOverlay(
@@ -47,7 +47,7 @@ class BucketDisplayOptionsSelector extends StatelessWidget {
       (context, rect, onClose) => BucketDisplayOptionsOverlayMenu(
         currentValue: getCurrentType(context),
         sourceRenderBox: rect,
-        canEquip: canEquip,
+        availableOptions: this.availableOptions,
         onSelect: (type) {
           if (type != null) setCurrentType(context, type);
         },

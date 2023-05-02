@@ -82,21 +82,15 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
     _detailsSectionDisplayVisibility ??= <String, bool>{};
   }
 
-  BucketDisplayOptions? getDisplayOptionsForBucket(String? id) {
+  BucketDisplayOptions? getDisplayOptionsForItemSection(String? id) {
     id = removeDiacritics(id ?? "").toLowerCase();
     if (_bucketDisplayOptions?.containsKey(id) ?? false) {
       return _bucketDisplayOptions![id];
     }
-    if (defaultBucketDisplayOptions.containsKey(id)) {
-      return defaultBucketDisplayOptions[id];
-    }
-    if (id.startsWith("vault")) {
-      return const BucketDisplayOptions(type: BucketDisplayType.Small);
-    }
-    return const BucketDisplayOptions(type: BucketDisplayType.Medium);
+    return null;
   }
 
-  void setDisplayOptionsForBucket(String key, BucketDisplayOptions options) {
+  void setDisplayOptionsForItemSection(String key, BucketDisplayOptions options) {
     key = removeDiacritics(key).toLowerCase();
     _bucketDisplayOptions![key] = options;
     currentMembershipStorage.saveBucketDisplayOptions(_bucketDisplayOptions!);

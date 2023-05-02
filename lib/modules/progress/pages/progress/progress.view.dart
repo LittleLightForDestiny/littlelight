@@ -5,7 +5,6 @@ import 'package:little_light/modules/progress/pages/progress/milestones.bloc.dar
 import 'package:little_light/modules/progress/widgets/character_milestones_tab_content.widget.dart';
 import 'package:little_light/modules/progress/widgets/progress_type_tab_menu.widget.dart';
 import 'package:little_light/modules/progress/widgets/pursuits_character_tab_content.widget.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/character_context_menu.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
@@ -198,14 +197,12 @@ class ProgressView extends StatelessWidget {
   }
 
   Widget buildPursuitTabContent(BuildContext context, ProgressTab tab, DestinyCharacterInfo character) {
-    final bucketHashes = [InventoryBucket.pursuits];
+    final bucketHashes = state.pursuitCategoriesFor(character);
     final currencies = state.relevantCurrencies;
     final buckets = bucketHashes
-        .map((h) => PursuitCharacterBucketContent(
-              h,
-              items: state.getUnequippedItems(character, h) ?? [],
-            ))
-        .toList();
+            ?.map((h) => PursuitCharacterBucketContent(h, items: state.getQuestsForCategory(character, h) ?? []))
+            .toList() ??
+        [];
     return PursuitsCharacterTabContentWidget(
       character,
       scrollViewKey: PageStorageKey("character_tab_${tab.name}_${character.characterId}"),

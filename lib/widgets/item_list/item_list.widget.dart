@@ -215,7 +215,7 @@ class ItemListWidgetState extends State<ItemListWidget>
   }
 
   BucketDisplayOptions getBucketOptions(int bucketHash) {
-    return userSettings.getDisplayOptionsForBucket("$bucketHash");
+    return userSettings.getDisplayOptionsForItemSection("$bucketHash");
   }
 
   int getItemCountPerRow(BuildContext context, BucketDisplayOptions bucketOptions) {

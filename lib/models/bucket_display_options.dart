@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 
 part 'bucket_display_options.g.dart';
@@ -89,11 +88,3 @@ class BucketDisplayOptions {
     return _$BucketDisplayOptionsToJson(this);
   }
 }
-
-const defaultBucketDisplayOptions = {
-  "${InventoryBucket.engrams}": BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.lostItems}": BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.consumables}": BucketDisplayOptions(type: BucketDisplayType.Small),
-  "${InventoryBucket.modifications}": BucketDisplayOptions(type: BucketDisplayType.Small),
-  "pursuits_53_null": BucketDisplayOptions(type: BucketDisplayType.Large),
-};

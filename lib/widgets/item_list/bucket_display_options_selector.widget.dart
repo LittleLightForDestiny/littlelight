@@ -23,7 +23,7 @@ class BucketDisplayOptionsSelectorWidgetState<T extends BucketDisplayOptionsSele
   @override
   void initState() {
     super.initState();
-    currentType = userSettings.getDisplayOptionsForBucket(bucketKey)?.type;
+    currentType = userSettings.getDisplayOptionsForItemSection(bucketKey)?.type;
   }
 
   String get bucketKey {
@@ -70,7 +70,7 @@ class BucketDisplayOptionsSelectorWidgetState<T extends BucketDisplayOptionsSele
                   onChanged: (selected) {
                     currentType = selected;
                     if (selected == null) return;
-                    userSettings.setDisplayOptionsForBucket(bucketKey, BucketDisplayOptions(type: selected));
+                    userSettings.setDisplayOptionsForItemSection(bucketKey, BucketDisplayOptions(type: selected));
                     setState(() {});
                     widget.onChanged?.call();
                   }))

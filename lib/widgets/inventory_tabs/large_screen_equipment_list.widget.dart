@@ -154,7 +154,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
   }
 
   double getColumnHeight(BuildContext context, int columnHash, int columnCount) {
-    BucketDisplayOptions bucketOptions = userSettings.getDisplayOptionsForBucket("$columnHash");
+    BucketDisplayOptions bucketOptions = userSettings.getDisplayOptionsForItemSection("$columnHash");
     final definition = bucketDefinitions[columnHash];
     final mq = MediaQuery.of(context);
     const headerHeight = 40;
@@ -224,7 +224,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
   }
 
   BucketDisplayOptions getBucketOptions(int bucketHash) {
-    return userSettings.getDisplayOptionsForBucket("$bucketHash");
+    return userSettings.getDisplayOptionsForItemSection("$bucketHash");
   }
 
   bool suppressEmptySpaces(bucketHash) => _suppressEmptySpaces?.contains(bucketHash) ?? false;

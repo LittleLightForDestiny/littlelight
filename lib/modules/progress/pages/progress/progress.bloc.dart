@@ -2,39 +2,68 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/profile/sorters.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/game_data.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
-import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/shared/utils/sorters/items/multi_sorter.dart';
 import 'package:provider/provider.dart';
 
-class _CharacterProgressState {
-  List<DestinyItemInfo> pursuits = [];
-  List<DestinyMilestone> raidMilestones = [];
-  List<DestinyMilestone> milestones = [];
-  List<DestinyProgression> primaryRanks = [];
-  List<DestinyProgression> secondaryRanks = [];
+typedef CharactersQuests = Map<String, Map<int?, List<DestinyItemInfo>>>;
+typedef CharactersBounties = Map<String, List<DestinyItemInfo>>;
+
+class CharacterPursuits {
+  Map<int?, List<DestinyItemInfo>> quests = {};
+  List<DestinyItemInfo> bounties = [];
+  List<int?>? questCategories;
+
+  Future<void> sortQuestCategories(ManifestService manifest) async {
+    final defs = await manifest.getDefinitions<DestinyTraitDefinition>(quests.keys);
+    final sorted = quests.keys.sortedBy((element) => defs[element]?.index ?? double.maxFinite);
+    questCategories = sorted.toList();
+  }
 }
 
 class _ProgressState {
-  Map<String, _CharacterProgressState> charactersProgress = {};
+  Map<String, CharacterPursuits> pursuits = {};
 
-  void addPursuit(DestinyItemInfo item) {
+  void addPursuit(DestinyItemInfo item, DestinyInventoryItemDefinition? def) {
+    final isBounty = def?.itemType == DestinyItemType.Bounty;
+    if (isBounty) {
+      return addBounty(item);
+    }
+    return addQuest(item, def);
+  }
+
+  void addBounty(DestinyItemInfo item) {
     final characterId = item.characterId;
     if (characterId == null) return;
-    final characterProgress = this.charactersProgress[characterId] ??= _CharacterProgressState();
-    characterProgress.pursuits.add(item);
+    final characterPursuits = pursuits[characterId] ??= CharacterPursuits();
+    characterPursuits.bounties.add(item);
+  }
+
+  void addQuest(DestinyItemInfo item, DestinyInventoryItemDefinition? def) {
+    final characterId = item.characterId;
+    if (characterId == null) return;
+    final characterPursuits = pursuits[characterId] ??= CharacterPursuits();
+    final traitIndex = def?.traitIds?.indexWhere((element) => element.startsWith('quest.')) ?? -1;
+    final traitHash = traitIndex >= 0 ? def?.traitHashes?.elementAtOrNull(traitIndex) : null;
+    final categoryQuests = characterPursuits.quests[traitHash] ??= [];
+    categoryQuests.add(item);
+  }
+
+  Future<void> sortCategories(ManifestService manifest) async {
+    await Future.wait(pursuits.values.map((e) => e.sortQuestCategories(manifest)));
   }
 }
 
@@ -86,18 +115,14 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
       final sorters = getSortersFromStorage(parameters, _context, definitions, characters);
       items = await MultiSorter(sorters).sort(_profileBloc.allItems);
     }
-
-    Set<int> categories = {};
     final pursuits = items.where((i) => i.bucketHash == InventoryBucket.pursuits);
 
     for (final item in pursuits) {
       final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      final categoryHashes = def?.itemCategoryHashes;
-      if (categoryHashes != null) categories.addAll(categoryHashes);
-      equipmentState.addPursuit(item);
+      equipmentState.addPursuit(item, def);
     }
 
-    final categoryDefs = await manifest.getDefinitions<DestinyItemCategoryDefinition>(categories);
+    equipmentState.sortCategories(manifest);
 
     _equipmentState = equipmentState;
     notifyListeners();
@@ -105,10 +130,10 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
 
   List<DestinyCharacterInfo>? get characters => _profileBloc.characters;
 
-  List<DestinyItemInfo>? getUnequippedItems(DestinyCharacterInfo character, int bucketHash) {
+  List<DestinyItemInfo>? getQuestsForCategory(DestinyCharacterInfo character, int? categoryId) {
     final characterId = character.characterId;
     if (characterId == null) return null;
-    return _equipmentState.charactersProgress[characterId]?.pursuits;
+    return _equipmentState.pursuits[characterId]?.quests[categoryId];
   }
 
   List<DestinyItemComponent>? get relevantCurrencies {
@@ -158,5 +183,9 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
 
   void openSearch(int bucketHash, String characterId) {
     Navigator.of(_context).push(QuickTransferPageRoute(bucketHash: bucketHash, characterId: characterId));
+  }
+
+  List<int?>? pursuitCategoriesFor(DestinyCharacterInfo character) {
+    return _equipmentState.pursuits[character.characterId]?.questCategories;
   }
 }

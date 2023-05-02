@@ -1,35 +1,49 @@
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/shared/widgets/headers/bucket_header/bucket_display_options_selector.widget.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/shared/widgets/headers/header.wiget.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/widgets/headers/bucket_header/item_section_header.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
+const _nonEquippableDisplayOptions = {
+  BucketDisplayType.Hidden,
+  BucketDisplayType.Large,
+  BucketDisplayType.Medium,
+  BucketDisplayType.Small,
+};
+
+const _equippableDisplayOptions = {
+  BucketDisplayType.OnlyEquipped,
+  ..._nonEquippableDisplayOptions,
+};
+
 class BucketHeaderListItemWidget extends StatelessWidget {
-  final int presentationNodeHash;
+  final int bucketHash;
   final int itemCount;
   final bool isVault;
   final bool canEquip;
-  const BucketHeaderListItemWidget(this.presentationNodeHash,
-      {this.itemCount = 0, this.isVault = false, this.canEquip = false, Key? key})
-      : super(key: key);
+  final BucketDisplayType defaultType;
+
+  const BucketHeaderListItemWidget(
+    this.bucketHash, {
+    this.itemCount = 0,
+    this.isVault = false,
+    this.canEquip = false,
+    this.defaultType = BucketDisplayType.Medium,
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return HeaderWidget(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: DefinitionProviderWidget<DestinyInventoryBucketDefinition>(
-        presentationNodeHash,
-        (definition) => Row(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Expanded(child: buildLabel(context, definition)),
-            buildTrailing(context, definition),
-          ],
-        ),
-      ),
+    final def = context.definition<DestinyInventoryBucketDefinition>(bucketHash);
+    final id = isVault ? 'vault $bucketHash' : '$bucketHash';
+    return ItemSectionHeaderWidget(
+      sectionIdentifier: id,
+      availableOptions: canEquip ? _equippableDisplayOptions : _nonEquippableDisplayOptions,
+      defaultType: this.defaultType,
+      title: buildLabel(context, def),
+      trailing: buildCount(context, def),
     );
   }
 
@@ -39,18 +53,6 @@ class BucketHeaderListItemWidget extends StatelessWidget {
       softWrap: false,
       style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
     );
-  }
-
-  Widget buildTrailing(BuildContext context, DestinyInventoryBucketDefinition? definition) {
-    return Row(children: [
-      BucketDisplayOptionsSelector(
-        presentationNodeHash,
-        canEquip: canEquip,
-        isVault: isVault,
-      ),
-      Container(width: 8),
-      buildCount(context, definition),
-    ]);
   }
 
   Widget buildCount(BuildContext context, DestinyInventoryBucketDefinition? definition) {

@@ -188,7 +188,7 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
     ];
     if (categories == null) return list;
     for (var category in categories) {
-      final options = userSettings.getDisplayOptionsForBucket(category.categoryID);
+      final options = userSettings.getDisplayOptionsForItemSection(category.categoryID);
       final categoryVisible = ![BucketDisplayType.Hidden, BucketDisplayType.OnlyEquipped].contains(options.type);
       list += [
         buildCategoryHeaderSliver(category),

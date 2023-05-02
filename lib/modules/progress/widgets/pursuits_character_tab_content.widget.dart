@@ -1,27 +1,35 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
 import 'package:little_light/shared/widgets/character/character_info.widget.dart';
-import 'package:little_light/shared/widgets/headers/bucket_header/bucket_header_list_item.widget.dart';
+import 'package:little_light/shared/widgets/headers/bucket_header/item_section_header.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/empty_item.dart';
-import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
-import 'package:little_light/shared/widgets/inventory_item/quick_transfer_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
-import 'package:little_light/widgets/common/loading_anim.widget.dart';
+import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
+import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
 
+const _pursuitDisplayOptions = {
+  BucketDisplayType.Hidden,
+  BucketDisplayType.Large,
+  BucketDisplayType.Medium,
+  BucketDisplayType.Small,
+};
+
 class PursuitCharacterBucketContent {
-  final int bucketHash;
+  final int? categoryHash;
   final List<DestinyItemInfo> items;
 
   PursuitCharacterBucketContent(
-    this.bucketHash, {
+    this.categoryHash, {
     required this.items,
   });
 }
@@ -34,7 +42,7 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
   final List<DestinyItemComponent>? currencies;
   final Key? scrollViewKey;
 
-  BucketOptionsBloc bucketOptionsState(BuildContext context) => context.watch<BucketOptionsBloc>();
+  ItemSectionOptionsBloc bucketOptionsState(BuildContext context) => context.watch<ItemSectionOptionsBloc>();
 
   const PursuitsCharacterTabContentWidget(
     this.character, {
@@ -45,7 +53,7 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
   }) : super(key: key);
 
   Future<Map<int, DestinyInventoryBucketDefinition>> get bucketDefs async {
-    final hashes = buckets.map((e) => e.bucketHash).whereType<int>().toList();
+    final hashes = buckets.map((e) => e.categoryHash).whereType<int>().toList();
     final defs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(hashes);
     return defs;
   }
@@ -73,7 +81,7 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
                 ] +
                 buckets //
                     .map<List<SliverSection>>(
-                        (e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
+                        (e) => buildQuestSections(context, e, constraints, defs[e.categoryHash])) //
                     .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
@@ -85,15 +93,17 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
     );
   }
 
-  List<SliverSection> buildBucketSections(
+  List<SliverSection> buildQuestSections(
     BuildContext context,
     PursuitCharacterBucketContent bucketContent,
     BoxConstraints constraints,
     DestinyInventoryBucketDefinition? bucketDef,
   ) {
     final unequipped = bucketContent.items;
-    final bucketHash = bucketContent.bucketHash;
-    final displayType = bucketOptionsState(context).getDisplayTypeForCharacterBucket(bucketHash);
+    final categoryHash = bucketContent.categoryHash;
+    final defaultDisplayType = BucketDisplayType.Large;
+    final displayType = bucketOptionsState(context)
+        .getDisplayTypeForItemSection('pursuit ${categoryHash}', defaultValue: defaultDisplayType);
     final unequippedDensity = displayType.unequippedDensity;
     final useBucketCount = bucketDef?.hasTransferDestination == true && bucketDef?.scope == BucketScope.Character;
     final bucketDefCount = (bucketDef?.itemCount ?? 10);
@@ -103,10 +113,12 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
       SliverSection.fixedHeight(
         itemCount: 1,
         itemHeight: 48,
-        itemBuilder: (_, __) => BucketHeaderListItemWidget(
-          bucketHash,
+        itemBuilder: (_, __) => ItemSectionHeaderWidget(
+          sectionIdentifier: 'pursuit ${categoryHash}',
+          title: ManifestText<DestinyTraitDefinition>(categoryHash),
+          defaultType: defaultDisplayType,
+          availableOptions: _pursuitDisplayOptions,
           canEquip: false,
-          itemCount: bucketContent.items.length,
         ),
       ),
       if (unequippedDensity != null)
@@ -144,16 +156,8 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
           if (index < items.length) {
             return buildItem(items[index], density);
           }
-          final bucketHash = bucketContent.bucketHash;
-          final characterId = character.characterId;
-          if (canTransfer && index < bucketCount && characterId != null) {
-            return QuickTransferItem(
-              bucketHash: bucketHash,
-              characterId: characterId,
-            );
-          }
+
           return EmptyItem(
-            bucketHash: bucketContent.bucketHash,
             density: density,
           );
         },
@@ -169,15 +173,8 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
           if (index < items.length) {
             return buildItem(items[index], density);
           }
-          final characterId = character.characterId;
-          if (canTransfer && index < bucketCount && characterId != null) {
-            return QuickTransferItem(
-              bucketHash: bucketContent.bucketHash,
-              characterId: characterId,
-            );
-          }
+
           return EmptyItem(
-            bucketHash: bucketContent.bucketHash,
             density: density,
           );
         },

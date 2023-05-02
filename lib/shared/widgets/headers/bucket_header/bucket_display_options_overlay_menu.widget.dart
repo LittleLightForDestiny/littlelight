@@ -12,6 +12,7 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
   final OnSelectDisplayOption? onSelect;
   final BucketDisplayType currentValue;
   final bool canEquip;
+  final Set<BucketDisplayType> availableOptions;
 
   const BucketDisplayOptionsOverlayMenu({
     Key? key,
@@ -20,6 +21,7 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
     this.onSelect,
     this.canEquip = false,
     required void Function() onClose,
+    required Set<BucketDisplayType> this.availableOptions,
   }) : super(
           canDismissOnBackground: true,
           sourceRenderBox: sourceRenderBox,
@@ -37,19 +39,18 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
     required BoxConstraints constraints,
   }) {
     const itemSize = 52.0;
-    final selectedIndex =
-        _options.indexOf(currentValue).clamp(0, _options.length - 1);
+    final selectedIndex = _options.indexOf(currentValue).clamp(0, _options.length - 1);
     double top = sourceTop - 2 - itemSize * selectedIndex;
     final height = itemSize * _options.length;
     if (top + height > constraints.maxHeight) {
-      final difference =
-          ((top + height - constraints.maxHeight) / itemSize).ceil();
+      final difference = ((top + height - constraints.maxHeight) / itemSize).ceil();
       top = sourceTop - 2 - itemSize * (selectedIndex + difference);
     }
     if (top < 0) {
       final difference = (top / itemSize).floor();
       top = sourceTop - 2 - itemSize * (selectedIndex + difference);
     }
+    final canEquip = availableOptions.contains(BucketDisplayType.OnlyEquipped);
     return Stack(children: [
       Positioned(
           right: sourceRight - 4,
@@ -57,13 +58,13 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: _options
-                  .where((option) =>
-                      canEquip || option.availableOnNonEquippableBucket)
+                  .where((option) => availableOptions.contains(option))
                   .map(
                     (option) => SizedBox(
                       height: itemSize,
                       child: BucketDisplayMenuOptionWidget(
                         option,
+                        canEquip: canEquip,
                         onTap: () {
                           onClose();
                           onSelect?.call(option);
@@ -81,12 +82,14 @@ class BucketDisplayMenuOptionWidget extends StatelessWidget {
   final BucketDisplayType option;
   final void Function()? onTap;
   final bool isSelected;
+  final bool canEquip;
 
   const BucketDisplayMenuOptionWidget(
     this.option, {
     Key? key,
     this.isSelected = false,
     this.onTap,
+    this.canEquip = false,
   }) : super(key: key);
 
   @override
@@ -96,9 +99,7 @@ class BucketDisplayMenuOptionWidget extends StatelessWidget {
       margin: const EdgeInsets.all(4),
       child: Material(
         borderRadius: BorderRadius.circular(8),
-        color: isSelected
-            ? context.theme.primaryLayers.layer0
-            : context.theme.surfaceLayers.layer1,
+        color: isSelected ? context.theme.primaryLayers.layer0 : context.theme.surfaceLayers.layer1,
         child: InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(8),
@@ -115,7 +116,7 @@ class BucketDisplayMenuOptionWidget extends StatelessWidget {
                   width: 48,
                   alignment: Alignment.center,
                   child: Icon(
-                    option.equippableIcon,
+                    canEquip ? option.equippableIcon : option.nonEquippableIcon,
                     size: 24,
                   ),
                 ),

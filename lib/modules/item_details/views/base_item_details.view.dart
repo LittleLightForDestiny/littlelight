@@ -308,6 +308,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     }
     final item = state.item;
     if (item == null) return null;
+    if ((state.transferDestinations?.isEmpty ?? true) && (state.equipDestinations?.isEmpty ?? true)) return null;
     return Container(
       color: context.theme.surfaceLayers.layer1,
       child: Column(children: [

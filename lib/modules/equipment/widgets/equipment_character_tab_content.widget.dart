@@ -1,12 +1,14 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/bucket_display_options.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
 import 'package:little_light/shared/widgets/character/character_info.widget.dart';
-import 'package:little_light/shared/widgets/headers/bucket_header/bucket_header_list_item.widget.dart';
+import 'package:little_light/modules/progress/widgets/bucket_header_list_item.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/empty_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/quick_transfer_item.dart';
@@ -15,6 +17,13 @@ import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:provider/provider.dart';
+
+const _defaultDisplayTypes = {
+  InventoryBucket.engrams: BucketDisplayType.Small,
+  InventoryBucket.lostItems: BucketDisplayType.Small,
+  InventoryBucket.consumables: BucketDisplayType.Small,
+  InventoryBucket.modifications: BucketDisplayType.Small,
+};
 
 class EquipmentCharacterBucketContent {
   final int bucketHash;
@@ -36,7 +45,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
   final List<DestinyItemComponent>? currencies;
   final Key? scrollViewKey;
 
-  BucketOptionsBloc bucketOptionsState(BuildContext context) => context.watch<BucketOptionsBloc>();
+  ItemSectionOptionsBloc bucketOptionsState(BuildContext context) => context.watch<ItemSectionOptionsBloc>();
 
   const EquipmentCharacterTabContentWidget(
     this.character, {
@@ -96,7 +105,11 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
     final equipped = bucketContent.equipped;
     final unequipped = bucketContent.unequipped;
     final bucketHash = bucketContent.bucketHash;
-    final displayType = bucketOptionsState(context).getDisplayTypeForCharacterBucket(bucketHash);
+    final defaultDisplayType = _defaultDisplayTypes[bucketHash] ?? BucketDisplayType.Medium;
+    final displayType = bucketOptionsState(context).getDisplayTypeForItemSection(
+      "$bucketHash",
+      defaultValue: defaultDisplayType,
+    );
     final equippedDensity = displayType.equippedDensity;
     final unequippedDensity = displayType.unequippedDensity;
     final useBucketCount = bucketDef?.hasTransferDestination == true && bucketDef?.scope == BucketScope.Character;
@@ -111,6 +124,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
           bucketHash,
           canEquip: equipped != null,
           itemCount: bucketContent.unequipped.length + (bucketContent.equipped != null ? 1 : 0),
+          defaultType: defaultDisplayType,
         ),
       ),
       if (equipped != null)

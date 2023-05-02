@@ -17,7 +17,7 @@ class ProgressPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider<BucketOptionsBloc>(create: (context) => BucketOptionsBloc(context)),
+        ChangeNotifierProvider<ItemSectionOptionsBloc>(create: (context) => ItemSectionOptionsBloc(context)),
         ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
         ChangeNotifierProvider(create: (context) => MilestonesBloc(context)),
         ChangeNotifierProvider(create: (context) => ProgressBloc(context)),

@@ -41,7 +41,7 @@ class CoreBlocsContainer extends MultiProvider {
             ChangeNotifierProvider<LoadoutsBloc>(create: (context) => LoadoutsBloc()),
             ChangeNotifierProvider<SelectionBloc>(create: (context) => SelectionBloc(context)),
             ChangeNotifierProvider<ContextMenuOptionsBloc>(create: (context) => ContextMenuOptionsBloc(context)),
-            ChangeNotifierProvider<BucketOptionsBloc>(create: (context) => BucketOptionsBloc(context)),
+            ChangeNotifierProvider<ItemSectionOptionsBloc>(create: (context) => ItemSectionOptionsBloc(context)),
             ChangeNotifierProvider<TrackingBloc>(create: (context) => TrackingBloc(context)),
           ],
         );

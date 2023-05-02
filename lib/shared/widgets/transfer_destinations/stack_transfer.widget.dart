@@ -6,8 +6,7 @@ import 'package:little_light/shared/models/transfer_destination.dart';
 
 import 'transfer_destinations.widget.dart';
 
-typedef OnTransferPressed = void Function(
-    int selectedCount, TransferDestination destination);
+typedef OnTransferPressed = void Function(int selectedCount, TransferDestination destination);
 
 class StackTransferWidget extends StatefulWidget {
   final int total;
@@ -88,14 +87,11 @@ class _StackTransferWidgetState extends State<StackTransferWidget> {
       );
 
   Widget buildTransferDestinations(BuildContext context) {
-    return Container(
-      color: context.theme.surfaceLayers.layer2,
-      child: TransferDestinationsWidget(
-        transferDestinations: widget.transferDestinations,
-        onAction: (type, destination) {
-          widget.onTransferPressed(selectedCount, destination);
-        },
-      ),
+    return TransferDestinationsWidget(
+      transferDestinations: widget.transferDestinations,
+      onAction: (type, destination) {
+        widget.onTransferPressed(selectedCount, destination);
+      },
     );
   }
 }

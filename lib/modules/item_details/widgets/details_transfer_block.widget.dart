@@ -18,7 +18,7 @@ class DetailsTransferBlockWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (item.instanceId == null) {
       final destinations = transferDestinations;
-      if (destinations == null) return Container();
+      if (destinations == null || destinations.isEmpty) return Container();
       return StackTransferWidget(
         total: item.quantity,
         onTransferPressed: (stackSize, destination) {

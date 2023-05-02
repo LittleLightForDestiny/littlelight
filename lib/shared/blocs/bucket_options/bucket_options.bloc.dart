@@ -3,41 +3,19 @@ import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:provider/provider.dart';
 
-class BucketOptionsBloc extends ChangeNotifier {
+class ItemSectionOptionsBloc extends ChangeNotifier {
   final UserSettingsBloc _userSettings;
-  BucketOptionsBloc(BuildContext context) : _userSettings = context.read<UserSettingsBloc>();
+  ItemSectionOptionsBloc(BuildContext context) : _userSettings = context.read<UserSettingsBloc>();
 
-  BucketDisplayType getDisplayTypeForCharacterBucket(int bucketHash) {
-    final id = "$bucketHash";
-    final stored = _userSettings.getDisplayOptionsForBucket(id)?.type;
+  BucketDisplayType getDisplayTypeForItemSection(String id,
+      {BucketDisplayType defaultValue = BucketDisplayType.Medium}) {
+    final stored = _userSettings.getDisplayOptionsForItemSection(id)?.type;
     if (stored != null) return stored;
-    final defaultType = defaultBucketDisplayOptions[id]?.type;
-    if (defaultType != null) {
-      return defaultType;
-    }
-    return BucketDisplayType.Medium;
+    return defaultValue;
   }
 
-  void setDisplayTypeForCharacterBucket(int bucketHash, BucketDisplayType type) {
-    final id = "$bucketHash";
-    _userSettings.setDisplayOptionsForBucket(id, BucketDisplayOptions(type: type));
-    notifyListeners();
-  }
-
-  BucketDisplayType getDisplayTypeForVaultBucket(int bucketHash) {
-    final id = "vault_$bucketHash";
-    final stored = _userSettings.getDisplayOptionsForBucket(id)?.type;
-    if (stored != null) return stored;
-    final defaultType = defaultBucketDisplayOptions[id]?.type;
-    if (defaultType != null) {
-      return defaultType;
-    }
-    return BucketDisplayType.Small;
-  }
-
-  void setDisplayTypeForVaultBucket(int bucketHash, BucketDisplayType type) {
-    final id = "vault_$bucketHash";
-    _userSettings.setDisplayOptionsForBucket(id, BucketDisplayOptions(type: type));
+  void setDisplayTypeForItemSection(String id, BucketDisplayType type) {
+    _userSettings.setDisplayOptionsForItemSection(id, BucketDisplayOptions(type: type));
     notifyListeners();
   }
 }

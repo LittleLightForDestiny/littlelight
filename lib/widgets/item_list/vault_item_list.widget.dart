@@ -88,7 +88,7 @@ class VaultItemListWidgetState extends ItemListWidgetState
 
   @override
   BucketDisplayOptions getBucketOptions(int bucketHash) {
-    return userSettings.getDisplayOptionsForBucket("vault_$bucketHash");
+    return userSettings.getDisplayOptionsForItemSection("vault_$bucketHash");
   }
 
   @override

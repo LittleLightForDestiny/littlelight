@@ -1,10 +1,11 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
-import 'package:little_light/shared/widgets/headers/bucket_header/bucket_header_list_item.widget.dart';
+import 'package:little_light/modules/progress/widgets/bucket_header_list_item.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/empty_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
@@ -26,7 +27,7 @@ class EquipmentVaultBucketContent {
 class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsumer {
   final List<EquipmentVaultBucketContent> buckets;
 
-  BucketOptionsBloc bucketOptionsState(BuildContext context) => context.watch<BucketOptionsBloc>();
+  ItemSectionOptionsBloc bucketOptionsState(BuildContext context) => context.watch<ItemSectionOptionsBloc>();
 
   const EquipmentVaultTabContentWidget({
     Key? key,
@@ -71,7 +72,9 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
   ) {
     final items = bucketContent.items;
     final bucketHash = bucketContent.bucketHash;
-    final displayType = bucketOptionsState(context).getDisplayTypeForVaultBucket(bucketHash);
+    final sectionId = 'vault_$bucketHash';
+    final defaultType = BucketDisplayType.Small;
+    final displayType = bucketOptionsState(context).getDisplayTypeForItemSection(sectionId, defaultValue: defaultType);
     final itemDensity = displayType.unequippedDensity;
     final idealCount = itemDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final itemCount = (items.length / idealCount).ceil() * idealCount;
@@ -84,6 +87,7 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
           itemCount: bucketContent.items.length,
           isVault: true,
           canEquip: false,
+          defaultType: defaultType,
         ),
       ),
       if (itemDensity != null)
