@@ -6,13 +6,6 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 typedef ExtractUrlFromData<T> = String? Function(T definition);
 
-class _ManifestImageState<T> {
-  final T? definition;
-  final bool finished;
-
-  _ManifestImageState(this.definition, this.finished);
-}
-
 class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
   final int? definitionHash;
   final ExtractUrlFromData<T>? urlExtractor;
@@ -36,11 +29,6 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
     this.color,
   }) : super(key: key);
 
-  Future<_ManifestImageState<T>> get future async {
-    final def = await manifest.getDefinition<T>(definitionHash);
-    return _ManifestImageState(def, true);
-  }
-
   Widget buildShimmer(BuildContext context) => const DefaultLoadingShimmer();
 
   Widget buildPlaceholder(BuildContext context) => placeholder ?? buildShimmer(context);
@@ -52,27 +40,18 @@ class ManifestImageWidget<T> extends StatelessWidget with ManifestConsumer {
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder<_ManifestImageState<T>>(
-      initialData: _ManifestImageState(null, false),
-      future: future,
-      builder: (context, snapshot) {
-        final loaded = snapshot.data?.finished ?? false;
-        final definition = snapshot.data?.definition;
-        if (!loaded) return buildPlaceholder(context);
-        if (definition == null) return noIconPlaceholder ?? buildPlaceholder(context);
-
-        final url = getUrl(context, definition);
-        final bungieUrl = BungieApiService.url(url);
-        if (bungieUrl == null || bungieUrl.isEmpty) return noIconPlaceholder ?? buildPlaceholder(context);
-        return QueuedNetworkImage(
-          imageUrl: bungieUrl,
-          fit: fit,
-          alignment: alignment,
-          placeholder: buildPlaceholder(context),
-          fadeInDuration: const Duration(milliseconds: 300),
-          color: color,
-        );
-      },
+    final definition = context.definition<T>(definitionHash);
+    if (definition == null) return buildPlaceholder(context);
+    final url = getUrl(context, definition);
+    final bungieUrl = BungieApiService.url(url);
+    if (bungieUrl == null || bungieUrl.isEmpty) return noIconPlaceholder ?? buildPlaceholder(context);
+    return QueuedNetworkImage(
+      imageUrl: bungieUrl,
+      fit: fit,
+      alignment: alignment,
+      placeholder: buildPlaceholder(context),
+      fadeInDuration: const Duration(milliseconds: 300),
+      color: color,
     );
   }
 }
