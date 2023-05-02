@@ -70,7 +70,6 @@ class MultiSectionScrollViewState extends State<MultiSectionScrollView> {
         child: CustomScrollView(
           restorationId: scrollViewKey?.toString(),
           controller: controller,
-          cacheExtent: 200,
           shrinkWrap: shrinkWrap,
           physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
           slivers: _slivers,

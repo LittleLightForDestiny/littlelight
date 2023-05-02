@@ -15,7 +15,7 @@ import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart
 import 'package:little_light/modules/progress/pages/progress/progress.page.dart';
 import 'package:little_light/modules/settings/pages/about/about.screen.dart';
 import 'package:little_light/modules/triumphs/pages/home/triumphs_home.page.dart';
-import 'package:little_light/pages/duplicated_items.screen.dart';
+import 'package:little_light/modules/duplicated_items/pages/duplicated_items/duplicated_items.page.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/pages/objectives/objectives.screen.dart';
 import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
@@ -90,8 +90,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                 open(context, TriumphsHomePage());
               }),
               menuItem(context, Text("Duplicated Items".translate(context)), onTap: () {
-                open(context,
-                    DuplicatedItemsScreen(searchController: SearchController.withDuplicatedItemsFilters(context)));
+                open(context, DuplicatedItemsPage());
               }),
               menuItem(context, Text("About".translate(context)), onTap: () {
                 open(context, AboutScreen());
