@@ -42,43 +42,51 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
     }
     final socketDef = itemDefinition?.sockets?.socketEntries?[index];
     final plugSources = socketDef?.plugSources;
+    final reusablePlugSetHash = socketDef?.reusablePlugSetHash;
+    final randomizedPlugSetHash = socketDef?.randomizedPlugSetHash;
     List<int> hashes = <int>[];
+    List<List<DestinyItemPlug>> plugSetList = [];
     if (plugSources?.contains(SocketPlugSources.ReusablePlugItems) ?? false) {
       final reusableHashes = item?.reusablePlugs?["$index"]?.map((e) => e.plugItemHash).whereType<int>().toList();
       hashes += reusableHashes ?? [];
     }
     if (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false) {
-      final reusablePlugSetHash = socketDef?.reusablePlugSetHash;
       if (reusablePlugSetHash != null) {
         final plugSet = _profileBloc.getProfilePlugSets(reusablePlugSetHash);
-        final reusableHashes = plugSet
-                ?.where((element) {
-                  final canInsert = element.canInsert ?? false;
-                  final enabled = element.enabled ?? false;
-                  return canInsert && enabled;
-                })
-                .map((e) => e.plugItemHash)
-                .whereType<int>()
-                .toSet() ??
-            <int>{};
-        hashes.addAll(reusableHashes);
+        if (plugSet != null) plugSetList.add(plugSet);
       }
-      final randomizedPlugSetHash = socketDef?.randomizedPlugSetHash;
       if (randomizedPlugSetHash != null) {
         final plugSet = _profileBloc.getProfilePlugSets(randomizedPlugSetHash);
-        final randomizedHashes = plugSet
-                ?.where((element) {
-                  final canInsert = element.canInsert ?? false;
-                  final enabled = element.enabled ?? false;
-                  return canInsert && enabled;
-                })
-                .map((e) => e.plugItemHash)
-                .whereType<int>()
-                .toSet() ??
-            <int>{};
-        hashes.addAll(randomizedHashes);
+        if (plugSet != null) plugSetList.add(plugSet);
       }
     }
+    if (plugSources?.contains(SocketPlugSources.CharacterPlugSet) ?? false) {
+      final characterId = item?.characterId;
+      if (characterId != null) {
+        if (reusablePlugSetHash != null) {
+          final plugSet = _profileBloc.getCharacterPlugSets(characterId, reusablePlugSetHash);
+          if (plugSet != null) plugSetList.add(plugSet);
+        }
+        if (randomizedPlugSetHash != null) {
+          final plugSet = _profileBloc.getCharacterPlugSets(characterId, randomizedPlugSetHash);
+          if (plugSet != null) plugSetList.add(plugSet);
+        }
+      }
+    }
+    // TODO: This keeps us from adding Transcendent Blessing to the first mod slot
+    //if (plugSources?.contains(SocketPlugSources.InventorySourced) ?? false) {}
+    plugSetList.forEach((plugSet) {
+      final plugSetHashes = (plugSet)
+          .where((element) {
+            final canInsert = element.canInsert ?? false;
+            final enabled = element.enabled ?? false;
+            return canInsert && enabled;
+          })
+          .map((e) => e.plugItemHash)
+          .whereType<int>()
+          .toSet();
+      hashes.addAll(plugSetHashes);
+    });
     hashes += [item?.sockets?[index].plugHash].whereType<int>().toList();
     hashes = hashes.toSet().toList();
     return hashes;
