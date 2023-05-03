@@ -26,7 +26,7 @@ import 'inventory_item_perks.dart';
 import 'inventory_item_stats.dart';
 import 'utils/get_energy_capacity.dart';
 
-const _expectedItemSize = Size(196.0, 116.0);
+const _expectedItemSize = Size(192.0, 116.0);
 const _padding = 4.0;
 const _emblemIconSize = 40.0;
 const _tagIconSize = 20.0;

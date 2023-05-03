@@ -38,7 +38,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 apply plugin: 'com.google.firebase.crashlytics'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     lintOptions {
         disable 'InvalidPackage'
@@ -67,6 +67,9 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix ".debug"
+        }
+        profile {
+            applicationIdSuffix ".profile"
         }
         release {
             if(keyAvailable) {

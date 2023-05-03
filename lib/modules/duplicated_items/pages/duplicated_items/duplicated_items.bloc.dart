@@ -44,6 +44,7 @@ class DuplicatedItemsBloc extends ChangeNotifier {
 
   bool _searchOpen = false;
   bool get searchOpen => _searchOpen;
+  bool loaded = false;
 
   DuplicatedItemsBloc(BuildContext this.context)
       : profileBloc = context.read<ProfileBloc>(),
@@ -58,7 +59,25 @@ class DuplicatedItemsBloc extends ChangeNotifier {
   void _init() {
     this.profileBloc.addListener(_update);
     this.filterBloc.addListener(_filter);
+    _loadDefinitions();
     _update();
+  }
+
+  void _loadDefinitions() async {
+    final hashes = <int>[];
+    final items = profileBloc.allItems;
+    for (final i in items) {
+      final itemHash = i.itemHash;
+      if (itemHash != null) hashes.add(itemHash);
+      final plugs = i.reusablePlugs;
+      if (plugs != null)
+        for (final p in plugs.values) {
+          hashes.addAll(p.map((e) => e.plugItemHash).whereType<int>());
+        }
+    }
+    await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    loaded = true;
+    notifyListeners();
   }
 
   @override

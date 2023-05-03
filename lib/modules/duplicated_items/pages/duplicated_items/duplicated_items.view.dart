@@ -85,8 +85,9 @@ class DuplicatedItemsView extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context) {
+    final loaded = state.loaded;
     final items = state.items;
-    if (items == null) return LoadingAnimWidget();
+    if (!loaded || items == null) return LoadingAnimWidget();
     final mq = context.mediaQuery;
     final perRow = (mq.size.width / DuplicatedItemWidget.expectedSize.width).floor();
     return DuplicatedItemListWidget(
