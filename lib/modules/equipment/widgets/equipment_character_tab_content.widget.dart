@@ -74,18 +74,15 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
           key: Key("character_tab_${character.characterId}"),
           builder: (context, constraints) => MultiSectionScrollView(
             [
-                  SliverSection.fixedHeight(
-                    itemBuilder: (context, _) => CharacterInfoWidget(
-                      character,
-                      currencies: currencies,
-                    ),
-                    itemHeight: _characterInfoHeight,
-                  )
-                ] +
-                buckets //
-                    .map<List<SliverSection>>(
-                        (e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
-                    .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
+              FixedHeightScrollSection(
+                _characterInfoHeight,
+                itemBuilder: (context, _) => CharacterInfoWidget(
+                  character,
+                  currencies: currencies,
+                ),
+              ),
+              for (final bucket in buckets) ...buildBucketSections(context, bucket, constraints)
+            ],
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
             padding: const EdgeInsets.all(8).copyWith(top: 0, bottom: 64),
@@ -96,11 +93,10 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
     );
   }
 
-  List<SliverSection> buildBucketSections(
+  List<ScrollableSection> buildBucketSections(
     BuildContext context,
     EquipmentCharacterBucketContent bucketContent,
     BoxConstraints constraints,
-    DestinyInventoryBucketDefinition? bucketDef,
   ) {
     final equipped = bucketContent.equipped;
     final unequipped = bucketContent.unequipped;
@@ -110,6 +106,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
       "$bucketHash",
       defaultValue: defaultDisplayType,
     );
+    final bucketDef = context.definition<DestinyInventoryBucketDefinition>(bucketHash);
     final equippedDensity = displayType.equippedDensity;
     final unequippedDensity = displayType.unequippedDensity;
     final useBucketCount = bucketDef?.hasTransferDestination == true && bucketDef?.scope == BucketScope.Character;
@@ -117,9 +114,9 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
     final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final unequippedCount = ((useBucketCount ? bucketDefCount : unequipped.length) / idealCount).ceil() * idealCount;
     return [
-      SliverSection.fixedHeight(
+      FixedHeightScrollSection(
+        48,
         itemCount: 1,
-        itemHeight: 48,
         itemBuilder: (_, __) => BucketHeaderListItemWidget(
           bucketHash,
           canEquip: equipped != null,
@@ -149,10 +146,10 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
           bucketDefCount,
           bucketDef?.hasTransferDestination == true,
         ),
-    ].whereType<SliverSection>().toList();
+    ].whereType<ScrollableSection>().toList();
   }
 
-  SliverSection? buildItemSection(
+  ScrollableSection? buildItemSection(
     BuildContext context,
     EquipmentCharacterBucketContent bucketContent,
     List<DestinyItemInfo> items,
@@ -165,8 +162,8 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
     if (density == null) return null;
     final itemHeight = density.itemHeight;
     if (itemHeight != null) {
-      return SliverSection.fixedHeight(
-        itemHeight: itemHeight + 4,
+      return FixedHeightScrollSection(
+        itemHeight + 4,
         itemCount: itemCount,
         itemsPerRow: itemsPerRow,
         itemBuilder: (_, index) {
@@ -190,8 +187,8 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
     }
     final itemAspectRatio = density.itemAspectRatio;
     if (itemAspectRatio != null) {
-      return SliverSection.aspectRatio(
-        itemAspectRatio: itemAspectRatio,
+      return AspectRatioScrollSection(
+        itemAspectRatio,
         itemsPerRow: itemsPerRow,
         itemCount: itemCount,
         itemBuilder: (_, index) {

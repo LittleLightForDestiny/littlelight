@@ -143,8 +143,8 @@ class ItemListWidgetState extends State<ItemListWidget>
     ));
   }
 
-  List<SliverSection> get _sections {
-    List<SliverSection> list = [
+  List<ScrollableSection> get _sections {
+    List<ScrollableSection> list = [
       if (widget.includeInfoHeader) buildCharInfoSliver(),
     ];
     for (var bucket in buckets) {
@@ -163,15 +163,21 @@ class ItemListWidgetState extends State<ItemListWidget>
     }
 
     if (isSelectionOpen) {
-      list += [SliverSection(itemCount: 1, itemHeight: 160, itemBuilder: (context, index) => Container())];
+      list += [
+        FixedHeightScrollSection(
+          160,
+          itemCount: 1,
+          itemBuilder: (context, index) => Container(),
+        ),
+      ];
     }
 
     return list;
   }
 
-  SliverSection buildCharInfoSliver() {
-    return SliverSection(
-      itemHeight: 112,
+  ScrollableSection buildCharInfoSliver() {
+    return FixedHeightScrollSection(
+      112,
       itemCount: 1,
       itemBuilder: (context, _) => CharacterInfoWidget(
         key: Key("characterinfo_${widget.characterId}"),
@@ -180,38 +186,40 @@ class ItemListWidgetState extends State<ItemListWidget>
     );
   }
 
-  SliverSection buildBucketHeaderSliver(ListBucket bucket) {
+  ScrollableSection buildBucketHeaderSliver(ListBucket bucket) {
     final itemCount = (bucket.equipped != null ? 1 : 0) + (bucket.unequipped?.length ?? 0);
-    return SliverSection(
-        itemBuilder: (context, _) => BucketHeaderWidget(
-            key: Key("bucketheader_${widget.characterId}_${bucket.bucketHash}"),
-            presentationNodeHash: bucket.bucketHash,
-            itemCount: itemCount,
-            isEquippable: bucket.equipped != null,
-            onChanged: () {
-              if (widget.onBucketOptionsChanged != null) {
-                widget.onBucketOptionsChanged();
-              }
-              if (mounted) {
-                setState(() {});
-              }
-            }),
-        itemCount: 1,
-        itemHeight: 40);
+    return FixedHeightScrollSection(
+      40,
+      itemBuilder: (context, _) => BucketHeaderWidget(
+          key: Key("bucketheader_${widget.characterId}_${bucket.bucketHash}"),
+          presentationNodeHash: bucket.bucketHash,
+          itemCount: itemCount,
+          isEquippable: bucket.equipped != null,
+          onChanged: () {
+            if (widget.onBucketOptionsChanged != null) {
+              widget.onBucketOptionsChanged();
+            }
+            if (mounted) {
+              setState(() {});
+            }
+          }),
+      itemCount: 1,
+    );
   }
 
-  SliverSection buildEquippedItem(DestinyItemComponent item) {
+  ScrollableSection buildEquippedItem(DestinyItemComponent item) {
     String itemKey = "equipped_${item?.itemInstanceId ?? item?.itemHash ?? 'empty'}";
     final bucketOptions = getBucketOptions(item.bucketHash);
-    return SliverSection(
-        itemBuilder: (context, _) => InventoryItemWrapperWidget(
-              item != null ? ItemWithOwner(item, widget.characterId) : null,
-              item?.bucketHash,
-              key: Key(itemKey),
-              characterId: widget.characterId,
-            ),
-        itemCount: 1,
-        itemHeight: bucketOptions.equippedItemHeight);
+    return FixedHeightScrollSection(
+      bucketOptions.equippedItemHeight,
+      itemBuilder: (context, _) => InventoryItemWrapperWidget(
+        item != null ? ItemWithOwner(item, widget.characterId) : null,
+        item?.bucketHash,
+        key: Key(itemKey),
+        characterId: widget.characterId,
+      ),
+      itemCount: 1,
+    );
   }
 
   BucketDisplayOptions getBucketOptions(int bucketHash) {
@@ -222,7 +230,7 @@ class ItemListWidgetState extends State<ItemListWidget>
     return bucketOptions.responsiveUnequippedItemsPerRow(context, widget.columnCount);
   }
 
-  SliverSection buildUnequippedItems(List<DestinyItemComponent> items, ListBucket bucket) {
+  ScrollableSection buildUnequippedItems(List<DestinyItemComponent> items, ListBucket bucket) {
     final bucketDef = bucketDefs[bucket.bucketHash];
     final bucketOptions = getBucketOptions(bucket.bucketHash);
     final maxSlots = bucketDef?.itemCount != null ? (bucketDef.itemCount - 1) : items.length;
@@ -243,7 +251,8 @@ class ItemListWidgetState extends State<ItemListWidget>
       BucketDisplayType.Small: ContentDensity.MINIMAL,
     }[bucketOptions.type];
 
-    return SliverSection(
+    return FixedHeightScrollSection(
+      bucketOptions.unequippedItemHeight,
       itemBuilder: (context, index) {
         if (index >= items.length) {
           return InventoryItemWrapperWidget(
@@ -263,15 +272,14 @@ class ItemListWidgetState extends State<ItemListWidget>
         );
       },
       itemCount: bucketSize,
-      itemHeight: bucketOptions.unequippedItemHeight,
       itemsPerRow: itemsPerRow,
     );
   }
 
-  SliverSection get spacer => SliverSection(
+  ScrollableSection get spacer => FixedHeightScrollSection(
+        76.0,
         itemBuilder: (context, _) => Container(),
         itemCount: 1,
-        itemHeight: 76,
       );
 
   @override

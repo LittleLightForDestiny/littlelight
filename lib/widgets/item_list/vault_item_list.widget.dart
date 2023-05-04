@@ -58,32 +58,33 @@ class VaultItemListWidgetState extends ItemListWidgetState
   }
 
   @override
-  SliverSection buildCharInfoSliver() {
-    return SliverSection(
-      itemHeight: 112,
+  ScrollableSection buildCharInfoSliver() {
+    return FixedHeightScrollSection(
+      112,
       itemCount: 1,
       itemBuilder: (context, _) => const VaultInfoWidget(),
     );
   }
 
   @override
-  SliverSection buildBucketHeaderSliver(ListBucket bucket) {
+  ScrollableSection buildBucketHeaderSliver(ListBucket bucket) {
     final itemCount = (bucket.equipped != null ? 1 : 0) + (bucket.unequipped?.length ?? 0);
     if (itemCount == 0) {
-      return SliverSection(itemCount: 1, itemHeight: 0, itemBuilder: (context, index) => Container());
+      return FixedHeightScrollSection(0, itemCount: 1, itemBuilder: (context, index) => Container());
     }
-    return SliverSection(
-        itemBuilder: (context, _) => BucketHeaderWidget(
-              key: Key("bucketheader_vault_${bucket.bucketHash}"),
-              presentationNodeHash: bucket.bucketHash,
-              itemCount: itemCount,
-              onChanged: () {
-                setState(() {});
-              },
-              isVault: true,
-            ),
-        itemCount: 1,
-        itemHeight: 40);
+    return FixedHeightScrollSection(
+      40,
+      itemBuilder: (context, _) => BucketHeaderWidget(
+        key: Key("bucketheader_vault_${bucket.bucketHash}"),
+        presentationNodeHash: bucket.bucketHash,
+        itemCount: itemCount,
+        onChanged: () {
+          setState(() {});
+        },
+        isVault: true,
+      ),
+      itemCount: 1,
+    );
   }
 
   @override

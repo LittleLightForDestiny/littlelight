@@ -32,15 +32,16 @@ class DetailsItemDuplicatesWidget extends StatelessWidget {
       final perRow = (constraints.maxWidth / DuplicatedItemWidget.expectedSize.width).floor();
       return MultiSectionScrollView(
         [
-          SliverSection.fixedHeight(
-              itemsPerRow: perRow,
-              itemCount: items.length,
-              itemBuilder: (_, index) => InteractiveItemWrapper(
-                    DuplicatedItemWidget(items[index]),
-                    item: items[index],
-                    itemMargin: 1,
-                  ),
-              itemHeight: DuplicatedItemWidget.expectedSize.height),
+          FixedHeightScrollSection(
+            DuplicatedItemWidget.expectedSize.height,
+            itemsPerRow: perRow,
+            itemCount: items.length,
+            itemBuilder: (_, index) => InteractiveItemWrapper(
+              DuplicatedItemWidget(items[index]),
+              item: items[index],
+              itemMargin: 1,
+            ),
+          ),
         ],
         shrinkWrap: true,
         mainAxisSpacing: 1,

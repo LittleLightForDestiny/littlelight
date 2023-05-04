@@ -6,6 +6,7 @@ import 'package:little_light/modules/loadouts/pages/select_background/select_loa
 import 'package:little_light/modules/loadouts/widgets/loadout_slot.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -82,17 +83,17 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
     final screenPadding = MediaQuery.of(context).padding;
     return MultiSectionScrollView(
       [
-        SliverSection(
+        IntrinsicHeightScrollSection(
           itemCount: 1,
           itemBuilder: (context, _) => buildNameTextField(context),
         ),
-        SliverSection(
+        IntrinsicHeightScrollSection(
           itemCount: 1,
           itemBuilder: (context, _) => buildSelectBackgroundButton(context),
         ),
-        if (!_state.loaded) SliverSection(itemBuilder: (c, _) => LoadingAnimWidget()),
+        if (!_state.loaded) IntrinsicHeightScrollSection(itemBuilder: (c, _) => LoadingAnimWidget()),
         if (_state.loaded)
-          SliverSection(
+          IntrinsicHeightScrollSection(
             itemBuilder: (context, index) => buildSlot(context, index),
             itemCount: _state.bucketHashes.length,
           ),

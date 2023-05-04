@@ -122,9 +122,9 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     );
   }
 
-  SliverSection buildCharacterHeader(BuildContext context) {
-    return SliverSection(
-      itemHeight: 112,
+  ScrollableSection buildCharacterHeader(BuildContext context) {
+    return FixedHeightScrollSection(
+      112,
       itemCount: 1,
       itemBuilder: (context, _) => CharacterInfoWidget(
         key: Key("characterinfo_${widget.character.characterId}"),
@@ -133,7 +133,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     );
   }
 
-  List<SliverSection> buildColumns(BuildContext context, List<int> columnHashes) {
+  List<ScrollableSection> buildColumns(BuildContext context, List<int> columnHashes) {
     switch (columnHashes.length) {
       case 1:
         return buildSingleColumnItemList(context, columnHashes.first);
@@ -141,7 +141,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
       case 3:
         return [buildMultiColumnItemList(context, columnHashes)];
     }
-    return [SliverSection(itemCount: 1, itemHeight: 0, itemBuilder: (context, index) => Container())];
+    return [FixedHeightScrollSection(0, itemCount: 1, itemBuilder: (context, index) => Container())];
   }
 
   double getMultiColumnHeight(BuildContext context, List<int> columnHashes) {
@@ -168,11 +168,11 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     return headerHeight + 2 + equippedHeight + 2 + (unequippedHeight + 2) * (rowCount + 1);
   }
 
-  SliverSection buildMultiColumnItemList(BuildContext context, List<int> columnHashes) {
+  ScrollableSection buildMultiColumnItemList(BuildContext context, List<int> columnHashes) {
     final lastIndex = columnHashes.length - 1;
     final height = getMultiColumnHeight(context, columnHashes);
-    return SliverSection(
-      itemHeight: height,
+    return FixedHeightScrollSection(
+      height,
       itemCount: columnHashes.length,
       itemsPerRow: columnHashes.length,
       itemBuilder: (context, index) {
@@ -196,11 +196,15 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     );
   }
 
-  List<SliverSection> buildSingleColumnItemList(BuildContext context, int hash) {
+  List<ScrollableSection> buildSingleColumnItemList(BuildContext context, int hash) {
     if (singleColumnBuckets == null || singleColumnBuckets[hash] == null) {
       return [
-        SliverSection(
-            itemCount: 1, itemsPerRow: 1, itemHeight: 200, itemBuilder: (context, index) => LoadingAnimWidget()),
+        FixedHeightScrollSection(
+          200,
+          itemCount: 1,
+          itemsPerRow: 1,
+          itemBuilder: (context, index) => LoadingAnimWidget(),
+        ),
       ];
     }
 
@@ -208,17 +212,18 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
     final unequipped = listBucket.unequipped;
 
     return [
-      SliverSection(
-          itemCount: 1,
-          itemsPerRow: 1,
-          itemHeight: 40,
-          itemBuilder: (context, index) => BucketHeaderWidget(
-                presentationNodeHash: hash,
-                itemCount: unequipped.length,
-                onChanged: () {
-                  setState(() {});
-                },
-              )),
+      FixedHeightScrollSection(
+        40,
+        itemCount: 1,
+        itemsPerRow: 1,
+        itemBuilder: (context, index) => BucketHeaderWidget(
+          presentationNodeHash: hash,
+          itemCount: unequipped.length,
+          onChanged: () {
+            setState(() {});
+          },
+        ),
+      ),
       buildUnequippedItems(unequipped, listBucket)
     ];
   }
@@ -229,7 +234,7 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
 
   bool suppressEmptySpaces(bucketHash) => _suppressEmptySpaces?.contains(bucketHash) ?? false;
 
-  SliverSection buildUnequippedItems(List<DestinyItemComponent> items, ListBucket bucket) {
+  ScrollableSection buildUnequippedItems(List<DestinyItemComponent> items, ListBucket bucket) {
     final bucketDef = bucketDefinitions[bucket.bucketHash];
     final bucketOptions = getBucketOptions(bucket.bucketHash);
     final maxSlots = bucketDef?.itemCount != null ? (bucketDef.itemCount - 1) : items.length;
@@ -244,7 +249,8 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
       BucketDisplayType.Small: ContentDensity.MINIMAL,
     }[bucketOptions.type];
 
-    return SliverSection(
+    return FixedHeightScrollSection(
+      bucketOptions.unequippedItemHeight,
       itemBuilder: (context, index) {
         if (index > maxSlots) {
           return Container();
@@ -267,7 +273,6 @@ class LargeScreenEquipmentListWidgetState extends State<LargeScreenEquipmentList
         );
       },
       itemCount: bucketSize,
-      itemHeight: bucketOptions.unequippedItemHeight,
       itemsPerRow: itemsPerRow,
     );
   }

@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 
+class _RowBuilder {
+  final int rowOffset;
+  final ScrollableSection section;
+
+  _RowBuilder(this.rowOffset, this.section);
+}
+
 class MultiSectionScrollView extends StatefulWidget {
   final EdgeInsets? padding;
-  final List<SliverSection> _sections;
+  final List<ScrollableSection> _sections;
   final double crossAxisSpacing;
   final double mainAxisSpacing;
   final bool shrinkWrap;
@@ -25,7 +32,7 @@ class MultiSectionScrollViewState extends State<MultiSectionScrollView> {
   ScrollController? controller;
 
   EdgeInsets? get padding => widget.padding;
-  List<SliverSection> get _sections => widget._sections;
+  List<ScrollableSection> get _sections => widget._sections;
   double get crossAxisSpacing => widget.crossAxisSpacing;
   double get mainAxisSpacing => widget.mainAxisSpacing;
   bool get shrinkWrap => widget.shrinkWrap;
@@ -50,29 +57,59 @@ class MultiSectionScrollViewState extends State<MultiSectionScrollView> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> _slivers = [];
-    if ((padding?.top ?? 0) > 0) {
-      _slivers.add(SliverToBoxAdapter(child: Container(height: padding!.top)));
-    }
-    _slivers.addAll(_sections
-        .where((s) => s.itemCount != 0)
-        .map((e) => e.build(context, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing))
-        .fold<Iterable<Widget>>(<Widget>[], (previousValue, element) => previousValue.followedBy([element, spacer]))
-        .expand((element) => [element])
-        .toList());
+    // List<Widget> _slivers = [];
+    // if ((padding?.top ?? 0) > 0) {
+    //   _slivers.add(SliverToBoxAdapter(child: Container(height: padding!.top)));
+    // }
+    // _slivers.addAll(_sections
+    //     .where((s) => s.itemCount != 0)
+    //     .map((e) => e.build(context, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing))
+    //     .fold<Iterable<Widget>>(<Widget>[], (previousValue, element) => previousValue.followedBy([element, spacer]))
+    //     .expand((element) => [element])
+    //     .toList());
 
-    if ((padding?.bottom ?? 0) > 0) {
-      _slivers.add(SliverToBoxAdapter(child: Container(height: padding!.bottom)));
-    }
-    return Container(
-        key: scrollViewKey,
-        padding: padding?.copyWith(top: 0, bottom: 0),
-        child: CustomScrollView(
-          restorationId: scrollViewKey?.toString(),
-          controller: controller,
-          shrinkWrap: shrinkWrap,
-          physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
-          slivers: _slivers,
-        ));
+    // if ((padding?.bottom ?? 0) > 0) {
+    //   _slivers.add(SliverToBoxAdapter(child: Container(height: padding!.bottom)));
+    // }
+    return LayoutBuilder(builder: (context, constraints) {
+      int currentOffset = 0;
+      final builders = <int, _RowBuilder>{};
+      final options = SectionBuildOptions(
+        mainAxisSpacing: mainAxisSpacing,
+        crossAxisSpacing: crossAxisSpacing,
+        constraints: constraints,
+        padding: padding,
+      );
+      for (final section in _sections) {
+        final rowCount = section.getRowCount(options);
+        final builder = _RowBuilder(currentOffset, section);
+        for (int i = 0; i < rowCount; i++) {
+          builders[currentOffset + i] = builder;
+        }
+        currentOffset += rowCount;
+      }
+      final totalRows = currentOffset;
+      return Container(
+          key: scrollViewKey,
+          child: ListView.builder(
+              padding: padding,
+              restorationId: scrollViewKey?.toString(),
+              controller: controller,
+              shrinkWrap: shrinkWrap,
+              physics: shrinkWrap ? const NeverScrollableScrollPhysics() : null,
+              itemBuilder: (context, index) {
+                final rowBuilder = builders[index];
+                if (rowBuilder == null) return null;
+                bool isLast = index == totalRows - 1;
+                return Container(
+                    margin: !isLast ? EdgeInsets.only(bottom: mainAxisSpacing) : null,
+                    height: rowBuilder.section.getRowHeight(options),
+                    child: rowBuilder.section.build(
+                      context,
+                      index - rowBuilder.rowOffset,
+                      options,
+                    ));
+              }));
+    });
   }
 }

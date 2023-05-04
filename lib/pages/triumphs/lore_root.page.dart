@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/shared/widgets/presentation_nodes/category_breadcrumb.widget.dart';
 
 import 'package:little_light/pages/triumphs/lore.page_route.dart';
-import 'package:little_light/pages/triumphs/widgets/triumph_list.widget.dart';
+
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -120,7 +120,8 @@ class LoreRootPageState extends PresentationNodesTabsScaffoldState<LoreRootPage>
   Widget buildTablessBody(BuildContext context) {
     final categoryDefinition = rootNode;
     if (categoryDefinition == null) return LoadingAnimWidget();
-    return TriumphListWidget(node: categoryDefinition);
+    return Container();
+    // return TriumphListWidget(node: categoryDefinition);
   }
 
   @override

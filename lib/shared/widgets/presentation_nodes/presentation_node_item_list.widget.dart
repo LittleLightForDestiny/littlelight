@@ -45,24 +45,24 @@ class PresentationNodeListWidget extends StatelessWidget {
     return MultiSectionScrollView(
       [
         if (presentationNodeBuilder != null && presentationNodes != null)
-          SliverSection(
+          FixedHeightScrollSection(
+            _itemHeight,
             itemsPerRow: itemsPerRow,
             itemCount: presentationNodes.length,
-            itemHeight: _itemHeight,
             itemBuilder: (context, index) => presentationNodeBuilder(context, presentationNodes[index]),
           ),
         if (collectibleBuilder != null && collectibles != null)
-          SliverSection(
+          FixedHeightScrollSection(
+            _itemHeight,
             itemsPerRow: itemsPerRow,
             itemCount: collectibles.length,
-            itemHeight: _itemHeight,
             itemBuilder: (context, index) => collectibleBuilder(context, collectibles[index]),
           ),
         if (recordBuilder != null && records != null)
-          SliverSection(
+          FixedHeightScrollSection(
+            128.0,
             itemsPerRow: itemsPerRow,
             itemCount: records.length,
-            itemHeight: 128.0,
             itemBuilder: (context, index) => recordBuilder(context, records[index]),
           )
       ],

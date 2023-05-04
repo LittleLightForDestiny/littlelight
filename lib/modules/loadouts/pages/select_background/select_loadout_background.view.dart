@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/pages/select_background/select_loadout_background.bloc.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -37,7 +38,7 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
                 buildCategoryItemsSection(context, def.hash!),
               ])
           .flattened
-          .whereType<SliverSection>()
+          .whereType<ScrollableSection>()
           .toList(),
       crossAxisSpacing: 4,
       mainAxisSpacing: 4,
@@ -45,25 +46,30 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
     );
   }
 
-  SliverSection buildCategoryHeaderSection(DestinyPresentationNodeDefinition nodeDef) => SliverSection(
+  ScrollableSection buildCategoryHeaderSection(DestinyPresentationNodeDefinition nodeDef) => FixedHeightScrollSection(
+        60,
         itemBuilder: (context, _) => buildCategoryItem(context, nodeDef),
-        itemHeight: 60,
         itemCount: 1,
       );
 
-  SliverSection? buildCategoryItemsSection(BuildContext context, int hash) {
+  ScrollableSection? buildCategoryItemsSection(BuildContext context, int hash) {
     final state = context.watch<SelectLoadoutBackgroundBloc>();
     if (!state.isCategoryOpen(hash)) {
       return null;
     }
     final items = state.getCategoryItems(hash);
     if (items != null && items.isNotEmpty) {
-      return SliverSection(
-          itemBuilder: (context, index) => buildEmblemItem(context, items[index]),
-          itemHeight: 56,
-          itemCount: items.length);
+      return FixedHeightScrollSection(
+        56.0,
+        itemBuilder: (context, index) => buildEmblemItem(context, items[index]),
+        itemCount: items.length,
+      );
     }
-    return SliverSection(itemBuilder: (context, index) => LoadingAnimWidget(), itemAspectRatio: 1, itemCount: 1);
+    return AspectRatioScrollSection(
+      1,
+      itemBuilder: (context, index) => LoadingAnimWidget(),
+      itemCount: 1,
+    );
   }
 
   Widget buildCategoryItem(BuildContext context, DestinyPresentationNodeDefinition def) {

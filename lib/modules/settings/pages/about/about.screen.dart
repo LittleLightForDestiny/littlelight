@@ -95,8 +95,8 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
         ));
   }
 
-  List<SliverSection> get _sections {
-    List<SliverSection> list = [
+  List<ScrollableSection> get _sections {
+    List<ScrollableSection> list = [
       appInfoSliver,
       headerSliver(Text(
         "Contact".translate(context).toUpperCase(),
@@ -159,8 +159,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
     return list;
   }
 
-  SliverSection get appInfoSliver => SliverSection(
-      itemHeight: 112,
+  ScrollableSection get appInfoSliver => FixedHeightScrollSection(112.0,
       itemCount: 1,
       itemBuilder: (context, _) => Row(
             children: <Widget>[
@@ -183,13 +182,13 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
             ],
           ));
 
-  SliverSection headerSliver(Widget title) => SliverSection(
-        itemHeight: 40,
+  ScrollableSection headerSliver(Widget title) => FixedHeightScrollSection(
+        40.0,
         itemCount: 1,
         itemBuilder: (context, _) => HeaderWidget(child: title),
       );
 
-  SliverSection get contactInfoSliver {
+  ScrollableSection get contactInfoSliver {
     final actions = [
       AboutScreenAction(
         icon: FontAwesomeIcons.twitter,
@@ -208,17 +207,18 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
         url: "https://discord.gg/ztdFGGz",
       ),
     ];
-    return SliverSection(
-        itemHeight: 88,
-        itemsPerRow: actions.length,
-        itemCount: actions.length,
-        itemBuilder: (context, index) {
-          final action = actions[index];
-          return buildExternalLinkButton(context, action);
-        });
+    return FixedHeightScrollSection(
+      88.0,
+      itemsPerRow: actions.length,
+      itemCount: actions.length,
+      itemBuilder: (context, index) {
+        final action = actions[index];
+        return buildExternalLinkButton(context, action);
+      },
+    );
   }
 
-  SliverSection get supportSliver {
+  ScrollableSection get supportSliver {
     bool isIOS = Platform.isIOS;
     bool isMobile = Platform.isAndroid || Platform.isIOS;
     final actions = [
@@ -251,37 +251,43 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
           url: "https://ko-fi.com/littlelight",
         ),
     ];
-    return SliverSection(
-        itemHeight: 88,
-        itemsPerRow: actions.length,
-        itemCount: actions.length,
-        itemBuilder: (context, index) {
-          final action = actions[index];
-          return buildExternalLinkButton(context, action);
-        });
+    return FixedHeightScrollSection(
+      88.0,
+      itemsPerRow: actions.length,
+      itemCount: actions.length,
+      itemBuilder: (context, index) {
+        final action = actions[index];
+        return buildExternalLinkButton(context, action);
+      },
+    );
   }
 
-  SliverSection collaboratorsSliver(List<Collaborator> collaborators) {
-    return SliverSection(
-        itemHeight: 72,
-        itemCount: collaborators.length,
-        itemBuilder: (context, index) {
-          final collaborator = collaborators[index];
-          return buildTagAndPlatform(collaborator.membershipId, collaborator.membershipType);
-        });
+  ScrollableSection collaboratorsSliver(List<Collaborator> collaborators) {
+    return FixedHeightScrollSection(
+      72.0,
+      itemCount: collaborators.length,
+      itemBuilder: (context, index) {
+        final collaborator = collaborators[index];
+        return buildTagAndPlatform(collaborator.membershipId, collaborator.membershipType);
+      },
+    );
   }
 
-  SliverSection translationHeaderSliver(TranslationLanguage language) {
-    return SliverSection(
-        itemHeight: 40,
+  ScrollableSection translationHeaderSliver(TranslationLanguage language) {
+    return FixedHeightScrollSection(
+      40.0,
+      itemCount: 1,
+      itemBuilder: (context, _) {
+        return buildTranslationHeader(context, language);
+      },
+    );
+  }
+
+  ScrollableSection get spacerSliver => FixedHeightScrollSection(
+        48,
         itemCount: 1,
-        itemBuilder: (context, _) {
-          return buildTranslationHeader(context, language);
-        });
-  }
-
-  SliverSection get spacerSliver =>
-      SliverSection(itemHeight: 48, itemCount: 1, itemBuilder: (context, index) => Container());
+        itemBuilder: (context, index) => Container(),
+      );
 
   Widget buildTranslationHeader(BuildContext context, TranslationLanguage language) {
     final languages = language.languages;

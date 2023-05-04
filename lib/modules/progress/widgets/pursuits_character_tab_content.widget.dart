@@ -60,12 +60,12 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
       key: Key("character_tab_${character.characterId}"),
       builder: (context, constraints) => MultiSectionScrollView(
         [
-          SliverSection.fixedHeight(
+          FixedHeightScrollSection(
+            _characterInfoHeight,
             itemBuilder: (context, _) => CharacterInfoWidget(
               character,
               currencies: currencies,
             ),
-            itemHeight: _characterInfoHeight,
           ),
           ...buildBountiesSections(context, constraints),
           for (final q in quests) ...buildQuestSections(context, q, constraints)
@@ -78,7 +78,7 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
     );
   }
 
-  List<SliverSection> buildBountiesSections(
+  List<ScrollableSection> buildBountiesSections(
     BuildContext context,
     BoxConstraints constraints,
   ) {
@@ -92,9 +92,9 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
     final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final unequippedCount = (items.length / idealCount).ceil() * idealCount;
     return [
-      SliverSection.fixedHeight(
+      FixedHeightScrollSection(
+        48,
         itemCount: 1,
-        itemHeight: 48,
         itemBuilder: (_, __) => ItemSectionHeaderWidget(
           sectionIdentifier: sectionId,
           title: ManifestText<DestinyItemCategoryDefinition>(_bountyCategoryHash),
@@ -111,10 +111,10 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
           idealCount,
           unequippedCount,
         ),
-    ].whereType<SliverSection>().toList();
+    ].whereType<ScrollableSection>().toList();
   }
 
-  List<SliverSection> buildQuestSections(
+  List<ScrollableSection> buildQuestSections(
     BuildContext context,
     QuestsCharacterContent bucketContent,
     BoxConstraints constraints,
@@ -131,9 +131,9 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
     final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final unequippedCount = (items.length / idealCount).ceil() * idealCount;
     return [
-      SliverSection.fixedHeight(
+      FixedHeightScrollSection(
+        48,
         itemCount: 1,
-        itemHeight: 48,
         itemBuilder: (_, __) => ItemSectionHeaderWidget(
           sectionIdentifier: sectionId,
           title: ManifestText<DestinyTraitDefinition>(categoryHash),
@@ -150,10 +150,10 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
           idealCount,
           unequippedCount,
         ),
-    ].whereType<SliverSection>().toList();
+    ].whereType<ScrollableSection>().toList();
   }
 
-  SliverSection? buildItemSection(
+  ScrollableSection? buildItemSection(
     BuildContext context,
     List<DestinyItemInfo> items,
     InventoryItemWidgetDensity? density,
@@ -163,8 +163,8 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
     if (density == null) return null;
     final itemHeight = density.itemHeight;
     if (itemHeight != null) {
-      return SliverSection.fixedHeight(
-        itemHeight: itemHeight + 4,
+      return FixedHeightScrollSection(
+        itemHeight + 4,
         itemCount: itemCount,
         itemsPerRow: itemsPerRow,
         itemBuilder: (_, index) {
@@ -180,8 +180,8 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
     }
     final itemAspectRatio = density.itemAspectRatio;
     if (itemAspectRatio != null) {
-      return SliverSection.aspectRatio(
-        itemAspectRatio: itemAspectRatio,
+      return AspectRatioScrollSection(
+        itemAspectRatio,
         itemsPerRow: itemsPerRow,
         itemCount: itemCount,
         itemBuilder: (_, index) {

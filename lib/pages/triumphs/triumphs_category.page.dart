@@ -1,14 +1,11 @@
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/shared/widgets/presentation_nodes/category_breadcrumb.widget.dart';
-
-import 'package:little_light/pages/triumphs/widgets/triumph_list.widget.dart';
-import 'package:little_light/widgets/common/loading_anim.widget.dart';
-import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
+import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/layouts/presentation_nodes_tabs_scaffold.dart';
+import 'package:little_light/widgets/presentation_nodes/presentation_node_list.widget.dart';
 
 import 'triumphs.page_route.dart';
 
@@ -93,7 +90,8 @@ class TriumphsCategoryPageState extends PresentationNodesTabsScaffoldState<Trium
   Widget buildTablessBody(BuildContext context) {
     final categoryDefinition = this.categoryDefinition;
     if (categoryDefinition == null) return LoadingAnimWidget();
-    return TriumphListWidget(node: categoryDefinition);
+    return Container();
+    // return TriumphListWidget(node: categoryDefinition);
   }
 
   @override

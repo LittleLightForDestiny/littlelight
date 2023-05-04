@@ -65,37 +65,40 @@ class _CharacterRanksListWidgetState extends State<CharacterRanksListWidget>
     var screenPadding = MediaQuery.of(context).padding;
     return MultiSectionScrollView(
       [
-        SliverSection(
-            itemCount: 1,
-            itemHeight: 112,
-            itemBuilder: (context, index) => CharacterInfoWidget(
-                  key: Key("characterinfo_${widget.characterId}"),
-                  characterId: widget.characterId,
-                )),
-        SliverSection(
-            itemCount: ranks.length,
-            itemsPerRow: 3,
-            itemAspectRatio: .6,
-            itemBuilder: (context, index) {
-              final rank = ranks[index];
-              return RankItemWidget(
-                characterId: widget.characterId,
-                progression: rank,
-                key: Key("rank_${rank.progressionHash}"),
-              );
-            }),
-        SliverSection(
-            itemCount: progressions.length,
-            itemsPerRow: 1,
-            itemHeight: 96,
-            itemBuilder: (context, index) {
-              final progression = progressions[index];
-              return FactionRankItemWidget(
-                characterId: widget.characterId,
-                progression: progression,
-                key: Key("progression_${progression.progressionHash}"),
-              );
-            })
+        FixedHeightScrollSection(
+          112,
+          itemCount: 1,
+          itemBuilder: (context, index) => CharacterInfoWidget(
+            key: Key("characterinfo_${widget.characterId}"),
+            characterId: widget.characterId,
+          ),
+        ),
+        AspectRatioScrollSection(
+          .6,
+          itemCount: ranks.length,
+          itemsPerRow: 3,
+          itemBuilder: (context, index) {
+            final rank = ranks[index];
+            return RankItemWidget(
+              characterId: widget.characterId,
+              progression: rank,
+              key: Key("rank_${rank.progressionHash}"),
+            );
+          },
+        ),
+        FixedHeightScrollSection(
+          96,
+          itemCount: progressions.length,
+          itemsPerRow: 1,
+          itemBuilder: (context, index) {
+            final progression = progressions[index];
+            return FactionRankItemWidget(
+              characterId: widget.characterId,
+              progression: progression,
+              key: Key("progression_${progression.progressionHash}"),
+            );
+          },
+        )
       ],
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,

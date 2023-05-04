@@ -182,8 +182,8 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
     ));
   }
 
-  List<SliverSection> get _sections {
-    List<SliverSection> list = [
+  List<ScrollableSection> get _sections {
+    List<ScrollableSection> list = [
       buildCharInfoSliver(),
     ];
     if (categories == null) return list;
@@ -199,9 +199,9 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
     return list;
   }
 
-  SliverSection buildCharInfoSliver() {
-    return SliverSection(
-      itemHeight: 112,
+  ScrollableSection buildCharInfoSliver() {
+    return FixedHeightScrollSection(
+      112,
       itemCount: 1,
       itemBuilder: (context, _) => CharacterInfoWidget(
         key: Key("characterinfo_${widget.characterId}"),
@@ -210,34 +210,36 @@ class _CharacterPursuitsListWidgetState extends State<CharacterPursuitsListWidge
     );
   }
 
-  SliverSection buildCategoryHeaderSliver(_PursuitCategory category) {
-    return SliverSection(
-        itemBuilder: (context, _) => PursuitCategoryHeaderWidget(
-              hash: category.nameHash,
-              label: category.customLabel,
-              itemCount: category.items.length,
-              onChanged: () {
-                setState(() {});
-              },
-            ),
-        itemCount: 1,
-        itemHeight: 40);
+  ScrollableSection buildCategoryHeaderSliver(_PursuitCategory category) {
+    return FixedHeightScrollSection(
+      40,
+      itemBuilder: (context, _) => PursuitCategoryHeaderWidget(
+        hash: category.nameHash,
+        label: category.customLabel,
+        itemCount: category.items.length,
+        onChanged: () {
+          setState(() {});
+        },
+      ),
+      itemCount: 1,
+    );
   }
 
-  SliverSection buildPursuitItemsSliver(_PursuitCategory category, BucketDisplayOptions options) {
+  ScrollableSection buildPursuitItemsSliver(_PursuitCategory category, BucketDisplayOptions options) {
     final itemsPerRow = MediaQueryHelper(context).responsiveValue<int>(
       options.itemsPerRow,
       tablet: options.itemsPerRowTablet,
       desktop: options.itemsPerRowDesktop,
     );
-    return SliverSection(
-        itemBuilder: (context, index) {
-          final item = category.items[index];
-          return buildPursuitItem(item, options);
-        },
-        itemsPerRow: itemsPerRow,
-        itemCount: category.items.length,
-        itemHeight: options.itemHeight);
+    return FixedHeightScrollSection(
+      options.itemHeight,
+      itemBuilder: (context, index) {
+        final item = category.items[index];
+        return buildPursuitItem(item, options);
+      },
+      itemsPerRow: itemsPerRow,
+      itemCount: category.items.length,
+    );
   }
 
   Widget buildPursuitItem(DestinyItemComponent item, BucketDisplayOptions options) {

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/definition_item_info.dart';
 import 'package:little_light/modules/duplicated_items/pages/duplicated_items/duplicated_items.bloc.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/shared/widgets/inventory_item/duplicated_item.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
@@ -51,13 +52,13 @@ class DuplicatedItemListWidget extends StatelessWidget {
     );
   }
 
-  List<SliverSection> sections(BuildContext context) {
+  List<ScrollableSection> sections(BuildContext context) {
     return [
       for (final bucketHash in _bucketHashesOrder) ...buildBucketSections(context, bucketHash),
     ];
   }
 
-  List<SliverSection> buildBucketSections(BuildContext context, int bucketHash) {
+  List<ScrollableSection> buildBucketSections(BuildContext context, int bucketHash) {
     final bucketItems = items[bucketHash];
     if (bucketItems == null || bucketItems.isEmpty) return [];
     return [
@@ -66,10 +67,10 @@ class DuplicatedItemListWidget extends StatelessWidget {
     ];
   }
 
-  SliverSection buildHeaderSection(BuildContext context, int bucketHash) {
-    return SliverSection.fixedHeight(
+  ScrollableSection buildHeaderSection(BuildContext context, int bucketHash) {
+    return FixedHeightScrollSection(
+      48.0,
       itemCount: 1,
-      itemHeight: 48,
       itemBuilder: (_, __) => HeaderWidget(
         child: ManifestText<DestinyInventoryBucketDefinition>(
           bucketHash,
@@ -79,21 +80,21 @@ class DuplicatedItemListWidget extends StatelessWidget {
     );
   }
 
-  List<SliverSection> buildItemType(BuildContext context, int bucketHash, int itemHash) {
+  List<ScrollableSection> buildItemType(BuildContext context, int bucketHash, int itemHash) {
     final itemInstances = items[bucketHash]?[itemHash];
     if (itemInstances == null || itemInstances.isEmpty) return [];
     return [
       buildItemDefinitionSection(context, itemHash),
       buildItemInstances(context, bucketHash, itemHash),
-    ].whereType<SliverSection>().toList();
+    ].whereType<ScrollableSection>().toList();
   }
 
-  SliverSection? buildItemDefinitionSection(BuildContext context, int itemHash) {
+  ScrollableSection? buildItemDefinitionSection(BuildContext context, int itemHash) {
     final item = genericItems?[itemHash];
     if (item == null) return null;
-    return SliverSection.fixedHeight(
+    return FixedHeightScrollSection(
+      96,
       itemCount: 1,
-      itemHeight: 96,
       itemBuilder: (_, __) => InteractiveItemWrapper(
         HighDensityInventoryItem(item),
         item: item,
@@ -102,18 +103,22 @@ class DuplicatedItemListWidget extends StatelessWidget {
     );
   }
 
-  SliverSection? buildItemInstances(BuildContext context, int bucketHash, int itemHash) {
+  ScrollableSection? buildItemInstances(BuildContext context, int bucketHash, int itemHash) {
     final itemInstances = items[bucketHash]?[itemHash];
     if (itemInstances == null || itemInstances.isEmpty) return null;
-    return SliverSection.fixedHeight(
+    return FixedHeightScrollSection(
+      DuplicatedItemWidget.expectedSize.height,
       itemCount: itemInstances.length,
       itemsPerRow: itemsPerRow,
-      itemHeight: DuplicatedItemWidget.expectedSize.height,
-      itemBuilder: (_, index) => InteractiveItemWrapper(
-        DuplicatedItemWidget(itemInstances[index]),
-        item: itemInstances[index],
-        itemMargin: 1,
-      ),
+      itemBuilder: (_, index) {
+        final def = context.definition<DestinyInventoryItemDefinition>(itemHash);
+        print("${def?.displayProperties?.name} $index");
+        return InteractiveItemWrapper(
+          DuplicatedItemWidget(itemInstances[index]),
+          item: itemInstances[index],
+          itemMargin: 1,
+        );
+      },
     );
   }
 }

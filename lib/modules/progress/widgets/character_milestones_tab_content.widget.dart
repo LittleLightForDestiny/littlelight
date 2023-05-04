@@ -5,6 +5,7 @@ import 'package:little_light/modules/progress/widgets/milestone_item.widget.dart
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/character/character_info.widget.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 
 const _characterInfoHeight = 128.0;
@@ -29,14 +30,14 @@ class CharacterMilestonesTabContentWidget extends StatelessWidget with ManifestC
       key: Key("character_tab_${character.characterId}"),
       builder: (context, constraints) => MultiSectionScrollView(
         [
-          SliverSection.fixedHeight(
+          FixedHeightScrollSection(
+            _characterInfoHeight,
             itemBuilder: (context, _) => CharacterInfoWidget(
               character,
               currencies: currencies,
             ),
-            itemHeight: _characterInfoHeight,
           ),
-          SliverSection.autoSize(
+          IntrinsicHeightScrollSection(
             itemBuilder: (context, index) {
               final milestone = milestones[index];
               final key = "character ${character.characterId} milestone ${milestone.milestoneHash}";
@@ -46,10 +47,11 @@ class CharacterMilestonesTabContentWidget extends StatelessWidget with ManifestC
               );
             },
             itemCount: milestones.length,
+            itemsPerRow: 2,
           )
         ],
-        crossAxisSpacing: 50,
-        mainAxisSpacing: 10,
+        crossAxisSpacing: 8,
+        mainAxisSpacing: 8,
         padding: const EdgeInsets.all(8).copyWith(top: 0),
         scrollViewKey: scrollViewKey,
       ),

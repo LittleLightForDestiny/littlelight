@@ -48,7 +48,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   Map<DestinyClass, double>? _currentAverage;
   Map<DestinyClass, double>? _achievableAverage;
   Map<DestinyClass, double>? _equippableAverage;
-  Map<String, List<DestinyItemInfo>>? _itemsOnPostmaster;
+  Map<String, List<InventoryItemInfo>>? _itemsOnPostmaster;
 
   GameData? _gameData;
 
@@ -114,7 +114,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
 
   void updatePostmaster() {
     final allItemsInPostmaster = _profileBloc.allItems.where((i) => i.bucketHash == InventoryBucket.lostItems);
-    final itemsInPostmaster = <String, List<DestinyItemInfo>>{};
+    final itemsInPostmaster = <String, List<InventoryItemInfo>>{};
     for (final item in allItemsInPostmaster) {
       final characterId = item.characterId;
       if (characterId == null) continue;
@@ -125,7 +125,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     notifyListeners();
   }
 
-  double _getEquipmentAverage(Map<int, DestinyItemInfo> maxPowerEquipment) {
+  double _getEquipmentAverage(Map<int, InventoryItemInfo> maxPowerEquipment) {
     final totalPower = maxPowerEquipment //
         .values
         .map<int>((e) => e.primaryStatValue ?? 0)
@@ -140,7 +140,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   //   - When below the powerful cap, powerful rewards will drop above power level.
   //   - When at or above the powerful cap, powerfuls drop at power level and only pinnacle
   //     rewards will drop above level.
-  double _getAchievableAverage(Map<int, DestinyItemInfo> maxPowerEquipment) {
+  double _getAchievableAverage(Map<int, InventoryItemInfo> maxPowerEquipment) {
     final equipmentPower = maxPowerEquipment //
         .values
         .map((e) => (e.primaryStatValue ?? 0));
@@ -204,8 +204,8 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   }
 
   void _addItemToMap(
-    Map<DestinyClass, Map<int, DestinyItemInfo>> map,
-    DestinyItemInfo item,
+    Map<DestinyClass, Map<int, InventoryItemInfo>> map,
+    InventoryItemInfo item,
     DestinyInventoryItemDefinition definition,
     DestinyClass characterClass,
   ) {
@@ -231,8 +231,8 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     }
   }
 
-  Map<DestinyClass, Map<int, DestinyItemInfo>>? get equippableMaxPower => _maxEquippable;
-  Map<DestinyClass, Map<int, DestinyItemInfo>>? get maxPower => _maxPowerEquipments;
+  Map<DestinyClass, Map<int, InventoryItemInfo>>? get equippableMaxPower => _maxEquippable;
+  Map<DestinyClass, Map<int, InventoryItemInfo>>? get maxPower => _maxPowerEquipments;
 
   double? getCurrentAverage(DestinyClass classType) => _currentAverage?[classType];
   double? getAchievableAverage(DestinyClass classType) => _achievableAverage?[classType];
@@ -256,7 +256,7 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     return current >= average;
   }
 
-  List<DestinyItemInfo> getPostmasterItems(String? characterId) {
+  List<InventoryItemInfo> getPostmasterItems(String? characterId) {
     return _itemsOnPostmaster?[characterId] ?? [];
   }
 

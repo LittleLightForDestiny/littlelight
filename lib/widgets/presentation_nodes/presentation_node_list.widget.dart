@@ -18,10 +18,10 @@ class PresentationNodeListWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiSectionScrollView(
       [
-        SliverSection(
+        FixedHeightScrollSection(
+          80,
           itemsPerRow: MediaQueryHelper(context).responsiveValue(1, tablet: 2, desktop: 3),
           itemCount: node.children?.presentationNodes?.length ?? 0,
-          itemHeight: 80,
           itemBuilder: (context, index) => buildItem(context, index),
         )
       ],

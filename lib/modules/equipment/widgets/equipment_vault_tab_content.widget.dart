@@ -53,8 +53,9 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
           key: const Key("vault_tab"),
           builder: (context, constraints) => MultiSectionScrollView(
             buckets //
-                .map<List<SliverSection>>((e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
-                .fold<List<SliverSection>>([], (list, element) => list + element).toList(),
+                .map<List<ScrollableSection>>(
+                    (e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
+                .fold<List<ScrollableSection>>([], (list, element) => list + element).toList(),
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,
             padding: const EdgeInsets.all(8).copyWith(top: 0, bottom: 64),
@@ -64,7 +65,7 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
     );
   }
 
-  List<SliverSection> buildBucketSections(
+  List<ScrollableSection> buildBucketSections(
     BuildContext context,
     EquipmentVaultBucketContent bucketContent,
     BoxConstraints constraints,
@@ -79,9 +80,9 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
     final idealCount = itemDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final itemCount = (items.length / idealCount).ceil() * idealCount;
     return [
-      SliverSection.fixedHeight(
+      FixedHeightScrollSection(
+        48,
         itemCount: 1,
-        itemHeight: 48,
         itemBuilder: (_, __) => BucketHeaderListItemWidget(
           bucketHash,
           itemCount: bucketContent.items.length,
@@ -99,10 +100,10 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
           idealCount,
           itemCount,
         ),
-    ].whereType<SliverSection>().toList();
+    ].whereType<ScrollableSection>().toList();
   }
 
-  SliverSection? buildItemSection(
+  ScrollableSection? buildItemSection(
     BuildContext context,
     EquipmentVaultBucketContent bucketContent,
     List<DestinyItemInfo> items,
@@ -113,8 +114,8 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
     if (density == null) return null;
     final itemHeight = density.itemHeight;
     if (itemHeight != null) {
-      return SliverSection.fixedHeight(
-        itemHeight: itemHeight + 4,
+      return FixedHeightScrollSection(
+        itemHeight + 4,
         itemCount: itemCount,
         itemsPerRow: itemsPerRow,
         itemBuilder: (_, index) {
@@ -130,8 +131,8 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
     }
     final itemAspectRatio = density.itemAspectRatio;
     if (itemAspectRatio != null) {
-      return SliverSection.aspectRatio(
-        itemAspectRatio: itemAspectRatio,
+      return AspectRatioScrollSection(
+        itemAspectRatio,
         itemsPerRow: itemsPerRow,
         itemCount: itemCount,
         itemBuilder: (_, index) {

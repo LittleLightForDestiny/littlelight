@@ -71,8 +71,8 @@ class QuickTransferView extends StatelessWidget {
     final viewPadding = mq.viewPadding;
     return MultiSectionScrollView(
       [
-        SliverSection.fixedHeight(
-          itemHeight: InventoryItemWidgetDensity.High.itemHeight,
+        FixedHeightScrollSection(
+          InventoryItemWidgetDensity.High.itemHeight ?? 92.0,
           itemCount: items.length,
           itemsPerRow: (screenWidth / InventoryItemWidgetDensity.High.idealWidth).floor(),
           itemBuilder: (context, index) => InteractiveItemWrapper(
