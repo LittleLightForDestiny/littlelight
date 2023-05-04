@@ -3,15 +3,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/triumphs/widgets/character_info_container.widget.dart';
-import 'package:little_light/modules/triumphs/widgets/record_interval_objectives.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/shared/utils/extensions/character_data.dart';
 import 'package:little_light/shared/utils/helpers/presentation_node_helpers.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
 import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
-import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class DetailsRecordObjectivesWidget extends StatelessWidget {
   final int recordHash;

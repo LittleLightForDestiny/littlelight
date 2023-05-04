@@ -14,7 +14,6 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 // ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/services/inventory/inventory.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
@@ -28,7 +27,6 @@ import 'package:provider/provider.dart';
 
 import 'https_override/https_overrides.dart';
 import 'littlelight/littlelight_api.service.dart';
-import '../core/blocs/objectives/objectives.bloc.dart';
 import 'manifest/manifest.service.dart';
 
 final getItCoreInstance = GetIt.asNewInstance();

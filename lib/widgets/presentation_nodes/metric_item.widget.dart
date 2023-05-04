@@ -8,16 +8,13 @@ import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:bungie_api/models/destiny_trait_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/objectives/objectives.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:provider/provider.dart';
 
 class MetricItemWidget extends StatefulWidget {
   final int presentationNodeHash;

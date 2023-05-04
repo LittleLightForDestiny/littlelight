@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/triumphs/blocs/base_triumphs.bloc.dart';
-import 'package:little_light/modules/triumphs/blocs/base_triumphs.bloc.dart';
-import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
 
 import 'package:provider/provider.dart';
 

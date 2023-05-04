@@ -2,7 +2,6 @@
 
 import 'dart:math';
 
-import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';

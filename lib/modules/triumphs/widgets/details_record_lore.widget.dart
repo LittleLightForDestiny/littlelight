@@ -3,12 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/shared/widgets/containers/menu_box.dart';
-import 'package:little_light/shared/widgets/containers/menu_box_title.dart';
-import 'package:little_light/shared/widgets/containers/menu_info_box.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
 import 'package:little_light/shared/widgets/external_references/the_old_ghost_link.button.dart';
-import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 
 class DetailsRecordLoreWidget extends StatelessWidget {
   final int recordHash;

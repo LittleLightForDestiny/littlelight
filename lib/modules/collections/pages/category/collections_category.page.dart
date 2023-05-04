@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/modules/collections/blocs/base_collections.bloc.dart';
 import 'package:little_light/modules/collections/pages/category/collections_category.bloc.dart';
 import 'package:little_light/modules/collections/pages/category/collections_category.view.dart';
-import 'package:little_light/modules/collections/pages/subcategory/collections_subcategory.bloc.dart';
 import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
 import 'package:provider/provider.dart';
 

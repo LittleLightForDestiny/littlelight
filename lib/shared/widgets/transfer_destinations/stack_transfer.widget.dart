@@ -1,7 +1,6 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
 
 import 'transfer_destinations.widget.dart';

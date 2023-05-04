@@ -18,11 +18,9 @@ import 'package:little_light/modules/triumphs/pages/home/triumphs_home.page.dart
 import 'package:little_light/modules/duplicated_items/pages/duplicated_items/duplicated_items.page.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/pages/objectives/objectives.screen.dart';
-import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
 import 'package:little_light/pages/vendors/vendors.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/utils/platform_data.dart';
-import 'package:little_light/widgets/search/search.controller.dart';
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
 import 'package:little_light/widgets/side_menu/side_menu_settings.widget.dart';
 

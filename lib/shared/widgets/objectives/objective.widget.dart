@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:bungie_api/enums/destiny_unlock_value_uistyle.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';

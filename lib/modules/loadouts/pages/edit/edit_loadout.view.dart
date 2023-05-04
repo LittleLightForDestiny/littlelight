@@ -11,7 +11,6 @@ import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
-import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:provider/provider.dart';
 
 import 'edit_loadout.bloc.dart';

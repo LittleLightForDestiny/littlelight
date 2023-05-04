@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/pages/select_background/select_loadout_background.bloc.dart';
-import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';

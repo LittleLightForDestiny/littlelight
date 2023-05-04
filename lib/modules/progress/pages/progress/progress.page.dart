@@ -1,6 +1,5 @@
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
-import 'package:little_light/modules/equipment/pages/equipment/equipment.bloc.dart';
 import 'package:little_light/modules/progress/pages/progress/milestones.bloc.dart';
 import 'package:little_light/modules/progress/pages/progress/progress.bloc.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';

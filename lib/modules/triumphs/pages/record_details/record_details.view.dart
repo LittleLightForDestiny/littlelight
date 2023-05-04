@@ -7,7 +7,6 @@ import 'package:little_light/modules/triumphs/widgets/details_record_description
 import 'package:little_light/modules/triumphs/widgets/details_record_lore.widget.dart';
 import 'package:little_light/modules/triumphs/widgets/details_record_objectives.widget.dart';
 import 'package:little_light/modules/triumphs/widgets/details_record_progress.widget.dart';
-import 'package:little_light/modules/triumphs/widgets/record_interval_objectives.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
