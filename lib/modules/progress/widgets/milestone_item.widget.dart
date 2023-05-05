@@ -10,7 +10,6 @@ import 'package:little_light/modules/progress/widgets/milestone_activity_select.
 import 'package:little_light/modules/progress/widgets/milestone_modifiers.bottomsheet.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/blocs/scoped_value_repository/page_storage_helper.dart';
-import 'package:little_light/shared/widgets/containers/height_keeper.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/generic_progress_bar.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -37,12 +36,10 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
 
   @override
   Widget build(BuildContext context) {
-    final hash = milestone.milestoneHash;
-    if (hash == null) return Container();
-    return HeightKeeperWidget(
-      DefinitionProviderWidget<DestinyMilestoneDefinition>(hash, (def) => buildWithDefinition(context, def)),
-      key: key,
-    );
+    final milestoneHash = milestone.milestoneHash;
+    final def = context.definition<DestinyMilestoneDefinition>(milestoneHash);
+    if (def == null) return Container();
+    return buildWithDefinition(context, def);
   }
 
   Widget buildWithDefinition(BuildContext context, DestinyMilestoneDefinition? def) {
@@ -62,6 +59,7 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
         padding: EdgeInsets.all(4),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             buildMilestoneHeader(context, def),
@@ -76,6 +74,10 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
   Widget buildMilestoneHeader(BuildContext context, DestinyMilestoneDefinition? def) {
     String? iconUrl = def?.displayProperties?.icon;
     iconUrl ??= def?.quests?.values.firstWhereOrNull((q) => q.displayProperties?.icon != null)?.displayProperties?.icon;
+    if (def?.displayProperties?.name?.toLowerCase().startsWith('shady') ?? false) {
+      //TODO: use breakpoint here to check how to present milestone completion info
+      print('ding!');
+    }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -143,7 +145,6 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
               if (key == null) return;
               if (selected != null) {
                 context.storeValue(SelectedActivityKey(key, selected));
-                context.storeValue(HeightKeeperKey(key, null));
               }
             },
             child: Container(
@@ -202,13 +203,13 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
         .toSet();
     return Container(
       margin: EdgeInsets.only(top: 8),
+      height: 40,
       child: LayoutBuilder(
         builder: (context, constraints) => SingleChildScrollView(
           controller: ScrollController(keepScrollOffset: false, initialScrollOffset: 0),
           scrollDirection: Axis.horizontal,
           child: IntrinsicWidth(
-            child: IntrinsicHeight(
-                child: Container(
+            child: Container(
               constraints: BoxConstraints(minWidth: constraints.maxWidth),
               child: Row(
                 children: phases.mapIndexed(
@@ -239,7 +240,7 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
                   },
                 ).toList(),
               ),
-            )),
+            ),
           ),
         ),
       ),
@@ -291,7 +292,7 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
               borderRadius: BorderRadius.circular(4),
             ),
             padding: EdgeInsets.all(4),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
               Container(
                 margin: EdgeInsets.only(bottom: 4),
                 padding: EdgeInsets.all(4),
@@ -304,20 +305,24 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
                   style: context.textTheme.button,
                 ),
               ),
-              Wrap(
-                runAlignment: WrapAlignment.start,
-                runSpacing: 4,
-                spacing: 4,
+              Row(
                 children: modifierHashes
                     .map(
-                      (e) => SizedBox(
-                        width: 24,
-                        height: 24,
-                        child: ManifestImageWidget<DestinyActivityModifierDefinition>(e),
-                      ),
+                      (e) {
+                        final def = context.definition<DestinyActivityModifierDefinition>(e);
+                        final hasIcon = def?.displayProperties?.hasIcon ?? false;
+                        if (!hasIcon) return null;
+                        return Container(
+                          width: 24,
+                          height: 24,
+                          child: ManifestImageWidget<DestinyActivityModifierDefinition>(e),
+                          margin: EdgeInsets.only(right: 4),
+                        );
+                      },
                     )
+                    .whereType<Widget>()
                     .toList(),
-              )
+              ),
             ]),
           ),
         ),

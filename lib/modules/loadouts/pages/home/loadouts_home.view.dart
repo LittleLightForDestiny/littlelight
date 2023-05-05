@@ -9,6 +9,8 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
@@ -195,11 +197,14 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
     if (_state.isEmpty) {
       return buildNoLoadoutsBody(context);
     }
-    return MasonryGridView.count(
-      key: Key("loadouts_grid_${_state.lastUpdated}"),
-      itemCount: loadouts.length,
-      crossAxisCount: MediaQueryHelper(context).responsiveValue<int>(1, tablet: 2, laptop: 3),
-      itemBuilder: (context, index) => getItem(context, index),
+    return MultiSectionScrollView(
+      [
+        IntrinsicHeightScrollSection(
+          itemBuilder: buildLoadout,
+          itemsPerRow: MediaQueryHelper(context).responsiveValue<int>(1, tablet: 2, laptop: 3),
+          itemCount: loadouts.length,
+        ),
+      ],
     );
   }
 
@@ -222,7 +227,7 @@ class LoadoutsHomeViewState extends State<LoadoutsHomeView> with ProfileConsumer
             ]));
   }
 
-  Widget getItem(BuildContext context, int index) {
+  Widget buildLoadout(BuildContext context, int index) {
     final loadout = _state.loadouts![index];
     return LoadoutListItemWidget(
       loadout,

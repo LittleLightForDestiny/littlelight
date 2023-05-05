@@ -30,12 +30,12 @@ class LoadoutListItemWidget extends StatelessWidget {
         child: Material(
             elevation: 1,
             color: Theme.of(context).colorScheme.secondaryContainer,
-            child: Column(children: [
+            child: Column(mainAxisSize: MainAxisSize.min, children: [
               SizedBox(
                 height: kToolbarHeight,
                 child: buildTitleBar(context),
               ),
-              buildLoadoutsContainer(context),
+              Expanded(child: buildLoadoutsContainer(context)),
               buildButtonBar(context)
             ])));
   }
@@ -44,6 +44,7 @@ class LoadoutListItemWidget extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.all(4),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             buildGenericItems(context),
             buildClassSpecificItems(context, DestinyClass.Titan),
