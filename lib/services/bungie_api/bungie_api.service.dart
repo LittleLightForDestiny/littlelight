@@ -231,7 +231,6 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
 }
 
 class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
-  static List<Cookie>? _persistentCookies;
   BungieNetToken? token;
   bool autoRefreshToken;
   int retries = 0;
@@ -287,20 +286,12 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
     if (config.method == 'GET') {
       var req = await client.getUrl(Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
       headers.forEach((name, value) => req.headers.add(name, value));
-      final cookies = _persistentCookies;
-      if (cookies != null) {
-        req.cookies.addAll(cookies);
-      }
       response = await req.close().timeout(const Duration(seconds: 15));
     } else {
       String body = config.bodyContentType == 'application/json' ? jsonEncode(config.body) : config.body;
       var req = await client.postUrl(Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
       headers.forEach((name, value) => req.headers.add(name, value));
       req.write(body);
-      final cookies = _persistentCookies;
-      if (cookies != null) {
-        req.cookies.addAll(cookies);
-      }
       response = await req.close().timeout(const Duration(seconds: 15));
     }
 
@@ -324,10 +315,6 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
       json = jsonDecode(text);
     } catch (e) {}
 
-    if (response.statusCode == 400) {
-      _persistentCookies = [];
-    }
-
     if (response.statusCode != 200) {
       logger.error("got an error status ${response.statusCode} from API", error: json ?? textResponse);
       throw BungieApiException.fromJson(json ?? {}, response.statusCode);
@@ -338,9 +325,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
     if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
       throw BungieApiException.fromJson(json, response.statusCode);
     }
-    if (response.cookies.isNotEmpty) {
-      _persistentCookies = response.cookies;
-    }
+
     return HttpResponse(json, response.statusCode);
   }
 }

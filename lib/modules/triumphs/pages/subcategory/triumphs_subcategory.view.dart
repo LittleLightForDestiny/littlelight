@@ -1,6 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/triumphs/blocs/base_triumphs.bloc.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/views/base_presentation_node.view.dart';
 import 'package:little_light/shared/widgets/presentation_nodes/presentation_node_item.widget.dart';
 import 'package:little_light/shared/widgets/presentation_nodes/presentation_node_item_list.widget.dart';
@@ -35,15 +36,17 @@ class TriumphsSubcategoryView extends BasePresentationNodeView {
     return PresentationNodeListWidget(
       node.hash,
       padding: padding,
-      presentationNodeBuilder: (context, entry) => PresentationNodeItemWidget(
-        entry.presentationNodeHash,
-        progress: state.getProgress(entry.presentationNodeHash),
-        characters: state.characters,
-        onTap: () => bloc.openPresentationNode(
+      presentationNodeBuilder: (context, entry) {
+        return PresentationNodeItemWidget(
           entry.presentationNodeHash,
-          parentHashes: [node.hash].whereType<int>().toList(),
-        ),
-      ),
+          progress: state.getProgress(entry.presentationNodeHash),
+          characters: state.characters,
+          onTap: () => bloc.openPresentationNode(
+            entry.presentationNodeHash,
+            parentHashes: [node.hash].whereType<int>().toList(),
+          ),
+        );
+      },
       recordBuilder: (context, entry) => RecordItemWidget(
         entry.recordHash,
         progress: state.getRecordProgress(entry.recordHash),

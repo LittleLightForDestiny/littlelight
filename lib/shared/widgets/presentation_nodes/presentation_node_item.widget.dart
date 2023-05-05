@@ -174,7 +174,6 @@ class PresentationNodeItemWidget extends StatelessWidget {
     if (completionRecordHash == null) return null;
     return SealInfoWidget(
       completionRecordHash,
-      progress: progress,
     );
   }
 }

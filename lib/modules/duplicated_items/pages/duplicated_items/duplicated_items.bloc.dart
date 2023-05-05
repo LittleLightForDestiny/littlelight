@@ -69,11 +69,6 @@ class DuplicatedItemsBloc extends ChangeNotifier {
     for (final i in items) {
       final itemHash = i.itemHash;
       if (itemHash != null) hashes.add(itemHash);
-      final plugs = i.reusablePlugs;
-      if (plugs != null)
-        for (final p in plugs.values) {
-          hashes.addAll(p.map((e) => e.plugItemHash).whereType<int>());
-        }
     }
     await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     loaded = true;

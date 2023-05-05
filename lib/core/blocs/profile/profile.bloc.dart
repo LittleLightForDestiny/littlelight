@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
+import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -80,6 +81,9 @@ class ProfileBloc extends ChangeNotifier
 
   List<DestinyCharacterInfo>? _characters;
   List<DestinyCharacterInfo>? get characters => _characters;
+
+  DestinyCharacterInfo? _lastPlayedCharacter;
+  DestinyCharacterInfo? get lastPlayedCharacter => _lastPlayedCharacter;
 
   List<DestinyItemComponent>? _currencies;
   List<DestinyItemComponent>? get currencies => _currencies;
@@ -199,6 +203,9 @@ class ProfileBloc extends ChangeNotifier
     }
     final characters = sortCharacters(sortType, profileCharacters);
     _characters = characters;
+
+    final lastPlayed = sortCharacters(CharacterSortParameterType.LastPlayed, profileCharacters);
+    _lastPlayedCharacter = lastPlayed.firstOrNull;
   }
 
   Future<void> _updateItems(DestinyProfileResponse? profile) async {

@@ -20,6 +20,8 @@ class TriumphsHomeBloc extends TriumphsBloc {
   List<DestinyPresentationNodeDefinition>? get tabNodes => _tabNodeDefinitions;
   List<DestinyPresentationNodeDefinition>? _tabNodeDefinitions;
 
+  Map<int?, List<DestinyPresentationNodeDefinition>>? _additionalTabNodes;
+
   @protected
   final DestinySettingsService destinySettings;
 
@@ -45,19 +47,27 @@ class TriumphsHomeBloc extends TriumphsBloc {
 
   @override
   Future<void> loadDefinitions() async {
-    final nodeHashes = [
+    final tabNodeHashes = [
       destinySettings.triumphsRootNode,
-      destinySettings.loreRootNode,
-      destinySettings.catalystsRootNode,
       destinySettings.sealsRootNode,
       destinySettings.legacyTriumphsRootNode,
       destinySettings.legacySealsRootNode,
     ].whereType<int>();
-    await loadNodeDefinitions(nodeHashes);
-    _tabNodeDefinitions = nodeHashes //
+    final additionalTabNodeHashes = [
+      destinySettings.loreRootNode,
+      destinySettings.catalystsRootNode,
+    ].whereType<int>();
+    await loadNodeDefinitions({...tabNodeHashes, ...additionalTabNodeHashes});
+    _tabNodeDefinitions = tabNodeHashes //
         .map((e) => nodeDefinitions[e])
         .whereType<DestinyPresentationNodeDefinition>()
         .toList();
+    _additionalTabNodes = {
+      destinySettings.triumphsRootNode: [
+        nodeDefinitions[destinySettings.loreRootNode],
+        nodeDefinitions[destinySettings.catalystsRootNode],
+      ].whereType<DestinyPresentationNodeDefinition>().toList()
+    };
   }
 
   @override
@@ -73,6 +83,10 @@ class TriumphsHomeBloc extends TriumphsBloc {
 
   @override
   List<int>? get parentNodeHashes => null;
+
+  List<DestinyPresentationNodeDefinition>? getAdditionalNodes(int? presentationNodeHash) {
+    return _additionalTabNodes?[presentationNodeHash];
+  }
 
   @override
   void update() {

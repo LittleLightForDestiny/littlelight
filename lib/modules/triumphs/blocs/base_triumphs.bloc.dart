@@ -101,10 +101,14 @@ abstract class TriumphsBloc extends ChangeNotifier {
     final completionData = _presentationNodesCompletionData ??= {};
     completionData.addEntries(childHashes.map((e) => MapEntry(e, getPresentationNodeCompletionData(profileBloc, e))));
 
-    final recordChildHashes = nodeDefs.values.map((e) {
-      final childHashes = e.children?.records?.map((e) => e.recordHash) ?? <int?>[];
-      return childHashes.toList();
-    }).fold<List<int?>>([], (previousValue, element) => previousValue + element).whereType<int>();
+    final recordChildHashes = nodeDefs.values //
+        .map((e) {
+          final childHashes = e.children?.records?.map((e) => e.recordHash) ?? <int?>[];
+          return childHashes.toList();
+        })
+        .fold<List<int?>>([], (previousValue, element) => previousValue + element)
+        .whereType<int>()
+        .toSet();
 
     final recordsData = _recordsData ??= <int, RecordProgressData>{};
     recordsData.addEntries(recordChildHashes.map((e) => MapEntry(e, getRecordData(profileBloc, e))));

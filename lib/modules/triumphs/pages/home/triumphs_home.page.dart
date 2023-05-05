@@ -13,8 +13,8 @@ class TriumphsHomePage extends StatelessWidget {
         ChangeNotifierProvider<TriumphsBloc>(create: (context) => TriumphsHomeBloc(context)),
       ],
       builder: (context, _) => TriumphsHomeView(
-        context.read<TriumphsBloc>(),
-        context.watch<TriumphsBloc>(),
+        context.read<TriumphsBloc>() as TriumphsHomeBloc,
+        context.watch<TriumphsBloc>() as TriumphsHomeBloc,
       ),
     );
   }

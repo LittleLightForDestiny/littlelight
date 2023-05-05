@@ -65,7 +65,7 @@ class SmallObjectiveWidget extends StatelessWidget {
     final total = definition?.completionValue ?? 0;
     return Container(
         height: 4,
-        color: Theme.of(context).colorScheme.secondary,
+        color: context.theme.surfaceLayers.layer3,
         alignment: Alignment.centerLeft,
         child: progress > 0
             ? FractionallySizedBox(

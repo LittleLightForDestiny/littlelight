@@ -1,4 +1,3 @@
-
 import 'package:bungie_api/enums/destiny_unlock_value_uistyle.dart';
 import 'package:bungie_api/models/destiny_objective_definition.dart';
 import 'package:bungie_api/models/destiny_objective_progress.dart';
@@ -49,7 +48,7 @@ class ObjectiveWidget extends StatelessWidget {
 
   Widget buildCheck(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(border: Border.all(width: 1, color: color ?? context.theme.onSurfaceLayers.layer2)),
+        decoration: BoxDecoration(border: Border.all(width: 1, color: getForegroundColor(context))),
         width: _objectiveBarHeight,
         height: _objectiveBarHeight,
         padding: const EdgeInsets.all(2),
@@ -66,6 +65,8 @@ class ObjectiveWidget extends StatelessWidget {
   }
 
   Color getForegroundColor(BuildContext context) => color ?? context.theme.onSurfaceLayers.layer0;
+
+  Color getBackgroundColor(BuildContext context) => context.theme.surfaceLayers.layer1;
 
   Widget buildBar(BuildContext context) {
     final definition = context.definition<DestinyObjectiveDefinition>(objectiveHash);
@@ -176,11 +177,11 @@ class ObjectiveWidget extends StatelessWidget {
     final definition = context.definition<DestinyObjectiveDefinition>(objectiveHash);
     int progress = objective?.progress ?? 0;
     int total = definition?.completionValue ?? 0;
-    Color? color = Color.lerp(getBarColor(context), context.theme.surfaceLayers.layer0, .1);
+    Color? color = Color.lerp(getBarColor(context), getBackgroundColor(context), .1);
     if (isComplete) return Container();
     return Container(
         margin: const EdgeInsets.all(2),
-        color: Theme.of(context).colorScheme.secondaryContainer,
+        color: getBackgroundColor(context),
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
           widthFactor: (progress / total).clamp(0, 1),
