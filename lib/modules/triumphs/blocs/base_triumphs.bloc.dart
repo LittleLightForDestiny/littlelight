@@ -1,6 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/objectives/objectives.bloc.dart';
+import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
@@ -22,7 +22,7 @@ abstract class TriumphsBloc extends ChangeNotifier {
   @protected
   final SelectionBloc selectionBloc;
   @protected
-  final TrackingBloc trackingBloc;
+  final ObjectiveTracking trackingBloc;
 
   Map<int, RecordProgressData>? _recordsData;
 
@@ -43,7 +43,7 @@ abstract class TriumphsBloc extends ChangeNotifier {
         this.userSettings = context.read<UserSettingsBloc>(),
         this.manifest = context.read<ManifestService>(),
         this.selectionBloc = context.read<SelectionBloc>(),
-        this.trackingBloc = context.read<TrackingBloc>(),
+        this.trackingBloc = context.read<ObjectiveTracking>(),
         super() {
     init();
   }

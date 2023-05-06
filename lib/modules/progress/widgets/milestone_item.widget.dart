@@ -7,9 +7,14 @@ import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.d
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/progress/widgets/milestone_activity_select.bottomsheet.dart';
+import 'package:little_light/modules/progress/widgets/milestone_item_modifiers.widget.dart';
+import 'package:little_light/modules/progress/widgets/milestone_item_phases.widget.dart';
+import 'package:little_light/modules/progress/widgets/milestone_item_rewards.widget.dart';
 import 'package:little_light/modules/progress/widgets/milestone_modifiers.bottomsheet.dart';
+import 'package:little_light/modules/progress/widgets/milestone_rewards.bottomsheet.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/blocs/scoped_value_repository/page_storage_helper.dart';
+import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/generic_progress_bar.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -63,21 +68,20 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             buildMilestoneHeader(context, def),
+            Expanded(child: SizedBox()),
             buildModifiers(context, def),
             buildPhases(context, def),
             buildChallenges(context, def),
+            buildQuestsInfo(context, def),
+            buildRewards(context),
             buildActivities(context, def),
-          ],
+          ].whereType<Widget>().toList(),
         ));
   }
 
   Widget buildMilestoneHeader(BuildContext context, DestinyMilestoneDefinition? def) {
     String? iconUrl = def?.displayProperties?.icon;
     iconUrl ??= def?.quests?.values.firstWhereOrNull((q) => q.displayProperties?.icon != null)?.displayProperties?.icon;
-    if (def?.displayProperties?.name?.toLowerCase().startsWith('shady') ?? false) {
-      //TODO: use breakpoint here to check how to present milestone completion info
-      print('ding!');
-    }
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -126,10 +130,51 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
     );
   }
 
-  Widget buildActivities(BuildContext context, DestinyMilestoneDefinition? def) {
+  Widget? buildQuestsInfo(BuildContext context, DestinyMilestoneDefinition? def) {
+    final quests = milestone.availableQuests;
+    if (quests == null || quests.isEmpty) return null;
+    return Column(
+      children: [
+        for (final quest in quests) buildQuest(context, quest),
+      ],
+    );
+  }
+
+  Widget buildQuest(BuildContext context, DestinyMilestoneQuest quest) {
+    final challengeObjectives = quest.challenges?.map((e) => e.objective).whereType<DestinyObjectiveProgress>() ?? [];
+    final stepObjectives = quest.status?.stepObjectives ?? [];
+    return Container(
+        margin: EdgeInsets.only(top: 2),
+        decoration: BoxDecoration(
+          color: context.theme.surfaceLayers.layer0.withOpacity(.8),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        padding: EdgeInsets.all(4),
+        child: Column(
+          children: [
+            ...challengeObjectives.map(
+              (objective) => buildQuestObjective(context, objective),
+            ),
+            ...stepObjectives.map(
+              (objective) => buildQuestObjective(context, objective),
+            ),
+          ],
+        ));
+  }
+
+  Widget buildQuestObjective(BuildContext context, DestinyObjectiveProgress objective) {
+    final objectiveHash = objective.objectiveHash;
+    if (objectiveHash == null) return Container();
+    return ObjectiveWidget(
+      objectiveHash,
+      objective: objective,
+    );
+  }
+
+  Widget? buildActivities(BuildContext context, DestinyMilestoneDefinition? def) {
     final activities = def?.activities;
     final currentActivity = this.getSelectedActivity(context, def);
-    if (activities == null || activities.length <= 1 || currentActivity == null) return SizedBox();
+    if (activities == null || activities.length <= 1 || currentActivity == null) return null;
     return DefinitionProviderWidget<DestinyActivityDefinition>(currentActivity, (definition) {
       final name = definition?.selectionScreenDisplayProperties?.name ?? definition?.displayProperties?.name;
       return Container(
@@ -189,61 +234,16 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
         });
   }
 
-  Widget buildPhases(BuildContext context, DestinyMilestoneDefinition? def) {
+  Widget? buildPhases(BuildContext context, DestinyMilestoneDefinition? def) {
     final activityHash = getSelectedActivity(context, def);
     final defActivity = def?.activities?.firstWhereOrNull((a) => a.activityHash == activityHash);
-    if (activityHash == null) return Container();
     final phases = defActivity?.phases;
     if (phases == null) return Container();
     final milestoneActivity = milestone.activities //
         ?.firstWhereOrNull((element) => element.activityHash == activityHash);
-    final finishedPhases = milestoneActivity?.phases //
-        ?.map((e) => (e.complete ?? false) ? e.phaseHash : null)
-        .whereType<int>()
-        .toSet();
-    return Container(
-      margin: EdgeInsets.only(top: 8),
-      height: 40,
-      child: LayoutBuilder(
-        builder: (context, constraints) => SingleChildScrollView(
-          controller: ScrollController(keepScrollOffset: false, initialScrollOffset: 0),
-          scrollDirection: Axis.horizontal,
-          child: IntrinsicWidth(
-            child: Container(
-              constraints: BoxConstraints(minWidth: constraints.maxWidth),
-              child: Row(
-                children: phases.mapIndexed(
-                  (index, element) {
-                    final phaseHash = element.phaseHash;
-                    final completed = finishedPhases?.contains(phaseHash) ?? false;
-                    return Expanded(
-                      child: Container(
-                        alignment: Alignment.center,
-                        margin: EdgeInsets.all(2),
-                        decoration: BoxDecoration(
-                          color: completed
-                              ? context.theme.secondarySurfaceLayers.layer1
-                              : context.theme.surfaceLayers.layer2,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
-                        child: Text(
-                          getPhaseName(context, phaseHash, index),
-                          textAlign: TextAlign.center,
-                          style: context.textTheme.button.copyWith(
-                            color:
-                                completed ? context.theme.upgradeLayers.layer0 : context.theme.onSurfaceLayers.layer3,
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ).toList(),
-              ),
-            ),
-          ),
-        ),
-      ),
+    return MilestoneItemPhasesWidget(
+      definitionPhases: phases,
+      profilePhases: milestoneActivity?.phases,
     );
   }
 
@@ -276,57 +276,25 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
                 .toList()));
   }
 
-  Widget buildModifiers(BuildContext context, DestinyMilestoneDefinition? def) {
+  Widget? buildModifiers(BuildContext context, DestinyMilestoneDefinition? def) {
     final activityHash = getSelectedActivity(context, def);
     final activity = milestone.activities?.firstWhereOrNull((element) => element.activityHash == activityHash);
-    final modifierHashes = activity?.modifierHashes?.toSet();
-    if (activityHash == null || modifierHashes == null || modifierHashes.isEmpty) return Container();
-    return Container(
-      margin: EdgeInsets.only(top: 2),
-      child: Material(
-        child: InkWell(
-          onTap: () => MilestoneModifiersBottomSheet(activityHash, modifierHashes.toList()).show(context),
-          child: Container(
-            decoration: BoxDecoration(
-              color: context.theme.surfaceLayers.layer0.withOpacity(.8),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            padding: EdgeInsets.all(4),
-            child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 4),
-                padding: EdgeInsets.all(4),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(4),
-                  color: context.theme.surfaceLayers.layer2,
-                ),
-                child: Text(
-                  "Modifiers".translate(context).toUpperCase(),
-                  style: context.textTheme.button,
-                ),
-              ),
-              Row(
-                children: modifierHashes
-                    .map(
-                      (e) {
-                        final def = context.definition<DestinyActivityModifierDefinition>(e);
-                        final hasIcon = def?.displayProperties?.hasIcon ?? false;
-                        if (!hasIcon) return null;
-                        return Container(
-                          width: 24,
-                          height: 24,
-                          child: ManifestImageWidget<DestinyActivityModifierDefinition>(e),
-                          margin: EdgeInsets.only(right: 4),
-                        );
-                      },
-                    )
-                    .whereType<Widget>()
-                    .toList(),
-              ),
-            ]),
-          ),
-        ),
-      ),
+    final modifierHashes = activity?.modifierHashes
+        ?.where((h) {
+          final def = context.definition<DestinyActivityModifierDefinition>(h);
+          final hasIcon = def?.displayProperties?.hasIcon ?? false;
+          final hasName = def?.displayProperties?.name?.isNotEmpty ?? false;
+          return hasIcon || hasName;
+        })
+        .toSet()
+        .toList();
+    if (activityHash == null || modifierHashes == null || modifierHashes.isEmpty) return null;
+    return MilestoneItemModifiersWidget(
+      modifierHashes,
+      onTap: () => MilestoneModifiersBottomSheet(
+        activityHash,
+        modifierHashes.toList(),
+      ).show(context),
     );
   }
 
@@ -363,5 +331,29 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
     }
 
     return null;
+  }
+
+  Widget? buildRewards(BuildContext context) {
+    final rewards = milestone.rewards?.where((element) => element.entries?.isNotEmpty ?? false);
+    if (rewards == null || rewards.isEmpty) return null;
+    return Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: rewards //
+            .map((reward) => buildRewardCategory(context, reward))
+            .whereType<Widget>()
+            .toList());
+  }
+
+  Widget? buildRewardCategory(BuildContext context, DestinyMilestoneRewardCategory reward) {
+    final entries = reward.entries;
+    final def = context.definition<DestinyMilestoneDefinition>(milestone.milestoneHash);
+    final categoryDef = def?.rewards?["${reward.rewardCategoryHash}"];
+    if (entries == null || entries.isEmpty || categoryDef == null) return null;
+    return MilestoneItemRewardsCategoryWidget(
+      entries: entries,
+      categoryDefinition: categoryDef,
+      onTap: () => MilestoneRewardsBottomSheet(entries, categoryDef).show(context),
+    );
   }
 }

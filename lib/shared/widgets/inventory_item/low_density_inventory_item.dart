@@ -375,9 +375,9 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   Widget buildQuantity(BuildContext context, DestinyInventoryItemDefinition definition) {
     final quantity = item.quantity;
     final maxCount = definition.inventory?.maxStackSize;
-    if (quantity == null) return Container();
+    if (maxCount == null || maxCount == 1) return Container();
     TextStyle? textStyle = context.textTheme.itemPrimaryStatLowDensity;
-    final isMaxValue = maxCount != null && quantity == maxCount;
+    final isMaxValue = quantity == maxCount;
     if (isMaxValue) {
       textStyle = textStyle.copyWith(color: context.theme.highlightedObjectiveLayers.layer3);
     }

@@ -8,7 +8,7 @@ import 'package:little_light/widgets/common/animated_character_background.widget
 import 'package:little_light/widgets/flutter/passive_tab_bar_view.dart';
 import 'package:little_light/widgets/inventory_tabs/character_tab_header.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
-import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
+// import 'package:little_light/widgets/inventory_tabs/tabs_character_menu.widget.dart';
 import 'package:little_light/widgets/vendors/vendors_list.widget.dart';
 
 class VendorsScreen extends StatefulWidget {
@@ -53,12 +53,7 @@ class VendorsScreenState extends State<VendorsScreen>
           Positioned.fill(
             child: buildCharacterTabView(context),
           ),
-          Positioned(
-              top: 0,
-              left: 0,
-              right: 0,
-              height: topOffset + 16,
-              child: buildCharacterHeaderTabView(context)),
+          Positioned(top: 0, left: 0, right: 0, height: topOffset + 16, child: buildCharacterHeaderTabView(context)),
           Positioned(
             top: paddingTop,
             width: kToolbarHeight,
@@ -71,12 +66,11 @@ class VendorsScreenState extends State<VendorsScreen>
               },
             ),
           ),
-          Positioned(
-              top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
-              right: 8,
-              child: buildCharacterMenu(context)),
-          const InventoryNotificationWidget(
-              barHeight: 0, key: Key('inventory_notification_widget')),
+          // Positioned(
+          // top: MediaQuery.of(context).padding.top + kToolbarHeight - 52,
+          // right: 8,
+          // child: buildCharacterMenu(context)),
+          const InventoryNotificationWidget(barHeight: 0, key: Key('inventory_notification_widget')),
         ],
       ),
     );
@@ -99,25 +93,22 @@ class VendorsScreenState extends State<VendorsScreen>
   }
 
   Widget buildCharacterTabView(BuildContext context) {
-    return TabBarView(
-        controller: charTabController, children: buildCharacterTabs(context));
+    return TabBarView(controller: charTabController, children: buildCharacterTabs(context));
   }
 
   List<Widget> buildCharacterTabs(BuildContext context) {
-    List<Widget> characterTabs = characters
-        .map((character) =>
-            VendorsListWidget(characterId: character.characterId))
-        .toList();
+    List<Widget> characterTabs =
+        characters.map((character) => VendorsListWidget(characterId: character.characterId)).toList();
     return characterTabs;
   }
 
-  buildCharacterMenu(BuildContext context) {
-    return TabsCharacterMenuWidget(
-      characters,
-      controller: charTabController,
-      includeVault: false,
-    );
-  }
+  // buildCharacterMenu(BuildContext context) {
+  //   return TabsCharacterMenuWidget(
+  //     characters,
+  //     controller: charTabController,
+  //     includeVault: false,
+  //   );
+  // }
 
   List<DestinyCharacterInfo> get characters {
     return profile.characters;

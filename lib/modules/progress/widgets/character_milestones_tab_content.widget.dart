@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/modules/progress/widgets/milestone_item.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/character/character_info.widget.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
@@ -47,12 +48,12 @@ class CharacterMilestonesTabContentWidget extends StatelessWidget with ManifestC
               );
             },
             itemCount: milestones.length,
-            itemsPerRow: 2,
+            itemsPerRow: context.mediaQuery.responsiveValue(1, tablet: 2, desktop: 3),
           )
         ],
-        crossAxisSpacing: 8,
-        mainAxisSpacing: 8,
-        padding: const EdgeInsets.all(8).copyWith(top: 0),
+        crossAxisSpacing: context.mediaQuery.responsiveValue(8, tablet: 16),
+        mainAxisSpacing: context.mediaQuery.responsiveValue(8, tablet: 16),
+        padding: EdgeInsets.all(context.mediaQuery.responsiveValue<double>(8.0, tablet: 16.0)).copyWith(top: 0),
         scrollViewKey: scrollViewKey,
       ),
     );

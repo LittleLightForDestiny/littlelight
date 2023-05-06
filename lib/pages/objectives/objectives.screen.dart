@@ -9,7 +9,7 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/modules/triumphs/widgets/record_item.widget.dart';
-import 'package:little_light/core/blocs/objectives/objectives.bloc.dart';
+import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/refresh_button.widget.dart';
@@ -42,7 +42,7 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
 
   void loadObjectives() async {
     profile.includeComponentsInNextRefresh(ProfileComponentGroups.collections + ProfileComponentGroups.triumphs);
-    TrackingBloc service = context.read<TrackingBloc>();
+    ObjectiveTracking service = context.read<ObjectiveTracking>();
     items = {};
     var itemObjectives = objectives.where((o) => o.type == TrackedObjectiveType.Item);
     var plugObjectives = objectives.where((o) => o.type == TrackedObjectiveType.Plug);

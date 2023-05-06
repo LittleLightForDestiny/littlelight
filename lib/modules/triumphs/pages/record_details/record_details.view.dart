@@ -7,6 +7,7 @@ import 'package:little_light/modules/triumphs/widgets/details_record_description
 import 'package:little_light/modules/triumphs/widgets/details_record_lore.widget.dart';
 import 'package:little_light/modules/triumphs/widgets/details_record_objectives.widget.dart';
 import 'package:little_light/modules/triumphs/widgets/details_record_progress.widget.dart';
+import 'package:little_light/modules/triumphs/widgets/details_record_tracking.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
@@ -57,6 +58,7 @@ class RecordDetailsView extends StatelessWidget {
         buildDescription(context),
         buildIntervalObjectives(context),
         buildObjectives(context),
+        buildObjectiveTracking(context),
         buildLore(context),
         buildEmptySpace(context, hasFooter: hasFooter),
       ].whereType<Widget>().toList(),
@@ -119,6 +121,15 @@ class RecordDetailsView extends StatelessWidget {
         recordHash,
         progress: state.progress,
         characters: state.characters,
+      ),
+    );
+  }
+
+  Widget? buildObjectiveTracking(BuildContext context) {
+    final recordHash = state.recordHash;
+    return SliverToBoxAdapter(
+      child: DetailsRecordObjectiveTrackingWidget(
+        recordHash,
       ),
     );
   }

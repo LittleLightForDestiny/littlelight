@@ -192,8 +192,9 @@ class LittleLightThemeData {
   });
 
   final upgradeLayers = LayeredSwatch({
-    SwatchLayer.Layer0: const Color(0xFF85E6EE),
-    SwatchLayer.Layer1: const Color(0xFFCAF1F7),
+    SwatchLayer.Layer0: const Color(0xFF00D6E6),
+    SwatchLayer.Layer1: const Color(0xFF85E6EE),
+    SwatchLayer.Layer2: const Color(0xFFCAF1F7),
   });
 
   final errorLayers = LayeredSwatch({

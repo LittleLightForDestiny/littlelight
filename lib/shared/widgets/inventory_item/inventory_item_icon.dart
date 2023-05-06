@@ -11,7 +11,6 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
 
 class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
-  @deprecated
   final DestinyItemInfo itemInfo;
   final double borderSize;
   final Color? overrideBorderColor;
