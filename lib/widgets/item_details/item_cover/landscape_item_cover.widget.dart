@@ -15,11 +15,11 @@ import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
+import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/utils/socket_category_hashes.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/masterwork_counter/screenshot_masterwork_counter.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
@@ -184,13 +184,11 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
         width: size,
         height: size,
         child: Hero(
-            tag: "item_icon_${tag}_$uniqueId",
-            child: ItemIconWidget.builder(
-              item: null,
-              definition: definition,
-              instanceInfo: instanceInfo,
-              iconBorderWidth: lerpDouble(1, convertSize(3, context), expandRatio),
-            )));
+          tag: "item_icon_${tag}_$uniqueId",
+        ));
+    // child: InventoryItemIcon(
+    //   item
+    // )));
   }
 
   Widget buildNameAndType(BuildContext context, double expandRatio) {

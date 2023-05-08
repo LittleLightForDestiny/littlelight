@@ -136,7 +136,6 @@ class DetailsItemPerksWidget extends StatelessWidget {
     final selected = state.selectedPlugHashForSocket(socket.index);
     final equipped = state.equippedPlugHashForSocket(socket.index);
     final random = [selected, equipped].whereType<int>().firstWhereOrNull((h) => !available.contains(h));
-    print("${socket.index} $hasRandomPlugs");
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: socket.availablePlugHashes

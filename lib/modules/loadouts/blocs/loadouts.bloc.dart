@@ -41,8 +41,8 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
   void _loadLoadouts() async {
     if (_busy) return;
     _busy = true;
-    await Future.delayed(const Duration(milliseconds: 1));
     notifyListeners();
+    await Future.delayed(const Duration(milliseconds: 1));
     final localLoadouts = await currentMembershipStorage.getCachedLoadouts() ?? [];
     final loadoutsOrder = await currentMembershipStorage.getLoadoutsOrder() ?? [];
     _loadouts = await _indexesFromLoadouts(localLoadouts);
@@ -65,7 +65,7 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
     for (final remote in remoteLoadouts) {
       if (!localLoadoutIDs.contains(remote.assignedId)) {
         localLoadouts.add(remote);
-        break;
+        continue;
       }
       final local = localLoadouts.firstWhere((l) => l.assignedId == remote.assignedId);
       final newer = _getNewerLoadout(local, remote);

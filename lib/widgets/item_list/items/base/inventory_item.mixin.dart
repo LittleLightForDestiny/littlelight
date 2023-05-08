@@ -12,7 +12,6 @@ import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/shared/widgets/wishlists/wishlist_badges.widget.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateless_item.widget.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/primary_stat.widget.dart';
 
@@ -48,12 +47,12 @@ mixin InventoryItemMixin implements BaseDestinyStatelessItemWidget, ProfileConsu
   }
 
   itemIcon(BuildContext context) {
-    return ItemIconWidget(
-      null,
-      definition,
-      instanceInfo,
-      iconBorderWidth: iconBorderWidth,
-    );
+    // return ItemIconWidget(
+    //   null,
+    //   definition,
+    //   instanceInfo,
+    //   iconBorderWidth: iconBorderWidth,
+    // );
   }
 
   Widget primaryStatWidget(BuildContext context) {

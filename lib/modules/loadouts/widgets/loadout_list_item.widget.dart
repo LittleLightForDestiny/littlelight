@@ -7,10 +7,10 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
 import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
@@ -216,11 +216,7 @@ class LoadoutListItemWidget extends StatelessWidget {
     }
     final profile = getInjectedProfileService();
     final instance = profile.getInstanceInfo(item.instanceId);
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-      item.itemHash!,
-      (def) => ItemIconWidget.builder(item: item, definition: def, instanceInfo: instance),
-      key: Key("item_icon_${item.instanceId}"),
-    );
+    return InventoryItemIcon(item);
   }
 
   List<Widget> buildItemRow(BuildContext context, IconData icon, List<int> buckets, Map<int, DestinyItemInfo?> items) {
@@ -245,11 +241,6 @@ class LoadoutListItemWidget extends StatelessWidget {
     if (item == null) {
       return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: const Key("item_icon_empty"));
     }
-    final profile = getInjectedProfileService();
-    final instance = profile.getInstanceInfo(item.instanceId);
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-        item.itemHash!,
-        (def) => ItemIconWidget.builder(
-            item: item, definition: def, instanceInfo: instance, key: Key("item_icon_${item.instanceId}")));
+    return InventoryItemIcon(item);
   }
 }

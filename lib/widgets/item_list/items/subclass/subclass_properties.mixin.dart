@@ -3,7 +3,6 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/item_icon/subclass_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/item_list/items/base/inventory_item.mixin.dart';
 import 'package:shimmer/shimmer.dart';
@@ -14,11 +13,6 @@ mixin SubclassPropertiesMixin on InventoryItemMixin {
   Widget positionedIcon(BuildContext context) {
     return Positioned(
         top: 0, left: 0, width: iconSize + padding * 2, height: iconSize + padding * 2, child: itemIconHero(context));
-  }
-
-  @override
-  Widget itemIcon(BuildContext context) {
-    return SubclassIconWidget(null, definition, instanceInfo);
   }
 
   @override

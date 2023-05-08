@@ -15,7 +15,10 @@ class LoadoutsHomePage extends StatelessWidget {
           ),
         ),
       ],
-      child: const LoadoutsHomeView(),
+      builder: (context, child) => LoadoutsHomeView(
+        context.read<LoadoutsHomeBloc>(),
+        context.watch<LoadoutsHomeBloc>(),
+      ),
     );
   }
 }

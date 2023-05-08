@@ -21,7 +21,6 @@ import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/utils/socket_category_hashes.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -137,12 +136,12 @@ class PurchasableItemWidgetState extends State<PurchasableItemWidget>
 
   itemIcon(BuildContext context) {
     return Stack(children: [
-      ItemIconWidget(
-        null,
-        definition,
-        null,
-        iconBorderWidth: iconBorderWidth,
-      ),
+      // ItemIconWidget(
+      //   null,
+      //   definition,
+      //   null,
+      //   iconBorderWidth: iconBorderWidth,
+      // ),
       (widget.item?.quantity ?? 0) > 1
           ? Positioned(
               right: iconBorderWidth,

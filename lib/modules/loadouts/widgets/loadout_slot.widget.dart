@@ -1,5 +1,3 @@
-// @dart=2.12
-
 import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
@@ -11,9 +9,8 @@ import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
+import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 typedef OnRemoveItemFromLoadout = void Function(LoadoutIndexItem item, bool equipped);
@@ -76,32 +73,34 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
     if (hash == null) return Container();
     if (isEquipment) {
       if (LoadoutItemIndex.isClassSpecificSlot(hash)) {
-        items.addAll([DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].map(
-            (classType) => buildItemIcon(context, item: slot.classSpecificEquipped[classType], classType: classType)));
+        items.addAll([DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].map((classType) =>
+            buildItemIcon(context, loadoutIndexItem: slot.classSpecificEquipped[classType], classType: classType)));
       } else {
         items.addAll(slot.classSpecificEquipped
-            .map((classType, item) => MapEntry(classType, buildItemIcon(context, item: item, classType: classType)))
+            .map((classType, item) =>
+                MapEntry(classType, buildItemIcon(context, loadoutIndexItem: item, classType: classType)))
             .values);
-        items.add(buildItemIcon(context, item: slot.genericEquipped));
+        items.add(buildItemIcon(context, loadoutIndexItem: slot.genericEquipped));
       }
     } else {
       if (slot.unequipped.length < 9) {
         items.add(buildItemIcon(context, equipped: false));
       }
-      items.addAll(slot.unequipped.map((item) => buildItemIcon(context, item: item, equipped: false)));
+      items.addAll(slot.unequipped.map((item) => buildItemIcon(context, loadoutIndexItem: item, equipped: false)));
     }
 
     return Container(padding: const EdgeInsets.symmetric(vertical: 4), child: Wrap(children: items));
   }
 
-  Widget buildItemIcon(BuildContext context, {LoadoutIndexItem? item, DestinyClass? classType, bool equipped = true}) {
-    BoxDecoration? decoration = item?.item != null && bucketDefinition?.hash == InventoryBucket.subclass
+  Widget buildItemIcon(BuildContext context,
+      {LoadoutIndexItem? loadoutIndexItem, DestinyClass? classType, bool equipped = true}) {
+    BoxDecoration? decoration = loadoutIndexItem?.item != null && bucketDefinition?.hash == InventoryBucket.subclass
         ? null
         : BoxDecoration(border: Border.all(width: 1, color: Colors.grey.shade300));
 
     IconData? iconData;
     Widget icon;
-    if (item?.item == null) {
+    if (loadoutIndexItem?.item == null) {
       icon = Positioned.fill(
           child: Container(
               alignment: Alignment.center,
@@ -119,24 +118,20 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
                   size: 12, color: Theme.of(context).colorScheme.onSurface)));
     }
     var isTablet = MediaQueryHelper(context).tabletOrBigger;
-    final itemHash = item?.item?.itemHash;
+    final item = loadoutIndexItem?.item;
     var itemIcon = Container(
         foregroundDecoration: decoration,
         child: Stack(children: [
           Positioned.fill(
-              child: itemHash != null
-                  ? DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-                      itemHash,
-                      (def) => ItemIconWidget(item?.item, def, null),
-                      key: Key('slot_item_${item?.item?.instanceId}'),
-                    )
+              child: item != null
+                  ? InventoryItemIcon(item)
                   : ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552)),
           icon,
           Material(
               color: Colors.transparent,
               child: InkWell(onTap: () {
-                if (item?.item != null) {
-                  onOptions?.call(item!, equipped);
+                if (loadoutIndexItem?.item != null) {
+                  onOptions?.call(loadoutIndexItem!, equipped);
                 } else {
                   onAdd?.call(classType, equipped);
                 }

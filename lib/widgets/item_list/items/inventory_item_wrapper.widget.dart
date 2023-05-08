@@ -28,7 +28,6 @@ import 'package:little_light/widgets/item_list/items/base/minimal_base_inventory
 import 'package:little_light/widgets/item_list/items/emblem/emblem_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/emblem/medium_emblem_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/engram/empty_engram_inventory_item.widget.dart';
-import 'package:little_light/widgets/item_list/items/engram/minimal_engram_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/loading_inventory_item_widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/medium_subclass_inventory_item.widget.dart';
 import 'package:little_light/widgets/item_list/items/subclass/subclass_inventory_item.widget.dart';
@@ -329,16 +328,6 @@ class InventoryItemWrapperWidgetState<T extends InventoryItemWrapperWidget> exte
           );
         }
 
-      case DestinyItemType.Engram:
-        {
-          return MinimalEngramInventoryItemWidget(
-            item,
-            definition,
-            instanceInfo,
-            characterId: widget.characterId,
-            uniqueId: uniqueId,
-          );
-        }
       default:
         return MinimalBaseInventoryItemWidget(
           item,

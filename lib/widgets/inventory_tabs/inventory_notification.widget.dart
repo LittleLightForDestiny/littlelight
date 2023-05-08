@@ -9,8 +9,6 @@ import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/notification/notification.package.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -178,32 +176,19 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
 
   Widget? buildIcons(BuildContext context) {
     var itemInstanceId = _latestEvent?.item?.itemInstanceId;
-    var itemHash = _latestEvent?.item?.itemHash;
+    var item = _latestEvent?.item;
     var plugHash = _latestEvent?.plugHash;
     switch (_latestEvent?.type) {
       case NotificationType.requestedTransfer:
       case NotificationType.requestedVaulting:
-        if (itemInstanceId == null || itemHash == null) return Container();
+        if (item == null) return Container();
         var instanceInfo = profile.getInstanceInfo(itemInstanceId);
-        return Container(
-          margin: const EdgeInsets.only(left: 8),
-          width: 24,
-          height: 24,
-          key: Key("item_$itemHash"),
-          child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-              itemHash,
-              (def) => ItemIconWidget(
-                    null,
-                    def,
-                    instanceInfo,
-                    iconBorderWidth: 0,
-                  )),
-        );
+        return Container();
 
       case NotificationType.requestApplyPlug:
         return Container(
           margin: const EdgeInsets.only(left: 8),
-          key: Key("item_$itemHash"),
+          key: Key("item_$item"),
           child: Row(mainAxisSize: MainAxisSize.min, children: [
             if (plugHash != null)
               SizedBox(
@@ -212,18 +197,10 @@ class InventoryNotificationWidgetState extends State<InventoryNotificationWidget
                   child: ManifestImageWidget<DestinyInventoryItemDefinition>(
                     plugHash,
                   )),
-            if (itemHash != null && plugHash != null)
+            if (item != null && plugHash != null)
               Container(
                 width: 8,
               ),
-            if (itemHash != null)
-              SizedBox(
-                width: 24,
-                height: 24,
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                  itemHash,
-                ),
-              )
           ]),
         );
 

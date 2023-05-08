@@ -25,6 +25,7 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
 
   List<LoadoutItemIndex>? get loadouts {
     final text = _searchString.toLowerCase().replaceDiacritics();
+    if (text.isEmpty) return _allLoadouts;
     return _allLoadouts?.where((l) {
       final loadoutName = l.name;
       if (text.length <= 3) {
@@ -40,21 +41,18 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
   String get lastUpdated => _lastUpdated?.toIso8601String() ?? "";
 
   LoadoutsHomeBloc(this.context) : _loadoutsBloc = context.read<LoadoutsBloc>() {
+    _init();
+  }
+
+  _init() {
     userSettings.startingPage = LittleLightPersistentPage.Loadouts;
     _loadoutsBloc.addListener(notifyListeners);
-    _initLoadouts();
   }
 
   @override
   void dispose() {
     _loadoutsBloc.removeListener(notifyListeners);
     super.dispose();
-  }
-
-  void _initLoadouts() async {
-    await Future.delayed(Duration.zero);
-    final route = ModalRoute.of(context);
-    await Future.delayed(route?.transitionDuration ?? Duration.zero);
   }
 
   set searchString(String value) {
@@ -103,4 +101,6 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
   }
 
   void reloadLoadouts() => _loadoutsBloc.refresh();
+
+  void createNew() {}
 }

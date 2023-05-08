@@ -9,11 +9,11 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.bloc.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
-import 'package:little_light/widgets/common/item_icon/item_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';
@@ -179,17 +179,11 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
         child: ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552),
       );
     }
-    final instance = profile.getInstanceInfo(item.instanceId);
     return AspectRatio(
       aspectRatio: 1,
       child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
         itemHash,
-        (def) => ItemIconWidget.builder(
-          item: item,
-          definition: def,
-          instanceInfo: instance,
-          key: Key("item_icon_${item.instanceId}"),
-        ),
+        (def) => InventoryItemIcon(item),
       ),
     );
   }

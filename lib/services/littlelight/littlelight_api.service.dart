@@ -74,7 +74,6 @@ class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsume
   Future<int> deleteLoadout(Loadout loadout) async {
     Map<String, dynamic> body = loadout.toJson();
     dynamic json = await _authorizedRequest("loadout/delete", body: body);
-    logger.info(json);
     return json["result"] ?? 0;
   }
 
