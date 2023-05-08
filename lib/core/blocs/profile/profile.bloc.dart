@@ -286,16 +286,22 @@ class ProfileBloc extends ChangeNotifier
     String? characterId,
     String? itemInstanceId,
     DestinyProfileResponse profile,
-  ) =>
-      InventoryItemInfo(
-        item,
-        characterId: characterId,
-        sockets: profile.itemComponents?.sockets?.data?[itemInstanceId]?.sockets,
-        plugObjectives: profile.itemComponents?.plugObjectives?.data?[itemInstanceId]?.objectivesPerPlug,
-        reusablePlugs: profile.itemComponents?.reusablePlugs?.data?[itemInstanceId]?.plugs,
-        instanceInfo: profile.itemComponents?.instances?.data?[itemInstanceId],
-        stats: profile.itemComponents?.stats?.data?[itemInstanceId]?.stats,
-      );
+  ) {
+    final itemHash = item.itemHash;
+    final objectives = itemInstanceId != null
+        ? (profile.itemComponents?.objectives?.data?[itemInstanceId])
+        : (profile.characterUninstancedItemComponents?[characterId]?.objectives?.data?["$itemHash"]);
+    return InventoryItemInfo(
+      item,
+      characterId: characterId,
+      sockets: profile.itemComponents?.sockets?.data?[itemInstanceId]?.sockets,
+      plugObjectives: profile.itemComponents?.plugObjectives?.data?[itemInstanceId]?.objectivesPerPlug,
+      reusablePlugs: profile.itemComponents?.reusablePlugs?.data?[itemInstanceId]?.plugs,
+      instanceInfo: profile.itemComponents?.instances?.data?[itemInstanceId],
+      stats: profile.itemComponents?.stats?.data?[itemInstanceId]?.stats,
+      objectives: objectives,
+    );
+  }
 
   DestinyCharacterInfo _createCharacterInfo(
     DestinyCharacterComponent character,

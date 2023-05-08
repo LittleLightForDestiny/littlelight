@@ -168,7 +168,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
         itemsPerRow: itemsPerRow,
         itemBuilder: (_, index) {
           if (index < items.length) {
-            return buildItem(items[index], density);
+            return buildItem(context, items[index], density);
           }
           final bucketHash = bucketContent.bucketHash;
           final characterId = character.characterId;
@@ -193,7 +193,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
         itemCount: itemCount,
         itemBuilder: (_, index) {
           if (index < items.length) {
-            return buildItem(items[index], density);
+            return buildItem(context, items[index], density);
           }
           final characterId = character.characterId;
           if (canTransfer && index < bucketCount && characterId != null) {
@@ -212,7 +212,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
     return null;
   }
 
-  Widget buildItem(DestinyItemInfo item, InventoryItemWidgetDensity density) {
+  Widget buildItem(BuildContext context, DestinyItemInfo item, InventoryItemWidgetDensity density) {
     return InteractiveItemWrapper(
       InventoryItemWidget(
         item,

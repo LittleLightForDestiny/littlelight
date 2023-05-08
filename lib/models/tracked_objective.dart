@@ -7,7 +7,9 @@ enum TrackedObjectiveType {
   @JsonValue('item')
   Item,
   @JsonValue('plug')
-  Plug
+  Plug,
+  @JsonValue('questline')
+  Questline
 }
 
 @JsonSerializable()

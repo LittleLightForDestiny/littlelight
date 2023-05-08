@@ -35,8 +35,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   UserMembershipData? account;
   GroupUserInfoCard? membership;
 
-  static final Animatable<double> _easeInTween =
-      CurveTween(curve: Curves.easeIn);
+  static final Animatable<double> _easeInTween = CurveTween(curve: Curves.easeIn);
 
   AnimationController? _controller;
   Animation<double>? _heightFactor;
@@ -100,18 +99,14 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     return AnimatedBuilder(
       animation: _controller!.view,
       builder: _buildChildren,
-      child: closed
-          ? null
-          : Container(
-              color: Theme.of(context).backgroundColor,
-              child: widget.menuContent),
+      child: closed ? null : Container(color: Theme.of(context).backgroundColor, child: widget.menuContent),
     );
   }
 
   loadUser() async {
     UserMembershipData? membershipData = await auth.getMembershipData();
-    GroupUserInfoCard? currentMembership = membershipData?.destinyMemberships
-        ?.firstWhereOrNull((m) => m.membershipId == auth.currentMembershipID);
+    GroupUserInfoCard? currentMembership =
+        membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == auth.currentMembershipID);
     if (!mounted) return;
     setState(() {
       account = membershipData;
@@ -127,12 +122,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
           SizedBox(height: kToolbarHeight, child: profileInfo(context)),
         ],
       ),
-      Positioned(
-          left: 8,
-          bottom: 8,
-          width: 72,
-          height: 72,
-          child: profilePicture(context))
+      Positioned(left: 8, bottom: 8, width: 72, height: 72, child: profilePicture(context))
     ]);
   }
 
@@ -149,8 +139,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
       );
     }
 
-    String? url = BungieApiService.url(
-        "/img/UserThemes/$profileThemeName/mobiletheme.jpg");
+    String? url = BungieApiService.url("/img/UserThemes/$profileThemeName/mobiletheme.jpg");
     return Stack(
       children: <Widget>[
         Positioned.fill(
@@ -166,18 +155,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: const [
-                Colors.black26,
-                Colors.transparent,
-                Colors.transparent,
-                Colors.black54
-              ],
-                  stops: const [
-                0,
-                .2,
-                .7,
-                1
-              ])),
+                  colors: const [Colors.black26, Colors.transparent, Colors.transparent, Colors.black54],
+                  stops: const [0, .2, .7, 1])),
         ),
         Positioned(bottom: 4, left: 88, child: buildActivityInfo(context))
       ],
@@ -190,19 +169,12 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     if (lastCharacter == null || lastCharacterID == null) {
       return Container();
     }
-    final lastPlayed =
-        DateTime.tryParse(lastCharacter.character.dateLastPlayed ?? "");
-    final currentSession =
-        int.tryParse(lastCharacter.character.minutesPlayedThisSession ?? "");
-    final time = lastPlayed != null
-        ? timeago.format(lastPlayed,
-            allowFromNow: true, locale: context.currentLanguage)
-        : "";
+    final lastPlayed = DateTime.tryParse(lastCharacter.character.dateLastPlayed ?? "");
+    final currentSession = int.tryParse(lastCharacter.character.minutesPlayedThisSession ?? "");
+    final time = lastPlayed != null ? timeago.format(lastPlayed, allowFromNow: true) : "";
     if (lastPlayed != null &&
         currentSession != null &&
-        lastPlayed
-            .add(Duration(minutes: currentSession + 10))
-            .isBefore(DateTime.now().toUtc())) {
+        lastPlayed.add(Duration(minutes: currentSession + 10)).isBefore(DateTime.now().toUtc())) {
       return TranslatedTextWidget(
         "Last played {timeago}",
         replace: {'timeago': time.toLowerCase()},
@@ -213,10 +185,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     if (activities?.currentActivityHash == 82913930) {
       return ManifestText<DestinyPlaceDefinition>(2961497387,
           textExtractor: (def) => "${def.displayProperties?.description}",
-          style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey.shade100,
-              fontWeight: FontWeight.bold));
+          style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold));
     }
     final activityModeHash = activities?.currentActivityModeHash;
     final activityHash = activities?.currentActivityHash;
@@ -227,24 +196,18 @@ class ProfileInfoState extends State<ProfileInfoWidget>
           : Container(),
       activityHash != null
           ? ManifestText<DestinyActivityDefinition>(activityHash,
-              style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey.shade100,
-                  fontWeight: FontWeight.bold))
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold))
           : Container(),
     ]);
   }
 
   Widget profilePicture(BuildContext context) {
-    String? url =
-        BungieApiService.url(account?.bungieNetUser?.profilePicturePath);
+    String? url = BungieApiService.url(account?.bungieNetUser?.profilePicturePath);
 
     return Container(
         decoration: BoxDecoration(
             color: LittleLightTheme.of(context).surfaceLayers.layer0,
-            border: Border.all(
-                width: 2,
-                color: LittleLightTheme.of(context).surfaceLayers.layer3)),
+            border: Border.all(width: 2, color: LittleLightTheme.of(context).surfaceLayers.layer3)),
         child: url == null
             ? shimmer
             : QueuedNetworkImage(
@@ -255,26 +218,19 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   }
 
   Widget profileInfo(context) {
-    bool isCrossSaveAccount =
-        membership?.membershipId == account?.primaryMembershipId;
-    PlatformData? platform = isCrossSaveAccount
-        ? PlatformData.crossPlayData
-        : membership?.membershipType?.data;
+    bool isCrossSaveAccount = membership?.membershipId == account?.primaryMembershipId;
+    PlatformData? platform = isCrossSaveAccount ? PlatformData.crossPlayData : membership?.membershipType?.data;
     return Container(
         color: platform?.color,
         padding: const EdgeInsets.only(left: 80),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                child: Icon(platform?.icon)),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: Icon(platform?.icon)),
             Expanded(child: Text(membership?.displayName ?? "")),
             IconButton(
               enableFeedback: false,
-              icon: Transform.rotate(
-                  angle: -(_heightFactor?.value ?? 0) * 1.5,
-                  child: const Icon(Icons.settings)),
+              icon: Transform.rotate(angle: -(_heightFactor?.value ?? 0) * 1.5, child: const Icon(Icons.settings)),
               onPressed: _handleTap,
             )
           ],

@@ -25,6 +25,7 @@ class DefinitionItemInfo extends DestinyItemInfo {
     Map<String, List<DestinyItemPlugBase>>? reusablePlugs,
     List<DestinyItemSocketState>? sockets,
     Map<String, DestinyStat>? stats,
+    DestinyItemObjectivesComponent? objectives,
     int? stackIndex,
   }) : super(
           characterId: null,
@@ -32,6 +33,7 @@ class DefinitionItemInfo extends DestinyItemInfo {
           sockets: sockets,
           stats: stats,
           stackIndex: stackIndex,
+          objectives: objectives,
         );
 
   @override
@@ -64,8 +66,11 @@ class DefinitionItemInfo extends DestinyItemInfo {
   @override
   bool? get lockable => false;
 
+  int? _overrideStyleItemHash;
+
+  set overrideStyleItemHash(int? value) => _overrideStyleItemHash = value;
   @override
-  int? get overrideStyleItemHash => null;
+  int? get overrideStyleItemHash => _overrideStyleItemHash;
 
   @override
   int? get versionNumber => null;

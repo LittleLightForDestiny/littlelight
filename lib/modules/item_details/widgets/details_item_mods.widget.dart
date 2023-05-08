@@ -96,10 +96,10 @@ class DetailsItemModsWidget extends StatelessWidget {
     final bloc = context.read<SocketControllerBloc>();
     final itemHash = state.itemHash;
     if (itemHash == null) return Container();
-    final equippedPlugHash = state.getEquippedPlugHashForSocket(socket.index);
+    final equippedPlugHash = state.equippedPlugHashForSocket(socket.index);
     if (equippedPlugHash == null) return Container();
     final isSocketSelected = state.selectedSocketIndex == socket.index;
-    final selectedPlugHash = state.getSelectedPlugHashForSocket(socket.index);
+    final selectedPlugHash = state.selectedPlugHashForSocket(socket.index);
     return Stack(children: [
       Container(
         decoration: BoxDecoration(

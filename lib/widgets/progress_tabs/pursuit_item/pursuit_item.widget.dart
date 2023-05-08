@@ -17,7 +17,7 @@ import 'package:little_light/services/user_settings/user_settings.consumer.dart'
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/corner_badge.decoration.dart';
-import 'package:little_light/widgets/common/expiry_date.widget.dart';
+import 'package:little_light/shared/widgets/inventory_item/item_expiration_date.widget.dart';
 import 'package:little_light/widgets/common/item_name_bar/item_name_bar.widget.dart';
 import 'package:little_light/shared/widgets/objectives/small_objective.widget.dart';
 
@@ -224,7 +224,6 @@ class PursuitItemWidgetState<T extends PursuitItemWidget> extends State<T>
               child: item?.expirationDate != null && !isComplete
                   ? ExpiryDateWidget(
                       item.expirationDate,
-                      fontSize: widget.titleFontSize,
                     )
                   : Container(),
             ),

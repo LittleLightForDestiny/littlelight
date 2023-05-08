@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/string/replace_string_variables.dart';
 import 'package:little_light/shared/widgets/modals/base_list_bottom_sheet.base.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 class _RewardEntryAndItemPair {
   final DestinyMilestoneRewardEntry entry;
@@ -52,7 +50,6 @@ class MilestoneRewardsBottomSheet extends BaseListBottomSheet {
     bool earned = itemEntry.entry.earned ?? false;
     bool redeemed = itemEntry.entry.redeemed ?? false;
     final entryDef = categoryDefinition.rewardEntries?["${itemEntry.entry.rewardEntryHash}"];
-    final entryIcon = entryDef?.displayProperties?.icon;
     final entryName = entryDef?.displayProperties?.name;
     final entryDescription = entryDef?.displayProperties?.description;
     final hasDescription = entryDescription != null && entryDescription.isNotEmpty;

@@ -61,8 +61,10 @@ class DetailsItemPerksWidget extends StatelessWidget {
       return AnimatedContainer(
         duration: _animationDuration,
       );
-    final plugHashes = state.getRandomPlugHashesForSocket(socketIndex);
-    if (plugHashes == null) return AnimatedContainer(duration: _animationDuration);
+    final randomPlugHashes = state.randomPlugHashesForSocket(socketIndex);
+    if (randomPlugHashes == null || randomPlugHashes.isEmpty) return AnimatedContainer(duration: _animationDuration);
+    final availablePlugHashes = state.availablePlugHashesForSocket(socketIndex) ?? [];
+    final plugHashes = {...availablePlugHashes, ...randomPlugHashes}.toList();
     return AnimatedContainer(
       duration: _animationDuration,
       key: Key("mod_options_$socketIndex"),
@@ -129,10 +131,10 @@ class DetailsItemPerksWidget extends StatelessWidget {
     final bloc = context.read<SocketControllerBloc>();
     final itemHash = state.itemHash;
     if (itemHash == null) return Container();
-    final hasRandomPlugs = state.getRandomPlugHashesForSocket(socket.index)?.isNotEmpty ?? false;
+    final hasRandomPlugs = state.randomPlugHashesForSocket(socket.index)?.isNotEmpty ?? false;
     final available = socket.availablePlugHashes;
-    final selected = state.getSelectedPlugHashForSocket(socket.index);
-    final equipped = state.getEquippedPlugHashForSocket(socket.index);
+    final selected = state.selectedPlugHashForSocket(socket.index);
+    final equipped = state.equippedPlugHashForSocket(socket.index);
     final random = [selected, equipped].whereType<int>().firstWhereOrNull((h) => !available.contains(h));
 
     return Column(

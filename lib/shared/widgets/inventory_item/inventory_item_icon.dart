@@ -1,4 +1,5 @@
 import 'package:bungie_api/destiny2.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
@@ -25,6 +26,12 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
     if (definition?.isSubclass ?? false) return buildSubclass(context);
     if (definition?.isEngram ?? false) return buildEngram(context);
+    if (definition?.isQuestStep ?? false) {
+      final customImg = definition?.displayProperties?.iconSequences?.lastOrNull?.frames?.lastOrNull;
+      if (customImg != null) {
+        return buildQuestStep(context);
+      }
+    }
     return AspectRatio(
         aspectRatio: 1,
         child: Stack(
@@ -49,6 +56,13 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
 
   Widget buildSubclass(BuildContext context) => buildIconImage(context);
 
+  Widget buildQuestStep(BuildContext context) {
+    final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
+    final imgUrl = definition?.displayProperties?.iconSequences?.lastOrNull?.frames?.lastOrNull ??
+        definition?.displayProperties?.icon;
+    return QueuedNetworkImage.fromBungie(imgUrl);
+  }
+
   Widget? buildBorder(BuildContext context) {
     final theme = LittleLightTheme.of(context);
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
@@ -66,6 +80,10 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
         period: const Duration(seconds: 5),
         child: Container(color: Colors.white),
       );
+    }
+    if (definition?.isQuestStep ?? false) {
+      final isObjectiveComplete = itemInfo.objectives?.objectives?.every((o) => o.complete ?? false) ?? false;
+      if (isObjectiveComplete) return Container(color: theme.achievementLayers.layer1);
     }
     return Container(color: theme.onSurfaceLayers.layer1);
   }

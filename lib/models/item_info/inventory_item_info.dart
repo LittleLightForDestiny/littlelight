@@ -4,7 +4,8 @@ import 'package:little_light/models/item_info/destiny_item_info.dart';
 class InventoryItemInfo extends DestinyItemInfo {
   final DestinyItemComponent _item;
 
-  DestinyItemInstanceComponent? instanceInfo;
+  final DestinyItemInstanceComponent? instanceInfo;
+  final DestinyItemObjectivesComponent? objectives;
 
   InventoryItemInfo(
     DestinyItemComponent this._item, {
@@ -15,6 +16,7 @@ class InventoryItemInfo extends DestinyItemInfo {
     List<DestinyItemSocketState>? sockets,
     Map<String, DestinyStat>? stats,
     int? stackIndex,
+    DestinyItemObjectivesComponent? this.objectives,
   }) : super(
           characterId: characterId,
           plugObjectives: plugObjectives,

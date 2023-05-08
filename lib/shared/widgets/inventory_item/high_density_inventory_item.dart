@@ -1,4 +1,5 @@
 import 'package:bungie_api/destiny2.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
@@ -20,11 +21,14 @@ import 'package:little_light/shared/widgets/character/character_icon.widget.dart
 import 'package:little_light/shared/widgets/character/postmaster_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
+import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
+import 'package:little_light/shared/widgets/objectives/small_objective.widget.dart';
 import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 import 'package:little_light/shared/widgets/tags/tag_icon.widget.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/utils/stats_total.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
+import 'package:little_light/shared/widgets/inventory_item/item_expiration_date.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
@@ -463,6 +467,9 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     if (definition.isEngram) {
       return buildEngramMainContent(context, definition);
     }
+    if (definition.isQuestStep) {
+      return buildQuestStepMainContent(context, definition);
+    }
     final isStack = (definition.inventory?.maxStackSize ?? 0) > 1;
     if (isStack) {
       return buildStackableMainContent(context, definition);
@@ -538,6 +545,26 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
           ),
         ),
       ]),
+    );
+  }
+
+  Widget buildQuestStepMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
+    return Container(
+      padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Expanded(
+              child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: buildItemTypeName(context, definition)),
+              buildExpirationDate(context, definition),
+            ],
+          )),
+          buildObjectiveProgress(context, definition),
+        ],
+      ),
     );
   }
 
@@ -699,6 +726,16 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     );
   }
 
+  Widget buildExpirationDate(BuildContext context, DestinyInventoryItemDefinition definition) {
+    final expirationDate = item.expirationDate;
+    if (expirationDate == null) return Container();
+    final isDate = DateTime.tryParse(expirationDate) != null;
+    if (!isDate) return Container();
+    final isObjectiveComplete = item.objectives?.objectives?.every((o) => o.complete ?? false) ?? false;
+    if (isObjectiveComplete) return Container();
+    return ExpiryDateWidget(expirationDate);
+  }
+
   Widget buildItemTypeName(BuildContext context, DestinyInventoryItemDefinition definition) {
     final itemTypeName = definition.itemTypeDisplayName;
     if (itemTypeName == null) return Container();
@@ -851,6 +888,36 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
             plugMargin: const EdgeInsets.only(left: 1),
           );
         });
+  }
+
+  Widget buildObjectiveProgress(BuildContext context, DestinyInventoryItemDefinition definition) {
+    final objectiveHashes = definition.objectives?.objectiveHashes;
+    if (objectiveHashes == null || objectiveHashes.isEmpty) return Container();
+    if (objectiveHashes.length == 1) {
+      final objectiveHash = objectiveHashes.first;
+      final objective =
+          item.objectives?.objectives?.firstWhereOrNull((objective) => objective.objectiveHash == objectiveHash);
+      return ObjectiveWidget(
+        objectiveHash,
+        objective: objective,
+        placeholder: definition.displayProperties?.description,
+      );
+    }
+    return Row(
+      children: objectiveHashes.map((objectiveHash) {
+        final objective =
+            item.objectives?.objectives?.firstWhereOrNull((objective) => objective.objectiveHash == objectiveHash);
+        return Expanded(
+          child: Container(
+            margin: EdgeInsets.symmetric(horizontal: 2),
+            child: SmallObjectiveWidget(
+              objectiveHash,
+              objective: objective,
+            ),
+          ),
+        );
+      }).toList(),
+    );
   }
 
   Widget buildSubclassMods(BuildContext context, DestinyInventoryItemDefinition definition) {

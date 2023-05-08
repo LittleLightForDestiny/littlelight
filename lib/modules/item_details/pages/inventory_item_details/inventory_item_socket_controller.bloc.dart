@@ -32,11 +32,11 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
   @override
   Future<void> update(InventoryItemInfo item) async {
     this.item = item;
-    this.refreshStats();
+    this.refresh();
   }
 
   @protected
-  List<int>? getAvailablePlugHashesForSocket(int index) {
+  Future<List<int>?> loadAvailablePlugHashesForSocket(int index) async {
     if (item?.sockets?[index].isVisible == false) {
       return null;
     }
@@ -44,11 +44,11 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
     final plugSources = socketDef?.plugSources;
     final reusablePlugSetHash = socketDef?.reusablePlugSetHash;
     final randomizedPlugSetHash = socketDef?.randomizedPlugSetHash;
-    List<int> hashes = <int>[];
+    final hashes = <int>[];
     List<List<DestinyItemPlug>> plugSetList = [];
     if (plugSources?.contains(SocketPlugSources.ReusablePlugItems) ?? false) {
       final reusableHashes = item?.reusablePlugs?["$index"]?.map((e) => e.plugItemHash).whereType<int>().toList();
-      hashes += reusableHashes ?? [];
+      if (reusableHashes != null) hashes.addAll(reusableHashes);
     }
     if (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false) {
       if (reusablePlugSetHash != null) {
@@ -73,8 +73,7 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
         }
       }
     }
-    // TODO: This keeps us from adding Transcendent Blessing to the first mod slot
-    //if (plugSources?.contains(SocketPlugSources.InventorySourced) ?? false) {}
+
     plugSetList.forEach((plugSet) {
       final plugSetHashes = (plugSet)
           .where((element) {
@@ -87,9 +86,9 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
           .toSet();
       hashes.addAll(plugSetHashes);
     });
-    hashes += [item?.sockets?[index].plugHash].whereType<int>().toList();
-    hashes = hashes.toSet().toList();
-    return hashes;
+    final equippedPlugHash = item?.sockets?[index].plugHash;
+    if (equippedPlugHash != null) hashes.add(equippedPlugHash);
+    return hashes.toSet().toList();
   }
 
   @override
@@ -98,7 +97,7 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
   }
 
   @override
-  int? getEquippedPlugHashForSocket(int? socketIndex) {
+  int? equippedPlugHashForSocket(int? socketIndex) {
     if (socketIndex == null) return null;
     return item?.sockets?[socketIndex].plugHash;
   }
@@ -106,23 +105,6 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
   @override
   List<DestinyObjectiveProgress>? getPlugObjectives(int plugHash) {
     return item?.plugObjectives?["$plugHash"];
-  }
-
-  @override
-  bool canApplySelectedPlug() {
-    final item = this.item;
-    if (item == null) return false;
-    final socketIndex = selectedSocketIndex;
-    final plugHash = getSelectedPlugHashForSocket(socketIndex);
-    final plugDef = plugDefinitions?[plugHash];
-    final materialCost = materialRequirementDefinitions?[plugDef?.plug?.insertionMaterialRequirementHash];
-    final canApply = canApplyPlug(context, item, socketIndex, plugHash, plugDef, materialCost);
-    if (!canApply) return false;
-    final availableEnergy = availableEnergyCapacity?.equipped ?? 0;
-    final usedEnergy = usedEnergyCapacity?.equipped ?? 0;
-    final requiredEnergy = plugDef?.plug?.energyCost?.energyCost ?? 0;
-    if (usedEnergy + requiredEnergy > availableEnergy) return false;
-    return true;
   }
 
   @override
@@ -140,5 +122,24 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
   bool get isBusy => _isBusy;
 
   @override
-  List<int>? getRandomPlugHashesForSocket(int selectedIndex) => null;
+  Future<List<int>?> loadRandomPlugHashesForSocket(int selectedIndex) async => null;
+
+  @override
+  Future<bool> calculateCanApplySelectedPlug() async {
+    final item = this.item;
+    if (item == null) return false;
+    final socketIndex = selectedSocketIndex;
+    final plugHash = selectedPlugHashForSocket(socketIndex);
+    final plugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(plugHash);
+    final materialCost = await manifest.getDefinition<DestinyMaterialRequirementSetDefinition>(
+      plugDef?.plug?.insertionMaterialRequirementHash,
+    );
+    final canApply = canApplyPlug(context, item, socketIndex, plugHash, plugDef, materialCost);
+    if (!canApply) return false;
+    final availableEnergy = availableEnergyCapacity?.equipped ?? 0;
+    final usedEnergy = usedEnergyCapacity?.equipped ?? 0;
+    final requiredEnergy = plugDef?.plug?.energyCost?.energyCost ?? 0;
+    if (usedEnergy + requiredEnergy > availableEnergy) return false;
+    return true;
+  }
 }

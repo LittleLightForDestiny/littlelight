@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/utils/extensions/string/replace_string_variables.dart';
 
 const _objectiveBarHeight = 22.0;
 
@@ -116,7 +117,7 @@ class ObjectiveWidget extends StatelessWidget {
     }
     return Container(
       child: Text(
-        title,
+        title.replaceBungieVariables(context),
         maxLines: 1,
         softWrap: false,
         overflow: TextOverflow.fade,
@@ -152,7 +153,7 @@ class ObjectiveWidget extends StatelessWidget {
     final formatter = NumberFormat.decimalPattern(context.currentLanguage);
     String formattedProgress = formatter.format(progress);
     String formattedTotal = formatter.format(maximum);
-
+    if (maximum <= 1 && progress <= 1) return Container();
     return Text(
       maximum <= 1 ? formattedProgress : "$formattedProgress/$formattedTotal",
       style: context.textTheme.body.copyWith(

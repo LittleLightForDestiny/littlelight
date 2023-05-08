@@ -233,9 +233,9 @@ class DetailsPlugInfoWidget extends StatelessWidget {
   Widget buildStats(BuildContext context) {
     final state = context.watch<SocketControllerBloc>();
     final socketIndex = state.selectedSocketIndex;
-    final selected = state.getSelectedPlugHashForSocket(socketIndex);
-    final equipped = state.getEquippedPlugHashForSocket(socketIndex);
-    final stats = state.getSelectedPlugStats();
+    final selected = state.selectedPlugHashForSocket(socketIndex);
+    final equipped = state.equippedPlugHashForSocket(socketIndex);
+    final stats = state.selectedPlugStats;
     if (stats == null || stats.isEmpty) return Container();
     return DetailsPlugStatsWidget(
       stats,

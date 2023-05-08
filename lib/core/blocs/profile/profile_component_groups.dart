@@ -13,6 +13,7 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemObjectives,
     DestinyComponentType.ItemSockets,
     DestinyComponentType.ItemPlugObjectives,
+    DestinyComponentType.ItemObjectives,
     DestinyComponentType.ItemReusablePlugs,
     DestinyComponentType.StringVariables,
   ];

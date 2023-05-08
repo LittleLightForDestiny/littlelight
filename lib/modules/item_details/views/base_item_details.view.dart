@@ -13,6 +13,8 @@ import 'package:little_light/modules/item_details/widgets/details_item_lore.widg
 import 'package:little_light/modules/item_details/widgets/details_item_mods.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_notes.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_perks.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_progress.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_quest_info.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_stats.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_tags.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_transfer_block.widget.dart';
@@ -21,6 +23,8 @@ import 'package:little_light/modules/item_details/widgets/details_wishlist_build
 import 'package:little_light/modules/item_details/widgets/details_wishlist_info.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_lock_status.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_wishlist_notes.widget.dart';
+import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
@@ -84,6 +88,8 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         ...buildMods(context),
         buildWishlistBuilds(context),
         buildWishlistNotes(context),
+        buildItemProgress(context),
+        buildQuestSteps(context),
         buildItemNotes(context),
         buildItemTags(context),
         buildLore(context),
@@ -114,7 +120,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final itemHash = state.itemHash;
     if (itemHash == null) return null;
     return SliverToBoxAdapter(
-      child: DetailsItemDescriptionWidget(itemHash),
+      child: DetailsItemDescriptionWidget(itemHash, item: state.item),
     );
   }
 
@@ -140,10 +146,19 @@ abstract class BaseItemDetailsView extends StatelessWidget {
   }
 
   Widget? buildActions(BuildContext context) {
+    final def = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    final isInstance = state.item?.instanceId != null;
+    final canViewInCollection = isInstance && (def?.equippable ?? false);
+    final canAddToLoadout = isInstance &&
+        (def?.equippable ?? false) &&
+        InventoryBucket.loadoutBucketHashes.contains(
+          def?.inventory?.bucketTypeHash,
+        );
+    if (!canViewInCollection && !canAddToLoadout) return null;
     return SliverToBoxAdapter(
         child: DetailsItemActionsWidget(
-      onAddToLoadout: bloc.addToLoadout,
-      onViewInCollections: bloc.viewInCollections,
+      onAddToLoadout: canAddToLoadout ? bloc.addToLoadout : null,
+      onViewInCollections: canViewInCollection ? bloc.viewInCollections : null,
     ));
   }
 
@@ -216,6 +231,29 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final items = state.duplicates;
     if (items == null || items.isEmpty) return null;
     return SliverToBoxAdapter(child: DetailsItemDuplicatesWidget(items));
+  }
+
+  Widget? buildItemProgress(BuildContext context) {
+    final item = state.item;
+    if (item == null) return null;
+    final def = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    if (def?.itemType == DestinyItemType.QuestStep) return null;
+    final objectives = def?.objectives?.objectiveHashes;
+    if (objectives == null || objectives.isEmpty) return null;
+    return SliverToBoxAdapter(
+      child: DetailsItemProgressWidget(item),
+    );
+  }
+
+  Widget? buildQuestSteps(BuildContext context) {
+    final item = state.item;
+    if (item == null) return null;
+    final def = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    if (def?.itemType != DestinyItemType.QuestStep) return null;
+    if (def?.objectives?.questlineItemHash == null) return null;
+    return SliverToBoxAdapter(
+      child: DetailsItemQuestInfoWidget(item),
+    );
   }
 
   Widget? buildItemNotes(BuildContext context) {

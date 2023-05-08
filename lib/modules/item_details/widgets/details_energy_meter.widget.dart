@@ -61,7 +61,7 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
     final state = context.watch<SocketControllerBloc>();
     final itemHash = state.itemHash;
     if (itemHash == null) return Container();
-    final equippedPlugHash = state.getEquippedPlugHashForSocket(socket.index);
+    final equippedPlugHash = state.equippedPlugHashForSocket(socket.index);
     if (equippedPlugHash == null) return Container();
     return Container(
       padding: EdgeInsets.all(4),

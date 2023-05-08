@@ -5,6 +5,7 @@ import 'package:little_light/modules/item_details/blocs/item_details.bloc.dart';
 import 'package:little_light/modules/item_details/pages/definition_item_details/definition_item_details.bloc.dart';
 
 import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
+import 'package:little_light/shared/blocs/scoped_value_repository/scoped_value_repository.bloc.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -20,6 +21,7 @@ class DefinitionItemDetailsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
         ChangeNotifierProvider<SocketControllerBloc>(create: (context) => DefinitionItemSocketControllerBloc(context)),
         ChangeNotifierProvider<ItemDetailsBloc>(create: (context) => DefinitionItemDetailsBloc(context, itemHash)),
         Provider<ItemInteractionHandlerBloc>(create: (context) {

@@ -37,11 +37,8 @@ class AppConfig {
     return value;
   }
 
-  String get littleLightApiRoot {
+  String? get littleLightApiRoot {
     final value = _dotEnv.maybeGet("littlelight_api_root");
-    if (value == null) {
-      throw Exception("Coudn't find littlelight_api_root on env");
-    }
     return value;
   }
 }

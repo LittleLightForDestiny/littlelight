@@ -50,8 +50,8 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   Widget buildCurrencies(BuildContext context) {
     final currencies = this.currencies;
     if (currencies == null) return Container();
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
+    return Wrap(
+      alignment: WrapAlignment.end,
       children: currencies.reversed
           .map((e) => Row(
                 mainAxisSize: MainAxisSize.min,

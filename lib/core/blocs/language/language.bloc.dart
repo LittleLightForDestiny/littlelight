@@ -7,20 +7,12 @@ import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/language_info.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/cn_messages.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/de_messages.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/en_messages.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/es_messages.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/fr_messages.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/it_messages.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/ja_messages.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/ko_messages.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/pl_messages.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/pt_messages.dart';
-import 'package:little_light/core/blocs/language/timeago_messages/ru_messages.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
+import 'timeago_messages/translated_lookup_messages.dart';
+import 'timeago_messages/translated_short_lookup_messages.dart';
 
 setupLanguageService() {
   GetIt.I.registerSingleton<LanguageBloc>(LanguageBloc._internal());
@@ -43,19 +35,9 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
   LanguageBloc._internal();
 
   init(BuildContext context) {
-    timeago.setLocaleMessages('de', DeMessages());
-    timeago.setLocaleMessages('en', EnMessages());
-    timeago.setLocaleMessages('es', EsMessages());
-    timeago.setLocaleMessages('es-mx', EsMessages());
-    timeago.setLocaleMessages('fr', FrMessages());
-    timeago.setLocaleMessages('it', ItMessages());
-    timeago.setLocaleMessages('ja', JaMessages());
-    timeago.setLocaleMessages('ko', KoMessages());
-    timeago.setLocaleMessages('pl', PlMessages());
-    timeago.setLocaleMessages('pt-br', PtBrMessages());
-    timeago.setLocaleMessages('ru', RuMessages());
-    timeago.setLocaleMessages('zh-cht', ZhMessages());
-    timeago.setLocaleMessages('zh-chs', ZhMessages());
+    timeago.setLocaleMessages('auto', TranslatedLookupMessages(this));
+    timeago.setLocaleMessages('short_auto', ShortTranslatedLookupMessages(this));
+    timeago.setDefaultLocale('auto');
 
     Locale locale = Localizations.localeOf(context);
     final languageCode = locale.languageCode;
@@ -118,7 +100,8 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
     return _replace(translatedText, replace);
   }
 
-  String translate(String text, {String? languageCode, Map<String, String> replace = const {}}) {
+  String translate(String text,
+      {String? languageCode, Map<String, String> replace = const {}, String? overrideDefaultText}) {
     String code = languageCode ?? currentLanguage;
     Map<String, String>? translationMap = _translationMaps[code];
     if (translationMap == null) {
@@ -128,6 +111,12 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
       return "";
     }
     String? translatedText = translationMap?[text];
+
+    if (overrideDefaultText != null) {
+      final shouldOverride = translatedText == text || translatedText == null;
+      if (shouldOverride) translatedText = overrideDefaultText;
+    }
+
     translatedText ??= text;
     return _replace(translatedText, replace);
   }

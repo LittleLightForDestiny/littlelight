@@ -34,12 +34,7 @@ class DefinitionItemDetailsBloc extends ItemDetailsBloc {
   List<TransferDestination>? _equipDestinations;
 
   MappedWishlistBuilds? _allWishlistBuilds;
-  MappedWishlistBuilds? _matchedWishlistBuilds;
-
   MappedWishlistNotes? _allWishlistNotes;
-  MappedWishlistNotes? _matchedWishlistNotes;
-
-  bool _lockBusy = false;
 
   DefinitionItemDetailsBloc(BuildContext context, int itemHash)
       : this._itemHash = itemHash,

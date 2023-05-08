@@ -19,7 +19,7 @@ class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsume
   String? _uuid;
   String? _secret;
 
-  String get apiRoot => appConfig.littleLightApiRoot;
+  String? get apiRoot => appConfig.littleLightApiRoot;
 
   static final LittleLightApiService _singleton = LittleLightApiService._internal();
   factory LittleLightApiService() {
@@ -79,6 +79,10 @@ class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsume
   }
 
   Future<dynamic> _authorizedRequest(String path, {Map<String, dynamic> body = const {}}) async {
+    if (apiRoot == null) {
+      logger.info("Warning: running Little Light without a proper API root config will not save data in the cloud");
+      return null;
+    }
     String? membershipID = auth.currentMembershipID;
     BungieNetToken? token = await auth.getCurrentToken();
     String? accessToken = token?.accessToken;

@@ -17,14 +17,13 @@ import 'package:little_light/shared/blocs/scoped_value_repository/page_storage_h
 import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/generic_progress_bar.widget.dart';
-import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:provider/provider.dart';
 
-class SelectedActivityKey extends StorableValue<int> {
-  SelectedActivityKey(Key key, [int? value]) : super(key, value);
+class _SelectedActivityKey extends StorableValue<int> {
+  _SelectedActivityKey(Key key, [int? value]) : super(key, value);
 }
 
 class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
@@ -35,7 +34,7 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
   int? getSelectedActivity(BuildContext context, DestinyMilestoneDefinition? def) {
     final key = this.key;
     if (key == null) return def?.activities?.firstOrNull?.activityHash;
-    final hash = context.readValue(SelectedActivityKey(key))?.value;
+    final hash = context.readValue(_SelectedActivityKey(key))?.value;
     return hash ?? def?.activities?.firstOrNull?.activityHash;
   }
 
@@ -189,7 +188,7 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
               final key = this.key;
               if (key == null) return;
               if (selected != null) {
-                context.storeValue(SelectedActivityKey(key, selected));
+                context.storeValue(_SelectedActivityKey(key, selected));
               }
             },
             child: Container(

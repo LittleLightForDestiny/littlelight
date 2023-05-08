@@ -26,7 +26,7 @@ import 'inventory_item_perks.dart';
 import 'inventory_item_stats.dart';
 import 'utils/get_energy_capacity.dart';
 
-const _expectedItemSize = Size(192.0, 116.0);
+const _expectedItemSize = Size(172.0, 116.0);
 const _padding = 4.0;
 const _emblemIconSize = 40.0;
 const _tagIconSize = 20.0;
@@ -81,7 +81,11 @@ class DuplicatedItemWidget extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
-          buildCharacterName(context),
+          Row(
+              children: [
+            if (definition?.isArmor ?? false) buildTotalStats(context, definition),
+            buildCharacterName(context),
+          ].whereType<Widget>().toList()),
           if (definition?.isArmor ?? false) buildArmorMainInfo(context, definition),
           if (definition?.isWeapon ?? false) buildWeaponMainInfo(context, definition),
         ]));
@@ -143,8 +147,6 @@ class DuplicatedItemWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         buildEnergyCapacity(context, definition),
-        const SizedBox(width: 4),
-        buildTotalStats(context, definition),
         const SizedBox(width: 4),
         Text(
           "$powerLevel",

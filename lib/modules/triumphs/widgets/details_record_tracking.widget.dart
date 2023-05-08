@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
-import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
-import 'package:provider/provider.dart';
-import 'package:tinycolor2/tinycolor2.dart';
+import 'package:little_light/shared/widgets/objectives/track_objectives.button.dart';
 
 class DetailsRecordObjectiveTrackingWidget extends StatelessWidget {
   final int recordHash;
@@ -27,22 +24,9 @@ class DetailsRecordObjectiveTrackingWidget extends StatelessWidget {
   }
 
   Widget buildContent(BuildContext context) {
-    final trackingState = context.watch<ObjectiveTracking>();
-    final isTracking = trackingState.isTracked(TrackedObjectiveType.Triumph, recordHash);
-    final buttonColor = context.theme.successLayers.layer0;
-    return Container(
-      margin: EdgeInsets.all(8),
-      child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: buttonColor.mix(context.theme.surfaceLayers, isTracking ? 40 : 10),
-        ),
-        child: Text(
-          isTracking ? "Stop tracking".translate(context) : "Track objectives".translate(context),
-        ),
-        onPressed: () => context
-            .read<ObjectiveTracking>()
-            .changeTrackingStatus(TrackedObjectiveType.Triumph, recordHash, track: !isTracking),
-      ),
+    return TrackObjectivesButton(
+      TrackedObjectiveType.Triumph,
+      trackedHash: recordHash,
     );
   }
 }

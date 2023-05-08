@@ -39,7 +39,6 @@ class SmallObjectiveWidget extends StatelessWidget {
     final definition = context.definition<DestinyObjectiveDefinition>(objectiveHash);
     int progress = objective?.progress ?? 0;
     final total = objective?.completionValue ?? definition?.completionValue ?? 1;
-    if (total <= 1) return null;
     final allowOverCompletion = definition?.allowOvercompletion ?? false;
     if (!allowOverCompletion) {
       progress = progress.clamp(0, total);
@@ -81,8 +80,6 @@ class SmallObjectiveWidget extends StatelessWidget {
     if (title.isEmpty) {
       title = placeholder ?? "";
     }
-
-    if (title.isEmpty) return null;
 
     return Container(
       child: Text(

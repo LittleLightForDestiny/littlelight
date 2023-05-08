@@ -16,7 +16,7 @@ class DetailsApplyPlugButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final state = context.watch<SocketControllerBloc>();
-    final canApply = state.canApplySelectedPlug();
+    final canApply = state.canApplySelectedPlug;
     if (!canApply) return Container();
     final isPlugBusy = state.isBusy;
     final plugDef = context.definition<DestinyInventoryItemDefinition>(plugHash);

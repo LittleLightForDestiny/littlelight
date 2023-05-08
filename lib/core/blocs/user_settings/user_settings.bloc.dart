@@ -22,6 +22,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   Map<String, bool>? _detailsSectionDisplayVisibility;
 
   UserSettingsBloc._internal();
+
   init() async {
     await Future.wait([
       initItemOrdering(),
@@ -213,4 +214,6 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   set startingPage(LittleLightPersistentPage page) {
     globalStorage.startingPage = page;
   }
+
+  Duration get questExpirationWarningThreshold => Duration(hours: 4);
 }

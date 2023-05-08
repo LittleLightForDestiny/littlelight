@@ -1,12 +1,11 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
+import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
-import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:provider/provider.dart';
 
@@ -25,20 +24,19 @@ class PlugSocket {
 
 abstract class SocketControllerBloc<T> extends ChangeNotifier {
   Set<int>? _allAvailablePlugHashes;
-  Set<int> get allAvailablePlugHashes {
-    final all = _allAvailablePlugHashes;
-    if (all != null) return all;
-    final length = itemDefinition?.sockets?.socketEntries?.length ?? 0;
-    return _allAvailablePlugHashes ??= List.generate(length, (index) => getAvailablePlugHashesForSocket(index))
-        .whereType<List<int>>()
-        .fold<List<int>>([], (set, value) => set + value).toSet();
-  }
+  Set<int>? get allAvailablePlugHashes => _allAvailablePlugHashes;
 
   Set<int>? _allEquippedPlugHashes;
   Set<int>? get allEquippedPlugHashes => _allEquippedPlugHashes;
 
   Set<int>? _allSelectedPlugHashes;
   Set<int>? get allSelectedPlugHashes => _allSelectedPlugHashes;
+
+  Map<int, List<int>?> _availablePlugHashesBySocket = {};
+  List<int>? availablePlugHashesForSocket(int socket) => _availablePlugHashesBySocket[socket];
+
+  Map<int, List<int>?> _randomPlugHashesBySocket = {};
+  List<int>? randomPlugHashesForSocket(int socket) => _randomPlugHashesBySocket[socket];
 
   Map<int, int?> _selectedPlugHashes = {};
   int? _selectedSocketIndex;
@@ -63,84 +61,31 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
 
   List<StatValues>? _stats;
 
-  @protected
-  DestinyStatGroupDefinition? statGroupDefinition;
-
-  Map<int, DestinyInventoryItemDefinition>? plugDefinitions;
-
-  @protected
-  Map<int, DestinyMaterialRequirementSetDefinition>? materialRequirementDefinitions;
+  List<StatComparison>? _selectedPlugStats;
+  List<StatComparison>? get selectedPlugStats => _selectedPlugStats;
 
   List<StatValues>? get stats => _stats;
 
-  StatValues? get totalStats {
-    final isArmor = itemDefinition?.isArmor ?? false;
-    if (!isArmor) return null;
-    final stats = this._stats;
-    if (stats == null) return null;
-    int equipped = 0;
-    int equippedMasterWork = 0;
-    int selected = 0;
-    int selectedMasterwork = 0;
-    for (final s in stats) {
-      if (s.isHiddenStat) continue;
-      equipped += s.equipped;
-      selected += s.equipped;
-      equippedMasterWork += s.equippedMasterwork;
-      selectedMasterwork += s.selectedMasterwork;
-    }
-    return StatValues(
-      9999,
-      rawEquipped: equipped,
-      rawEquippedMasterwork: equippedMasterWork,
-      rawSelected: selected,
-      rawSelectedMasterwork: selectedMasterwork,
-    );
-  }
+  StatValues? _totalStats;
+  StatValues? get totalStats => _totalStats;
 
-  StatValues? get usedEnergyCapacity {
-    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
-    int totalEquipped = 0;
-    int totalSelected = 0;
-    for (int i = 0; i < totalSockets; i++) {
-      final equippedPlug = getEquippedPlugHashForSocket(i);
-      final selectedPlug = getSelectedPlugHashForSocket(i);
-      final equippedDef = plugDefinitions?[equippedPlug];
-      final selectedDef = plugDefinitions?[selectedPlug] ?? equippedDef;
-      final equippedValue = equippedDef?.plug?.energyCost?.energyCost ?? 0;
-      final selectedValue = selectedDef?.plug?.energyCost?.energyCost ?? 0;
-      totalEquipped += equippedValue;
-      totalSelected += selectedValue;
-    }
-    return StatValues(9999, rawEquipped: totalEquipped, rawSelected: totalSelected);
-  }
+  StatValues? _usedEnergyCapacity;
+  StatValues? get usedEnergyCapacity => _usedEnergyCapacity;
 
-  StatValues? get availableEnergyCapacity {
-    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
-    int totalEquipped = 0;
-    int totalSelected = 0;
-    for (int i = 0; i < totalSockets; i++) {
-      final equippedPlug = getEquippedPlugHashForSocket(i);
-      final selectedPlug = getSelectedPlugHashForSocket(i);
-      final equippedDef = plugDefinitions?[equippedPlug];
-      final selectedDef = plugDefinitions?[selectedPlug] ?? equippedDef;
-      final equippedValue = equippedDef?.plug?.energyCapacity?.capacityValue ?? 0;
-      final selectedValue = selectedDef?.plug?.energyCapacity?.capacityValue ?? 0;
-      totalEquipped += equippedValue;
-      totalSelected += selectedValue;
-    }
-    return StatValues(9999, rawEquipped: totalEquipped, rawSelected: totalSelected);
-  }
+  StatValues? _availableEnergyCapacity;
+  StatValues? get availableEnergyCapacity => _availableEnergyCapacity;
+
+  bool? _canApplySelectedPlug;
+  bool get canApplySelectedPlug => _canApplySelectedPlug ?? false;
+
+  int? get itemHash => itemDefinition?.hash;
+  bool get isBusy;
 
   SocketControllerBloc(this.context)
       : manifest = context.read<ManifestService>(),
         wishlists = getInjectedWishlistsService(),
         itemNotes = context.read<ItemNotesBloc>(),
         super();
-
-  int? get itemHash => itemDefinition?.hash;
-
-  bool get isBusy;
 
   List<DestinyItemSocketCategoryDefinition>? getSocketCategories(DestinySocketCategoryStyle? category) {
     final categories = itemDefinition?.sockets?.socketCategories?.where((socketCategory) {
@@ -173,85 +118,26 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
       final categoryDefinitions = await manifest.getDefinitions<DestinySocketCategoryDefinition>(categoryHashes);
       this.categoryDefinitions = categoryDefinitions;
     }
-    final statGroupDefinition =
-        await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
-    this.statGroupDefinition = statGroupDefinition;
-    final plugHashes = await getPossiblePlugHashesForItem(context, itemHash);
+    final plugHashes = <int>{};
     final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
     for (int i = 0; i < totalSockets; i++) {
-      final equipped = getEquippedPlugHashForSocket(i);
-      final available = getAvailablePlugHashesForSocket(i);
+      final equipped = equippedPlugHashForSocket(i);
+      final available = await loadAvailablePlugHashesForSocket(i);
+      final random = await loadRandomPlugHashesForSocket(i);
       if (equipped != null) plugHashes.add(equipped);
       if (available != null) plugHashes.addAll(available);
+      _availablePlugHashesBySocket[i] = available;
+      _randomPlugHashesBySocket[i] = random;
     }
-    final plugDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
-    this.plugDefinitions = plugDefinitions;
-    final materialRequirementHashes =
-        plugDefinitions.values.map((def) => def.plug?.insertionMaterialRequirementHash).whereType<int>();
-    final materialRequirementDefinitions =
-        await manifest.getDefinitions<DestinyMaterialRequirementSetDefinition>(materialRequirementHashes);
-    this.materialRequirementDefinitions = materialRequirementDefinitions;
-    refreshStats();
-  }
+    _allAvailablePlugHashes = plugHashes;
 
-  void refreshStats() {
-    final itemHash = this.itemHash;
-    if (itemHash == null) return;
-    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
-    final socketList = List<int>.generate(totalSockets, (index) => index);
-    final equippedPlugHashes = Map<int, int?>.fromIterable(
-      socketList,
-      key: (i) => i,
-      value: (index) => getEquippedPlugHashForSocket(index),
-    );
-    _allEquippedPlugHashes = equippedPlugHashes.values.whereType<int>().toSet();
-    final selectedPlugHashes = Map<int, int?>.fromIterable(
-      socketList,
-      key: (i) => i,
-      value: (index) => getSelectedPlugHashForSocket(index),
-    );
-    _allSelectedPlugHashes = selectedPlugHashes.values.whereType<int>().toSet();
-
-    _stats = calculateStats(
-      equippedPlugHashes,
-      selectedPlugHashes,
-      itemDefinition,
-      statGroupDefinition,
-      plugDefinitions,
-    );
-    notifyListeners();
-  }
-
-  List<StatComparison>? getSelectedPlugStats() {
-    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
-    final socketList = List<int>.generate(totalSockets, (index) => index);
-    final selectedSocketIndex = this.selectedSocketIndex;
-    if (selectedSocketIndex == null) return null;
-    final equippedPlugHash = getEquippedPlugHashForSocket(selectedSocketIndex);
-    final selectedPlugHash = getSelectedPlugHashForSocket(selectedSocketIndex);
-
-    final selectedPlugHashes = Map<int, int?>.fromIterable(
-      socketList,
-      key: (i) => i,
-      value: (index) {
-        return getSelectedPlugHashForSocket(index);
-      },
-    );
-    return comparePlugStats(
-      selectedPlugHashes,
-      selectedSocketIndex,
-      equippedPlugHash,
-      selectedPlugHash,
-      itemDefinition,
-      statGroupDefinition,
-      plugDefinitions,
-    );
+    refresh();
   }
 
   List<PlugSocket>? socketsForCategory(DestinyItemSocketCategoryDefinition category) {
     final sockets = category.socketIndexes
         ?.map((socketIndex) {
-          final hashes = getAvailablePlugHashesForSocket(socketIndex);
+          final hashes = _availablePlugHashesBySocket[socketIndex];
           if (hashes == null) return null;
           return PlugSocket(socketIndex, hashes);
         })
@@ -265,7 +151,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     if (index == null) return null;
     final categoryIsSelected = category.socketIndexes?.contains(index) ?? false;
     if (!categoryIsSelected) return null;
-    final hashes = getAvailablePlugHashesForSocket(index);
+    final hashes = _availablePlugHashesBySocket[index];
     if (hashes == null) return null;
     return PlugSocket(index, hashes);
   }
@@ -294,14 +180,14 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     if (isCurrentlySelected && isSameSocketIndex) {
       _selectedPlugHashes.remove(socketIndex);
       _selectedSocketIndex = null;
-      refreshStats();
+      refresh();
       notifyListeners();
       return;
     }
 
     _selectedPlugHashes[socketIndex] = plugHash;
     _selectedSocketIndex = socketIndex;
-    refreshStats();
+    refresh();
     notifyListeners();
     return;
   }
@@ -309,12 +195,8 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   Future<void> init(T object);
   Future<void> update(T object);
 
-  @protected
-  List<int>? getAvailablePlugHashesForSocket(int socketIndex);
-  List<int>? getRandomPlugHashesForSocket(int selectedIndex);
-
-  int? getEquippedPlugHashForSocket(int? socketIndex);
-  int? getSelectedPlugHashForSocket(int? socketIndex) => _selectedPlugHashes[socketIndex];
+  int? equippedPlugHashForSocket(int? socketIndex);
+  int? selectedPlugHashForSocket(int? socketIndex) => _selectedPlugHashes[socketIndex];
 
   int? selectedSocketIndexForCategory(DestinyItemSocketCategoryDefinition category) {
     final categoryIsSelected = category.socketIndexes?.contains(_selectedSocketIndex) ?? false;
@@ -350,14 +232,165 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     return tags;
   }
 
-  bool canApplySelectedPlug();
-
   void applyPlug(int socketIndex, int plugHash);
 
   void applySelectedPlug() {
     final socketIndex = selectedSocketIndex;
-    final plugHash = getSelectedPlugHashForSocket(socketIndex);
+    final plugHash = selectedPlugHashForSocket(socketIndex);
     if (socketIndex == null || plugHash == null) return;
     applyPlug(socketIndex, plugHash);
   }
+
+  void refresh() async {
+    final itemHash = this.itemHash;
+    if (itemHash == null) return;
+    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    final socketList = List<int>.generate(totalSockets, (index) => index);
+    final equippedPlugHashes = Map<int, int?>.fromIterable(
+      socketList,
+      key: (i) => i,
+      value: (index) => equippedPlugHashForSocket(index),
+    );
+
+    final allEquippedPlugHashes = equippedPlugHashes.values.whereType<int>().toSet();
+
+    final selectedPlugHashes = Map<int, int?>.fromIterable(
+      socketList,
+      key: (i) => i,
+      value: (index) => selectedPlugHashForSocket(index),
+    );
+
+    final plugDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>({
+      ...allEquippedPlugHashes,
+      ...selectedPlugHashes.values,
+    });
+
+    final statGroupDefinition =
+        await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
+
+    _allEquippedPlugHashes = allEquippedPlugHashes;
+    _allSelectedPlugHashes = selectedPlugHashes.values.whereType<int>().toSet();
+
+    _stats = calculateStats(
+      equippedPlugHashes,
+      selectedPlugHashes,
+      itemDefinition,
+      statGroupDefinition,
+      plugDefinitions,
+    );
+    _selectedPlugStats = await _calculateSelectedPlugStats();
+    _totalStats = await _calculateTotalStats();
+
+    _usedEnergyCapacity = await _calculateUsedEnergyCapacity();
+    _availableEnergyCapacity = await _calculateAvailableEnergyCapacity();
+
+    _canApplySelectedPlug = await calculateCanApplySelectedPlug();
+
+    notifyListeners();
+  }
+
+  /// async calculations
+
+  Future<List<StatComparison>?> _calculateSelectedPlugStats() async {
+    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    final socketList = List<int>.generate(totalSockets, (index) => index);
+    final selectedSocketIndex = this.selectedSocketIndex;
+    if (selectedSocketIndex == null) return null;
+    final equippedPlugHash = equippedPlugHashForSocket(selectedSocketIndex);
+    final selectedPlugHash = selectedPlugHashForSocket(selectedSocketIndex);
+
+    final selectedPlugHashes = Map<int, int?>.fromIterable(
+      socketList,
+      key: (i) => i,
+      value: (index) {
+        return selectedPlugHashForSocket(index);
+      },
+    );
+    final plugDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>({
+      ...selectedPlugHashes.values,
+      equippedPlugHash,
+      selectedPlugHash,
+    });
+    final statGroupDefinition =
+        await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
+    return comparePlugStats(
+      selectedPlugHashes,
+      selectedSocketIndex,
+      equippedPlugHash,
+      selectedPlugHash,
+      itemDefinition,
+      statGroupDefinition,
+      plugDefinitions,
+    );
+  }
+
+  Future<StatValues?> _calculateTotalStats() async {
+    final isArmor = itemDefinition?.isArmor ?? false;
+    if (!isArmor) return null;
+    final stats = this._stats;
+    if (stats == null) return null;
+    int equipped = 0;
+    int equippedMasterWork = 0;
+    int selected = 0;
+    int selectedMasterwork = 0;
+    for (final s in stats) {
+      if (s.isHiddenStat) continue;
+      equipped += s.equipped;
+      selected += s.equipped;
+      equippedMasterWork += s.equippedMasterwork;
+      selectedMasterwork += s.selectedMasterwork;
+    }
+    return StatValues(
+      9999,
+      rawEquipped: equipped,
+      rawEquippedMasterwork: equippedMasterWork,
+      rawSelected: selected,
+      rawSelectedMasterwork: selectedMasterwork,
+    );
+  }
+
+  Future<StatValues?> _calculateUsedEnergyCapacity() async {
+    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    int totalEquipped = 0;
+    int totalSelected = 0;
+    for (int i = 0; i < totalSockets; i++) {
+      final equippedPlug = equippedPlugHashForSocket(i);
+      final selectedPlug = selectedPlugHashForSocket(i) ?? equippedPlug;
+      final equippedDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(equippedPlug);
+      final selectedDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(selectedPlug);
+      final equippedValue = equippedDef?.plug?.energyCost?.energyCost ?? 0;
+      final selectedValue = selectedDef?.plug?.energyCost?.energyCost ?? 0;
+      totalEquipped += equippedValue;
+      totalSelected += selectedValue;
+    }
+    return StatValues(9999, rawEquipped: totalEquipped, rawSelected: totalSelected);
+  }
+
+  Future<StatValues?> _calculateAvailableEnergyCapacity() async {
+    final totalSockets = itemDefinition?.sockets?.socketEntries?.length ?? 0;
+    int totalEquipped = 0;
+    int totalSelected = 0;
+    for (int i = 0; i < totalSockets; i++) {
+      final equippedPlug = equippedPlugHashForSocket(i);
+      final selectedPlug = selectedPlugHashForSocket(i) ?? equippedPlug;
+      final equippedDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(equippedPlug);
+      final selectedDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(selectedPlug);
+      final equippedValue = equippedDef?.plug?.energyCapacity?.capacityValue ?? 0;
+      final selectedValue = selectedDef?.plug?.energyCapacity?.capacityValue ?? 0;
+      totalEquipped += equippedValue;
+      totalSelected += selectedValue;
+    }
+    return StatValues(9999, rawEquipped: totalEquipped, rawSelected: totalSelected);
+  }
+
+  @protected
+  Future<bool> calculateCanApplySelectedPlug();
+
+  /// async load data
+
+  @protected
+  Future<List<int>?> loadAvailablePlugHashesForSocket(int socketIndex);
+
+  @protected
+  Future<List<int>?> loadRandomPlugHashesForSocket(int selectedIndex);
 }

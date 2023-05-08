@@ -12,6 +12,8 @@ import 'package:little_light/shared/utils/extensions/element_type_data.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/shared/utils/extensions/wishlist_tag_data.dart';
+import 'package:little_light/shared/widgets/inventory_item/short_item_expiration_date.widget.dart';
+import 'package:little_light/shared/widgets/objectives/multi_objective_progress.widget.dart';
 import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 import 'package:little_light/utils/stats_total.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -136,6 +138,9 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
     if (definition.isGhost) {
       return buildGhostPrimaryStat(context, definition);
     }
+    if (definition.isQuestStep) {
+      return buildQuestStepProgress(context, definition);
+    }
     final isStack = (definition.inventory?.maxStackSize ?? 0) > 1;
     if (isStack) {
       return buildQuantity(context, definition);
@@ -228,6 +233,19 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
     ]);
   }
 
+  Widget buildQuestStepProgress(BuildContext context, DestinyInventoryItemDefinition definition) {
+    final objectiveHashes = definition.objectives?.objectiveHashes;
+    if (objectiveHashes == null) return Container();
+    return buildInfoContainer(context, [
+      Expanded(
+        child: MultiObjectiveProgressWidget(
+          objectiveHashes,
+          objectives: item.objectives?.objectives,
+        ),
+      )
+    ]);
+  }
+
   Widget buildInfoContainer(BuildContext context, List<Widget> rowChildren) {
     if (rowChildren.isEmpty) return Container();
     return Container(
@@ -246,6 +264,9 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget buildHeaderInfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    if (definition?.isQuestStep ?? false) {
+      return buildExpiryDate(context, definition);
+    }
     return buildInfoContainer(
       context,
       [
@@ -389,6 +410,19 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
         textAlign: TextAlign.right,
       )
     ]);
+  }
+
+  Widget buildExpiryDate(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    final expiryDate = item.expirationDate;
+    if (expiryDate == null) return Container();
+    final isValid = DateTime.tryParse(expiryDate) != null;
+    if (!isValid) return Container();
+    final isObjectiveComplete = item.objectives?.objectives?.every((o) => o.complete ?? false) ?? false;
+    if (isObjectiveComplete) return Container();
+    return ShortExpiryDateWidget(
+      expiryDate,
+      style: context.textTheme.caption.copyWith(fontSize: 10),
+    );
   }
 
   Widget buildEngramPrimaryStat(BuildContext context, DestinyInventoryItemDefinition? definition) {

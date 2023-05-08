@@ -3,14 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/item_info/definition_item_info.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
+import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:provider/provider.dart';
 
 class DefinitionItemSocketControllerBloc extends SocketControllerBloc<DefinitionItemInfo> {
   @protected
   DefinitionItemInfo? item;
-
-  Map<int, DestinyPlugSetDefinition>? _plugSetDefinitions;
   ProfileBloc _profileBloc;
+
+  Map<int, int?> _fakeEquippedPlugs = {};
 
   DefinitionItemSocketControllerBloc(BuildContext context)
       : _profileBloc = context.read<ProfileBloc>(),
@@ -27,24 +28,11 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
   @override
   Future<void> update(DefinitionItemInfo item) async {
     this.item = item;
-    this.refreshStats();
-  }
-
-  @override
-  Future<void> loadDefinitions(int itemHash) async {
-    await super.loadDefinitions(itemHash);
-    final plugSetHashes = itemDefinition?.sockets?.socketEntries //
-            ?.map((s) => [s.reusablePlugSetHash, s.randomizedPlugSetHash])
-            .fold<List<int?>>([], (list, hashes) => list + hashes)
-            .whereType<int>()
-            .toSet() ??
-        <int>{};
-
-    this._plugSetDefinitions = await manifest.getDefinitions<DestinyPlugSetDefinition>(plugSetHashes);
+    this.refresh();
   }
 
   @protected
-  List<int>? getAvailablePlugHashesForSocket(int index) {
+  Future<List<int>?> loadAvailablePlugHashesForSocket(int index) async {
     final socket = itemDefinition?.sockets?.socketEntries?[index];
     if (socket == null) return null;
     if (!(socket.defaultVisible ?? true)) return null;
@@ -54,33 +42,45 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
 
     final isPlugSet =
         sources.contains(SocketPlugSources.CharacterPlugSet) || sources.contains(SocketPlugSources.ProfilePlugSet);
+    final isInventorySourced = sources.contains(SocketPlugSources.InventorySourced);
+    final reusablePlugSetHash = socket.reusablePlugSetHash;
+
+    if (isPlugSet && isInventorySourced && reusablePlugSetHash != null) {
+      final plugSet = _profileBloc.getProfilePlugSets(reusablePlugSetHash);
+      final plugHashes = plugSet?.map((e) => e.plugItemHash);
+      if (plugHashes != null) available.addAll(plugHashes.whereType<int>());
+    }
 
     if (isPlugSet) {
-      final plugSetDef = _plugSetDefinitions?[socket.reusablePlugSetHash];
+      final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(socket.reusablePlugSetHash);
       final plugHashes = plugSetDef?.reusablePlugItems?.map((e) => e.plugItemHash);
       if (plugHashes != null) available.addAll(plugHashes.whereType<int>());
     }
 
     if (sources.contains(SocketPlugSources.ReusablePlugItems)) {
-      final plugHashes = socket.reusablePlugItems?.map((e) => null).whereType<int>();
-      if (plugHashes != null) available.addAll(plugHashes.whereType<int>());
+      final plugHashes = socket.reusablePlugItems?.map((e) => e.plugItemHash).whereType<int>();
+      if (plugHashes != null) available.addAll(plugHashes);
     }
 
     final initial = socket.singleInitialItemHash;
     final containsInitial = available.contains(initial);
-    return [if (!containsInitial && initial != null) initial, ...available];
+    return [
+      if (!containsInitial && initial != null && initial != 0) initial,
+      ...available,
+    ];
   }
 
   @override
   bool isEquipped(int socketIndex, int plugHash) {
-    final socket = itemDefinition?.sockets?.socketEntries?[socketIndex];
-    if (socket == null) return false;
-    return socket.singleInitialItemHash == plugHash;
+    final equippedHash = equippedPlugHashForSocket(socketIndex);
+    return equippedHash == plugHash;
   }
 
   @override
-  int? getEquippedPlugHashForSocket(int? socketIndex) {
+  int? equippedPlugHashForSocket(int? socketIndex) {
     if (socketIndex == null) return null;
+    final fakeEquipped = _fakeEquippedPlugs[socketIndex];
+    if (fakeEquipped != null) return fakeEquipped;
     final socket = itemDefinition?.sockets?.socketEntries?[socketIndex];
     if (socket == null) return null;
     if (!(socket.defaultVisible ?? true)) return null;
@@ -88,30 +88,42 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
   }
 
   @override
-  List<DestinyObjectiveProgress>? getPlugObjectives(int plugHash) {
-    return null;
-  }
+  List<DestinyObjectiveProgress>? getPlugObjectives(int plugHash) => null;
 
   @override
-  bool canApplySelectedPlug() {
-    return false;
+  void applyPlug(int socketIndex, int plugHash) async {
+    final previousHash = _fakeEquippedPlugs[socketIndex];
+    _fakeEquippedPlugs[socketIndex] = plugHash;
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(plugHash);
+    final previousDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(previousHash);
+    if (shouldPlugOverrideStyleItemHash(def)) {
+      item?.overrideStyleItemHash = plugHash;
+    } else if (shouldPlugOverrideStyleItemHash(previousDef)) {
+      item?.overrideStyleItemHash = null;
+    }
+    refresh();
   }
-
-  @override
-  void applyPlug(int socketIndex, int plugHash) => null;
 
   @override
   bool get isBusy => false;
 
   @override
-  List<int>? getRandomPlugHashesForSocket(int index) {
+  Future<List<int>?> loadRandomPlugHashesForSocket(int index) async {
     final socket = itemDefinition?.sockets?.socketEntries?[index];
     if (socket == null) return null;
     if (!(socket.defaultVisible ?? true)) return null;
-    final plugSetDef = _plugSetDefinitions?[socket.randomizedPlugSetHash];
+    final sources = socket.plugSources;
+    final isPlugSet = sources?.contains(SocketPlugSources.ReusablePlugItems) ?? false;
+    if (!isPlugSet) return null;
+
+    final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(socket.randomizedPlugSetHash);
     final plugHashes = plugSetDef?.reusablePlugItems?.map((e) => e.plugItemHash);
     if (plugHashes == null || plugHashes.isEmpty) return null;
-    final available = getAvailablePlugHashesForSocket(index) ?? [];
-    return [...available, ...plugHashes].whereType<int>().toSet().toList();
+
+    return plugHashes.whereType<int>().toList();
   }
+
+  @override
+  Future<bool> calculateCanApplySelectedPlug() async =>
+      selectedPlugHashForSocket(selectedSocketIndex) != equippedPlugHashForSocket(selectedSocketIndex);
 }
