@@ -111,8 +111,6 @@ class DuplicatedItemListWidget extends StatelessWidget {
       itemCount: itemInstances.length,
       itemsPerRow: itemsPerRow,
       itemBuilder: (_, index) {
-        final def = context.definition<DestinyInventoryItemDefinition>(itemHash);
-        print("${def?.displayProperties?.name} $index");
         return InteractiveItemWrapper(
           DuplicatedItemWidget(itemInstances[index]),
           item: itemInstances[index],

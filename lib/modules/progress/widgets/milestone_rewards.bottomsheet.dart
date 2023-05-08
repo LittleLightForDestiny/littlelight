@@ -29,7 +29,6 @@ class MilestoneRewardsBottomSheet extends BaseListBottomSheet {
       final values = entryDef?.items?.map((item) => _RewardEntryAndItemPair(entry: entry, item: item));
       if (values != null) items.addAll(values);
     }
-    print(items);
     return MilestoneRewardsBottomSheet._(categoryDefinition, items);
   }
 

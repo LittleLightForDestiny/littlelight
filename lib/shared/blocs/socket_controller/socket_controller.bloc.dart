@@ -137,9 +137,11 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   List<PlugSocket>? socketsForCategory(DestinyItemSocketCategoryDefinition category) {
     final sockets = category.socketIndexes
         ?.map((socketIndex) {
-          final hashes = _availablePlugHashesBySocket[socketIndex];
-          if (hashes == null) return null;
-          return PlugSocket(socketIndex, hashes);
+          final hashes = availablePlugHashesForSocket(socketIndex);
+          final hasAvailableRolls = hashes?.isNotEmpty ?? false;
+          final hasRandomRolls = randomPlugHashesForSocket(socketIndex)?.isNotEmpty ?? false;
+          if (!hasAvailableRolls && !hasRandomRolls) return null;
+          return PlugSocket(socketIndex, hashes ?? []);
         })
         .whereType<PlugSocket>()
         .toList();

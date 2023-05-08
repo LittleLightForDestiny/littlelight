@@ -60,7 +60,6 @@ class TheOldGhostLinkButton extends StatelessWidget {
     final type = contentType.linkSegment;
     final name = removeDiacritics(this.name).toLowerCase().replaceAll(RegExp(r'[^a-z0-9]'), '_');
     final url = "https://oldghost.thetraveler.group/$language/$type/$hash/$name";
-    print(url);
     launchUrlString(url);
   }
 }
