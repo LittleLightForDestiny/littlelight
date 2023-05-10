@@ -86,6 +86,15 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
           .toSet();
       hashes.addAll(plugSetHashes);
     });
+    if (plugSources?.contains(SocketPlugSources.InventorySourced) ?? false) {
+      final typeDefinition = await manifest.getDefinition<DestinySocketTypeDefinition>(socketDef?.socketTypeHash);
+      final categories = typeDefinition?.plugWhitelist?.map((p) => p.categoryHash);
+      final itemHashes = _profileBloc.allItems.map((e) => e.itemHash).whereType<int>();
+      final itemDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(itemHashes);
+      final matchedItems =
+          itemDefinitions.values.where((def) => categories?.contains(def.plug?.plugCategoryHash) ?? false);
+      hashes.addAll(matchedItems.map((e) => e.hash).whereType<int>());
+    }
     final equippedPlugHash = item?.sockets?[index].plugHash;
     if (equippedPlugHash != null) hashes.add(equippedPlugHash);
     return hashes.toSet().toList();
