@@ -224,8 +224,7 @@ class DuplicatedItemWidget extends StatelessWidget {
           characterName,
           Container(
             child: Icon(Icons.mail, size: characterName.style?.fontSize ?? 12),
-            //padding: EdgeInsets.only(left: 2),
-            padding: EdgeInsets.zero,
+            padding: EdgeInsets.only(left: 2),
           )
         ]);
       }
