@@ -45,11 +45,10 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
       bars.add(
         Expanded(
           child: Container(
-            height: 4,
-            width: 4,
-            margin: EdgeInsets.symmetric(horizontal: 2),
-            color: color,
-          ),
+              height: 4,
+              width: 4,
+              margin: EdgeInsets.symmetric(horizontal: 2),
+              decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4))),
         ),
       );
     }
