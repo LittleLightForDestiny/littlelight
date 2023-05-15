@@ -134,21 +134,24 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
   Future<List<int>?> loadRandomPlugHashesForSocket(int selectedIndex) async => null;
 
   @override
-  Future<bool> calculateCanApplySelectedPlug() async {
+  Future<bool> loadCanApplyPlug(int socketIndex, int plugHash) async {
     final item = this.item;
     if (item == null) return false;
-    final socketIndex = selectedSocketIndex;
-    final plugHash = selectedPlugHashForSocket(socketIndex);
-    final plugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(plugHash);
-    final materialCost = await manifest.getDefinition<DestinyMaterialRequirementSetDefinition>(
-      plugDef?.plug?.insertionMaterialRequirementHash,
-    );
-    final canApply = canApplyPlug(context, item, socketIndex, plugHash, plugDef, materialCost);
+    final canApply = await isPlugAvailableToApplyForFreeViaApi(context, item, socketIndex, plugHash);
     if (!canApply) return false;
+    return true;
+  }
+
+  @override
+  Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash) async {
     final availableEnergy = availableEnergyCapacity?.equipped ?? 0;
     final usedEnergy = usedEnergyCapacity?.equipped ?? 0;
+    final plugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(plugHash);
     final requiredEnergy = plugDef?.plug?.energyCost?.energyCost ?? 0;
     if (usedEnergy + requiredEnergy > availableEnergy) return false;
     return true;
   }
+
+  @override
+  bool isSelectable(int? index, int plugHash) => true;
 }

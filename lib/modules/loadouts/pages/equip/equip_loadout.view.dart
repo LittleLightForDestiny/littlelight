@@ -7,6 +7,7 @@ import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.bloc.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
@@ -134,15 +135,15 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
         children: unequippable
             .map((e) => Container(
                   padding: const EdgeInsets.all(2),
-                  child: buildItemIcon(e.item),
+                  child: buildItemIcon(e.inventoryItem),
                 ))
             .toList(),
       ),
     ]);
   }
 
-  Widget buildEquippableRow(BuildContext context, DestinyClass destinyClass, List<LoadoutIndexItem?>? items) {
-    final rowItems = items ?? List<LoadoutIndexItem?>.filled(6, null);
+  Widget buildEquippableRow(BuildContext context, DestinyClass destinyClass, List<LoadoutItemInfo?>? items) {
+    final rowItems = items ?? List<LoadoutItemInfo?>.filled(6, null);
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -153,7 +154,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
                 (e) => Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(2),
-                    child: buildItemIcon(e?.item),
+                    child: buildItemIcon(e?.inventoryItem),
                   ),
                 ),
               )

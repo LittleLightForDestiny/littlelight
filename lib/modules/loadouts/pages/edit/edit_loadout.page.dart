@@ -14,10 +14,9 @@ class EditLoadoutPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        Provider.value(value: args),
-        ChangeNotifierProvider(create: (context) => EditLoadoutBloc(context)),
+        ChangeNotifierProvider(create: (context) => EditLoadoutBloc(context, args)),
       ],
-      child: const EditLoadoutView(),
+      builder: (context, _) => EditLoadoutView(context.read<EditLoadoutBloc>(), context.watch<EditLoadoutBloc>()),
     );
   }
 }

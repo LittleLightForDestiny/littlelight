@@ -16,6 +16,7 @@ import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';

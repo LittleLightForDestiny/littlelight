@@ -138,19 +138,21 @@ class DetailsItemPerksWidget extends StatelessWidget {
     final random = [selected, equipped].whereType<int>().firstWhereOrNull((h) => !available.contains(h));
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: socket.availablePlugHashes
-              .map((plugHash) => Container(
-                  margin: EdgeInsets.all(4),
-                  constraints:
-                      BoxConstraints(maxWidth: PerkIconWidget.maxIconSize, maxHeight: PerkIconWidget.maxIconSize),
-                  child: PerkIconWidget(
-                    plugItemHash: plugHash,
-                    itemHash: itemHash,
-                    selected: state.isSelected(socket.index, plugHash),
-                    equipped: state.isEquipped(socket.index, plugHash),
-                    onTap: () => bloc.toggleSelection(socket.index, plugHash),
-                  )))
-              .toList() +
+      children: socket.availablePlugHashes.map((plugHash) {
+            final isPlugSelectable = state.isSelectable(socket.index, plugHash);
+            return Container(
+                margin: EdgeInsets.all(4),
+                constraints:
+                    BoxConstraints(maxWidth: PerkIconWidget.maxIconSize, maxHeight: PerkIconWidget.maxIconSize),
+                child: PerkIconWidget(
+                  plugItemHash: plugHash,
+                  itemHash: itemHash,
+                  disabled: !isPlugSelectable,
+                  selected: state.isSelected(socket.index, plugHash),
+                  equipped: state.isEquipped(socket.index, plugHash),
+                  onTap: () => bloc.toggleSelection(socket.index, plugHash),
+                ));
+          }).toList() +
           [
             if (hasRandomPlugs)
               Container(

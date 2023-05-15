@@ -404,7 +404,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       final plugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(p.value);
       final materialCost = await manifest
           .getDefinition<DestinyMaterialRequirementSetDefinition>(plugDef?.plug?.insertionMaterialRequirementHash);
-      final canApply = canApplyPlug(_context, item, p.key, p.value, plugDef, materialCost);
+      final canApply = await isPlugAvailableToApplyForFreeViaApi(_context, item, p.key, p.value);
       if (canApply) plugs[p.key] = p.value;
     }
     notification?.setPlugs(plugs);

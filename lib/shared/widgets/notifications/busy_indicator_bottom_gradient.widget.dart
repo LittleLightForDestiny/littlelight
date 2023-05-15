@@ -17,7 +17,7 @@ class BusyIndicatorBottomGradientWidget extends StatelessWidget {
     final height = MediaQuery.of(context).viewPadding.bottom;
     if (height <= 0) return Container();
     final isBusy = _state(context).busy;
-    final isError = _state(context).actionIs<BaseErrorAction>();
+    final isError = _state(context).actionIs<BaseErrorNotification>();
     final visible = isBusy || isError;
     final color = isError ? context.theme.errorLayers.layer0 : context.theme.onSurfaceLayers.layer3;
     return IgnorePointer(

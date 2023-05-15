@@ -277,13 +277,14 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
       if (isArmor) return includeArmor;
       return false;
     });
-    final loadout = LoadoutItemIndex.fromScratch();
-    for (final item in items) {
-      final isEquipped = item.instanceInfo?.isEquipped ?? false;
-      if (item.bucketHash == InventoryBucket.subclass && !isEquipped) continue;
-      await loadout.addItem(item, isEquipped);
-    }
-    loadout.emblemHash = character.character.emblemHash;
-    Navigator.of(navigatorContext).push(EditLoadoutPageRoute.createFromPreset(loadout));
+    //TODO: adapt this to the new loadout structure
+    // final loadout = LoadoutItemIndex.fromScratch();
+    // for (final item in items) {
+    //   final isEquipped = item.instanceInfo?.isEquipped ?? false;
+    //   if (item.bucketHash == InventoryBucket.subclass && !isEquipped) continue;
+    //   await loadout.addItem(item, isEquipped);
+    // }
+    // loadout.emblemHash = character.character.emblemHash;
+    // Navigator.of(navigatorContext).push(EditLoadoutPageRoute.createFromPreset(loadout));
   }
 }

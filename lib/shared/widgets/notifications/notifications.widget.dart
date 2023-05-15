@@ -2,15 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/notifications/base_notification_action.dart';
+import 'package:little_light/core/blocs/notifications/loadout_change_result_notification.dart';
+import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
+import 'package:little_light/core/blocs/notifications/sync_loadouts_action.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/widgets/animations/loop_animation.dart';
 import 'package:little_light/shared/widgets/animations/value_animation.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
+import 'package:little_light/shared/widgets/notifications/loadout_change_result_notification.widget.dart';
 import 'package:little_light/shared/widgets/notifications/transfer_notification_group.widget.dart';
 import 'package:provider/provider.dart';
-
-import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 
 class NotificationsWidget extends StatelessWidget {
   NotificationsBloc _state(BuildContext context) => context.watch<NotificationsBloc>();
@@ -26,6 +28,7 @@ class NotificationsWidget extends StatelessWidget {
       children: [
         buildSubjects(context),
         buildMainContainer(context),
+        buildPersistentNotifications(context),
       ].whereType<Widget>().toList(),
     );
   }
@@ -35,7 +38,7 @@ class NotificationsWidget extends StatelessWidget {
         clipBehavior: Clip.antiAlias,
         duration: const Duration(milliseconds: 500),
         decoration: BoxDecoration(
-          color: _state(context).actionIs<BaseErrorAction>()
+          color: _state(context).actionIs<BaseErrorNotification>()
               ? context.theme.errorLayers.layer0
               : context.theme.surfaceLayers.layer2,
           borderRadius: BorderRadius.circular(16),
@@ -56,7 +59,7 @@ class NotificationsWidget extends StatelessWidget {
 
   Widget? buildMainMessage(BuildContext context) {
     return DefaultLoadingShimmer(
-      enabled: !_state(context).actionIs<BaseErrorAction>(),
+      enabled: !_state(context).actionIs<BaseErrorNotification>(),
       child: DefaultTextStyle(
         style: LittleLightTheme.of(context).textTheme.notification,
         child: Stack(
@@ -67,6 +70,13 @@ class NotificationsWidget extends StatelessWidget {
                 "Updating".translate(context).toUpperCase(),
               ),
               _state(context).actionIs<UpdateAction>(),
+            ),
+            buildMainMessageAnimation(
+              context,
+              Text(
+                "Syncing loadouts".translate(context).toUpperCase(),
+              ),
+              _state(context).actionIs<SyncLoadoutsAction>(),
             ),
             buildMainMessageAnimation(
               context,
@@ -148,5 +158,20 @@ class NotificationsWidget extends StatelessWidget {
           ),
       ],
     );
+  }
+
+  Widget buildPersistentNotifications(BuildContext context) {
+    final notifications = _state(context).persistent;
+    if (notifications.isEmpty) return Container();
+    return Column(
+      children: notifications.map((n) => buildPersistentNotification(context, n)).toList(),
+    );
+  }
+
+  Widget buildPersistentNotification(BuildContext context, BasePersistentNotification notification) {
+    if (notification is LoadoutChangeResultNotification) {
+      return LoadoutChangeResultNotificationWidget(notification);
+    }
+    return Container();
   }
 }

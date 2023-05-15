@@ -73,6 +73,8 @@ class DetailsItemModsWidget extends StatelessWidget {
           plugHash,
           selected: state.isSelected(socketIndex, plugHash),
           equipped: state.isEquipped(socketIndex, plugHash),
+          canEquip: state.isAvailable(socketIndex, plugHash),
+          canSelect: state.isSelectable(socketIndex, plugHash),
           onTap: () => bloc.toggleSelection(socketIndex, plugHash),
         );
       }, expectedItemSize: PerkIconWidget.maxIconSize),
@@ -113,6 +115,8 @@ class DetailsItemModsWidget extends StatelessWidget {
             equippedPlugHash,
             selected: false,
             equipped: isSocketSelected,
+            canEquip: state.isAvailable(socket.index, equippedPlugHash),
+            canSelect: state.isSelectable(socket.index, equippedPlugHash),
             onTap: () => bloc.toggleSocketSelection(socket.index),
           ),
         ),

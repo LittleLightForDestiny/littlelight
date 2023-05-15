@@ -1,40 +1,53 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
+import 'package:little_light/core/blocs/notifications/sync_loadouts_action.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
+import 'package:provider/provider.dart';
 
 class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer, ManifestConsumer {
+  @protected
   LittleLightApiService get littleLightApi => LittleLightApiService();
 
-  LoadoutsBloc() {
+  @protected
+  NotificationsBloc notificationsBloc;
+
+  LoadoutsBloc(BuildContext context) : notificationsBloc = context.read<NotificationsBloc>() {
     _init();
   }
 
   bool _busy = false;
 
-  List<LoadoutItemIndex>? _loadouts;
+  List<Loadout>? _loadouts;
   List<String>? _loadoutsOrder;
 
   _init() {
     _loadLoadouts();
   }
 
-  List<LoadoutItemIndex>? get loadouts {
+  List<Loadout>? get loadouts {
     return _loadouts;
+  }
+
+  Loadout? getLoadout(String id) {
+    return _loadouts?.firstWhereOrNull((element) => element.assignedId == id);
   }
 
   void refresh() async {
     if (_busy) return;
     _busy = true;
     notifyListeners();
+    final notification = notificationsBloc.createNotification(SyncLoadoutsAction());
 
     final remoteLoadouts = await littleLightApi.fetchLoadouts() ?? [];
-    _loadouts = await _indexesFromLoadouts(remoteLoadouts);
+    _loadouts = remoteLoadouts;
     _sortLoadouts();
     _busy = false;
+    notification.dismiss();
     notifyListeners();
   }
 
@@ -45,15 +58,16 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
     await Future.delayed(const Duration(milliseconds: 1));
     final localLoadouts = await currentMembershipStorage.getCachedLoadouts() ?? [];
     final loadoutsOrder = await currentMembershipStorage.getLoadoutsOrder() ?? [];
-    _loadouts = await _indexesFromLoadouts(localLoadouts);
+    _loadouts = localLoadouts;
     _loadoutsOrder = loadoutsOrder;
     _sortLoadouts();
     notifyListeners();
-
+    final notification = notificationsBloc.createNotification(SyncLoadoutsAction());
     final remoteLoadouts = await littleLightApi.fetchLoadouts() ?? [];
     final mergedLoadouts = _mergeLoadouts(localLoadouts, remoteLoadouts);
-    _loadouts = await _indexesFromLoadouts(mergedLoadouts);
+    _loadouts = mergedLoadouts;
     _sortLoadouts();
+    notification.dismiss();
     _busy = false;
     notifyListeners();
   }
@@ -91,8 +105,10 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
     final order = _loadoutsOrder ?? [];
     if (order.isEmpty) return;
     _loadouts?.sort((la, lb) {
-      var indexA = order.indexOf(la.assignedId);
-      var indexB = order.indexOf(lb.assignedId);
+      final idA = la.assignedId;
+      final idB = lb.assignedId;
+      var indexA = idA != null ? order.indexOf(idA) : double.maxFinite.toInt();
+      var indexB = idB != null ? order.indexOf(idB) : double.maxFinite.toInt();
       if (indexA != indexB) return indexA.compareTo(indexB);
       var nameA = la.name.toLowerCase();
       var nameB = lb.name.toLowerCase();
@@ -100,25 +116,16 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
     });
   }
 
-  Future<List<LoadoutItemIndex>> _indexesFromLoadouts(List<Loadout> loadouts) {
-    return Future.wait<LoadoutItemIndex>(
-      loadouts.map(
-        (loadout) => LoadoutItemIndex.buildfromLoadout(loadout),
-      ),
-    );
-  }
-
-  Future<void> saveLoadout(LoadoutItemIndex loadoutIndex) async {
-    loadoutIndex.updatedAt = DateTime.now();
-    final loadout = loadoutIndex.toLoadout();
+  Future<void> saveLoadout(Loadout loadout) async {
+    loadout.updatedAt = DateTime.now();
     final loadouts = _loadouts;
     if (loadouts == null) return;
 
-    final index = loadouts.indexWhere((loadout) => loadout.assignedId == loadoutIndex.assignedId);
+    final index = loadouts.indexWhere((l) => l.assignedId == loadout.assignedId);
     if (index == -1) {
-      loadouts.add(loadoutIndex);
+      loadouts.add(loadout);
     } else {
-      loadouts[index] = loadoutIndex;
+      loadouts[index] = loadout;
     }
     _sortLoadouts();
     notifyListeners();
@@ -126,11 +133,11 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
     await _saveLocalLoadouts();
   }
 
-  Future<void> deleteLoadout(LoadoutItemIndex loadoutIndex) async {
-    final loadout = loadoutIndex.toLoadout();
+  Future<void> deleteLoadout(Loadout loadoutIndex) async {
+    final loadout = loadoutIndex;
     final loadouts = _loadouts;
     if (loadouts != null) {
-      loadouts.removeWhere((l) => l.assignedId == loadoutIndex.assignedId);
+      loadouts.removeWhere((l) => l.assignedId == loadout.assignedId);
       notifyListeners();
     }
     await littleLightApi.deleteLoadout(loadout);
@@ -138,9 +145,8 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
   }
 
   Future<void> _saveLocalLoadouts() async {
-    final indexes = _loadouts;
-    if (indexes == null) return;
-    final loadouts = indexes.map((e) => e.toLoadout()).toList();
+    final loadouts = _loadouts;
+    if (loadouts == null) return;
     await currentMembershipStorage.saveLoadouts(loadouts);
   }
 

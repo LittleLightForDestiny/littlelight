@@ -16,7 +16,7 @@ class BusyIndicatorLineWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isBusy = _state(context).busy;
-    final isError = _state(context).actionIs<BaseErrorAction>();
+    final isError = _state(context).actionIs<BaseErrorNotification>();
     final visible = isBusy || isError;
     return IgnorePointer(
       child: AnimatedOpacity(

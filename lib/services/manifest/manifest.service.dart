@@ -29,7 +29,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
   sqflite.Database? _db;
   DestinyManifest? _manifestInfo;
   final Map<String, dynamic> _cached = {};
-  final Map<Type, Map<int, bool>> _loading = {};
+  final Map<Type, Set<int>> _queue = {};
 
   ManifestService._internal();
 
@@ -60,16 +60,19 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     if (hash == null) return null;
     final fromCache = getDefinitionFromCache<T>(hash);
     if (fromCache != null) return fromCache;
-    _loadDefinition<T>(hash);
+    _queueDefinition<T>(hash);
     return null;
   }
 
-  void _loadDefinition<T>(int hash) async {
-    if (_loading[T]?[hash] ?? false) return;
-    _loading[T] ??= {};
-    _loading[T]?[hash] = true;
-    await getDefinition<T>(hash);
+  void _queueDefinition<T>(hash) async {
+    if (_queue[T]?.contains(hash) ?? false) return;
+    _queue[T] ??= {};
+    _queue[T]?.add(hash);
     await Future.delayed(Duration(milliseconds: 10));
+    final hashes = _queue[T];
+    _queue.remove(T);
+    if (hashes == null || hashes.isEmpty) return;
+    await getDefinitions<T>(hashes);
     notifyListeners();
   }
 

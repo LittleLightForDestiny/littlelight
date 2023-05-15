@@ -20,6 +20,7 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/inventory/transfer_error.dart';
@@ -169,18 +170,18 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
       [String characterID, bool andEquip = false, int moveItemsAway = 0]) async {
     profile.pauseAutomaticUpdater = true;
     DestinyCharacterComponent character = characterID != null ? profile.getCharacter(characterID) : null;
-    final idsToAvoid = loadout.equippedItemIds + loadout.unequippedItemIds;
-    List<LoadoutIndexItem> loadoutItemsToEquip = await _filterLoadoutIndexItems(
-      loadout.equippedItems,
-      characterClass: character?.classType,
-      onlyOnePerSlot: true,
-    );
-    await _transferLoadoutItems(loadoutItemsToEquip, characterID: characterID, idsToAvoid: idsToAvoid);
-    await _applyLoadoutMods(loadoutItemsToEquip, characterID);
+    // final idsToAvoid = loadout.equippedItemIds + loadout.unequippedItemIds;
+    // List<LoadoutIndexItem> loadoutItemsToEquip = await _filterLoadoutIndexItems(
+    //   loadout.equippedItems,
+    //   characterClass: character?.classType,
+    //   onlyOnePerSlot: true,
+    // );
+    // await _transferLoadoutItems(loadoutItemsToEquip, characterID: characterID, idsToAvoid: idsToAvoid);
+    // await _applyLoadoutMods(loadoutItemsToEquip, characterID);
 
-    if (andEquip) {
-      await _equipLoadoutItems(loadoutItemsToEquip, characterID);
-    }
+    // if (andEquip) {
+    //   await _equipLoadoutItems(loadoutItemsToEquip, characterID);
+    // }
 
     //   List<DestinyItemComponent> items = profile.getItemsByInstanceId(idsToEquip + idsToTransfer);
     //   List<int> hashes = items.map((item) => item.itemHash).toList();
@@ -278,42 +279,43 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     //   logger.info("vault = ${profileInventory.length}");
   }
 
-  Future<List<LoadoutIndexItem>> _filterLoadoutIndexItems(
-    Iterable<LoadoutIndexItem> items, {
+  Future<List<LoadoutItemInfo>> _filterLoadoutIndexItems(
+    Iterable<LoadoutItemInfo> items, {
     DestinyClass characterClass,
     bool onlyOnePerSlot = false,
   }) async {
     characterClass ??= DestinyClass.Unknown;
-    items = items.where((element) => element.item != null);
-    final hashes = items.map((element) => element?.item?.itemHash).whereType<int>();
+    items = items.where((element) => element.inventoryItem != null);
+    final hashes = items.map((element) => element?.inventoryItem?.itemHash).whereType<int>();
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     if (characterClass != DestinyClass.Unknown) {
       items = items.where((element) {
-        final hash = element.item.itemHash;
+        final hash = element.inventoryItem.itemHash;
         final itemClass = defs[hash].classType;
         return [DestinyClass.Unknown, characterClass].contains(itemClass);
       });
     }
     if (!onlyOnePerSlot) return items;
-    Map<int, LoadoutIndexItem> slotMap = {};
-    final bucketHashes = items.map((e) => defs[e.item.itemHash]?.inventory?.bucketTypeHash).whereType<int>().toSet();
+    Map<int, LoadoutItemInfo> slotMap = {};
+    final bucketHashes =
+        items.map((e) => defs[e.inventoryItem.itemHash]?.inventory?.bucketTypeHash).whereType<int>().toSet();
     for (final bucketHash in bucketHashes) {
       slotMap[bucketHash] = items.firstWhere((e) {
-        final hash = e.item.itemHash;
+        final hash = e.inventoryItem.itemHash;
         final itemClass = defs[hash].classType;
-        final itemBucketHash = defs[e.item.itemHash]?.inventory?.bucketTypeHash;
+        final itemBucketHash = defs[e.inventoryItem.itemHash]?.inventory?.bucketTypeHash;
         return itemClass == characterClass && itemBucketHash == bucketHash;
       }, orElse: () => null);
       slotMap[bucketHash] ??= items.firstWhere((e) {
-        final hash = e.item.itemHash;
+        final hash = e.inventoryItem.itemHash;
         final itemBucketHash = defs[hash]?.inventory?.bucketTypeHash;
         return itemBucketHash == bucketHash;
       }, orElse: () => null);
     }
-    return slotMap.values.where((e) => e.item != null).toList();
+    return slotMap.values.where((e) => e.inventoryItem != null).toList();
   }
 
-  Future<void> _transferLoadoutItems(List<LoadoutIndexItem> loadoutItems,
+  Future<void> _transferLoadoutItems(List<LoadoutItemInfo> loadoutItems,
       {String characterID, List<String> idsToAvoid}) async {
     // final itemIDs = loadoutItems.map((e) => e.item?.itemInstanceId).whereType<String>().toList();
     // final items = profile.getItemsByInstanceId(itemIDs);
@@ -330,11 +332,11 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     // }
   }
 
-  Future<void> _applyLoadoutMods(List<LoadoutIndexItem> items, [String characterID]) async {
+  Future<void> _applyLoadoutMods(List<LoadoutItemInfo> items, [String characterID]) async {
     final futures = <Future<void>>[];
     for (final item in items) {
       final plugs = item?.itemPlugs;
-      final id = item.item?.instanceId;
+      final id = item.inventoryItem?.instanceId;
       if (id == null) continue;
       if (plugs.isEmpty) continue;
       for (final socketIndex in plugs.keys) {
@@ -346,7 +348,7 @@ class InventoryService with BungieApiConsumer, ProfileConsumer, ManifestConsumer
     } catch (e) {}
   }
 
-  Future<void> _equipLoadoutItems(List<LoadoutIndexItem> loadoutItems, [String characterID]) async {
+  Future<void> _equipLoadoutItems(List<LoadoutItemInfo> loadoutItems, [String characterID]) async {
     // final itemIDs = loadoutItems.map((e) => e.item?.itemInstanceId).whereType<String>().toList();
     // final items = profile.getItemsByInstanceId(itemIDs);
     // await _equipMultiple(items, characterID);

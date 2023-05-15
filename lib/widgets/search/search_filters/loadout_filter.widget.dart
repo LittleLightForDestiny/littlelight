@@ -1,7 +1,7 @@
 // @dart=2.9
 
 import 'package:flutter/material.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/models/loadout.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/utils/item_filters/loadout_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
@@ -16,10 +16,9 @@ class LoadoutFilterWidget extends BaseSearchFilterWidget<LoadoutFilter> {
   _LoadoutFilterWidgetState createState() => _LoadoutFilterWidgetState();
 }
 
-class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<
-    LoadoutFilterWidget, LoadoutFilter, LoadoutItemIndex> {
+class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<LoadoutFilterWidget, LoadoutFilter, Loadout> {
   @override
-  Iterable<LoadoutItemIndex> get options {
+  Iterable<Loadout> get options {
     var values = filter.availableValues.toList();
     final allLoadouts = context.watch<LoadoutsBloc>().loadouts;
     if (allLoadouts == null) return [];
@@ -38,7 +37,7 @@ class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<
   }
 
   @override
-  Widget buildButtonLabel(BuildContext context, LoadoutItemIndex value) {
+  Widget buildButtonLabel(BuildContext context, Loadout value) {
     return Text(
       value.name?.toUpperCase() ?? "",
       overflow: TextOverflow.fade,
@@ -56,7 +55,7 @@ class _LoadoutFilterWidgetState extends BaseSearchFilterWidgetState<
   }
 
   @override
-  valueToFilter(LoadoutItemIndex value) {
+  valueToFilter(Loadout value) {
     return value.assignedId;
   }
 

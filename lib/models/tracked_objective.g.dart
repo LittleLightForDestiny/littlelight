@@ -28,4 +28,5 @@ const _$TrackedObjectiveTypeEnumMap = {
   TrackedObjectiveType.Triumph: 'triumph',
   TrackedObjectiveType.Item: 'item',
   TrackedObjectiveType.Plug: 'plug',
+  TrackedObjectiveType.Questline: 'questline',
 };

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
@@ -10,9 +11,9 @@ import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 import 'loadout_slot_options.dialog_route.dart';
 
 extension on BuildContext {
-  LoadoutIndexItem? get itemArgument {
+  LoadoutItemInfo? get itemArgument {
     final argument = ModalRoute.of(this)?.settings.arguments;
-    if (argument is LoadoutIndexItem) {
+    if (argument is LoadoutItemInfo) {
       return argument;
     }
     return null;
@@ -46,7 +47,7 @@ class LoadoutSlotOptionsDialog extends LittleLightBaseDialog with ProfileConsume
 
   @override
   Widget? buildBody(BuildContext context) {
-    final item = context.itemArgument?.item;
+    final item = context.itemArgument?.inventoryItem;
     final instanceID = item?.instanceId;
     if (instanceID == null || item == null) return Container();
     return null;

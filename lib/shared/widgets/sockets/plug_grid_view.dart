@@ -175,6 +175,7 @@ class PlugGridView extends StatelessWidget {
         crossAxisSpacing: gridSpacing,
       ),
       physics: const NeverScrollableScrollPhysics(),
+      padding: EdgeInsets.all(0),
       shrinkWrap: true,
       children: plugHashes.map((h) => itemBuilder(h)).toList(),
     );

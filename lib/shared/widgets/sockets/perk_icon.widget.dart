@@ -10,11 +10,13 @@ import 'package:provider/provider.dart';
 
 const _maxPerkIconSize = 64.0;
 const _wishlistIconSize = 18.0;
+const _animationDuration = const Duration(milliseconds: 300);
 
 class PerkIconWidget extends StatelessWidget {
   static const maxIconSize = _maxPerkIconSize;
   final int plugItemHash;
   final int itemHash;
+  final bool disabled;
   final bool equipped;
   final bool selected;
   final VoidCallback? onTap;
@@ -22,6 +24,7 @@ class PerkIconWidget extends StatelessWidget {
   PerkIconWidget({
     required int this.plugItemHash,
     required int this.itemHash,
+    this.disabled = false,
     this.equipped = false,
     this.selected = false,
     this.onTap,
@@ -60,28 +63,32 @@ class PerkIconWidget extends StatelessWidget {
           builder: (context, constraints) {
             final scale = constraints.maxWidth / _maxPerkIconSize;
             final radius = BorderRadius.circular(isRound ? constraints.maxWidth / 2 : 8 * scale);
-            return Stack(
-              children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: radius,
-                    color: bgColor,
-                    border: Border.all(color: borderColor, width: 1.5 * scale),
+            return AnimatedOpacity(
+              opacity: disabled ? .5 : 1,
+              duration: _animationDuration,
+              child: Stack(
+                children: [
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: radius,
+                      color: bgColor,
+                      border: Border.all(color: borderColor, width: 1.5 * scale),
+                    ),
                   ),
-                ),
-                Padding(
-                    padding: EdgeInsets.all(intrinsic ? 0 : 4 * scale),
-                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash)),
-                InkWell(
-                  customBorder: isRound ? CircleBorder() : RoundedRectangleBorder(borderRadius: radius),
-                  onTap: onTap,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: Container(),
+                  Padding(
+                      padding: EdgeInsets.all(intrinsic ? 0 : 4 * scale),
+                      child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash)),
+                  InkWell(
+                    customBorder: isRound ? CircleBorder() : RoundedRectangleBorder(borderRadius: radius),
+                    onTap: disabled ? null : onTap,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: Container(),
+                    ),
                   ),
-                ),
-                Positioned.fill(child: buildWishlistTags(context)),
-              ],
+                  Positioned.fill(child: buildWishlistTags(context)),
+                ],
+              ),
             );
           },
         ),

@@ -27,6 +27,7 @@ abstract class ActionNotification extends BaseNotification {
   Set<String> get errorMessages => _errorMessages;
 
   void error(String message) async {
+    if (_errorMessages.contains(message)) return;
     _errorMessages.add(message);
     notifyListeners();
     await Future.delayed(const Duration(seconds: 4));
@@ -40,6 +41,7 @@ abstract class ActionNotification extends BaseNotification {
   }
 
   void success() async {
+    if (_isFinished) return;
     _isFinished = true;
     notifyListeners();
     await Future.delayed(const Duration(seconds: 1));

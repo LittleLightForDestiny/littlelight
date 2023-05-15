@@ -2,17 +2,15 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
 import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 enum LoadoutListItemAction { Equip, Edit, Delete }
 
@@ -26,18 +24,20 @@ class LoadoutListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.all(8),
-        child: Material(
-            elevation: 1,
-            color: Theme.of(context).colorScheme.secondaryContainer,
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-              SizedBox(
-                height: kToolbarHeight,
-                child: buildTitleBar(context),
-              ),
-              Expanded(child: buildLoadoutsContainer(context)),
-              buildButtonBar(context)
-            ])));
+        margin: const EdgeInsets.all(4),
+        clipBehavior: Clip.antiAlias,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: context.theme.surfaceLayers.layer1,
+        ),
+        child: Column(mainAxisSize: MainAxisSize.min, children: [
+          SizedBox(
+            height: kToolbarHeight,
+            child: buildTitleBar(context),
+          ),
+          Expanded(child: buildLoadoutsContainer(context)),
+          buildButtonBar(context)
+        ]));
   }
 
   Widget buildLoadoutsContainer(BuildContext context) {
@@ -56,26 +56,23 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget buildTitleBar(BuildContext context) {
     final emblemHash = loadout.emblemHash;
-    if (emblemHash == null) {
-      return buildTitle(context);
-    }
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-      emblemHash,
-      (definition) {
-        return Stack(
-          children: <Widget>[
-            Positioned.fill(
-                child: QueuedNetworkImage(
-              imageUrl: BungieApiService.url(definition?.secondarySpecial),
-              fit: BoxFit.cover,
-              alignment: const Alignment(-1, 0),
-            )),
-            buildTitle(context)
-          ],
-        );
-      },
-      placeholder: buildTitle(context),
-      key: Key("emblem_${loadout.emblemHash}"),
+
+    return Stack(
+      children: [
+        Positioned.fill(
+            child: Container(
+          color: context.theme.secondarySurfaceLayers.layer1,
+        )),
+        if (emblemHash != null)
+          Positioned.fill(
+              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+            emblemHash,
+            fit: BoxFit.cover,
+            urlExtractor: (def) => def.secondarySpecial,
+            alignment: const Alignment(-1, 0),
+          )),
+        buildTitle(context),
+      ],
     );
   }
 
@@ -128,7 +125,9 @@ class LoadoutListItemWidget extends StatelessWidget {
               padding: const EdgeInsets.all(2),
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                    visualDensity: VisualDensity.comfortable, primary: Theme.of(context).errorColor),
+                  visualDensity: VisualDensity.comfortable,
+                  backgroundColor: context.theme.errorLayers,
+                ),
                 child: Text("Delete".translate(context).toUpperCase(),
                     maxLines: 1,
                     softWrap: false,
@@ -171,7 +170,7 @@ class LoadoutListItemWidget extends StatelessWidget {
       children: <Widget>[
         buildClassIcon(DestinyClass.Unknown),
       ]
-          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped.item)))
+          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped.inventoryItem)))
           .map((e) => Flexible(
                   child: Container(
                 padding: const EdgeInsets.all(4),
@@ -198,7 +197,8 @@ class LoadoutListItemWidget extends StatelessWidget {
       children: <Widget>[
         buildClassIcon(destinyClass),
       ]
-          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass]?.item)))
+          .followedBy(
+              genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass]?.inventoryItem)))
           .map((e) => Flexible(
                   child: Container(
                 padding: const EdgeInsets.all(4),
@@ -212,34 +212,7 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget buildItem(DestinyItemInfo? item) {
     if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: const Key("item_icon_empty"));
-    }
-    final profile = getInjectedProfileService();
-    final instance = profile.getInstanceInfo(item.instanceId);
-    return InventoryItemIcon(item);
-  }
-
-  List<Widget> buildItemRow(BuildContext context, IconData icon, List<int> buckets, Map<int, DestinyItemInfo?> items) {
-    List<Widget> itemWidgets = [];
-    itemWidgets.add(Icon(icon));
-    itemWidgets.addAll(buckets.map((bucketHash) => itemIcon(items[bucketHash])));
-    return itemWidgets
-        .map((child) => FractionallySizedBox(
-              widthFactor: 1 / (buckets.length + 1),
-              child: Container(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  padding: const EdgeInsets.all(4),
-                  child: AspectRatio(
-                    aspectRatio: 1,
-                    child: child,
-                  )),
-            ))
-        .toList();
-  }
-
-  Widget itemIcon(DestinyItemInfo? item) {
-    if (item == null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552, key: const Key("item_icon_empty"));
+      return ManifestImageWidget<DestinyInventoryItemDefinition>(loadoutEmptySlotItemHash);
     }
     return InventoryItemIcon(item);
   }

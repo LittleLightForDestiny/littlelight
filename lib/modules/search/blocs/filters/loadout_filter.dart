@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/modules/search/blocs/filter_options/loadout_filter_options.dart';
+import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
 
 import 'base_item_filter.dart';
@@ -44,7 +45,7 @@ class LoadoutFilter extends BaseItemFilter<LoadoutFilterOptions> {
     });
     if (loadouts == null) return;
     if (loadouts.isEmpty) data.availableValues.add(null);
-    final ids = loadouts.map((e) => e.assignedId);
+    final ids = loadouts.map((e) => e.assignedId).whereType<String>();
     data.availableValues.addAll(ids);
     final itemLoadouts = _loadoutsByItem[instanceId] ??= {};
     itemLoadouts.addAll(ids);

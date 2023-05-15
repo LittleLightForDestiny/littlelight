@@ -6,18 +6,34 @@ class NotificationsBloc extends ChangeNotifier {
   final List<BaseNotification> _actions = [];
   BaseNotification? get currentAction => _actions.firstOrNull;
   bool get busy => _actions.isNotEmpty;
+
+  final List<BasePersistentNotification> _persistent = [];
+  List<BasePersistentNotification> get persistent => _persistent;
+
   NotificationsBloc();
 
-  T createNotification<T extends BaseNotification>(T action) {
-    final existing = _actions.whereType<T>().firstWhereOrNull((element) => action.id == element.id);
+  T createNotification<T extends BaseNotification>(T notification) {
+    final existing = _actions.whereType<T>().firstWhereOrNull((element) => notification.id == element.id);
     if (existing != null) return existing;
-    action.addListener(() {
-      if (action.shouldDismiss) _actions.remove(action);
+    notification.addListener(() {
+      if (notification.shouldDismiss) _actions.remove(notification);
       notifyListeners();
     });
-    _actions.add(action);
+    _actions.add(notification);
     notifyListeners();
-    return action;
+    return notification;
+  }
+
+  T createPersistentNotification<T extends BasePersistentNotification>(T notification) {
+    final existing = _persistent.whereType<T>().firstWhereOrNull((element) => notification.id == element.id);
+    if (existing != null) return existing;
+    notification.addListener(() {
+      if (notification.shouldDismiss) _persistent.remove(notification);
+      notifyListeners();
+    });
+    _persistent.add(notification);
+    notifyListeners();
+    return notification;
   }
 
   bool actionIs<T extends BaseNotification>() => currentAction is T;

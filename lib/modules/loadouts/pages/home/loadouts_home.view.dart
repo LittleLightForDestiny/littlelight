@@ -4,13 +4,16 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
+import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
+import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
+import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
-import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 
 import 'loadouts_home.bloc.dart';
 
@@ -25,14 +28,36 @@ class LoadoutsHomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Scaffold(
-        appBar: buildAppBar(context),
-        body: state.reordering ? buildReorderingBody(context) : buildBody(context),
-        bottomNavigationBar: buildFooter(context),
+    return Scaffold(
+      appBar: buildAppBar(context),
+      body: Column(
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                state.reordering ? buildReorderingBody(context) : buildBody(context),
+                Positioned(
+                  bottom: 0,
+                  right: 0,
+                  left: 0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(8),
+                        child: NotificationsWidget(),
+                      ),
+                      BusyIndicatorLineWidget(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          buildFooter(context),
+        ].whereType<Widget>().toList(),
       ),
-      const InventoryNotificationWidget(key: Key("notification_widget"))
-    ]);
+    );
   }
 
   AppBar buildAppBar(BuildContext context) {
@@ -47,7 +72,7 @@ class LoadoutsHomeView extends StatelessWidget {
           buildReorderButton(context),
           buildSearchButton(context),
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: const Icon(FontAwesomeIcons.download),
             onPressed: () => bloc.reloadLoadouts(),
           )
         ],
@@ -74,9 +99,10 @@ class LoadoutsHomeView extends StatelessWidget {
   Widget buildSearchButton(BuildContext context) {
     if (state.reordering) return Container();
     return IconButton(
-        enableFeedback: false,
-        icon: state.searchOpen ? const Icon(FontAwesomeIcons.xmark) : const Icon(FontAwesomeIcons.magnifyingGlass),
-        onPressed: () => bloc.toggleSearch());
+      enableFeedback: false,
+      icon: state.searchOpen ? const Icon(FontAwesomeIcons.xmark) : const Icon(FontAwesomeIcons.magnifyingGlass),
+      onPressed: () => bloc.toggleSearch(),
+    );
   }
 
   Widget buildReorderButton(BuildContext context) {
@@ -93,25 +119,29 @@ class LoadoutsHomeView extends StatelessWidget {
     if (state.isEmpty) {
       return null;
     }
-    double paddingBottom = MediaQuery.of(context).padding.bottom;
+    double paddingBottom = context.mediaQuery.padding.bottom;
     return Material(
-        elevation: 1,
-        child: Container(
-          constraints: const BoxConstraints(minWidth: double.infinity),
-          height: kToolbarHeight + paddingBottom,
-          padding: const EdgeInsets.symmetric(horizontal: 16).copyWith(top: 8, bottom: 8 + paddingBottom),
+      elevation: 1,
+      color: context.theme.secondarySurfaceLayers,
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        Container(
+          padding: EdgeInsets.all(8),
+          height: kToolbarHeight,
           child: ElevatedButton(
             onPressed: bloc.createNew,
             child: Text("Create Loadout".translate(context)),
           ),
-        ));
+        ),
+        if (paddingBottom > 0) BusyIndicatorBottomGradientWidget(),
+      ]),
+    );
   }
 
   Widget buildReorderingBody(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
 
     return ReorderableList(
-        itemCount: state.loadouts!.length,
+        itemCount: state.loadouts?.length ?? 0,
         itemBuilder: (context, index) {
           return buildSortItem(context, index);
         },
@@ -127,9 +157,10 @@ class LoadoutsHomeView extends StatelessWidget {
   }
 
   Widget buildSortItem(BuildContext context, int index) {
-    final loadout = state.loadouts![index];
+    final loadout = state.loadouts?[index];
+    if (loadout == null) return Container();
     return Container(
-        key: Key("loadout-${loadout.assignedId}"),
+        key: Key("loadout-${loadout.loadoutId}"),
         padding: const EdgeInsets.symmetric(vertical: 4),
         color: Colors.transparent,
         child: Stack(
@@ -169,10 +200,11 @@ class LoadoutsHomeView extends StatelessWidget {
       [
         IntrinsicHeightScrollSection(
           itemBuilder: buildLoadout,
-          itemsPerRow: MediaQueryHelper(context).responsiveValue<int>(1, tablet: 2, laptop: 3),
+          itemsPerRow: MediaQueryHelper(context).responsiveValue<int>(1, tablet: 2, desktop: 3),
           itemCount: loadouts.length,
         ),
       ],
+      padding: EdgeInsets.all(4),
     );
   }
 
@@ -196,7 +228,8 @@ class LoadoutsHomeView extends StatelessWidget {
   }
 
   Widget buildLoadout(BuildContext context, int index) {
-    final loadout = state.loadouts![index];
+    final loadout = state.loadouts?[index];
+    if (loadout == null) return Container();
     return LoadoutListItemWidget(
       loadout,
       onAction: (action) => bloc.onItemAction(action, loadout),

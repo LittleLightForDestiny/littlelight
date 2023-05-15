@@ -97,7 +97,7 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                Navigator.of(context).push(EquipLoadoutPageRoute(loadout.assignedId));
+                Navigator.of(context).push(EquipLoadoutPageRoute(loadout.loadoutId));
               },
             ),
           ))

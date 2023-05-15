@@ -38,7 +38,7 @@ class CoreBlocsContainer extends MultiProvider {
             ChangeNotifierProvider<WishlistsService>(create: (context) => getInjectedWishlistsService()),
             ChangeNotifierProvider<NotificationsBloc>(create: (context) => NotificationsBloc()),
             ChangeNotifierProvider<InventoryBloc>(create: (context) => InventoryBloc(context)),
-            ChangeNotifierProvider<LoadoutsBloc>(create: (context) => LoadoutsBloc()),
+            ChangeNotifierProvider<LoadoutsBloc>(create: (context) => LoadoutsBloc(context)),
             ChangeNotifierProvider<SelectionBloc>(create: (context) => SelectionBloc(context)),
             ChangeNotifierProvider<ContextMenuOptionsBloc>(create: (context) => ContextMenuOptionsBloc(context)),
             ChangeNotifierProvider<ItemSectionOptionsBloc>(create: (context) => ItemSectionOptionsBloc(context)),

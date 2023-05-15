@@ -16,9 +16,7 @@ class LoadoutSelectSheet extends StatelessWidget {
   final OnLoadoutSelect onSelect;
   final Widget header;
 
-  const LoadoutSelectSheet(
-      {Key key, this.character, this.loadouts, this.header, this.onSelect})
-      : super(key: key);
+  const LoadoutSelectSheet({Key key, this.character, this.loadouts, this.header, this.onSelect}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,15 +34,12 @@ class LoadoutSelectSheet extends StatelessWidget {
                         children: loadouts
                             .map(
                               (loadout) => Container(
-                                  color: LittleLightTheme.of(context)
-                                      .primaryLayers,
-                                  margin: const EdgeInsets.symmetric(
-                                      horizontal: 8, vertical: 4),
+                                  color: LittleLightTheme.of(context).primaryLayers,
+                                  margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   child: Stack(children: [
                                     Positioned.fill(
                                         child: loadout.emblemHash != null
-                                            ? ManifestImageWidget<
-                                                DestinyInventoryItemDefinition>(
+                                            ? ManifestImageWidget<DestinyInventoryItemDefinition>(
                                                 loadout.emblemHash,
                                                 fit: BoxFit.cover,
                                                 urlExtractor: (def) {
@@ -59,8 +54,7 @@ class LoadoutSelectSheet extends StatelessWidget {
                                           maxLines: 1,
                                           overflow: TextOverflow.fade,
                                           softWrap: false,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                          style: const TextStyle(fontWeight: FontWeight.bold),
                                         )),
                                     Positioned.fill(
                                         child: Material(

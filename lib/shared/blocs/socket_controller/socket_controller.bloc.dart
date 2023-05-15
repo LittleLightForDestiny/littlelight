@@ -38,8 +38,13 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   Map<int, List<int>?> _randomPlugHashesBySocket = {};
   List<int>? randomPlugHashesForSocket(int socket) => _randomPlugHashesBySocket[socket];
 
-  Map<int, int?> _selectedPlugHashes = {};
+  @protected
+  Map<int, int?> selectedPlugHashes = {};
   int? _selectedSocketIndex;
+
+  Map<int, Map<int, bool>>? _canApply;
+
+  Map<int, Map<int, bool>>? _isAvailable;
 
   @protected
   final BuildContext context;
@@ -75,10 +80,10 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   StatValues? _availableEnergyCapacity;
   StatValues? get availableEnergyCapacity => _availableEnergyCapacity;
 
-  bool? _canApplySelectedPlug;
-  bool get canApplySelectedPlug => _canApplySelectedPlug ?? false;
-
   int? get itemHash => itemDefinition?.hash;
+
+  int? get socketCount => itemDefinition?.sockets?.socketEntries?.length;
+
   bool get isBusy;
 
   SocketControllerBloc(this.context)
@@ -131,6 +136,10 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     }
     _allAvailablePlugHashes = plugHashes;
 
+    _canApply = await loadCanApply();
+
+    loadAdditionalDefinitions();
+
     refresh();
   }
 
@@ -161,7 +170,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   bool isEquipped(int socketIndex, int plugHash);
 
   bool isSelected(int socketIndex, int plugHash) {
-    return _selectedPlugHashes[socketIndex] == plugHash;
+    return selectedPlugHashes[socketIndex] == plugHash;
   }
 
   int? get selectedSocketIndex => _selectedSocketIndex;
@@ -180,14 +189,14 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     final isCurrentlySelected = isSelected(socketIndex, plugHash);
     final isSameSocketIndex = _selectedSocketIndex == socketIndex;
     if (isCurrentlySelected && isSameSocketIndex) {
-      _selectedPlugHashes.remove(socketIndex);
+      selectedPlugHashes.remove(socketIndex);
       _selectedSocketIndex = null;
       refresh();
       notifyListeners();
       return;
     }
 
-    _selectedPlugHashes[socketIndex] = plugHash;
+    selectedPlugHashes[socketIndex] = plugHash;
     _selectedSocketIndex = socketIndex;
     refresh();
     notifyListeners();
@@ -198,7 +207,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   Future<void> update(T object);
 
   int? equippedPlugHashForSocket(int? socketIndex);
-  int? selectedPlugHashForSocket(int? socketIndex) => _selectedPlugHashes[socketIndex];
+  int? selectedPlugHashForSocket(int? socketIndex) => selectedPlugHashes[socketIndex];
 
   int? selectedSocketIndexForCategory(DestinyItemSocketCategoryDefinition category) {
     final categoryIsSelected = category.socketIndexes?.contains(_selectedSocketIndex) ?? false;
@@ -209,7 +218,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   int? selectedPlugForCategory(DestinyItemSocketCategoryDefinition category) {
     final categoryIsSelected = category.socketIndexes?.contains(_selectedSocketIndex) ?? false;
     if (!categoryIsSelected) return null;
-    return _selectedPlugHashes[_selectedSocketIndex];
+    return selectedPlugHashes[_selectedSocketIndex];
   }
 
   bool canFavorite(DestinyItemSocketCategoryDefinition category) {
@@ -286,10 +295,16 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     _usedEnergyCapacity = await _calculateUsedEnergyCapacity();
     _availableEnergyCapacity = await _calculateAvailableEnergyCapacity();
 
-    _canApplySelectedPlug = await calculateCanApplySelectedPlug();
+    _isAvailable = await _calculateIsAvailable();
 
     notifyListeners();
   }
+
+  bool isSelectable(int? index, int plugHash);
+
+  bool isAvailable(int? socketIndex, int plugHash) => _isAvailable?[socketIndex]?[plugHash] ?? false;
+
+  bool canApply(int? socketIndex, int plugHash) => _canApply?[socketIndex]?[plugHash] ?? false;
 
   /// async calculations
 
@@ -385,8 +400,41 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     return StatValues(9999, rawEquipped: totalEquipped, rawSelected: totalSelected);
   }
 
+  Future<Map<int, Map<int, bool>>?> _calculateIsAvailable() async {
+    final socketCount = itemDefinition?.sockets?.socketEntries?.length;
+    if (socketCount == null) return null;
+    final result = <int, Map<int, bool>>{};
+    for (int socketIndex = 0; socketIndex < socketCount; socketIndex++) {
+      final plugHashes = availablePlugHashesForSocket(socketIndex);
+      if (plugHashes == null) continue;
+      final plugs = result[socketIndex] ??= {};
+      for (final plugHash in plugHashes) {
+        plugs[plugHash] = await calculateIsPlugAvailable(socketIndex, plugHash);
+      }
+    }
+    return result;
+  }
+
+  Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash);
+
   @protected
-  Future<bool> calculateCanApplySelectedPlug();
+  Future<Map<int, Map<int, bool>>?> loadCanApply() async {
+    final socketCount = itemDefinition?.sockets?.socketEntries?.length;
+    if (socketCount == null) return null;
+    final result = <int, Map<int, bool>>{};
+    for (int socketIndex = 0; socketIndex < socketCount; socketIndex++) {
+      final plugHashes = availablePlugHashesForSocket(socketIndex);
+      if (plugHashes == null) continue;
+      final plugs = result[socketIndex] ??= {};
+      for (final plugHash in plugHashes) {
+        plugs[plugHash] = await loadCanApplyPlug(socketIndex, plugHash);
+      }
+    }
+    return result;
+  }
+
+  @protected
+  Future<bool> loadCanApplyPlug(int socketIndex, int plugHash);
 
   /// async load data
 
@@ -395,4 +443,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
 
   @protected
   Future<List<int>?> loadRandomPlugHashesForSocket(int selectedIndex);
+
+  @protected
+  Future<void> loadAdditionalDefinitions() async => null;
 }

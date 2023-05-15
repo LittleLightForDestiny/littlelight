@@ -2,146 +2,182 @@ import 'package:bungie_api/enums/destiny_class.dart';
 import 'package:bungie_api/models/destiny_inventory_bucket_definition.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
+import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
-typedef OnRemoveItemFromLoadout = void Function(LoadoutIndexItem item, bool equipped);
-typedef OnAddItemToLoadout = void Function(DestinyClass? classType, bool equipped);
+class LoadoutItemAction {
+  final bool equipped;
+  final LoadoutItemInfo? item;
+  final DestinyClass? classType;
+
+  const LoadoutItemAction(this.equipped, {this.item, this.classType});
+}
+
+typedef OnLoadoutItemAction = void Function(LoadoutItemAction action);
 
 class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestConsumer {
-  final DestinyInventoryBucketDefinition? bucketDefinition;
-  final OnRemoveItemFromLoadout? onOptions;
-  final OnAddItemToLoadout? onAdd;
-  final LoadoutIndexSlot slot;
-  LoadoutSlotWidget({Key? key, this.bucketDefinition, required this.slot, this.onOptions, this.onAdd})
+  final int bucketHash;
+  final OnLoadoutItemAction? onItemTap;
+  final LoadoutIndexSlot? slot;
+  final Set<DestinyClass>? availableClasses;
+  LoadoutSlotWidget(this.bucketHash, {Key? key, required this.slot, this.onItemTap, this.availableClasses})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final bucketDef = bucketDefinition;
-    if (bucketDef == null) {
-      return const AspectRatio(aspectRatio: .3);
-    }
+    final bucketDef = context.definition<DestinyInventoryBucketDefinition>(this.bucketHash);
+    final hasTransferDestination = bucketDef?.hasTransferDestination ?? false;
     return Column(children: [
-      HeaderWidget(
-          child: Text(bucketDef.displayProperties?.name?.toUpperCase() ?? "",
-              style: const TextStyle(fontWeight: FontWeight.bold))),
-      buildSlotBlock(context, headerText: "Equip".translate(context)),
+      HeaderWidget(child: Text(bucketDef?.displayProperties?.name?.toUpperCase() ?? "")),
       buildSlotBlock(
         context,
-        headerText: "Transfer".translate(context),
-        isEquipment: false,
+        headerText: "Equip".translate(context),
       ),
+      if (hasTransferDestination)
+        buildSlotBlock(
+          context,
+          headerText: "Transfer".translate(context),
+          isEquipment: false,
+        ),
       Container(height: 8)
     ]);
   }
 
   Widget buildSlotBlock(BuildContext context, {required String headerText, bool isEquipment = true}) {
-    var hasTransferDestination = bucketDefinition?.hasTransferDestination ?? false;
-    if (!isEquipment && !hasTransferDestination) return Container();
     return Container(
+        margin: EdgeInsets.only(top: 4),
         padding: const EdgeInsets.all(4),
-        color: Theme.of(context).colorScheme.secondaryContainer,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: context.theme.surfaceLayers.layer1,
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[buildBlockTitle(context, headerText), buildItemIcons(context, isEquipment: isEquipment)],
+          children: <Widget>[
+            buildBlockTitle(context, headerText),
+            Container(
+              alignment: Alignment.centerLeft,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                padding: EdgeInsets.all(4),
+                reverse: true,
+                child: buildItemIcons(context, isEquipment: isEquipment),
+              ),
+            ),
+          ],
         ));
   }
 
   Widget buildBlockTitle(BuildContext context, String text) {
     return Container(
-      padding: const EdgeInsets.all(8),
-      color: Colors.grey.shade900,
-      child: Text(
-        text.toUpperCase(),
-        style: const TextStyle(fontWeight: FontWeight.bold),
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: context.theme.surfaceLayers.layer0,
       ),
+      child: Text(text.toUpperCase(), style: context.textTheme.highlight),
     );
   }
 
   Widget buildItemIcons(BuildContext context, {bool isEquipment = true}) {
-    List<Widget> items = [];
-    final hash = bucketDefinition?.hash;
-    if (hash == null) return Container();
-    if (isEquipment) {
-      if (LoadoutItemIndex.isClassSpecificSlot(hash)) {
-        items.addAll([DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].map((classType) =>
-            buildItemIcon(context, loadoutIndexItem: slot.classSpecificEquipped[classType], classType: classType)));
-      } else {
-        items.addAll(slot.classSpecificEquipped
-            .map((classType, item) =>
-                MapEntry(classType, buildItemIcon(context, loadoutIndexItem: item, classType: classType)))
-            .values);
-        items.add(buildItemIcon(context, loadoutIndexItem: slot.genericEquipped));
-      }
-    } else {
-      if (slot.unequipped.length < 9) {
-        items.add(buildItemIcon(context, equipped: false));
-      }
-      items.addAll(slot.unequipped.map((item) => buildItemIcon(context, loadoutIndexItem: item, equipped: false)));
-    }
+    if (isEquipment) return buildEquipmentItems(context);
+    return buildTransferItems(context);
+  }
 
-    return Container(padding: const EdgeInsets.symmetric(vertical: 4), child: Wrap(children: items));
+  Widget buildEquipmentItems(BuildContext context) {
+    final isClassSpecific = loadoutClassSpecificBucketHashes.contains(bucketHash);
+    final classSlots = isClassSpecific
+        ? this.availableClasses
+        : this.availableClasses?.where((e) => slot?.classSpecificEquipped[e]?.inventoryItem != null);
+    final showGenericSlot = (classSlots?.length ?? 0) < (this.availableClasses?.length ?? 0);
+    return Row(
+      children: [
+        if (classSlots != null)
+          ...classSlots
+              .map((e) => buildItemIcon(
+                    context,
+                    classType: e,
+                    loadoutIndexItem: slot?.classSpecificEquipped[e],
+                    equipped: true,
+                  ))
+              .toList(),
+        if (showGenericSlot)
+          buildItemIcon(
+            context,
+            loadoutIndexItem: slot?.genericEquipped,
+            equipped: true,
+          ),
+      ],
+    );
+  }
+
+  Widget buildTransferItems(BuildContext context) {
+    final items = slot?.unequipped.where((i) => i.inventoryItem != null).toList() ?? [];
+    final showEmptySlot = items.length < 9;
+    return Row(
+      children: [
+        ...items
+            .map((e) => buildItemIcon(
+                  context,
+                  loadoutIndexItem: e,
+                ))
+            .toList(),
+        if (showEmptySlot) buildItemIcon(context),
+      ],
+    );
   }
 
   Widget buildItemIcon(BuildContext context,
-      {LoadoutIndexItem? loadoutIndexItem, DestinyClass? classType, bool equipped = true}) {
-    BoxDecoration? decoration = loadoutIndexItem?.item != null && bucketDefinition?.hash == InventoryBucket.subclass
-        ? null
-        : BoxDecoration(border: Border.all(width: 1, color: Colors.grey.shade300));
-
-    IconData? iconData;
-    Widget icon;
-    if (loadoutIndexItem?.item == null) {
-      icon = Positioned.fill(
-          child: Container(
-              alignment: Alignment.center,
-              child: Icon(iconData ?? Icons.add_circle_outline,
-                  size: 26, color: LittleLightTheme.of(context).surfaceLayers.layer3)));
-    } else {
-      icon = Positioned(
-          right: 2,
-          bottom: 2,
-          child: Container(
-              alignment: Alignment.center,
-              padding: const EdgeInsets.all(2),
-              decoration: BoxDecoration(color: Theme.of(context).errorColor, borderRadius: BorderRadius.circular(8)),
-              child: Icon(iconData ?? Icons.remove_circle_outline,
-                  size: 12, color: Theme.of(context).colorScheme.onSurface)));
-    }
-    var isTablet = MediaQueryHelper(context).tabletOrBigger;
-    final item = loadoutIndexItem?.item;
-    var itemIcon = Container(
-        foregroundDecoration: decoration,
+      {LoadoutItemInfo? loadoutIndexItem, DestinyClass? classType, bool equipped = false}) {
+    final hasItem = loadoutIndexItem?.inventoryItem != null;
+    return Container(
+        width: 64,
+        height: 64,
+        margin: EdgeInsets.all(2),
         child: Stack(children: [
-          Positioned.fill(
-              child: item != null
-                  ? InventoryItemIcon(item)
-                  : ManifestImageWidget<DestinyInventoryItemDefinition>(1835369552)),
-          icon,
+          hasItem ? buildItemSlotIcon(context, loadoutIndexItem) : buildEmptySlotIcon(context, classType),
           Material(
-              color: Colors.transparent,
-              child: InkWell(onTap: () {
-                if (loadoutIndexItem?.item != null) {
-                  onOptions?.call(loadoutIndexItem!, equipped);
-                } else {
-                  onAdd?.call(classType, equipped);
-                }
-              })),
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => onItemTap?.call(LoadoutItemAction(
+                equipped,
+                item: loadoutIndexItem,
+                classType: classType,
+              )),
+            ),
+          ),
         ]));
-    if (isTablet) {
-      return Container(margin: const EdgeInsets.only(right: 4), width: 64, height: 64, child: itemIcon);
-    }
-    return FractionallySizedBox(
-        widthFactor: 1 / 6,
-        child: Container(margin: const EdgeInsets.only(right: 4), child: AspectRatio(aspectRatio: 1, child: itemIcon)));
+  }
+
+  Widget buildItemSlotIcon(BuildContext context, LoadoutItemInfo? loadoutItem, {DestinyClass? classType}) {
+    final item = loadoutItem?.inventoryItem;
+    if (item == null) return buildEmptySlotIcon(context, classType);
+    return Stack(children: [
+      InventoryItemIcon(item),
+    ]);
+  }
+
+  Widget buildEmptySlotIcon(BuildContext context, DestinyClass? classType) {
+    final classTypeIcon = classType?.icon;
+    return Stack(children: [
+      ManifestImageWidget<DestinyInventoryItemDefinition>(loadoutEmptySlotItemHash),
+      Positioned.fill(
+        child: Icon(
+          classType?.icon ?? Icons.add_circle_outline,
+          color: context.theme.onSurfaceLayers.layer2,
+          size: 24,
+        ),
+      ),
+    ]);
   }
 }

@@ -57,20 +57,6 @@ class MultiSectionScrollViewState extends State<MultiSectionScrollView> {
 
   @override
   Widget build(BuildContext context) {
-    // List<Widget> _slivers = [];
-    // if ((padding?.top ?? 0) > 0) {
-    //   _slivers.add(SliverToBoxAdapter(child: Container(height: padding!.top)));
-    // }
-    // _slivers.addAll(_sections
-    //     .where((s) => s.itemCount != 0)
-    //     .map((e) => e.build(context, mainAxisSpacing: mainAxisSpacing, crossAxisSpacing: crossAxisSpacing))
-    //     .fold<Iterable<Widget>>(<Widget>[], (previousValue, element) => previousValue.followedBy([element, spacer]))
-    //     .expand((element) => [element])
-    //     .toList());
-
-    // if ((padding?.bottom ?? 0) > 0) {
-    //   _slivers.add(SliverToBoxAdapter(child: Container(height: padding!.bottom)));
-    // }
     return LayoutBuilder(builder: (context, constraints) {
       int currentOffset = 0;
       final builders = <int, _RowBuilder>{};

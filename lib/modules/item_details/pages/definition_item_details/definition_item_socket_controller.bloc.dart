@@ -123,7 +123,14 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     return plugHashes.whereType<int>().toList();
   }
 
+  Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash) async => true;
+
   @override
-  Future<bool> calculateCanApplySelectedPlug() async =>
-      selectedPlugHashForSocket(selectedSocketIndex) != equippedPlugHashForSocket(selectedSocketIndex);
+  Future<bool> loadCanApplyPlug(int socketIndex, int plugHash) async => true;
+
+  @override
+  bool isSelectable(int? index, int plugHash) => true;
+
+  @override
+  bool isAvailable(int? index, int plugHash) => true;
 }

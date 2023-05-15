@@ -71,9 +71,9 @@ class InventoryUtils {
     for (var slot in loadout.slots.values) {
       final generic = slot.genericEquipped;
       if (generic != null) {
-        final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(generic.item?.itemHash);
+        final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(generic.inventoryItem?.itemHash);
         final bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
-        final instance = _profile.getInstanceInfo(generic.item.instanceId);
+        final instance = _profile.getInstanceInfo(generic.inventoryItem.instanceId);
         logger.info("---------------------------------------------------------------");
         logger.info(bucket.displayProperties.name);
         logger.info("---------------------------------------------------------------");
@@ -82,9 +82,9 @@ class InventoryUtils {
       }
       final classSpecific = slot.classSpecificEquipped[classType];
       if (classSpecific != null) {
-        final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(classSpecific.item.itemHash);
+        final def = await _manifest.getDefinition<DestinyInventoryItemDefinition>(classSpecific.inventoryItem.itemHash);
         final bucket = await _manifest.getDefinition<DestinyInventoryBucketDefinition>(def.inventory.bucketTypeHash);
-        final instance = _profile.getInstanceInfo(classSpecific.item.instanceId);
+        final instance = _profile.getInstanceInfo(classSpecific.inventoryItem.instanceId);
         logger.info("---------------------------------------------------------------");
         logger.info(bucket.displayProperties.name);
         logger.info("---------------------------------------------------------------");

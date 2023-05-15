@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -36,8 +37,8 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
 
   LoadoutItemIndex? _loadout;
 
-  Map<DestinyClass, List<LoadoutIndexItem?>>? _equippableItems;
-  List<LoadoutIndexItem>? _unequippableItems;
+  Map<DestinyClass, List<LoadoutItemInfo?>>? _equippableItems;
+  List<LoadoutItemInfo>? _unequippableItems;
 
   List<TransferDestination>? _equipCharacters;
   List<TransferDestination>? _transferCharacters;
@@ -82,7 +83,8 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
     final loadoutID = args.loadoutID;
     if (loadoutID == null) return null;
     final loadout = _loadoutsBloc.loadouts?.firstWhereOrNull((l) => l.assignedId == loadoutID);
-    return loadout;
+    //TODO: redo
+    return null;
   }
 
   void _loadEmblemDefinition() async {
@@ -90,28 +92,28 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
     notifyListeners();
   }
 
-  Map<DestinyClass, List<LoadoutIndexItem?>>? _getEquippableItems(LoadoutItemIndex loadout) {
-    Map<DestinyClass, List<LoadoutIndexItem?>> result = {};
+  Map<DestinyClass, List<LoadoutItemInfo?>>? _getEquippableItems(LoadoutItemIndex loadout) {
+    Map<DestinyClass, List<LoadoutItemInfo?>> result = {};
     result[DestinyClass.Unknown] = _genericEquippable //
         .map((b) => loadout.slots[b]?.genericEquipped)
-        .whereType<LoadoutIndexItem?>()
+        .whereType<LoadoutItemInfo?>()
         .toList();
 
     final classes = [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock];
     for (final c in classes) {
       result[c] = _specificEquippable //
           .map((b) => loadout.slots[b]?.classSpecificEquipped[c])
-          .whereType<LoadoutIndexItem?>()
+          .whereType<LoadoutItemInfo?>()
           .toList();
     }
 
-    result.removeWhere((key, value) => value.every((i) => i?.item == null));
+    result.removeWhere((key, value) => value.every((i) => i?.inventoryItem == null));
 
     return result;
   }
 
-  List<LoadoutIndexItem>? _getUnequippableItems(LoadoutItemIndex loadout) {
-    return loadout.slots.values.map((s) => s.unequipped).fold<List<LoadoutIndexItem>>([], (pv, v) => pv + v);
+  List<LoadoutItemInfo>? _getUnequippableItems(LoadoutItemIndex loadout) {
+    return loadout.slots.values.map((s) => s.unequipped).fold<List<LoadoutItemInfo>>([], (pv, v) => pv + v);
   }
 
   List<TransferDestination> _getEquipCharacters(LoadoutItemIndex loadout, List<TransferDestination> characters) {
@@ -123,8 +125,8 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
     return chars + [TransferDestination(TransferDestinationType.vault)];
   }
 
-  Map<DestinyClass, List<LoadoutIndexItem?>>? get equippableItems => _equippableItems;
-  List<LoadoutIndexItem>? get unequippableItems => _unequippableItems;
+  Map<DestinyClass, List<LoadoutItemInfo?>>? get equippableItems => _equippableItems;
+  List<LoadoutItemInfo>? get unequippableItems => _unequippableItems;
 
   List<TransferDestination>? get equipCharacters => _equipCharacters;
   List<TransferDestination>? get transferCharacters => _transferCharacters;

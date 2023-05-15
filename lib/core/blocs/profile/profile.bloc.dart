@@ -515,7 +515,7 @@ class ProfileBloc extends ChangeNotifier
     return _cachedProfileResponse?.metrics?.data?.metrics?[hashStr];
   }
 
-  InventoryItemInfo? getItemByInstanceId(String instanceId) => _itemCache.itemsByInstanceId[instanceId];
+  InventoryItemInfo? getItemByInstanceId(String? instanceId) => _itemCache.itemsByInstanceId[instanceId];
 
   List<InventoryItemInfo> getItemsByHash(int? hash) => _itemCache.itemsByHash[hash] ?? [];
 

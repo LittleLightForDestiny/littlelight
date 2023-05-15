@@ -1,162 +1,159 @@
 import 'package:bungie_api/destiny2.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/notifications/loadout_change_result_notification.dart';
+import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/modules/item_details/pages/loadout_item_details/loadout_item_details.page_route.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
-import 'package:little_light/modules/loadouts/dialogs/loadout_slot_options/loadout_slot_options.dialog_route.dart';
-import 'package:little_light/modules/loadouts/pages/edit_item_mods/edit_loadout_item_mods.page_route.dart';
-import 'package:little_light/modules/loadouts/pages/select_item/select_loadout_item.page_route.dart';
-import 'package:little_light/pages/item_details/item_details.page_route.dart';
+import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
+import 'package:little_light/modules/loadouts/pages/loadout_item_options/loadout_item_options.bottomsheet.dart';
+import 'package:little_light/modules/search/pages/select_loadout_item/select_loadout_item.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
 
-import 'edit_loadout.page_route.dart';
-
 class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
+  @protected
   final BuildContext context;
 
-  LoadoutItemIndex? _originalLoadout;
-  LoadoutItemIndex? _loadout;
+  @protected
+  final LoadoutsBloc loadoutsBloc;
 
-  String get loadoutName => _loadout?.name ?? "";
+  @protected
+  final ProfileBloc profileBloc;
 
-  DestinyInventoryItemDefinition? _emblemDefinition;
-  Map<int, DestinyInventoryBucketDefinition>? _bucketDefinitions;
+  @protected
+  final NotificationsBloc notificationBloc;
 
-  DestinyInventoryItemDefinition? get emblemDefinition => _emblemDefinition;
+  LoadoutItemIndex? _itemIndex;
 
-  set emblemHash(int? emblemHash) {
-    if (emblemHash == null) return;
-    _emblemDefinition = null;
-    _loadout?.emblemHash = emblemHash;
-    _changed = true;
-    notifyListeners();
-    _loadEmblemDefinition();
-  }
+  String? _loadoutName;
+
+  String get loadoutName => _loadoutName ?? "";
+
+  int? _emblemHash;
+  int? get emblemHash => _emblemHash;
 
   bool _changed = false;
-
   bool get changed => _changed;
 
   bool _creating = false;
   bool get creating => _creating;
 
-  bool get loaded => _loadout != null && _bucketDefinitions != null;
-
   List<int> get bucketHashes => InventoryBucket.loadoutBucketHashes;
 
-  EditLoadoutBloc(this.context) {
-    _asyncInit();
+  Set<DestinyClass>? _availableClasses;
+  Set<DestinyClass>? get availableClasses => _availableClasses;
+
+  EditLoadoutBloc(this.context, EditLoadoutPageRouteArguments args)
+      : loadoutsBloc = context.read<LoadoutsBloc>(),
+        profileBloc = context.read<ProfileBloc>(),
+        notificationBloc = context.read<NotificationsBloc>() {
+    _init(args);
   }
 
-  void _asyncInit() async {
-    await _initLoadout();
-    _loadEmblemDefinition();
-    _loadBucketDefinitions();
+  void _init(EditLoadoutPageRouteArguments args) async {
+    _initLoadout(args);
+    profileBloc.addListener(_update);
+    _update();
   }
 
-  Future<void> _initLoadout() async {
-    _originalLoadout = _getOriginalLoadout();
-    _loadout = _originalLoadout?.clone() ?? LoadoutItemIndex.fromScratch();
+  void _initLoadout(EditLoadoutPageRouteArguments args) async {
+    LoadoutItemIndex? loadout;
+    final id = args.loadoutID;
+    if (id != null) {
+      loadout = await loadoutsBloc.getLoadout(id)?.generateIndex(profile: profileBloc, manifest: manifest);
+    }
+    this._creating = loadout == null;
+
+    loadout ??= LoadoutItemIndex("");
+    _loadoutName = loadout.name;
+    _emblemHash = loadout.emblemHash;
+    this._itemIndex = loadout;
     notifyListeners();
   }
 
-  LoadoutItemIndex? _getOriginalLoadout() {
-    final args = context.read<EditLoadoutPageRouteArguments>();
-    final loadoutID = args.loadoutID;
-    if (loadoutID != null) {
-      final originalLoadout = context
-          .read<LoadoutsBloc>()
-          .loadouts //
-          ?.firstWhereOrNull((l) => l.assignedId == loadoutID);
-      _creating = false;
-      return originalLoadout;
-    }
-    _creating = true;
+  _update() {
+    _availableClasses = profileBloc.characters?.map((e) => e.character.classType).whereType<DestinyClass>().toSet();
+    notifyListeners();
+  }
 
-    if (args.preset != null) {
-      _changed = true;
-      return args.preset;
-    }
-
-    return null;
+  void dispose() {
+    profileBloc.removeListener(_update);
+    super.dispose();
   }
 
   set loadoutName(String loadoutName) {
-    _loadout?.name = loadoutName;
-    _changed = changed || _loadout?.name != _originalLoadout?.name;
-    notifyListeners();
-  }
-
-  void _loadEmblemDefinition() async {
-    _emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(_loadout?.emblemHash);
-    notifyListeners();
-  }
-
-  void _loadBucketDefinitions() async {
-    _bucketDefinitions = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(bucketHashes);
-    notifyListeners();
-  }
-
-  LoadoutIndexSlot? getLoadoutIndexSlot(int hash) {
-    return _loadout?.slots[hash];
-  }
-
-  DestinyInventoryBucketDefinition? getBucketDefinition(int hash) {
-    return _bucketDefinitions?[hash];
-  }
-
-  void selectItemToAdd(DestinyClass? classType, int bucketHash, bool asEquipped) async {
-    final loadout = _loadout;
-    if (loadout == null) return;
-    final idsToAvoid = loadout.equippedItemIds + loadout.unequippedItemIds;
-    final item = await Navigator.of(context).push(SelectLoadoutItemPageRoute(
-        classType: classType, idsToAvoid: idsToAvoid, bucketHash: bucketHash, emblemHash: loadout.emblemHash));
-    if (item == null) return;
-    await loadout.addItem(item, asEquipped);
+    _loadoutName = loadoutName;
     _changed = true;
     notifyListeners();
   }
 
-  Future<void> openItemOptions(LoadoutIndexItem item, bool equipped) async {
-    final option = await Navigator.of(context).push(LoadoutSlotOptionsDialogRoute(context, item: item));
-    if (option == null) return;
-    final inventoryItem = item.item;
-    if (inventoryItem == null) return;
-    switch (option) {
-      case LoadoutSlotOptionsResponse.Details:
-        Navigator.of(context).push(ItemDetailsPageRoute.viewOnly(
-          item: inventoryItem,
-        ));
-        return;
-      case LoadoutSlotOptionsResponse.Remove:
-        if (equipped) {
-          _loadout?.removeEquippedItem(inventoryItem);
-        } else {
-          _loadout?.removeUnequippedItem(inventoryItem);
-        }
-        _changed = true;
-        notifyListeners();
-        break;
+  LoadoutIndexSlot? getLoadoutIndexSlot(int bucketHash) {
+    return _itemIndex?.slots[bucketHash];
+  }
 
-      case LoadoutSlotOptionsResponse.EditMods:
-        final plugs = await Navigator.of(context).push(EditLoadoutItemModsPageRoute(
-          inventoryItem.instanceId!,
-          emblemHash: _loadout?.emblemHash,
-          plugHashes: item.itemPlugs,
-        ));
-        if (plugs != null) {
-          item.itemPlugs = plugs;
-        }
-        _changed = true;
-        notifyListeners();
-        break;
+  void onSlotAction(int bucketHash, {bool equipped = false, DestinyClass? classType, LoadoutItemInfo? loadoutItem}) {
+    final item = loadoutItem?.inventoryItem;
+    if (item == null) {
+      return selectItem(bucketHash, equipped: equipped, classType: classType);
+    }
+
+    if (loadoutItem != null) {
+      return openOptions(loadoutItem, equipped: equipped);
     }
   }
 
+  void selectItem(int bucketHash, {bool equipped = false, DestinyClass? classType}) async {
+    final slot = _itemIndex?.slots[bucketHash];
+    final classSpecific = slot?.classSpecificEquipped.values.map((e) => e.inventoryItem?.instanceId).toList() ?? [];
+    final unequipped = slot?.unequipped.map((e) => e.inventoryItem?.instanceId).toList() ?? [];
+    final idsToAvoid = [
+      ...classSpecific,
+      slot?.genericEquipped.inventoryItem?.instanceId,
+      ...unequipped,
+    ].whereType<String>().toList();
+    final item = await Navigator.of(context).push(SelectLoadoutItemPageRoute(
+      bucketHash: bucketHash,
+      classType: classType,
+      idsToAvoid: idsToAvoid,
+      emblemHash: emblemHash,
+    ));
+    if (item == null) return;
+    final result = await _itemIndex?.addItem(manifest, item, equipped: equipped);
+    notifyUser(result);
+    notifyListeners();
+  }
+
+  void openOptions(LoadoutItemInfo loadoutItem, {bool equipped = false}) async {
+    final option = await LoadoutItemOptionsBottomSheet(
+      loadoutItem,
+    ).show(context);
+    if (option == LoadoutItemOption.Remove) {
+      await _itemIndex?.removeItem(manifest, loadoutItem.inventoryItem, equipped: equipped);
+      notifyListeners();
+      return;
+    }
+    if (option == LoadoutItemOption.EditMods) {
+      final mods = await Navigator.of(context).push(LoadoutItemDetailsPageRoute(loadoutItem));
+      if (mods != null) {
+        loadoutItem.itemPlugs = mods;
+        notifyListeners();
+      }
+    }
+  }
+
+  void notifyUser(LoadoutChangeResults? result) {
+    if (result == null) return;
+    if (result.cause == null) return;
+    this.notificationBloc.createPersistentNotification(LoadoutChangeResultNotification(result));
+  }
+
   void save() async {
-    final loadout = _loadout;
+    final loadout = this._itemIndex?.toLoadout();
     if (loadout != null) {
       context.read<LoadoutsBloc>().saveLoadout(loadout);
     }

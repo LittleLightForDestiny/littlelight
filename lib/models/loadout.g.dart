@@ -39,7 +39,7 @@ LoadoutItem _$LoadoutItemFromJson(Map<String, dynamic> json) => LoadoutItem(
         (k, e) => MapEntry(int.parse(k), e as int),
       ),
       bucketHash: json['bucketHash'] as int?,
-      classHash: json['classHash'] as int?,
+      classType: $enumDecodeNullable(_$DestinyClassEnumMap, json['classType']),
     );
 
 Map<String, dynamic> _$LoadoutItemToJson(LoadoutItem instance) =>
@@ -49,5 +49,13 @@ Map<String, dynamic> _$LoadoutItemToJson(LoadoutItem instance) =>
       'socketPlugs':
           instance.socketPlugs?.map((k, e) => MapEntry(k.toString(), e)),
       'bucketHash': instance.bucketHash,
-      'classHash': instance.classHash,
+      'classType': _$DestinyClassEnumMap[instance.classType],
     };
+
+const _$DestinyClassEnumMap = {
+  DestinyClass.Titan: 0,
+  DestinyClass.Hunter: 1,
+  DestinyClass.Warlock: 2,
+  DestinyClass.Unknown: 3,
+  DestinyClass.ProtectedInvalidEnumValue: 999999999,
+};

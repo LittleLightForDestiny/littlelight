@@ -1,54 +1,37 @@
 import 'dart:math';
 
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/modules/loadouts/pages/select_background/select_loadout_background.page_route.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_slot.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
-import 'package:little_light/utils/color_utils.dart';
-import 'package:little_light/widgets/common/loading_anim.widget.dart';
-import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
-import 'package:provider/provider.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
+import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
+import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
+import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 
 import 'edit_loadout.bloc.dart';
 
-class EditLoadoutView extends StatefulWidget {
-  final bool forceCreate;
-  const EditLoadoutView({Key? key, this.forceCreate = false}) : super(key: key);
-
-  @override
-  EditLoadoutViewState createState() => EditLoadoutViewState();
-}
-
-class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer {
-  final TextEditingController _nameFieldController = TextEditingController();
-  EditLoadoutBloc get _bloc => context.read<EditLoadoutBloc>();
-  EditLoadoutBloc get _state => context.watch<EditLoadoutBloc>();
-
-  @override
-  initState() {
-    super.initState();
-    _nameFieldController.text = _bloc.loadoutName;
-    _nameFieldController.addListener(() {
-      _bloc.loadoutName = _nameFieldController.text;
-    });
-  }
-
-  @override
-  dispose() {
-    super.dispose();
-    _nameFieldController.dispose();
-  }
+class EditLoadoutView extends StatelessWidget {
+  final EditLoadoutBloc bloc;
+  final EditLoadoutBloc state;
+  EditLoadoutView(
+    this.bloc,
+    this.state, {
+    Key? key,
+  }) : super(key: key);
 
   Color get backgroundColor {
-    final emblemDefinition = _state.emblemDefinition;
-    final bgColor = emblemDefinition?.backgroundColor;
-    final background = Theme.of(context).colorScheme.background;
-    if (bgColor == null) return background;
-    return Color.lerp(bgColor.toMaterialColor(), background, .5) ?? background;
+    return Colors.transparent;
+    // final emblemDefinition = state.emblemDefinition;
+    // final bgColor = emblemDefinition?.backgroundColor;
+    // final background = Theme.of(context).colorScheme.background;
+    // if (bgColor == null) return background;
+    // return Color.lerp(bgColor.toMaterialColor(), background, .5) ?? background;
   }
 
   @override
@@ -56,18 +39,41 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
     return Scaffold(
       backgroundColor: backgroundColor,
       appBar: buildAppBar(context),
-      body: buildBody(context),
-      bottomNavigationBar: buildFooter(context),
+      body: Column(children: [
+        Expanded(
+          child: Stack(
+            children: [
+              buildBody(context),
+              Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.all(4),
+                        child: NotificationsWidget(),
+                      ),
+                      BusyIndicatorLineWidget(),
+                    ],
+                  ))
+            ],
+          ),
+        ),
+        buildFooter(context),
+      ]),
     );
   }
 
   AppBar buildAppBar(BuildContext context) => AppBar(
-        title: _state.creating ? Text("Create Loadout".translate(context)) : Text("Edit Loadout".translate(context)),
+        title: state.creating ? Text("Create Loadout".translate(context)) : Text("Edit Loadout".translate(context)),
+        centerTitle: false,
         flexibleSpace: buildAppBarBackground(context),
       );
 
   Widget buildAppBarBackground(BuildContext context) {
-    final emblemDefinition = _state.emblemDefinition;
+    final emblemDefinition = context.definition<DestinyInventoryItemDefinition>(state.emblemHash);
     if (emblemDefinition == null) return Container();
     if (emblemDefinition.secondarySpecial?.isEmpty ?? true) return Container();
     return Container(
@@ -80,34 +86,34 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
 
   Widget buildBody(BuildContext context) {
     final screenPadding = MediaQuery.of(context).padding;
-    return MultiSectionScrollView(
-      [
-        IntrinsicHeightScrollSection(
-          itemCount: 1,
-          itemBuilder: (context, _) => buildNameTextField(context),
-        ),
-        IntrinsicHeightScrollSection(
-          itemCount: 1,
-          itemBuilder: (context, _) => buildSelectBackgroundButton(context),
-        ),
-        if (!_state.loaded) IntrinsicHeightScrollSection(itemBuilder: (c, _) => LoadingAnimWidget()),
-        if (_state.loaded)
+    return Material(
+      child: MultiSectionScrollView(
+        [
+          IntrinsicHeightScrollSection(
+            itemCount: 1,
+            itemBuilder: (context, _) => buildNameTextField(context),
+          ),
+          IntrinsicHeightScrollSection(
+            itemCount: 1,
+            itemBuilder: (context, _) => buildSelectBackgroundButton(context),
+          ),
           IntrinsicHeightScrollSection(
             itemBuilder: (context, index) => buildSlot(context, index),
-            itemCount: _state.bucketHashes.length,
+            itemCount: state.bucketHashes.length,
           ),
-      ],
-      padding: const EdgeInsets.all(8)
-          .copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+        ],
+        padding: const EdgeInsets.all(8)
+            .copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+      ),
     );
   }
 
   Widget buildNameTextField(BuildContext context) {
     return Container(
         padding: const EdgeInsets.all(8),
-        child: TextField(
+        child: TextFormField(
           autocorrect: false,
-          controller: _nameFieldController,
+          onChanged: (value) => bloc.loadoutName = value,
           decoration: InputDecoration(labelText: context.translate("Loadout Name")),
         ));
   }
@@ -117,52 +123,48 @@ class EditLoadoutViewState extends State<EditLoadoutView> with ManifestConsumer 
         padding: const EdgeInsets.all(8),
         child: ElevatedButton(
           child: Text("Select Loadout Background".translate(context)),
-          onPressed: () async {
-            _bloc.emblemHash = await Navigator.of(context).push<int?>(SelectLoadoutBackgroundPageRoute());
-          },
+          onPressed: () async {},
         ));
   }
 
   Widget buildSlot(BuildContext context, int index) {
-    final hash = _state.bucketHashes[index];
-    final definition = _state.getBucketDefinition(hash);
-    final slot = _state.getLoadoutIndexSlot(hash);
-    if (definition == null || slot == null) {
-      return Container();
-    }
+    final bucketHash = state.bucketHashes[index];
+    final slot = state.getLoadoutIndexSlot(bucketHash);
 
     return LoadoutSlotWidget(
-      bucketDefinition: definition,
-      key: Key("loadout_slot_$hash"),
+      bucketHash,
+      key: Key("loadout_slot_$bucketHash"),
       slot: slot,
-      onAdd: (classType, equipped) {
-        _bloc.selectItemToAdd(classType, hash, equipped);
-      },
-      onOptions: (item, equipped) {
-        _bloc.openItemOptions(item, equipped);
+      availableClasses: state.availableClasses,
+      onItemTap: (action) {
+        bloc.onSlotAction(
+          bucketHash,
+          equipped: action.equipped,
+          classType: action.classType,
+          loadoutItem: action.item,
+        );
       },
     );
   }
 
   Widget buildFooter(BuildContext context) {
-    double paddingBottom = MediaQuery.of(context).padding.bottom;
-    if (!_state.changed) return Container(height: paddingBottom);
     return Material(
         elevation: 1,
-        color: Theme.of(context).appBarTheme.backgroundColor,
+        color: context.theme.secondarySurfaceLayers,
         child: Stack(
           children: <Widget>[
             Positioned.fill(child: buildAppBarBackground(context)),
-            Container(
-              height: kToolbarHeight + paddingBottom,
-              constraints: const BoxConstraints(minWidth: double.infinity),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8).copyWith(bottom: 8 + paddingBottom),
-              child: ElevatedButton(
+            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+              Container(
+                height: kToolbarHeight,
+                padding: const EdgeInsets.all(8),
+                child: ElevatedButton(
                   child: Text("Save Loadout".translate(context)),
-                  onPressed: () {
-                    _bloc.save();
-                  }),
-            )
+                  onPressed: () => bloc.save(),
+                ),
+              ),
+              BusyIndicatorBottomGradientWidget(),
+            ])
           ],
         ));
   }
