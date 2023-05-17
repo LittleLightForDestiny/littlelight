@@ -147,7 +147,8 @@ class DetailsItemPerksWidget extends StatelessWidget {
                 child: PerkIconWidget(
                   plugItemHash: plugHash,
                   itemHash: itemHash,
-                  disabled: !isPlugSelectable,
+                  selectable: isPlugSelectable,
+                  available: state.isAvailable(socket.index, plugHash),
                   selected: state.isSelected(socket.index, plugHash),
                   equipped: state.isEquipped(socket.index, plugHash),
                   onTap: () => bloc.toggleSelection(socket.index, plugHash),

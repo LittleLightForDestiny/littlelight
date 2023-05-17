@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/notifications/loadout_change_result_notification.dart';
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
-import 'package:little_light/modules/item_details/pages/loadout_item_details/loadout_item_details.page_route.dart';
+import 'package:little_light/modules/loadouts/pages/edit_loadout_item_mods/loadout_item_details.page_route.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';

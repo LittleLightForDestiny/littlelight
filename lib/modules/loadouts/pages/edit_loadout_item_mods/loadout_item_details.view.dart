@@ -3,9 +3,10 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/item_details/blocs/item_details.bloc.dart';
-import 'package:little_light/modules/item_details/pages/loadout_item_details/loadout_item_details.bloc.dart';
 import 'package:little_light/modules/item_details/views/base_item_details.view.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
+
+import 'edit_loadout_item_mods.bloc.dart';
 
 class LoadoutItemDetailsView extends BaseItemDetailsView {
   LoadoutItemDetailsView(

@@ -16,7 +16,8 @@ class PerkIconWidget extends StatelessWidget {
   static const maxIconSize = _maxPerkIconSize;
   final int plugItemHash;
   final int itemHash;
-  final bool disabled;
+  final bool selectable;
+  final bool available;
   final bool equipped;
   final bool selected;
   final VoidCallback? onTap;
@@ -24,8 +25,9 @@ class PerkIconWidget extends StatelessWidget {
   PerkIconWidget({
     required int this.plugItemHash,
     required int this.itemHash,
-    this.disabled = false,
+    this.selectable = true,
     this.equipped = false,
+    this.available = true,
     this.selected = false,
     this.onTap,
   }) : super();
@@ -64,7 +66,7 @@ class PerkIconWidget extends StatelessWidget {
             final scale = constraints.maxWidth / _maxPerkIconSize;
             final radius = BorderRadius.circular(isRound ? constraints.maxWidth / 2 : 8 * scale);
             return AnimatedOpacity(
-              opacity: disabled ? .5 : 1,
+              opacity: available ? 1 : .5,
               duration: _animationDuration,
               child: Stack(
                 children: [
@@ -80,7 +82,7 @@ class PerkIconWidget extends StatelessWidget {
                       child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash)),
                   InkWell(
                     customBorder: isRound ? CircleBorder() : RoundedRectangleBorder(borderRadius: radius),
-                    onTap: disabled ? null : onTap,
+                    onTap: selectable ? onTap : null,
                     child: Material(
                       color: Colors.transparent,
                       child: Container(),

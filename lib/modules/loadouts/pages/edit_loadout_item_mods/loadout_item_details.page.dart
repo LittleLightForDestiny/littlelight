@@ -9,7 +9,7 @@ import 'package:little_light/shared/blocs/scoped_value_repository/scoped_value_r
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:provider/provider.dart';
 
-import 'loadout_item_details.bloc.dart';
+import 'edit_loadout_item_mods.bloc.dart';
 import 'loadout_item_details.view.dart';
 import 'loadout_item_socket_controller.bloc.dart';
 

@@ -14,18 +14,18 @@ class ModIconWidget extends StatelessWidget {
   final int plugHash;
   final bool selected;
   final bool equipped;
-  final bool canEquip;
+  final bool available;
   final bool isFavorite;
   final double borderWidth;
-  final bool canSelect;
+  final bool selectable;
   final void Function()? onTap;
 
   ModIconWidget(
     this.plugHash, {
     this.selected = false,
     this.equipped = false,
-    this.canEquip = true,
-    this.canSelect = true,
+    this.available = true,
+    this.selectable = true,
     this.isFavorite = false,
     this.borderWidth = 1.5,
     this.onTap,
@@ -164,7 +164,7 @@ class ModIconWidget extends StatelessWidget {
   }
 
   Widget? buildDisabledOverlay(BuildContext context) {
-    if (canEquip && canSelect) return null;
+    if (available) return null;
     return Positioned.fill(
       child: Container(
         color: context.theme.surfaceLayers.layer0.withOpacity(.5),
@@ -174,7 +174,7 @@ class ModIconWidget extends StatelessWidget {
 
   Widget? buildInkWell(BuildContext context) {
     final onTap = this.onTap;
-    if (onTap == null || !canSelect) return null;
+    if (onTap == null || !selectable) return null;
     return Positioned.fill(
       child: InkWell(
         onTap: onTap,
