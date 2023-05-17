@@ -99,14 +99,17 @@ abstract class CollectionsBloc extends ChangeNotifier {
     final itemHashes = collectibleDefinitions.values.map((c) => c.itemHash);
     final itemDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(itemHashes);
     final genericItems = _genericItems ?? Map<int, DefinitionItemInfo>();
+    final inventoryItems = _inventoryItems ?? Map<int, List<InventoryItemInfo>>();
     for (final h in collectibleHashes) {
       final itemHash = collectibleDefinitions[h]?.itemHash;
       final def = itemDefinitions[itemHash];
       if (def == null) continue;
       final item = DefinitionItemInfo.fromDefinition(def);
       genericItems[h] = item;
+      inventoryItems[h] = profileBloc.getItemsByHash(itemHash);
     }
     _genericItems = genericItems;
+    _inventoryItems = inventoryItems;
   }
 
   @protected
