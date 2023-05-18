@@ -39,24 +39,16 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
       currentAverage--;
     }
     var bars = <Widget>[];
-    Color color = context.theme.primaryLayers.layer0;
+    Color color = context.theme.primaryLayers.layer1;
     for (int i = 0; i < itemCount; i++) {
       if (i == currentStep) color = context.theme.surfaceLayers.layer3;
       bars.add(
         Expanded(
           child: Container(
-            height: 4,
-            width: 4,
-            margin: EdgeInsets.symmetric(horizontal: 2),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(2),
-              gradient: LinearGradient(
-                begin: Alignment.bottomCenter,
-                end: Alignment.topCenter,
-                colors: [context.theme.onSurfaceLayers.mix(color, 90), context.theme.onSurfaceLayers.mix(color, 40)],
-              ),
-            ),
-          ),
+              height: 4,
+              width: 4,
+              margin: EdgeInsets.symmetric(horizontal: 2),
+              decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4))),
         ),
       );
     }

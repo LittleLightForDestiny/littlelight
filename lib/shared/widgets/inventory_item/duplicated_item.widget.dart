@@ -213,12 +213,22 @@ class DuplicatedItemWidget extends StatelessWidget {
     final profile = context.watch<ProfileBloc>();
     final character = profile.getCharacterById(item.characterId);
     if (character != null) {
-      return ManifestText<DestinyClassDefinition>(
+      final characterName = ManifestText<DestinyClassDefinition>(
         character.character.classHash,
         uppercase: true,
         style: context.textTheme.highlight,
         textExtractor: (def) => def.genderedClassNamesByGenderHash?["${character.character.genderHash}"],
       );
+      if (item.bucketHash == InventoryBucket.lostItems) {
+        return Row(children: [
+          characterName,
+          Container(
+            child: Icon(Icons.mail, size: characterName.style?.fontSize ?? 12),
+            padding: EdgeInsets.only(left: 2),
+          )
+        ]);
+      }
+      return characterName;
     }
     if (item.bucketHash == InventoryBucket.general) {
       return Text(
