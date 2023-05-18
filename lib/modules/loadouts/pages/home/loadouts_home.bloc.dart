@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/modules/loadouts/pages/confirm_delete_loadout/confirm_delete_loadout.bottomsheet.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
@@ -121,21 +122,19 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
   }
 
   void onItemAction(LoadoutListItemAction action, LoadoutItemIndex loadout) async {
+    final id = loadout.loadoutId;
+    if (id == null) return;
     switch (action) {
       case LoadoutListItemAction.Equip:
-        final id = loadout.loadoutId;
-        if (id == null) return;
         Navigator.of(context).push(EquipLoadoutPageRoute(id));
         break;
 
       case LoadoutListItemAction.Edit:
-        final id = loadout.loadoutId;
-        if (id == null) return;
         Navigator.of(context).push(EditLoadoutPageRoute.edit(id));
         break;
 
       case LoadoutListItemAction.Delete:
-        // _loadoutsBloc.deleteLoadout(loadout);
+        ConfirmDeleteLoadoutBottomSheet(id).show(context);
         break;
     }
   }

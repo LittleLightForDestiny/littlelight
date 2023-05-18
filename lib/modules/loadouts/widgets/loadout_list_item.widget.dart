@@ -18,8 +18,8 @@ typedef OnLoadoutListItemAction = void Function(LoadoutListItemAction action);
 
 class LoadoutListItemWidget extends StatelessWidget {
   final LoadoutItemIndex loadout;
-  final OnLoadoutListItemAction onAction;
-  const LoadoutListItemWidget(this.loadout, {Key? key, required this.onAction}) : super(key: key);
+  final OnLoadoutListItemAction? onAction;
+  const LoadoutListItemWidget(this.loadout, {Key? key, this.onAction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +87,8 @@ class LoadoutListItemWidget extends StatelessWidget {
   }
 
   Widget buildButtonBar(BuildContext context) {
+    final onAction = this.onAction;
+    if (onAction == null) return Container();
     return Container(
       color: Theme.of(context).colorScheme.secondaryContainer,
       padding: const EdgeInsets.all(4).copyWith(top: 0),
