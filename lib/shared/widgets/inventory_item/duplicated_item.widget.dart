@@ -13,6 +13,7 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
 import 'package:little_light/shared/utils/extensions/element_type_data.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
+import 'package:little_light/shared/widgets/character/postmaster_icon.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/utils/get_perks_socket_category.dart';
 import 'package:little_light/shared/widgets/tags/tag_icon.widget.dart';
 import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
@@ -219,17 +220,19 @@ class DuplicatedItemWidget extends StatelessWidget {
         style: context.textTheme.highlight,
         textExtractor: (def) => def.genderedClassNamesByGenderHash?["${character.character.genderHash}"],
       );
-      if (item.bucketHash == InventoryBucket.lostItems) {
-        return Row(children: [
-          characterName,
+
+      return Row(children: [
+        characterName,
+        if (item.bucketHash == InventoryBucket.lostItems)
           Container(
-            child: Icon(Icons.mail, size: characterName.style?.fontSize ?? 12),
-            padding: EdgeInsets.only(left: 2),
+            height: _tagIconSize,
+            width: _tagIconSize,
+            child: PostmasterIconWidget(),
+            margin: EdgeInsets.only(left: 2),
           )
-        ]);
-      }
-      return characterName;
+      ]);
     }
+
     if (item.bucketHash == InventoryBucket.general) {
       return Text(
         "Vault".translate(context).toUpperCase(),
