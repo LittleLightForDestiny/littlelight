@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/models/loadout.dart';
 import 'package:little_light/shared/widgets/modals/base_bottom_sheet.base.dart';
 import 'package:provider/provider.dart';
 
