@@ -49,6 +49,7 @@ class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
     final bloc = context.read<SocketControllerBloc>();
     final itemHash = state.itemHash;
     if (itemHash == null) return Container();
+    if (state.isEquipped(socketIndex, plugHash) == false) return Container();
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -71,7 +72,13 @@ class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
               uppercase: true,
               style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            Container(height: 8),
+            Container(height: 4),
+            ManifestText<DestinyInventoryItemDefinition>(
+              plugHash,
+              textExtractor: (def) => def.itemTypeDisplayName,
+              style: const TextStyle(fontSize: 16),
+            ),
+            Container(height: 4),
             ManifestText<DestinyInventoryItemDefinition>(
               plugHash,
               textExtractor: (def) => def.displayProperties?.description,
