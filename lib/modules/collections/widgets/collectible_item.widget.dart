@@ -1,4 +1,4 @@
-import 'package:bungie_api/models/destiny_collectible_definition.dart';
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
@@ -9,6 +9,7 @@ import 'package:little_light/shared/widgets/inventory_item/high_density_inventor
 import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:provider/provider.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 
 class CollectibleItemWidget extends StatelessWidget {
   final int? collectibleHash;
@@ -41,7 +42,7 @@ class CollectibleItemWidget extends StatelessWidget {
                 ])),
             child: Stack(children: [
               buildItem(context),
-              Positioned(right: 4, top: 4, child: buildItemCount(context)),
+              Positioned(right: 4, top: 4, child: Row(children: [buildUnavailable(context), buildItemCount(context)])),
               Positioned.fill(
                   child: InteractiveItemWrapper(
                 Container(),
@@ -106,5 +107,16 @@ class CollectibleItemWidget extends StatelessWidget {
         style: context.textTheme.highlight,
       ),
     );
+  }
+
+  Widget buildUnavailable(BuildContext context) {
+    final def = context.read<ProfileBloc>().getProfileCollectible(collectibleHash);
+    if (def?.state?.contains(DestinyCollectibleState.Invisible) ?? false) {
+      return Container(
+          width: 24,
+          height: 24, //
+          child: Icon(Icons.block, color: context.theme.highlightedObjectiveLayers));
+    }
+    return Container();
   }
 }
