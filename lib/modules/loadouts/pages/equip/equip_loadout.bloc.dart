@@ -1,15 +1,14 @@
 import 'package:bungie_api/destiny2.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
-import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
+import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
 
 const _genericEquippable = [
@@ -45,27 +44,27 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
 
   String get loadoutName => _loadout?.name ?? "";
 
-  DestinyInventoryItemDefinition? _emblemDefinition;
-  DestinyInventoryItemDefinition? get emblemDefinition => _emblemDefinition;
+  int? get emblemHash => _loadout?.emblemHash;
 
   EquipLoadoutBloc(
     this.context,
+    String loadoutId,
   )   : _loadoutsBloc = context.read<LoadoutsBloc>(),
         _inventoryBloc = context.read<InventoryBloc>() {
-    _asyncInit();
+    _asyncInit(loadoutId);
   }
 
-  void _asyncInit() async {
-    await _initInfo();
-    _loadEmblemDefinition();
+  void _asyncInit(String loadoutId) async {
+    await _initInfo(loadoutId);
   }
 
-  Future<void> _initInfo() async {
-    final loadout = _getLoadout();
-    if (loadout == null) return;
-    _loadout = loadout;
-    _equippableItems = _getEquippableItems(loadout);
-    _unequippableItems = _getUnequippableItems(loadout);
+  Future<void> _initInfo(String loadoutId) async {
+    final loadout = _loadoutsBloc.getLoadout(loadoutId);
+    final itemIndex = await loadout?.generateIndex(profile: profile, manifest: manifest);
+    if (itemIndex == null) return;
+    _loadout = itemIndex;
+    _equippableItems = _getEquippableItems(itemIndex);
+    _unequippableItems = _getUnequippableItems(itemIndex);
     final characters = profile.characters
         ?.map((e) => TransferDestination(
               TransferDestinationType.character,
@@ -73,22 +72,8 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
             ))
         .toList();
     if (characters == null) return;
-    _equipCharacters = _getEquipCharacters(loadout, characters);
-    _transferCharacters = _getTransferCharacters(loadout, characters);
-    notifyListeners();
-  }
-
-  LoadoutItemIndex? _getLoadout() {
-    final args = context.read<EquipLoadoutPageRouteArguments>();
-    final loadoutID = args.loadoutID;
-    if (loadoutID == null) return null;
-    final loadout = _loadoutsBloc.loadouts?.firstWhereOrNull((l) => l.assignedId == loadoutID);
-    //TODO: redo
-    return null;
-  }
-
-  void _loadEmblemDefinition() async {
-    _emblemDefinition = await manifest.getDefinition<DestinyInventoryItemDefinition>(_loadout?.emblemHash);
+    _equipCharacters = _getEquipCharacters(itemIndex, characters);
+    _transferCharacters = _getTransferCharacters(itemIndex, characters);
     notifyListeners();
   }
 
@@ -113,7 +98,11 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer, ProfileCons
   }
 
   List<LoadoutItemInfo>? _getUnequippableItems(LoadoutItemIndex loadout) {
-    return loadout.slots.values.map((s) => s.unequipped).fold<List<LoadoutItemInfo>>([], (pv, v) => pv + v);
+    return loadout.slots.values //
+        .map((s) => s.unequipped)
+        .fold<List<LoadoutItemInfo>>([], (pv, v) => pv + v)
+        .where((element) => element.inventoryItem != null)
+        .toList();
   }
 
   List<TransferDestination> _getEquipCharacters(LoadoutItemIndex loadout, List<TransferDestination> characters) {

@@ -3,21 +3,21 @@ import 'dart:math';
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.bloc.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
+import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';
 import 'package:provider/provider.dart';
 
 class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
@@ -25,7 +25,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
   EquipLoadoutBloc _state(BuildContext context) => context.watch<EquipLoadoutBloc>();
 
   Color getBackgroundColor(BuildContext context) {
-    final emblemDefinition = _state(context).emblemDefinition;
+    final emblemDefinition = context.definition<DestinyInventoryItemDefinition>(_state(context).emblemHash);
     final bgColor = emblemDefinition?.backgroundColor;
     final background = Theme.of(context).colorScheme.background;
     if (bgColor == null) return background;
@@ -50,7 +50,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
       );
 
   Widget buildAppBarBackground(BuildContext context) {
-    final emblemDefinition = _state(context).emblemDefinition;
+    final emblemDefinition = context.definition<DestinyInventoryItemDefinition>(_state(context).emblemHash);
     if (emblemDefinition == null) return Container();
     if (emblemDefinition.secondarySpecial?.isEmpty ?? true) return Container();
     return Container(
@@ -66,7 +66,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
     return Column(children: [
       Expanded(
         child: Container(
-          alignment: Alignment.center,
+          alignment: Alignment.topCenter,
           child: SingleChildScrollView(
             padding: const EdgeInsets.all(8)
                 .copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),

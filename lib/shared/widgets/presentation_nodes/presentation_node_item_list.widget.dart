@@ -13,12 +13,19 @@ const _itemHeight = 96.0;
 
 class PresentationNodeListWidget extends StatelessWidget {
   final int? presentationNodeHash;
+  final List<DestinyPresentationNodeCollectibleChildEntry>? collectibles;
+  final List<DestinyPresentationNodeChildEntry>? childNodes;
+  final List<DestinyPresentationNodeRecordChildEntry>? records;
   final PresentationNodeBuilder? presentationNodeBuilder;
   final CollectibleBuilder? collectibleBuilder;
   final RecordBuilder? recordBuilder;
   final EdgeInsets? padding;
+
   const PresentationNodeListWidget(
     this.presentationNodeHash, {
+    this.childNodes,
+    this.collectibles,
+    this.records,
     this.presentationNodeBuilder,
     this.collectibleBuilder,
     this.recordBuilder,
@@ -33,15 +40,18 @@ class PresentationNodeListWidget extends StatelessWidget {
     final presentationNodeBuilder = this.presentationNodeBuilder;
     final collectibleBuilder = this.collectibleBuilder;
     final recordBuilder = this.recordBuilder;
-    final presentationNodes = def?.children?.presentationNodes //
-        ?.whereType<DestinyPresentationNodeChildEntry>()
-        .toList();
-    final collectibles = def?.children?.collectibles //
-        ?.whereType<DestinyPresentationNodeCollectibleChildEntry>()
-        .toList();
-    final records = def?.children?.records //
-        ?.whereType<DestinyPresentationNodeRecordChildEntry>()
-        .toList();
+    final presentationNodes = this.childNodes ??
+        def?.children?.presentationNodes //
+            ?.whereType<DestinyPresentationNodeChildEntry>()
+            .toList();
+    final collectibles = this.collectibles ??
+        def?.children?.collectibles //
+            ?.whereType<DestinyPresentationNodeCollectibleChildEntry>()
+            .toList();
+    final records = this.records ??
+        def?.children?.records //
+            ?.whereType<DestinyPresentationNodeRecordChildEntry>()
+            .toList();
     return MultiSectionScrollView(
       [
         if (presentationNodeBuilder != null && presentationNodes != null)
