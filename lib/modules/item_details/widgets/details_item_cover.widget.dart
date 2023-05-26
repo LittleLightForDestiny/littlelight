@@ -14,9 +14,11 @@ import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
+import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
 import 'package:provider/provider.dart';
 
 class DetailsItemCoverWidget extends StatelessWidget {
@@ -220,27 +222,41 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
     final statHash = itemDefinition?.stats?.primaryBaseStatHash;
     final disableStat = itemDefinition?.stats?.disablePrimaryStatDisplay ?? false;
     final value = item?.primaryStatValue;
-    final damageType = item?.damageTypeHash;
+    final classType = itemDefinition?.classType ?? DestinyClass.Unknown;
+    final ammoType = itemDefinition?.equippingBlock?.ammoType ?? DestinyAmmunitionType.None;
+    final damageType = item?.damageType ?? DamageType.None;
+    final damageColor = damageType != DamageType.None
+        ? damageType.getColorLayer(context).layer2
+        : context.textTheme.itemPrimaryStatHighDensity.color;
     final statDef = context.definition<DestinyStatDefinition>(statHash);
     final shouldUsePower = statDef?.aggregationType == DestinyStatAggregationType.Character;
     final label = shouldUsePower ? "Power".translate(context) : statDef?.displayProperties?.name;
 
-    if (statHash == null || disableStat || value == null) return null;
+    if (statHash == null || disableStat) return null;
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        if (damageType != null)
+        if (classType != DestinyClass.Unknown) //
+          Container(child: Icon(classType.icon, size: 28, color: context.theme.onSurfaceLayers.layer2)),
+        if (classType != DestinyClass.Unknown && (damageType != DamageType.None || value != null))
           Container(
-            height: 24,
-            child: ManifestImageWidget<DestinyDamageTypeDefinition>(damageType),
-          ),
-        Container(
-            padding: EdgeInsets.only(left: 4),
-            child: Text(
-              "$value",
-              style: context.textTheme.itemPrimaryStatHighDensity.copyWith(fontSize: 32, height: .4),
-            )),
-        if (label != null)
+              height: 27, //
+              child: VerticalDivider(thickness: 1, width: 12, color: context.theme.onSurfaceLayers.layer0)),
+        if (ammoType != DestinyAmmunitionType.None)
+          Container(padding: EdgeInsets.only(right: 10), child: Icon(ammoType.icon, color: ammoType.color, size: 28)),
+        if (ammoType != DestinyAmmunitionType.None)
+          Container(
+              height: 27, //
+              child: VerticalDivider(thickness: 1, width: 8, color: context.theme.onSurfaceLayers.layer0)),
+        if (damageType != DamageType.None)
+          Container(padding: EdgeInsets.only(right: 4), height: 28, child: Icon(damageType.icon, color: damageColor)),
+        if (value != null)
+          Container(
+              child: Text(
+            "$value",
+            style: context.textTheme.itemPrimaryStatHighDensity.copyWith(fontSize: 32, height: .4, color: damageColor),
+          )),
+        if (value != null && label != null)
           Container(
             padding: EdgeInsets.only(left: 4),
             child: Text(
@@ -258,7 +274,7 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
     return Container(
       padding: EdgeInsets.only(top: 4),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Container(
             height: 12,
