@@ -8,6 +8,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.bloc.dart';
+import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
@@ -74,7 +75,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
               alignment: Alignment.center,
               constraints: const BoxConstraints(minWidth: double.maxFinite),
               child: Container(
-                constraints: const BoxConstraints(maxWidth: 600),
+                constraints: const BoxConstraints(maxWidth: LoadoutListItemWidget.maxWidth),
                 child: Column(children: [
                   buildEquippableItems(context),
                   Container(height: 16),
@@ -200,7 +201,6 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
       child: SafeArea(
         top: false,
         child: Container(
-          constraints: const BoxConstraints(maxWidth: 600),
           child: TransferDestinationsWidget(
               equipDestinations: equip,
               transferDestinations: transfer,

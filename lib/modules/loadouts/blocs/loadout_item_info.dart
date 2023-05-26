@@ -10,6 +10,7 @@ class LoadoutItemInfo extends DestinyItemInfo {
   final String? _instanceId;
   InventoryItemInfo? inventoryItem;
   Map<int, int> itemPlugs;
+  int? _overrideStyleItemHash;
 
   LoadoutItemInfo({
     this.inventoryItem,
@@ -59,7 +60,8 @@ class LoadoutItemInfo extends DestinyItemInfo {
   bool? get lockable => inventoryItem?.lockable;
 
   @override
-  int? get overrideStyleItemHash => inventoryItem?.overrideStyleItemHash;
+  int? get overrideStyleItemHash => _overrideStyleItemHash ?? inventoryItem?.overrideStyleItemHash;
+  set overrideStyleItemHash(int? value) => _overrideStyleItemHash = value;
 
   @override
   int? get primaryStatValue => inventoryItem?.primaryStatValue;

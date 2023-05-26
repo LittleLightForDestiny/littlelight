@@ -86,7 +86,7 @@ class DeleteLoadoutView extends StatelessWidget {
     return Container(
         alignment: Alignment.center,
         child: Container(
-          width: 600,
+          width: LoadoutListItemWidget.maxWidth,
           padding: EdgeInsets.all(8),
           child: IntrinsicHeight(
             child: Container(child: LoadoutListItemWidget(loadout)),

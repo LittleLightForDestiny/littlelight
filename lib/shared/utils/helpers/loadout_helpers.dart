@@ -7,6 +7,7 @@ import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:uuid/uuid.dart';
 
 const loadoutEmptySlotItemHash = 1219897208;
@@ -39,10 +40,12 @@ LoadoutItemInfo? _addItemToLoadoutIndex(
   required int bucketHash,
   required DestinyClass? classType,
   required Map<int, int>? plugHashes,
+  int? overridePlugHash,
 }) {
   final isClassSpecificItem = [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].contains(classType);
   final slot = itemIndex.slots[bucketHash] ??= LoadoutIndexSlot();
   final loadoutItem = LoadoutItemInfo(inventoryItem: item, itemPlugs: plugHashes);
+  loadoutItem.overrideStyleItemHash = overridePlugHash;
   if (!equipped) {
     slot.unequipped.add(loadoutItem);
     return loadoutItem;
@@ -96,6 +99,9 @@ extension LoadoutHelpers on Loadout {
       bool asEquipped = this.equipped.contains(item);
       final instanceId = item.itemInstanceId;
       final inventoryItem = profile.getItemByInstanceId(instanceId);
+      final plugDefs =
+          await manifest.getDefinitions<DestinyInventoryItemDefinition>(item.socketPlugs?.values ?? <int>[]);
+      final overridePlug = plugDefs.values.firstWhereOrNull((p) => shouldPlugOverrideStyleItemHash(p));
       _addItemToLoadoutIndex(
         index,
         asEquipped,
@@ -103,6 +109,7 @@ extension LoadoutHelpers on Loadout {
         bucketHash: bucketHash,
         classType: classType,
         plugHashes: item.socketPlugs,
+        overridePlugHash: overridePlug?.hash,
       );
     }
     return index;

@@ -5,6 +5,7 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
@@ -16,7 +17,10 @@ enum LoadoutListItemAction { Equip, Edit, Delete }
 
 typedef OnLoadoutListItemAction = void Function(LoadoutListItemAction action);
 
+const _loadoutListItemMaxWidth = 504.0;
+
 class LoadoutListItemWidget extends StatelessWidget {
+  static const maxWidth = _loadoutListItemMaxWidth;
   final LoadoutItemIndex loadout;
   final OnLoadoutListItemAction? onAction;
   const LoadoutListItemWidget(this.loadout, {Key? key, this.onAction}) : super(key: key);
@@ -144,17 +148,6 @@ class LoadoutListItemWidget extends StatelessWidget {
     );
   }
 
-  // Future<void> deletePressed(BuildContext context) async {
-
-  //   final confirm = await Navigator.of(context).push(ConfirmDeleteLoadoutDialogRoute(context, loadout.loadout));
-  //   if (confirm ?? false) {
-  //     loadoutService.deleteLoadout(loadout.loadout);
-  //   }
-  //   if (widget.onAction != null) {
-  //     widget.onAction();
-  //   }
-  // }
-
   Widget buildGenericItems(BuildContext context) {
     final genericHashes = [
       InventoryBucket.kineticWeapons,
@@ -172,7 +165,7 @@ class LoadoutListItemWidget extends StatelessWidget {
       children: <Widget>[
         buildClassIcon(DestinyClass.Unknown),
       ]
-          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped.inventoryItem)))
+          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped)))
           .map((e) => Flexible(
                   child: Container(
                 padding: const EdgeInsets.all(4),
@@ -199,8 +192,7 @@ class LoadoutListItemWidget extends StatelessWidget {
       children: <Widget>[
         buildClassIcon(destinyClass),
       ]
-          .followedBy(
-              genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass]?.inventoryItem)))
+          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass])))
           .map((e) => Flexible(
                   child: Container(
                 padding: const EdgeInsets.all(4),
@@ -212,8 +204,8 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget buildClassIcon(DestinyClass destinyClass) => CenterIconWorkaround(destinyClass.icon, size: 16);
 
-  Widget buildItem(DestinyItemInfo? item) {
-    if (item == null) {
+  Widget buildItem(LoadoutItemInfo? item) {
+    if (item == null || item.inventoryItem == null) {
       return ManifestImageWidget<DestinyInventoryItemDefinition>(loadoutEmptySlotItemHash);
     }
     return InventoryItemIcon(item);
