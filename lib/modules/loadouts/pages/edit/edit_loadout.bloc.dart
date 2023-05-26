@@ -9,6 +9,7 @@ import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/loadout_item_options/loadout_item_options.bottomsheet.dart';
+import 'package:little_light/modules/loadouts/pages/select_background/select_loadout_background.page_route.dart';
 import 'package:little_light/modules/search/pages/select_loadout_item/select_loadout_item.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -42,6 +43,8 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
 
   bool _creating = false;
   bool get creating => _creating;
+
+  bool get loading => _itemIndex != null;
 
   List<int> get bucketHashes => InventoryBucket.loadoutBucketHashes;
 
@@ -128,6 +131,14 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
     notifyListeners();
   }
 
+  void openBackgroundEmblemSelect() async {
+    final emblemHash = await Navigator.of(context).push(SelectLoadoutBackgroundPageRoute());
+    if (emblemHash != null) {
+      this._emblemHash = emblemHash;
+      notifyListeners();
+    }
+  }
+
   void openOptions(LoadoutItemInfo loadoutItem, {bool equipped = false}) async {
     final option = await LoadoutItemOptionsBottomSheet(
       loadoutItem,
@@ -154,6 +165,8 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
 
   void save() async {
     final loadout = this._itemIndex?.toLoadout();
+    loadout?.name = loadoutName;
+    loadout?.emblemHash = this.emblemHash;
     if (loadout != null) {
       context.read<LoadoutsBloc>().saveLoadout(loadout);
     }

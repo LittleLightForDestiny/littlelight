@@ -250,4 +250,29 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
     );
     return loadout;
   }
+
+  List<LoadoutItemInfo> getEquippedItems(DestinyClass? classType) {
+    return this
+        .slots
+        .values
+        .map((s) {
+          if (classType == null) {
+            return [...s.classSpecificEquipped.values, s.genericEquipped];
+          }
+          return [s.classSpecificEquipped[classType], s.genericEquipped];
+        })
+        .fold<List<LoadoutItemInfo?>>([], (previousValue, element) => [...previousValue, ...element])
+        .whereType<LoadoutItemInfo>()
+        .toList();
+  }
+
+  List<LoadoutItemInfo> getNonEquippedItems() {
+    return this
+        .slots
+        .values
+        .map((s) => s.unequipped)
+        .fold<List<LoadoutItemInfo?>>([], (previousValue, element) => [...previousValue, ...element])
+        .whereType<LoadoutItemInfo>()
+        .toList();
+  }
 }

@@ -86,6 +86,7 @@ class EditLoadoutView extends StatelessWidget {
 
   Widget buildBody(BuildContext context) {
     final screenPadding = MediaQuery.of(context).padding;
+
     return Material(
       child: MultiSectionScrollView(
         [
@@ -110,9 +111,11 @@ class EditLoadoutView extends StatelessWidget {
 
   Widget buildNameTextField(BuildContext context) {
     return Container(
+        key: Key("textfieldvalue loaded ${state.loading}"),
         padding: const EdgeInsets.all(8),
         child: TextFormField(
           autocorrect: false,
+          initialValue: state.loadoutName,
           onChanged: (value) => bloc.loadoutName = value,
           decoration: InputDecoration(labelText: context.translate("Loadout Name")),
         ));
@@ -123,7 +126,7 @@ class EditLoadoutView extends StatelessWidget {
         padding: const EdgeInsets.all(8),
         child: ElevatedButton(
           child: Text("Select Loadout Background".translate(context)),
-          onPressed: () async {},
+          onPressed: () => bloc.openBackgroundEmblemSelect(),
         ));
   }
 

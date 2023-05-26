@@ -285,6 +285,7 @@ class DetailsPlugInfoWidget extends StatelessWidget {
   Widget buildApplyButton(BuildContext context, int plugHash) {
     final state = context.watch<SocketControllerBloc>();
     final socketIndex = state.selectedSocketIndex;
+    if (socketIndex == null) return Container();
     final selected = state.selectedPlugHashForSocket(socketIndex);
     return DetailsApplyPlugButtonWidget(socketIndex: socketIndex, plugHash: plugHash);
   }

@@ -97,4 +97,9 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
 
   @override
   bool isSelectable(int? index, int plugHash) => true;
+
+  @override
+  bool canApply(int socketIndex, int plugHash) {
+    return super.canApply(socketIndex, plugHash) && !isEquipped(socketIndex, plugHash);
+  }
 }

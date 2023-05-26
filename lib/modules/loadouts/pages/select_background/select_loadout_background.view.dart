@@ -23,7 +23,10 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
   }
 
   AppBar buildAppBar(BuildContext context) {
-    return AppBar(title: Text("Select Loadout Background".translate(context)));
+    return AppBar(
+      title: Text("Select Loadout Background".translate(context)),
+      centerTitle: false,
+    );
   }
 
   Widget buildBody(BuildContext context) {

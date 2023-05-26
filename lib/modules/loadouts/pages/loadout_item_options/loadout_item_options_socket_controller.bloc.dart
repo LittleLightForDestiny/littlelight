@@ -65,7 +65,8 @@ class LoadoutItemOptionsSocketControllerBloc extends SocketControllerBloc<Loadou
 
   @override
   int? equippedPlugHashForSocket(int? socketIndex) {
-    return this.item?.itemPlugs[socketIndex];
+    if (socketIndex == null) return this.item?.itemPlugs[socketIndex];
+    return this.item?.itemPlugs[socketIndex] ?? this.item?.inventoryItem?.sockets?[socketIndex].plugHash;
   }
 
   @override
@@ -89,6 +90,11 @@ class LoadoutItemOptionsSocketControllerBloc extends SocketControllerBloc<Loadou
 
   @override
   bool isSelectable(int? socketIndex, int plugHash) => false;
+
+  @override
+  bool isAvailable(int? socketIndex, int plugHash) {
+    return this.item?.itemPlugs[socketIndex] != null;
+  }
 
   @override
   bool canApply(int? socketIndex, int plugHash) => false;

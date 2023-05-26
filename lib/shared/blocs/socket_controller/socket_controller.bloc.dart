@@ -300,11 +300,11 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     notifyListeners();
   }
 
-  bool isSelectable(int? index, int plugHash);
+  bool isSelectable(int socketIndex, int plugHash);
 
   bool isAvailable(int? socketIndex, int plugHash) => _isAvailable?[socketIndex]?[plugHash] ?? false;
 
-  bool canApply(int? socketIndex, int plugHash) => _canApply?[socketIndex]?[plugHash] ?? false;
+  bool canApply(int socketIndex, int plugHash) => _canApply?[socketIndex]?[plugHash] ?? false;
 
   /// async calculations
 

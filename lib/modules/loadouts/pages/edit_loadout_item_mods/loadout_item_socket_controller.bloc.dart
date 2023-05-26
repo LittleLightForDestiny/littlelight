@@ -86,7 +86,7 @@ class LoadoutItemSocketControllerBloc extends SocketControllerBloc<LoadoutItemIn
   }
 
   @override
-  bool isSelectable(int? socketIndex, int plugHash) =>
+  bool isSelectable(int socketIndex, int plugHash) =>
       isAvailable(socketIndex, plugHash) && super.canApply(socketIndex, plugHash);
 
   @override

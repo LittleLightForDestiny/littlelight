@@ -12,15 +12,19 @@ import 'package:little_light/core/blocs/inventory/transfer_error_messages.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
-import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
+import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
+import 'package:little_light/shared/utils/sorters/items/item_sorter.dart';
+import 'package:little_light/shared/utils/sorters/items/tier_type_sorter.dart';
 import 'package:provider/provider.dart';
 
 const _refreshDelay = Duration(seconds: 30);
@@ -401,9 +405,6 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     action.start();
     final plugs = <int, int>{};
     for (final p in action.plugs.entries) {
-      final plugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(p.value);
-      final materialCost = await manifest
-          .getDefinition<DestinyMaterialRequirementSetDefinition>(plugDef?.plug?.insertionMaterialRequirementHash);
       final canApply = await isPlugAvailableToApplyForFreeViaApi(_context, item, p.key, p.value);
       if (canApply) plugs[p.key] = p.value;
     }
@@ -441,6 +442,12 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     try {
       await _profileBloc.applyPlug(item, socketIndex, plugHash);
       notification?.setPlugStatus(socketIndex, PlugStatus.Success);
+    } on BungieApiException catch (e) {
+      if (e.errorCode == PlatformErrorCodes.DestinySocketAlreadyHasPlug) {
+        notification?.setPlugStatus(socketIndex, PlugStatus.Success);
+        return;
+      }
+      notification?.setPlugStatus(socketIndex, PlugStatus.Fail);
     } catch (_) {
       notification?.setPlugStatus(socketIndex, PlugStatus.Fail);
       rethrow;
@@ -807,7 +814,107 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     return itemToTransfer;
   }
 
-  Future<void> transferLoadout(LoadoutItemIndex loadout, String? characterId, {int? freeSlots}) async {}
+  Future<void> transferLoadout(
+    LoadoutItemIndex loadout,
+    String? characterId, {
+    int? freeSlots,
+  }) async {
+    final character = _profileBloc.getCharacterById(characterId);
+    final classType = character?.character.classType;
+    final toEquip = loadout.getEquippedItems(classType);
+    final allTransferrable = loadout.getNonEquippedItems();
 
-  Future<void> equipLoadout(LoadoutItemIndex loadout, String? characterId, {int? freeSlots}) async {}
+    final hashes = (toEquip + allTransferrable).map((i) => i.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final toTransfer = classType == null
+        ? allTransferrable
+        : allTransferrable.where((item) {
+            final def = defs[item.itemHash];
+            return [classType, DestinyClass.Unknown].contains(def?.classType);
+          }).toList();
+
+    final destination = character != null
+        ? TransferDestination(TransferDestinationType.character, character: character)
+        : TransferDestination.vault();
+    await _transferLoadout(
+      loadout,
+      destination,
+      toEquip: [],
+      toTransfer: toEquip + toTransfer,
+      freeSlots: freeSlots,
+    );
+  }
+
+  Future<void> equipLoadout(
+    LoadoutItemIndex loadout,
+    String? characterId, {
+    int? freeSlots,
+  }) async {
+    if (characterId == null) return;
+    final character = _profileBloc.getCharacterById(characterId);
+    if (character == null) return;
+    final classType = character.character.classType;
+    if (classType == null) return;
+    final toEquip = loadout.getEquippedItems(classType);
+    final allTransferrable = loadout.getNonEquippedItems();
+
+    final hashes = (toEquip + allTransferrable).map((i) => i.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final toTransfer = allTransferrable.where((item) {
+      final def = defs[item.itemHash];
+      return [classType, DestinyClass.Unknown].contains(def?.classType);
+    }).toList();
+    final sorter = TierTypeSorter(_context, SorterDirection.Ascending, defs);
+    toEquip.sort(sorter.sort);
+
+    final destination = TransferDestination(TransferDestinationType.character, character: character);
+    await _transferLoadout(
+      loadout,
+      destination,
+      toEquip: toEquip,
+      toTransfer: toTransfer,
+      freeSlots: freeSlots,
+    );
+  }
+
+  Future<void> _transferLoadout(
+    LoadoutItemIndex loadout,
+    TransferDestination destination, {
+    int? freeSlots,
+    required List<LoadoutItemInfo> toEquip,
+    required List<LoadoutItemInfo> toTransfer,
+  }) async {
+    final actions = <QueuedAction>[];
+    final equipMods = toEquip.where((element) => element.itemPlugs.isNotEmpty);
+    for (final item in equipMods) {
+      final inventoryItem = item.inventoryItem;
+      if (inventoryItem == null) continue;
+      final action = await _addApplyPlugsToQueue(inventoryItem, item.itemPlugs);
+      if (action != null) actions.add(action);
+    }
+
+    for (final item in toEquip) {
+      final inventoryItem = item.inventoryItem;
+      if (inventoryItem == null) continue;
+      final action = await _addTransferToQueue(inventoryItem, destination, equip: true);
+      if (action != null) actions.add(action);
+    }
+
+    final transferMods = toTransfer.where((element) => element.itemPlugs.isNotEmpty);
+    for (final item in transferMods) {
+      final inventoryItem = item.inventoryItem;
+      if (inventoryItem == null) continue;
+      final action = await _addApplyPlugsToQueue(inventoryItem, item.itemPlugs);
+      if (action != null) actions.add(action);
+    }
+
+    for (final item in toTransfer) {
+      final inventoryItem = item.inventoryItem;
+      if (inventoryItem == null) continue;
+      final action = await _addTransferToQueue(inventoryItem, destination, equip: false);
+      if (action != null) actions.add(action);
+    }
+    _startActionQueue();
+    await Future.wait(actions.map((e) => e.future.future));
+  }
 }

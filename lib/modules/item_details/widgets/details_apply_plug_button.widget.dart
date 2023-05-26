@@ -7,12 +7,12 @@ import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart
 import 'package:provider/provider.dart';
 
 class DetailsApplyPlugButtonWidget extends StatelessWidget {
-  final int? socketIndex;
+  final int socketIndex;
   final int plugHash;
 
   const DetailsApplyPlugButtonWidget({
     required this.plugHash,
-    this.socketIndex,
+    required this.socketIndex,
   });
 
   @override

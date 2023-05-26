@@ -24,8 +24,6 @@ Future<bool> isPlugAvailableToApplyForFreeViaApi(
   );
   final allowActions = plugDef?.allowActions ?? false;
   if (allowActions == false) return false;
-  final isEquipped = item.sockets?[socketIndex].plugHash == plugHash;
-  if (isEquipped) return false;
   final hasMaterials = materialCost?.materials?.isNotEmpty ?? false;
   if (hasMaterials) return false;
 
