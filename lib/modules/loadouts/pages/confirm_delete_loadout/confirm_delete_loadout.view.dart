@@ -22,9 +22,18 @@ class DeleteLoadoutView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-      buildMessage(context),
-      buildPreview(context),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
+      Flexible(
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              buildMessage(context),
+              buildPreview(context),
+            ],
+          ),
+        ),
+      ),
       buildActions(context),
     ]));
   }
@@ -75,10 +84,13 @@ class DeleteLoadoutView extends StatelessWidget {
     final loadout = bloc.loadout;
     if (loadout == null) return Container();
     return Container(
-      padding: EdgeInsets.all(8),
-      child: IntrinsicHeight(
-        child: LoadoutListItemWidget(loadout),
-      ),
-    );
+        alignment: Alignment.center,
+        child: Container(
+          width: 600,
+          padding: EdgeInsets.all(8),
+          child: IntrinsicHeight(
+            child: Container(child: LoadoutListItemWidget(loadout)),
+          ),
+        ));
   }
 }
