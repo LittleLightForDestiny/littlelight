@@ -103,7 +103,7 @@ class ModIconWidget extends StatelessWidget {
 
   Widget? buildBorder(BuildContext context) {
     final theme = LittleLightTheme.of(context);
-    Color borderColor = theme.onSurfaceLayers.layer3;
+    Color borderColor = theme.onSurfaceLayers.layer3.withOpacity(.5);
     if (equipped && selected) {
       borderColor = theme.primaryLayers.layer0.mix(theme.onSurfaceLayers.layer0, 30);
     } else if (selected) {
@@ -129,18 +129,22 @@ class ModIconWidget extends StatelessWidget {
             child: Container(
               alignment: Alignment.bottomRight,
               padding: const EdgeInsets.only(
-                bottom: 4,
-                right: 4,
+                bottom: 2,
+                right: 2,
               ),
               child: Container(
                 decoration: BoxDecoration(
-                  color: LittleLightTheme.of(context).errorLayers.layer0,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                padding: const EdgeInsets.all(6),
-                child: const Icon(
+                    color: context.theme.onSurfaceLayers.layer0,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: context.theme.errorLayers.layer0,
+                      width: 1.5,
+                    )),
+                padding: const EdgeInsets.all(4),
+                child: Icon(
                   FontAwesomeIcons.solidHeart,
                   size: 16,
+                  color: context.theme.errorLayers.layer3,
                 ),
               ),
             ),

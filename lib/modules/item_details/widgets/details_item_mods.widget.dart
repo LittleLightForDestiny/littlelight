@@ -59,6 +59,18 @@ class DetailsItemModsWidget extends StatelessWidget {
     if (socket == null) return AnimatedContainer(duration: _animationDuration);
     final plugHashes = socket.availablePlugHashes;
     final socketIndex = socket.index;
+    int initialFocus = 0;
+    final equipped = state.equippedPlugHashForSocket(socketIndex);
+    final selected = state.selectedPlugHashForSocket(socketIndex);
+    if (equipped != null) {
+      initialFocus = plugHashes.indexOf(equipped);
+    }
+    if (selected != null) {
+      initialFocus = plugHashes.indexOf(selected);
+    }
+    if (initialFocus < 0) {
+      initialFocus = 0;
+    }
     return AnimatedContainer(
       duration: _animationDuration,
       key: Key("mod_options_$socketIndex"),
@@ -67,17 +79,23 @@ class DetailsItemModsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(4).copyWith(topLeft: Radius.zero),
       ),
       padding: EdgeInsets.all(8),
-      child: PaginatedPlugGridView.withExpectedItemSize(plugHashes, itemBuilder: (plugHash) {
-        if (plugHash == null) return Container();
-        return ModIconWidget(
-          plugHash,
-          selected: state.isSelected(socketIndex, plugHash),
-          equipped: state.isEquipped(socketIndex, plugHash),
-          available: state.isAvailable(socketIndex, plugHash),
-          selectable: state.isSelectable(socketIndex, plugHash),
-          onTap: () => bloc.toggleSelection(socketIndex, plugHash),
-        );
-      }, expectedItemSize: PerkIconWidget.maxIconSize),
+      child: PaginatedPlugGridView.withExpectedItemSize(
+        plugHashes,
+        itemBuilder: (plugHash) {
+          if (plugHash == null) return Container();
+          return ModIconWidget(
+            plugHash,
+            isFavorite: state.isFavoritePlug(plugHash),
+            selected: state.isSelected(socketIndex, plugHash),
+            equipped: state.isEquipped(socketIndex, plugHash),
+            available: state.isAvailable(socketIndex, plugHash),
+            selectable: state.isSelectable(socketIndex, plugHash),
+            onTap: () => bloc.toggleSelection(socketIndex, plugHash),
+          );
+        },
+        expectedItemSize: PerkIconWidget.maxIconSize,
+        initialFocus: initialFocus,
+      ),
     );
   }
 
@@ -121,7 +139,7 @@ class DetailsItemModsWidget extends StatelessWidget {
           ),
         ),
       ),
-      if (selectedPlugHash != null && selectedPlugHash != equippedPlugHash)
+      if (selectedPlugHash != null)
         Positioned(
           width: 32,
           height: 32,

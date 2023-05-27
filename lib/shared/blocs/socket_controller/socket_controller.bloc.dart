@@ -1,4 +1,5 @@
 import 'package:bungie_api/destiny2.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
@@ -131,7 +132,14 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
       final random = await loadRandomPlugHashesForSocket(i);
       if (equipped != null) plugHashes.add(equipped);
       if (available != null) plugHashes.addAll(available);
-      _availablePlugHashesBySocket[i] = available;
+      final sortedAvailable = available?.toList().sorted((a, b) {
+        final favoriteA = isFavoritePlug(a) ? 1 : 0;
+        final favoriteB = isFavoritePlug(b) ? 1 : 0;
+        final favoriteDiff = favoriteB.compareTo(favoriteA);
+        if (favoriteDiff != 0) return favoriteDiff;
+        return available.indexOf(a).compareTo(available.indexOf(b));
+      });
+      _availablePlugHashesBySocket[i] = sortedAvailable;
       _randomPlugHashesBySocket[i] = random;
     }
     _allAvailablePlugHashes = plugHashes;

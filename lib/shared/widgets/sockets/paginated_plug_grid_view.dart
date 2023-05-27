@@ -1,16 +1,18 @@
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/widgets/sockets/plug_grid_view.dart';
 
 class PaginatedPlugGridView extends PlugGridView {
+  final int? initialFocus;
+
   const PaginatedPlugGridView.withItemsPerRow(
     List<int> plugHashes, {
     required ItemBuilder itemBuilder,
     required int itemsPerRow,
     double gridSpacing = 8,
     int maxRows = 3,
+    this.initialFocus,
   }) : super.withItemsPerRow(
           plugHashes,
           itemBuilder: itemBuilder,
@@ -25,6 +27,7 @@ class PaginatedPlugGridView extends PlugGridView {
     required double expectedItemSize,
     double gridSpacing = 8,
     int maxRows = 3,
+    this.initialFocus,
   }) : super.withExpectedItemSize(
           plugHashes,
           itemBuilder: itemBuilder,
@@ -41,8 +44,14 @@ class PaginatedPlugGridView extends PlugGridView {
         return buildScrollableGrid(context, specs);
       }
       specs = getSpecs(constraints.maxWidth - 32);
+      int? initialIndex;
+      final initialFocus = this.initialFocus;
+      if (initialFocus != null) {
+        initialIndex = (initialFocus / specs.itemsPerPage).floor();
+      }
       return DefaultTabController(
           length: specs.pageCount,
+          initialIndex: initialIndex?.clamp(0, specs.pageCount) ?? 0,
           child: SizedBox(
             height: specs.tabHeight,
             child: Row(children: [

@@ -140,12 +140,15 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
   Widget buildItemIcon(BuildContext context,
       {LoadoutItemInfo? loadoutIndexItem, DestinyClass? classType, bool equipped = false}) {
     final hasItem = loadoutIndexItem?.inventoryItem != null;
+    final hasPlugs = loadoutIndexItem?.itemPlugs.isNotEmpty ?? false;
     return Container(
         width: 64,
         height: 64,
         margin: EdgeInsets.all(2),
-        child: Stack(children: [
+        child: Stack(
+            children: [
           hasItem ? buildItemSlotIcon(context, loadoutIndexItem) : buildEmptySlotIcon(context, classType),
+          hasPlugs ? Positioned(child: buildPlugsIcon(context), bottom: 0, right: 0) : null,
           Material(
             color: Colors.transparent,
             child: InkWell(
@@ -156,7 +159,7 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
               )),
             ),
           ),
-        ]));
+        ].whereType<Widget>().toList()));
   }
 
   Widget buildItemSlotIcon(BuildContext context, LoadoutItemInfo? loadoutItem, {DestinyClass? classType}) {
@@ -168,7 +171,6 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
   }
 
   Widget buildEmptySlotIcon(BuildContext context, DestinyClass? classType) {
-    final classTypeIcon = classType?.icon;
     return Stack(children: [
       ManifestImageWidget<DestinyInventoryItemDefinition>(loadoutEmptySlotItemHash),
       Positioned.fill(
@@ -179,5 +181,20 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
         ),
       ),
     ]);
+  }
+
+  Widget buildPlugsIcon(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.all(2),
+      padding: EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: context.theme.surfaceLayers,
+      ),
+      child: Icon(
+        FontAwesomeIcons.gear,
+        size: 12,
+      ),
+    );
   }
 }
