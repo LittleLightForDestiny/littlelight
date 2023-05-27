@@ -89,9 +89,12 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
   Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash) async {
     final availableEnergy = availableEnergyCapacity?.equipped ?? 0;
     final usedEnergy = usedEnergyCapacity?.equipped ?? 0;
+    final currentPlugHash = equippedPlugHashForSocket(socketIndex);
+    final currentPlugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(currentPlugHash);
     final plugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(plugHash);
+    final equippedEnergy = currentPlugDef?.plug?.energyCost?.energyCost ?? 0;
     final requiredEnergy = plugDef?.plug?.energyCost?.energyCost ?? 0;
-    if (usedEnergy + requiredEnergy > availableEnergy) return false;
+    if (usedEnergy - equippedEnergy + requiredEnergy > availableEnergy) return false;
     return true;
   }
 
