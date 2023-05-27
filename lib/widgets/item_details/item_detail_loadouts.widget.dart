@@ -6,7 +6,7 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/base/base_destiny_stateful_item.widget.dart';

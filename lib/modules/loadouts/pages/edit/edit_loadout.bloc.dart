@@ -4,9 +4,9 @@ import 'package:little_light/core/blocs/notifications/loadout_change_result_noti
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/edit_loadout_item_mods/loadout_item_details.page_route.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
-import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_info.dart';
+import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/loadout_item_options/loadout_item_options.bottomsheet.dart';
 import 'package:little_light/modules/loadouts/pages/select_background/select_loadout_background.page_route.dart';

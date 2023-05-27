@@ -5,7 +5,7 @@ import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/game_data.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/modules/search/blocs/filter_options/text_filter_options.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';

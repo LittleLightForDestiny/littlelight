@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
-import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
+import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/confirm_delete_loadout/confirm_delete_loadout.bottomsheet.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';

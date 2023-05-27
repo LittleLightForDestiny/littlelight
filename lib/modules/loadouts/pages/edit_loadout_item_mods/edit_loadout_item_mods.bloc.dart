@@ -1,4 +1,3 @@
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +7,7 @@ import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/modules/item_details/blocs/item_details.bloc.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_info.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';

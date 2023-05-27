@@ -4,7 +4,7 @@ import 'package:bungie_api/models/destiny_character_component.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 typedef OnLoadoutSelect = void Function(LoadoutItemIndex loadout);

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/pages/loadout_item_options/loadout_item_options_socket_controller.bloc.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/widgets/modals/base_bottom_sheet.base.dart';

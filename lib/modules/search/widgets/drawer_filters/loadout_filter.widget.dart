@@ -1,7 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/modules/search/blocs/filter_options/loadout_filter_options.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';

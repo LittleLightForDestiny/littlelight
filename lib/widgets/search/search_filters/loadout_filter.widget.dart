@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/utils/item_filters/loadout_filter.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/search/search.controller.dart';

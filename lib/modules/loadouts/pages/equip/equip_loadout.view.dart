@@ -6,7 +6,7 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_info.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.bloc.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';

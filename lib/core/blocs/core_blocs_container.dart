@@ -1,6 +1,6 @@
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
-import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';

@@ -18,7 +18,7 @@ import 'package:little_light/modules/triumphs/pages/home/triumphs_home.page.dart
 import 'package:little_light/modules/duplicated_items/pages/duplicated_items/duplicated_items.page.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/pages/objectives/objectives.screen.dart';
-import 'package:little_light/pages/vendors/vendors.screen.dart';
+import 'package:little_light/modules/vendors/pages/home/vendors_home.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
@@ -79,7 +79,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                 open(context, LoadoutsHomePage());
               }),
               menuItem(context, Text("Vendors".translate(context)), onTap: () {
-                open(context, VendorsScreen());
+                open(context, VendorsHomePage());
               }),
               menuItem(context, Text("Collections".translate(context)), onTap: () {
                 open(context, CollectionsHomePage());

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/modules/search/blocs/filter_options/loadout_filter_options.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';

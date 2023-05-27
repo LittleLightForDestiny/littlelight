@@ -7,7 +7,7 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';

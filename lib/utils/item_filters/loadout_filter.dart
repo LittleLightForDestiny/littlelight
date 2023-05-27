@@ -3,8 +3,8 @@
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/modules/loadouts/blocs/loadout_item_index.dart';
-import 'package:little_light/modules/loadouts/blocs/loadouts.bloc.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
+import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:provider/provider.dart';
