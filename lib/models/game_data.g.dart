@@ -38,6 +38,10 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) => GameData(
       raidPhases: (json['raidPhases'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
       ),
+      vendorsHomeHiddenCategories:
+          (json['vendorsHomeHiddenCategories'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
     );
 
 Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
@@ -49,4 +53,5 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'ranks': instance.ranks,
       'relevantCurrencies': instance.relevantCurrencies,
       'raidPhases': instance.raidPhases,
+      'vendorsHomeHiddenCategories': instance.vendorsHomeHiddenCategories,
     };

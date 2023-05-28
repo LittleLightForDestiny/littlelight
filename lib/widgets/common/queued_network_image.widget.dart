@@ -42,18 +42,16 @@ class QueuedNetworkImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (imageUrl == null) {
-      return placeholder ?? Container();
+      return placeholder ?? SizedBox();
     }
-    return LayoutBuilder(builder: (context, constraints) {
-      return CachedNetworkImage(
-        imageUrl: imageUrl!,
-        fit: fit,
-        alignment: alignment,
-        placeholderFadeInDuration: fadeInDuration ?? const Duration(seconds: 2),
-        progressIndicatorBuilder: (context, url, downloadProgress) => placeholder ?? Container(),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-        color: color,
-      );
-    });
+    return CachedNetworkImage(
+      imageUrl: imageUrl!,
+      fit: fit,
+      alignment: alignment,
+      placeholderFadeInDuration: fadeInDuration ?? const Duration(seconds: 2),
+      progressIndicatorBuilder: (context, url, downloadProgress) => placeholder ?? SizedBox(),
+      errorWidget: (context, url, error) => const Icon(Icons.error),
+      color: color,
+    );
   }
 }

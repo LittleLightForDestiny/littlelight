@@ -3,7 +3,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+// import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
@@ -114,17 +114,18 @@ class ObjectivesScreenState extends State<ObjectivesScreen> with ProfileConsumer
               ]));
     }
     bool isTablet = MediaQueryHelper(context).tabletOrBigger;
-    return MasonryGridView.builder(
-        mainAxisSpacing: 2,
-        crossAxisSpacing: 2,
-        padding: EdgeInsets.only(
-            left: max(screenPadding.left, 4),
-            right: max(screenPadding.right, 4),
-            bottom: max(screenPadding.bottom, 4),
-            top: 4),
-        itemCount: objectives.length,
-        gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet ? 2 : 1),
-        itemBuilder: (context, index) => SizedBox(height: 132, child: getItem(context, index)));
+    return Container();
+    // return MasonryGridView.builder(
+    //     mainAxisSpacing: 2,
+    //     crossAxisSpacing: 2,
+    //     padding: EdgeInsets.only(
+    //         left: max(screenPadding.left, 4),
+    //         right: max(screenPadding.right, 4),
+    //         bottom: max(screenPadding.bottom, 4),
+    //         top: 4),
+    //     itemCount: objectives.length,
+    //     gridDelegate: SliverSimpleGridDelegateWithFixedCrossAxisCount(crossAxisCount: isTablet ? 2 : 1),
+    //     itemBuilder: (context, index) => SizedBox(height: 132, child: getItem(context, index)));
   }
 
   Widget getItem(BuildContext context, int index) {

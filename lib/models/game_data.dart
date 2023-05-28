@@ -32,6 +32,7 @@ class GameData {
   ReputationRanks ranks;
   List<int>? relevantCurrencies;
   Map<String, String>? raidPhases;
+  List<String>? vendorsHomeHiddenCategories;
 
   GameData({
     required this.softCap,
@@ -42,6 +43,7 @@ class GameData {
     required this.ranks,
     required this.relevantCurrencies,
     required this.raidPhases,
+    required this.vendorsHomeHiddenCategories,
   });
 
   factory GameData.fromJson(dynamic json) {

@@ -91,8 +91,23 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
     return null;
   }
 
+  Future<List<int>?> getVendorsOrder() async {
+    try {
+      final List<dynamic>? json = await getJson(MembershipStorageKeys.vendorsOrder);
+      if (json == null) return null;
+      return json.map((s) => s as int).toList();
+    } catch (e) {
+      logger.error("can't parse vendors order", error: e);
+    }
+    return null;
+  }
+
   Future<void> saveLoadoutsOrder(List<String> order) async {
     await setJson(MembershipStorageKeys.loadoutsOrder, order);
+  }
+
+  Future<void> saveVendorsOrder(List<int> order) async {
+    await setJson(MembershipStorageKeys.vendorsOrder, order);
   }
 
   Future<DestinyProfileResponse?> getCachedProfile() async {
@@ -113,11 +128,13 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<Map<String, DestinyVendorsResponse>?> getCachedVendors() async {
     try {
-      final Map<String, dynamic> json =
-          await getExpireableJson(MembershipStorageKeys.priorityTags, const Duration(hours: 12));
+      final Map<String, dynamic>? json =
+          await getExpireableJson(MembershipStorageKeys.cachedVendors, const Duration(hours: 12));
 
-      return json
-          .map((key, value) => MapEntry<String, DestinyVendorsResponse>(key, DestinyVendorsResponse.fromJson(value)));
+      return json?.map((key, value) => MapEntry<String, DestinyVendorsResponse>(
+            key,
+            DestinyVendorsResponse.fromJson(value),
+          ));
     } catch (e) {
       logger.error("can't parse cached vendors", error: e);
     }

@@ -4,7 +4,6 @@ import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:bungie_api/models/destiny_item_component.dart';
 import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
@@ -59,13 +58,14 @@ class ItemDetailLoadoutsWidgetState extends BaseDestinyItemState<ItemDetailLoado
   }
 
   Widget buildLoadouts(BuildContext context) {
-    return StaggeredGrid.count(
-      crossAxisCount: MediaQueryHelper(context).responsiveValue(1, tablet: 3),
-      axisDirection: AxisDirection.down,
-      crossAxisSpacing: 2,
-      mainAxisSpacing: 2,
-      children: widget.loadouts.map((e) => buildLoadoutItem(e, context)).toList(),
-    );
+    return Container();
+    // return StaggeredGrid.count(
+    //   crossAxisCount: MediaQueryHelper(context).responsiveValue(1, tablet: 3),
+    //   axisDirection: AxisDirection.down,
+    //   crossAxisSpacing: 2,
+    //   mainAxisSpacing: 2,
+    //   children: widget.loadouts.map((e) => buildLoadoutItem(e, context)).toList(),
+    // );
   }
 
   Widget buildLoadoutItem(LoadoutItemIndex loadout, BuildContext context) {

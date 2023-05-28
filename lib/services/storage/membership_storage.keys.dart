@@ -11,7 +11,8 @@ enum MembershipStorageKeys {
   characterOrdering,
   priorityTags,
   bucketDisplayOptions,
-  detailsSectionDisplayVisibility
+  detailsSectionDisplayVisibility,
+  vendorsOrder,
 }
 
 extension StorageKeyPathsExtension on MembershipStorageKeys {

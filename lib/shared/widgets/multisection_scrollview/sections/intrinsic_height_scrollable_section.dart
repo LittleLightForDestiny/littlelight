@@ -23,6 +23,9 @@ class IntrinsicHeightScrollSection extends ScrollableSection {
   Widget build(BuildContext context, int index, SectionBuildOptions options) {
     final startingIndex = index * itemsPerRow;
     final indexes = List.generate(itemsPerRow, (i) => startingIndex + i);
+    if (itemsPerRow == 1) {
+      return IntrinsicHeight(child: itemBuilder(context, index));
+    }
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: this.rowAlignment,
