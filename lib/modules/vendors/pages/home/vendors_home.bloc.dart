@@ -4,6 +4,7 @@ import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.d
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/vendors/vendors.bloc.dart';
+import 'package:little_light/modules/vendors/pages/vendor_details/vendor_details.page_route.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:provider/provider.dart';
@@ -11,12 +12,14 @@ import 'package:provider/provider.dart';
 import 'vendor_data.dart';
 
 class VendorsHomeBloc extends ChangeNotifier with StorageConsumer {
+  final BuildContext context;
   final ProfileBloc _profileBloc;
   final VendorsBloc _vendorsBloc;
   final ManifestService _manifestBloc;
   final LittleLightDataBloc _littlelightDataBloc;
 
   final PageStorageBucket _pageStorageBucket = PageStorageBucket();
+
   PageStorageBucket get pageStorageBucket => _pageStorageBucket;
 
   Map<String, bool> _hasCalledUpdate = {};
@@ -25,7 +28,7 @@ class VendorsHomeBloc extends ChangeNotifier with StorageConsumer {
   bool _reordering = false;
   bool get reordering => _reordering;
 
-  VendorsHomeBloc(BuildContext context)
+  VendorsHomeBloc(this.context)
       : _profileBloc = context.read<ProfileBloc>(),
         _vendorsBloc = context.read<VendorsBloc>(),
         _manifestBloc = context.read<ManifestService>(),
@@ -57,7 +60,6 @@ class VendorsHomeBloc extends ChangeNotifier with StorageConsumer {
   }
 
   Future<List<VendorData>?> _processCharacterVendorData(String characterId) async {
-    final hiddenCategories = _littlelightDataBloc.gameData?.vendorsHomeHiddenCategories;
     final groups = _vendorsBloc.vendorGroupsFor(characterId);
     final order = await currentMembershipStorage.getVendorsOrder();
     if (groups == null) return null;
@@ -68,10 +70,8 @@ class VendorsHomeBloc extends ChangeNotifier with StorageConsumer {
       final def = defs[vendorHash];
       final vendor = _vendorsBloc.vendorFor(characterId, vendorHash);
       final categories = _vendorsBloc.categoriesFor(characterId, vendorHash)?.where((element) {
-        final catIndex = element.displayCategoryIndex;
-        if (catIndex == null) return false;
-        final catDef = def?.displayCategories?[catIndex];
-        return !(hiddenCategories?.any((element) => catDef?.identifier?.contains(element) ?? false) ?? false);
+        final visible = _vendorsBloc.getCategoryVisibility(vendorHash, element);
+        return visible;
       }).toList();
       final sales = _vendorsBloc.salesFor(characterId, vendorHash);
       final isVisible = def?.visible ?? false;
@@ -126,5 +126,9 @@ class VendorsHomeBloc extends ChangeNotifier with StorageConsumer {
     return indexA.compareTo(indexB);
   }
 
-  void openVendorDetails(String characterId, VendorData vendor) {}
+  void openVendorDetails(String characterId, VendorData vendor) {
+    final vendorHash = vendor.vendor.vendorHash;
+    if (vendorHash == null) return;
+    Navigator.of(context).push(VendorDetailsPageRoute(characterId, vendorHash));
+  }
 }

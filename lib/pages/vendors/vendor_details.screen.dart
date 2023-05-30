@@ -17,7 +17,7 @@ import 'package:little_light/services/profile/vendors.service.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/vendors/purchasable_item.widget.dart';
+import 'package:little_light/modules/vendors/widgets/purchasable_item.widget.dart';
 
 class VendorDetailsScreen extends StatefulWidget {
   final String characterId;
@@ -172,10 +172,10 @@ class VendorDetailsScreenState extends State<VendorDetailsScreen> with ManifestC
   Widget buildItem(BuildContext context, DestinyVendorItemDefinition item, int index) {
     var sale = _sales["$index"];
     return PurchasableItemWidget(
-      item: item,
-      sale: sale,
-      characterId: widget.characterId,
-      vendorHash: definition.hash,
+      null,
+      // sale: sale,
+      // characterId: widget.characterId,
+      // vendorHash: definition.hash,
     );
   }
 }

@@ -89,6 +89,7 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
   @override
   void dispose() {
     _profileBloc.removeListener(_update);
+    _userSettingsBloc.removeListener(_update);
     super.dispose();
   }
 

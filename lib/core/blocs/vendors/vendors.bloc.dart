@@ -1,7 +1,10 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
+import 'package:little_light/core/blocs/vendors/vendor_item_info.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
+import 'package:provider/provider.dart';
 
 const _vendorComponents = [
   DestinyComponentType.ItemInstances,
@@ -10,16 +13,18 @@ const _vendorComponents = [
   DestinyComponentType.Vendors,
   DestinyComponentType.VendorCategories,
   DestinyComponentType.VendorSales,
+  DestinyComponentType.ItemStats,
 ];
 
 class VendorsBloc extends ChangeNotifier with BungieApiConsumer, StorageConsumer {
   @protected
-  BuildContext context;
+  final BuildContext context;
+  final UserSettingsBloc _userSettingsBloc;
 
   bool _hasStartedLoading = false;
   Map<String, DestinyVendorsResponse> _characterVendorResponses = {};
 
-  VendorsBloc(BuildContext this.context);
+  VendorsBloc(BuildContext this.context) : _userSettingsBloc = context.read<UserSettingsBloc>();
 
   void _loadVendorsFor(String characterId) async {
     if (!_hasStartedLoading) {
@@ -70,8 +75,40 @@ class VendorsBloc extends ChangeNotifier with BungieApiConsumer, StorageConsumer
     return vendorsResponse?.categories?.data?["$vendorHash"]?.categories;
   }
 
+  Map<String, VendorItemInfo>? itemsFor(String characterId, int? vendorHash) {
+    final vendorsResponse = _getVendorsResponseFor(characterId);
+    final components = vendorsResponse?.itemComponents?["$vendorHash"];
+    return vendorsResponse?.sales?.data?["$vendorHash"]?.saleItems?.map(
+      (key, sale) => MapEntry(
+        key,
+        VendorItemInfo(
+          sale,
+          instanceInfo: components?.instances?.data?[key],
+          characterId: characterId,
+          plugObjectives: components?.plugObjectives?.data?[key]?.objectivesPerPlug,
+          reusablePlugs: components?.reusablePlugs?.data?[key]?.plugs,
+          sockets: components?.sockets?.data?[key]?.sockets,
+          stats: components?.stats?.data?[key]?.stats,
+        ),
+      ),
+    );
+  }
+
   Map<String, DestinyVendorSaleItemComponent>? salesFor(String characterId, int? vendorHash) {
     final vendorsResponse = _getVendorsResponseFor(characterId);
     return vendorsResponse?.sales?.data?["$vendorHash"]?.saleItems;
+  }
+
+  String getCategoryVisibilityKey(int vendorHash, DestinyVendorCategory category) {
+    return 'vendor $vendorHash category ${category.displayCategoryIndex}';
+  }
+
+  bool getCategoryVisibility(int vendorHash, DestinyVendorCategory category) {
+    return _userSettingsBloc.getSectionVisibleState(getCategoryVisibilityKey(vendorHash, category), defaultValue: true);
+  }
+
+  void setCategoryVisibility(int vendorHash, DestinyVendorCategory category, bool value) {
+    _userSettingsBloc.setSectionVisibleState(getCategoryVisibilityKey(vendorHash, category), value);
+    notifyListeners();
   }
 }
