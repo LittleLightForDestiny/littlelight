@@ -6,12 +6,15 @@ class SettingsOptionWidget extends StatelessWidget {
   final String title;
   final Widget content;
   final Widget? trailing;
+  final Color? backgroundColor;
 
-  const SettingsOptionWidget(this.title, this.content, {Key? key, this.trailing}) : super(key: key);
+  const SettingsOptionWidget(this.title, this.content, {Key? key, this.trailing, this.backgroundColor})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MenuBox(
+      backgroundColor: getBackgroundColor(context),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         MenuBoxTitle(
           title,
@@ -24,5 +27,9 @@ class SettingsOptionWidget extends StatelessWidget {
 
   Widget? buildTrailing(BuildContext context) {
     return trailing;
+  }
+
+  Color? getBackgroundColor(BuildContext context) {
+    return backgroundColor ?? null;
   }
 }

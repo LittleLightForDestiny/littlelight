@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/modules/settings/pages/add_wishlist/add_wishlists.bloc.dart';
 import 'package:provider/provider.dart';
@@ -122,7 +123,7 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
       margin: const EdgeInsets.only(bottom: 8),
       child: Material(
           borderRadius: BorderRadius.circular(8),
-          color: Theme.of(context).colorScheme.secondary,
+          color: context.theme.surfaceLayers.layer1,
           child: InkWell(
               onTap: () {
                 context.read<AddWishlistsBloc>().goToFolder(folder);
@@ -139,12 +140,12 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           Text(
-                            folder.name!,
-                            style: Theme.of(context).textTheme.button,
+                            folder.name ?? "",
+                            style: context.textTheme.button,
                           ),
                           Text(
-                            folder.description!,
-                            style: Theme.of(context).textTheme.caption,
+                            folder.description ?? "",
+                            style: context.textTheme.body,
                           ),
                         ],
                       ),

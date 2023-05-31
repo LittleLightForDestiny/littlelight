@@ -1,16 +1,14 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 
 typedef FreeSlotsChanged = void Function(int freeSlots);
 
 class FreeSlotsSliderWidget extends StatefulWidget {
-  final FreeSlotsChanged onChanged;
+  final FreeSlotsChanged? onChanged;
   final int initialValue;
   final bool suppressLabel;
 
-  const FreeSlotsSliderWidget({Key key, this.onChanged, this.initialValue = 0, this.suppressLabel = false})
+  const FreeSlotsSliderWidget({Key? key, this.onChanged, this.initialValue = 0, this.suppressLabel = false})
       : super(key: key);
 
   @override
@@ -44,9 +42,7 @@ class FreeSlotsSliderWidgetState extends State<FreeSlotsSliderWidget> {
               onChanged: (double value) {
                 freeSlots = value.round();
                 setState(() {});
-                if (widget.onChanged != null) {
-                  widget.onChanged(freeSlots);
-                }
+                widget.onChanged?.call(freeSlots);
               },
             )),
             Text(

@@ -44,5 +44,7 @@ class WishlistFileItem extends SettingsOptionWidget {
   }
 
   @override
-  getBackgroundColor() {}
+  Color? getBackgroundColor(BuildContext context) {
+    return context.theme.surfaceLayers.layer2;
+  }
 }

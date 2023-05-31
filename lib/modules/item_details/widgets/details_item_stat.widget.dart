@@ -70,6 +70,8 @@ class DetailsItemStatWidget extends StatelessWidget {
     final masterWorkBarSize = max(modValues.selectedMasterwork, modValues.equippedMasterwork);
     final maxBarSize = maxValue;
     final current = modValues.selected + modValues.selectedMasterwork;
+    final total = baseBarSize + diffBarSize + masterWorkBarSize;
+    final isNegative = total < 0;
 
     if (modValues.type == StatType.Direction) {
       return Container(
@@ -100,25 +102,31 @@ class DetailsItemStatWidget extends StatelessWidget {
         child: Container(
           constraints: BoxConstraints(minWidth: width),
           child: Row(
+            mainAxisAlignment: isNegative ? MainAxisAlignment.end : MainAxisAlignment.start,
             children: <Widget>[
               AnimatedContainer(
                 duration: _barAnimationDuration,
-                width: (baseBarSize / maxBarSize) * (width),
+                width: isNegative ? 0 : (baseBarSize / maxBarSize) * (width),
                 color: getBaseColor(context),
               ),
               AnimatedContainer(
                 duration: _barAnimationDuration,
-                width: (diffBarSize.clamp(0, maxBarSize) / maxBarSize) * (width),
+                width: isNegative ? 0 : (diffBarSize.clamp(0, maxBarSize) / maxBarSize) * (width),
                 color: getDiffColor(context, StatDifferenceType.Positive),
               ),
               AnimatedContainer(
                 duration: _barAnimationDuration,
-                width: (masterWorkBarSize.clamp(0, maxBarSize) / maxBarSize) * (width),
+                width: isNegative ? 0 : (masterWorkBarSize.clamp(0, maxBarSize) / maxBarSize) * (width),
                 color: getMasterworkColor(context),
               ),
               AnimatedContainer(
                 duration: _barAnimationDuration,
-                width: (-diffBarSize.clamp(-maxBarSize, 0) / maxBarSize) * (width),
+                width: isNegative ? 0 : (-diffBarSize.clamp(-maxBarSize, 0) / maxBarSize) * (width),
+                color: getDiffColor(context, StatDifferenceType.Negative),
+              ),
+              AnimatedContainer(
+                duration: _barAnimationDuration,
+                width: isNegative ? (total / maxBarSize).abs() * (width) : 0,
                 color: getDiffColor(context, StatDifferenceType.Negative),
               ),
             ],

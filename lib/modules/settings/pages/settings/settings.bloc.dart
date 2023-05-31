@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
+import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/wishlist_index.dart';
@@ -84,5 +85,16 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
     final tags = _priorityTags;
     if (tags == null) return null;
     return _itemNotesBloc.tagsByIds(tags);
+  }
+
+  CharacterSortParameterType? get characterOrderingType => _userSetttingsBloc.characterOrdering?.type;
+  set characterOrderingType(CharacterSortParameterType? type) {
+    if (type == null) return;
+    _userSetttingsBloc.characterOrdering = CharacterSortParameter(type: type);
+    notifyListeners();
+  }
+
+  void saveDefaultFreeSlots() {
+    this._userSetttingsBloc.saveDefaultFreeSlots(this.defaultFreeSlots);
   }
 }

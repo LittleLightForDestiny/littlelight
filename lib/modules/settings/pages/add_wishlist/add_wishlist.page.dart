@@ -26,15 +26,12 @@ class AddWishlistPageState extends State<AddWishlistPage> {
         length: 2,
         child: Scaffold(
           appBar: AppBar(
+            centerTitle: false,
             title: buildTitle(context),
             bottom: TabBar(
               tabs: [
-                Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Text("Community".translate(context))),
-                Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Text("Custom".translate(context))),
+                Container(padding: const EdgeInsets.all(8), child: Text("Community".translate(context))),
+                Container(padding: const EdgeInsets.all(8), child: Text("Custom".translate(context))),
               ],
             ),
           ),

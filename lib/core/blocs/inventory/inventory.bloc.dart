@@ -13,6 +13,7 @@ import 'package:little_light/core/blocs/notifications/notification_actions.dart'
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
@@ -52,13 +53,14 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   final ProfileBloc _profileBloc;
   final AppLifecycleBloc _lifecycleBloc;
   final OfflineModeBloc _offlineModeBloc;
+  final UserSettingsBloc _userSettingsBloc;
 
   DateTime? _lastUpdated;
   Timer? _updateTimer;
 
   bool _isBusy = false;
   bool get isBusy => _isBusy;
-  bool shouldUseAutoTransfer = true;
+  bool get shouldUseAutoTransfer => _userSettingsBloc.enableAutoTransfers;
 
   List<String> instanceIdsToAvoid = [];
   final List<QueuedAction> _actionQueue = [];
@@ -68,7 +70,8 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
         _offlineModeBloc = context.read<OfflineModeBloc>(),
         _notificationsBloc = context.read<NotificationsBloc>(),
         _profileBloc = context.read<ProfileBloc>(),
-        _lifecycleBloc = context.read<AppLifecycleBloc>();
+        _lifecycleBloc = context.read<AppLifecycleBloc>(),
+        _userSettingsBloc = context.read<UserSettingsBloc>();
 
   init() async {
     await _firstLoad();

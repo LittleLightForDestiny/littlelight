@@ -15,8 +15,7 @@ class AddCustomWishlistForm extends StatefulWidget {
 
 enum ImportType { Link, File }
 
-class _AddCustomWishlistFormState extends State<AddCustomWishlistForm>
-    with WishlistsConsumer {
+class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with WishlistsConsumer {
   bool loadingError = false;
   WishlistFile? wishlistFile;
   final Map<String, TextEditingController> fieldControllers = {};
@@ -38,29 +37,26 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm>
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        padding: const EdgeInsets.all(16) +
-            MediaQuery.of(context).viewPadding.copyWith(top: 0),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: <Widget>[
-              buildInfo(context),
-              Container(
-                height: 16,
-              ),
-              buildTextField(context, "URL", maxLength: null, onInput: () {
-                setState(() {});
-              }),
-              Container(height: 16),
-              ElevatedButton(
-                onPressed: isURLValid ? () => loadWishlist() : null,
-                child: Text("Load wishlist".translate(context)),
-              ),
-              Container(
-                height: 8,
-              ),
-              if (loadingError) buildErrorMessage(),
-              if (wishlistFile != null) buildWishlistInfoFields(),
-            ]));
+        padding: const EdgeInsets.all(16) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+          buildInfo(context),
+          Container(
+            height: 16,
+          ),
+          buildTextField(context, "URL", maxLength: null, onInput: () {
+            setState(() {});
+          }),
+          Container(height: 16),
+          ElevatedButton(
+            onPressed: isURLValid ? () => loadWishlist() : null,
+            child: Text("Load wishlist".translate(context)),
+          ),
+          Container(
+            height: 8,
+          ),
+          if (loadingError) buildErrorMessage(),
+          if (wishlistFile != null) buildWishlistInfoFields(),
+        ]));
   }
 
   Widget buildErrorMessage() {
@@ -89,13 +85,9 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm>
       children: [
         buildTextField(context, "Name",
             maxLength: 50,
-            initialValue: wishlistFile?.name ??
-                wishlistFile?.url?.split('/').last ??
-                "Untitled Wishlist"),
+            initialValue: wishlistFile?.name ?? wishlistFile?.url?.split('/').last ?? "Untitled Wishlist"),
         buildTextField(context, "Description",
-            maxLength: 300,
-            multiline: true,
-            initialValue: wishlistFile?.description ?? ""),
+            maxLength: 300, multiline: true, initialValue: wishlistFile?.description ?? ""),
         Container(height: 16),
         ElevatedButton(
           onPressed: () => addWishlist(),
@@ -105,16 +97,13 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm>
     );
   }
 
-  bool get isURLValid =>
-      urlController?.text.startsWith(RegExp('http?s://')) ?? false;
+  bool get isURLValid => urlController?.text.startsWith(RegExp('http?s://')) ?? false;
 
   void loadWishlist() async {
     final url = urlController?.text;
     if (url == null) return;
-    final validWishlist = await Navigator.push(
-        context,
-        BusyDialogRoute(context,
-            awaitFuture: wishlistsService.loadWishlistFromUrl(url)));
+    final validWishlist =
+        await Navigator.push(context, BusyDialogRoute(context, awaitFuture: wishlistsService.loadWishlistFromUrl(url)));
     wishlistFile = validWishlist;
     loadingError = wishlistFile == null;
     fieldControllers["Name"]?.text = wishlistFile?.name ?? "";
@@ -128,10 +117,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm>
       description: fieldControllers["Description"]?.value.text,
     );
     if (wishlist == null) return;
-    await Navigator.push(
-        context,
-        BusyDialogRoute(context,
-            awaitFuture: wishlistsService.addWishlist(wishlist)));
+    await Navigator.push(context, BusyDialogRoute(context, awaitFuture: wishlistsService.addWishlist(wishlist)));
     await Future.delayed(const Duration(milliseconds: 10));
     Navigator.pop(context);
   }
@@ -143,8 +129,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm>
   Widget buildInfo(BuildContext context) {
     return Column(
       children: [
-        Text("To create your own wishlists, please check:".translate(context),
-            textAlign: TextAlign.center),
+        Text("To create your own wishlists, please check:".translate(context), textAlign: TextAlign.center),
         Container(
           height: 8,
         ),
@@ -166,10 +151,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm>
   }
 
   Widget buildTextField(BuildContext context, String label,
-      {String? initialValue,
-      int? maxLength = 50,
-      bool multiline = false,
-      void Function()? onInput}) {
+      {String? initialValue, int? maxLength = 50, bool multiline = false, void Function()? onInput}) {
     var controller = fieldControllers[label];
     if (controller == null) {
       controller = fieldControllers[label] = TextEditingController(
