@@ -105,7 +105,7 @@ class DetailsItemModsWidget extends StatelessWidget {
     if (sockets == null) return Container();
     return Container(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: sockets.map((e) => Flexible(child: buildSocket(context, e))).toList(),
       ),
     );
@@ -117,7 +117,6 @@ class DetailsItemModsWidget extends StatelessWidget {
     final itemHash = state.itemHash;
     if (itemHash == null) return Container();
     final equippedPlugHash = state.equippedPlugHashForSocket(socket.index);
-    if (equippedPlugHash == null) return Container();
     final isSocketSelected = state.selectedSocketIndex == socket.index;
     final selectedPlugHash = state.selectedPlugHashForSocket(socket.index);
     return Stack(children: [
@@ -129,14 +128,23 @@ class DetailsItemModsWidget extends StatelessWidget {
         padding: EdgeInsets.all(8),
         child: Container(
           constraints: BoxConstraints(maxWidth: PerkIconWidget.maxIconSize, maxHeight: PerkIconWidget.maxIconSize),
-          child: ModIconWidget(
-            equippedPlugHash,
-            selected: false,
-            equipped: isSocketSelected,
-            available: state.isAvailable(socket.index, equippedPlugHash),
-            selectable: state.isSelectable(socket.index, equippedPlugHash),
-            onTap: () => bloc.toggleSocketSelection(socket.index),
-          ),
+          child: equippedPlugHash != null && equippedPlugHash != 0
+              ? ModIconWidget(
+                  equippedPlugHash,
+                  selected: false,
+                  equipped: isSocketSelected,
+                  available: state.isAvailable(socket.index, equippedPlugHash),
+                  selectable: state.isSelectable(socket.index, equippedPlugHash),
+                  onTap: () => bloc.toggleSocketSelection(socket.index),
+                )
+              : Container(
+                  color: context.theme.onSurfaceLayers,
+                  padding: EdgeInsets.all(.5),
+                  child: Material(
+                      color: context.theme.surfaceLayers.layer1,
+                      child: InkWell(
+                        onTap: () => bloc.toggleSocketSelection(socket.index),
+                      ))),
         ),
       ),
       if (selectedPlugHash != null)

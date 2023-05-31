@@ -16,6 +16,7 @@ import 'package:little_light/modules/item_details/widgets/details_item_perks.wid
 import 'package:little_light/modules/item_details/widgets/details_item_progress.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_quest_info.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_stats.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_supers.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_tags.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_transfer_block.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_cover.widget.dart';
@@ -192,7 +193,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final all = reusable;
     return all
         .map(
-          (e) => SliverToBoxAdapter(child: DetailsItemPerksWidget(e)),
+          (e) => SliverToBoxAdapter(child: DetailsItemSupersWidget(e)),
         )
         .toList();
   }
