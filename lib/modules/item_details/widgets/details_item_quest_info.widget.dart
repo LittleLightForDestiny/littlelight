@@ -22,10 +22,12 @@ const _animationDuration = const Duration(milliseconds: 300);
 
 class DetailsItemQuestInfoWidget extends StatelessWidget {
   final DestinyItemInfo itemInfo;
+  final bool canTrack;
 
   const DetailsItemQuestInfoWidget(
     this.itemInfo, {
     Key? key,
+    this.canTrack = true,
   }) : super(key: key);
 
   @override
@@ -270,6 +272,7 @@ class DetailsItemQuestInfoWidget extends StatelessWidget {
   }
 
   Widget? buildTrackButton(BuildContext context) {
+    if (!canTrack) return null;
     final def = context.definition<DestinyInventoryItemDefinition>(this.itemInfo.itemHash);
     final questHash = def?.objectives?.questlineItemHash ?? this.itemInfo.itemHash;
     final characterId = this.itemInfo.characterId;

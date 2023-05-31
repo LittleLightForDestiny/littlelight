@@ -118,8 +118,9 @@ class VendorDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
       child: ManifestImageWidget<DestinyVendorDefinition>(
         state.vendorHash,
         urlExtractor: (def) {
-          return def.displayProperties?.smallTransparentIcon;
+          return def.displayProperties?.smallTransparentIcon ?? def.displayProperties?.icon;
         },
+        fit: BoxFit.cover,
       ),
     );
   }
@@ -145,7 +146,7 @@ class VendorDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget buildBackgroundImage(BuildContext context) {
     final definition = context.definition<DestinyVendorDefinition>(state.vendorHash);
-    final imgUrl = definition?.locations?.first.backgroundImagePath ?? definition?.displayProperties?.largeIcon;
+    final imgUrl = definition?.locations?.first.backgroundImagePath ?? definition?.displayProperties?.originalIcon;
 
     if (imgUrl == null) {
       return Container();

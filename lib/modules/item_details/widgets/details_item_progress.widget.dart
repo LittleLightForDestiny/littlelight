@@ -10,10 +10,12 @@ import 'package:little_light/shared/widgets/objectives/track_objectives.button.d
 
 class DetailsItemProgressWidget extends StatelessWidget {
   final DestinyItemInfo itemInfo;
+  final bool canTrack;
 
   const DetailsItemProgressWidget(
     this.itemInfo, {
     Key? key,
+    this.canTrack = true,
   }) : super(key: key);
 
   @override
@@ -65,11 +67,11 @@ class DetailsItemProgressWidget extends StatelessWidget {
   }
 
   Widget? buildTrackButton(BuildContext context) {
+    if (!this.canTrack) return null;
     final itemHash = this.itemInfo.itemHash;
     final itemInstanceId = this.itemInfo.instanceId;
     final characterId = itemInstanceId == null ? this.itemInfo.characterId : null;
     if (itemHash == null || (characterId == null && itemInstanceId == null)) return null;
-
     return Container(
       margin: EdgeInsets.only(top: 8),
       child: TrackObjectivesButton(

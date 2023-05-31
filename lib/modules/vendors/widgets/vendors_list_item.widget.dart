@@ -32,7 +32,7 @@ class VendorsListItemWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             buildHeader(context),
-            buildContent(context),
+            Expanded(child: buildContent(context)),
           ],
         ),
       ),
@@ -122,6 +122,7 @@ class VendorsListItemWidget extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: categories
             .map(
               (c) => Flexible(

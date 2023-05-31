@@ -241,7 +241,10 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final objectives = def?.objectives?.objectiveHashes;
     if (objectives == null || objectives.isEmpty) return null;
     return SliverToBoxAdapter(
-      child: DetailsItemProgressWidget(item),
+      child: DetailsItemProgressWidget(
+        item,
+        canTrack: state.canTrack,
+      ),
     );
   }
 
@@ -252,7 +255,10 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     if (def?.itemType != DestinyItemType.QuestStep) return null;
     if (def?.objectives?.questlineItemHash == null) return null;
     return SliverToBoxAdapter(
-      child: DetailsItemQuestInfoWidget(item),
+      child: DetailsItemQuestInfoWidget(
+        item,
+        canTrack: state.canTrack,
+      ),
     );
   }
 

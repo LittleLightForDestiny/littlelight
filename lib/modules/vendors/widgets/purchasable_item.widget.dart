@@ -74,27 +74,6 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
     );
   }
 
-  Widget tapOverlay(context) {
-    return Container();
-    // bool canBuy = sale.saleStatus == VendorItemStatus.Success;
-    // return Material(
-    //   color: canBuy ? Colors.transparent : Colors.black.withOpacity(.5),
-    //   child: InkWell(
-    //     onTap: () {
-    //       Navigator.push(
-    //         context,
-    //         ItemDetailsPageRoute.fromVendor(
-    //           instanceInfo: instanceInfo,
-    //           characterId: characterId,
-    //           vendorHash: vendorHash,
-    //           vendorItem: sale,
-    //         ),
-    //       );
-    //     },
-    //   ),
-    // );
-  }
-
   Widget buildCost(BuildContext context) {
     final costs = item.costs;
     // final inventory = profile.getProfileInventory();
@@ -144,30 +123,4 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
       ]),
     );
   }
-
-  // .followedBy(costs.map((c) {
-  //           var items = inventory.where((i) => i.itemHash == c.itemHash);
-  //           var itemsTotal = items.fold<int>(0, (t, i) => t + i.quantity);
-  //           var currency = currencies.where((curr) => curr.itemHash == c.itemHash);
-  //           var total = currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
-  //           bool isEnough = total >= c.quantity;
-  //           return Container(
-  //               padding: const EdgeInsets.only(left: 8),
-  //               child: Row(
-  //                 crossAxisAlignment: CrossAxisAlignment.center,
-  //                 children: <Widget>[
-  //                   Text(
-  //                     "${c.quantity}/$total",
-  //                     style: TextStyle(
-  //                         fontSize: 12,
-  //                         color: isEnough ? Theme.of(context).colorScheme.onSurface : Colors.red.shade300),
-  //                   ),
-  //                   Container(
-  //                     width: 4,
-  //                   ),
-  //                   SizedBox(
-  //                       width: 18, height: 18, child: ManifestImageWidget<DestinyInventoryItemDefinition>(c.itemHash)),
-  //                 ],
-  //               ));
-  //         })).toList(),
 }

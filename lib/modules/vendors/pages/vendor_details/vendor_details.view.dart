@@ -8,6 +8,7 @@ import 'package:little_light/modules/vendors/widgets/vendor_details_cover.widget
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
+import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
@@ -120,10 +121,15 @@ class VendorDetailsView extends StatelessWidget {
     if (itemIndexes == null || allItems == null) return null;
     final items = itemIndexes.map((i) => allItems["$i"]).whereType<VendorItemInfo>().toList();
 
-    return FixedHeightScrollSection(124,
+    return FixedHeightScrollSection(128,
         itemCount: items.length,
-        itemBuilder: (context, index) => PurchasableItemWidget(
-              items[index],
+        itemBuilder: (context, index) => InteractiveItemWrapper(
+              PurchasableItemWidget(
+                items[index],
+              ),
+              item: items[index],
+              selectedBorder: 0,
+              itemMargin: 2,
             ));
   }
 

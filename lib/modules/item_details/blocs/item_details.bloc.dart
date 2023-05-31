@@ -26,6 +26,8 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
   @protected
   final SelectionBloc selectionBloc;
 
+  bool get canTrack => true;
+
   ItemDetailsBloc(this.context)
       : this.userSettingsBloc = context.read<UserSettingsBloc>(),
         this.selectionBloc = context.read<SelectionBloc>(),
