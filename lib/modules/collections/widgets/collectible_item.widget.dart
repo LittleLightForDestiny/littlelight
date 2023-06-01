@@ -30,7 +30,7 @@ class CollectibleItemWidget extends StatelessWidget {
     final items = this.items;
     final selected = items != null && items.isNotEmpty && items.every((i) => selection.isItemSelected(i));
     return Opacity(
-        opacity: isUnlocked ? 1 : .4,
+        opacity: isUnlocked ? 1 : .7,
         child: Container(
             decoration: BoxDecoration(
                 border: Border.all(color: context.theme.surfaceLayers.layer3, width: 1),
