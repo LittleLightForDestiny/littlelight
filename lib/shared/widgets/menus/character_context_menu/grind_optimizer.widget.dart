@@ -10,6 +10,7 @@ import 'package:little_light/shared/widgets/containers/menu_info_box.dart';
 import 'package:little_light/shared/widgets/inventory_item/low_density_inventory_item.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
+import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 
 const List<int> _bucketsOrder = [
   InventoryBucket.kineticWeapons,
@@ -24,10 +25,12 @@ const List<int> _bucketsOrder = [
 
 class CharacterGrindOptimizerWidget extends StatelessWidget {
   final DestinyCharacterInfo character;
+  final VoidCallback onClose;
 
   const CharacterGrindOptimizerWidget({
     Key? key,
     required this.character,
+    required this.onClose,
   }) : super(key: key);
 
   // Build step progress bar widget to show exactly how many slot points (power levels on
@@ -41,13 +44,13 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     var bars = <Widget>[];
     Color color = context.theme.primaryLayers.layer1;
     for (int i = 0; i < itemCount; i++) {
-      if (i == currentStep) color = context.theme.surfaceLayers.layer3;
+      if (i == currentStep) color = context.theme.onSurfaceLayers.layer3;
       bars.add(
         Expanded(
           child: Container(
               height: 4,
               width: 4,
-              margin: EdgeInsets.symmetric(horizontal: 2),
+              margin: EdgeInsets.symmetric(horizontal: 1),
               decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4))),
         ),
       );
@@ -60,6 +63,28 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
         Text("${currentAverage.toInt() + 1}", style: context.textTheme.highlight),
       ],
     );
+  }
+
+  Widget _buildBonusPowerProgressBar(BuildContext context, int bonusPower, double bonusPowerProgress) {
+    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+      Text("+$bonusPower", style: context.textTheme.highlight),
+      Expanded(
+          child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: Stack(alignment: Alignment.center, children: [
+                LinearProgressIndicator(
+                    color: context.theme.primaryLayers.layer1,
+                    minHeight: 4,
+                    value: bonusPowerProgress,
+                    backgroundColor: context.theme.onSurfaceLayers.layer3),
+                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
+                  Container(height: 4, width: 2, color: context.theme.surfaceLayers.layer0),
+                  Container(height: 4, width: 2, color: context.theme.surfaceLayers.layer0),
+                  Container(height: 4, width: 2, color: context.theme.surfaceLayers.layer0),
+                ]),
+              ]))),
+      Text("+${bonusPower + 1}", style: context.textTheme.highlight),
+    ]);
   }
 
   @override
@@ -79,6 +104,8 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     final achievableMessage = isInPinnacle
         ? "Achievable without pinnacles:".translate(context)
         : "Achievable without powerfuls:".translate(context);
+    final bonusPower = character.artifactPower ?? 0;
+    final bonusPowerProgress = state.getBonusPowerProgress();
     final items = state.getMaxPowerItems(classType);
     return MenuBox(
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
@@ -87,10 +114,24 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
           children: [
             Row(children: [
               Expanded(child: Text("Current base power:".translate(context))),
-              Text("${currentAverage.toStringAsFixed(2)}"),
+              Text("${currentAverage.toStringAsFixed(2)}",
+                  style: context.textTheme.subtitle.copyWith(color: context.theme.achievementLayers)),
             ]),
             SizedBox(height: 5),
             _buildPartialLevelProgressBar(context, items?.length ?? 8, currentAverage, isMaxPower)
+          ],
+        ),
+      ),
+      MenuInfoBox(
+        child: Column(
+          children: [
+            Row(children: [
+              Expanded(child: Text("Artifact bonus power:".translate(context))),
+              Text("+${(bonusPower + bonusPowerProgress).toStringAsFixed(2)}",
+                  style: context.textTheme.subtitle.copyWith(color: LittleLightTheme.of(context).upgradeLayers.layer1)),
+            ]),
+            SizedBox(height: 5),
+            _buildBonusPowerProgressBar(context, bonusPower, bonusPowerProgress)
           ],
         ),
       ),
@@ -170,6 +211,16 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
                 .whereType<Widget>()
                 .toList(),
           ),
+        ),
+      Container(height: 4),
+      if (items != null)
+        ElevatedButton(
+          style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+          child: Text("Select all".translate(context).toUpperCase()),
+          onPressed: () {
+            context.read<SelectionBloc>().selectItems(items.values.toList());
+            onClose();
+          },
         ),
     ]));
   }

@@ -139,6 +139,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
     if (character == null) return null;
     return CharacterGrindOptimizerWidget(
       character: character,
+      onClose: onClose,
     );
   }
 

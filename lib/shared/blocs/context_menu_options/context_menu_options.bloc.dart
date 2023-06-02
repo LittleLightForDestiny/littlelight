@@ -259,6 +259,12 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     return _itemsOnPostmaster?[characterId] ?? [];
   }
 
+  double getBonusPowerProgress() {
+    DestinyProgression? bonusPowerInfo = _profileBloc.getArtifactProgression()?.powerBonusProgression;
+    if (bonusPowerInfo?.nextLevelAt == null) return 0;
+    return (bonusPowerInfo?.progressToNextLevel ?? 0) / (bonusPowerInfo?.nextLevelAt ?? 1);
+  }
+
   void openLoadoutCreation(BuildContext navigatorContext, DestinyCharacterInfo character, bool onlyEquipped) async {
     final loadoutWeaponHashes = InventoryBucket.weaponBucketHashes + [InventoryBucket.subclass];
     final allItems = context.read<ProfileBloc>().allItems;

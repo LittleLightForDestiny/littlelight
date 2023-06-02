@@ -16,6 +16,7 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemObjectives,
     DestinyComponentType.ItemReusablePlugs,
     DestinyComponentType.StringVariables,
+    DestinyComponentType.ProfileProgression,
   ];
 
   static const List<DestinyComponentType> collections = [
