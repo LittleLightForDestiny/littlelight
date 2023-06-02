@@ -34,6 +34,7 @@ class CollectionsSubcategoryView extends BasePresentationNodeView {
   Widget buildTab(BuildContext context, DestinyPresentationNodeDefinition node, EdgeInsets padding) {
     return PresentationNodeListWidget(
       node.hash,
+      collectibles: bloc.sortedCollectibles,
       padding: padding,
       presentationNodeBuilder: (context, entry) => PresentationNodeItemWidget(
         entry.presentationNodeHash,
