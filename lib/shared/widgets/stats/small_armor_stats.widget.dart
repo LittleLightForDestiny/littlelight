@@ -7,13 +7,13 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 class SmallArmorStatsWidget extends StatelessWidget with WishlistsConsumer {
   final Map<String, DestinyStat>? stats;
   final double iconSize;
-  final EdgeInsets iconMargin;
-  final double textWidth;
+  final double iconLeftMargin;
+  final double iconRightMargin;
   SmallArmorStatsWidget(
     this.stats, {
     this.iconSize = 16,
-    this.textWidth = 18,
-    this.iconMargin = const EdgeInsets.only(right: 1),
+    this.iconLeftMargin = 4,
+    this.iconRightMargin = 1,
   });
   @override
   Widget build(BuildContext context) {
@@ -21,48 +21,51 @@ class SmallArmorStatsWidget extends StatelessWidget with WishlistsConsumer {
     if (stats == null) return Container();
     final firstRow = stats.values.take(3);
     final secondRow = stats.values.skip(3).take(3);
-    return Column(children: [
-      Row(
-          children: firstRow //
-              .map((stat) => buildStat(context, stat))
-              .whereType<Widget>()
-              .toList()),
-      Row(
-          children: secondRow //
-              .map((stat) => buildStat(context, stat))
-              .whereType<Widget>()
-              .toList())
-    ]);
+    return Table(
+        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+        defaultColumnWidth: IntrinsicColumnWidth(),
+        columnWidths: {
+          0: FixedColumnWidth(iconSize + iconRightMargin),
+          2: FixedColumnWidth(iconSize + iconLeftMargin + iconRightMargin),
+          4: FixedColumnWidth(iconSize + iconLeftMargin + iconRightMargin),
+        },
+        children: [
+          TableRow(
+              children: firstRow //
+                  .expand((stat) => buildStat(context, stat))
+                  .whereType<Widget>()
+                  .toList()),
+          TableRow(
+              children: secondRow //
+                  .expand((stat) => buildStat(context, stat))
+                  .whereType<Widget>()
+                  .toList())
+        ]);
   }
 
-  Widget? buildStat(BuildContext context, DestinyStat stat) {
+  List<Widget> buildStat(BuildContext context, DestinyStat stat) {
     final statHash = stat.statHash;
-    if (statHash == null) return null;
-    return Container(
-      child: Row(
-        children: [
-          Container(
-            margin: iconMargin,
-            width: iconSize,
-            height: iconSize,
-            child: ManifestImageWidget<DestinyStatDefinition>(statHash),
-          ),
-          SizedBox(
-            width: textWidth,
-            child: Text(
-              statValue(stat),
-              style: context.textTheme.subtitle.copyWith(fontSize: 12),
-              textAlign: TextAlign.end,
-            ),
-          ),
-          Container(width: 4),
-        ],
+    if (statHash == null) return [];
+    return [
+      Container(
+        margin: EdgeInsets.only(right: iconRightMargin),
+        width: iconSize,
+        height: iconSize,
+        alignment: Alignment.centerRight,
+        child: ManifestImageWidget<DestinyStatDefinition>(statHash),
       ),
-    );
+      Container(
+        child: Text(
+          statValue(stat),
+          style: context.textTheme.subtitle.copyWith(fontSize: 12),
+          textAlign: TextAlign.end,
+        ),
+      ),
+    ];
   }
 
   String statValue(DestinyStat stat) {
-    final value = stat.value?.clamp(0, 100) ?? 0;
+    final value = stat.value?.clamp(0, 999) ?? 0;
     return "$value".padLeft(2, "0");
   }
 }

@@ -10,6 +10,7 @@ import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
+import 'package:intl/intl.dart';
 
 const _wellRestedProgression = 2352765282;
 
@@ -61,9 +62,10 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   Widget buildCurrencies(BuildContext context) {
     final currencies = this.currencies;
     if (currencies == null) return Container();
+    final numberFormatter = NumberFormat.decimalPattern(context.currentLanguage);
     return Wrap(
       alignment: WrapAlignment.end,
-      children: currencies.reversed
+      children: currencies
           .map((e) => Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -75,9 +77,9 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
                   Container(
                     width: 4,
                   ),
-                  Text("${e.quantity}"),
+                  Text(numberFormatter.format(e.quantity)),
                   Container(width: 8),
-                ].reversed.toList(),
+                ].toList(),
               ))
           .toList(),
     );
@@ -115,7 +117,6 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
     if (stats == null) return SizedBox();
     return SmallArmorStatsWidget(
       stats,
-      textWidth: 24,
     );
   }
 
@@ -145,7 +146,7 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
     int overlevel = overLevelProg?.level ?? 0;
     int progress = level + overlevel;
     return Text(
-      "Seasonal Rank {rank}".translate(context, replace: {"rank": "$progress"}),
+      "Season Rank {rank}".translate(context, replace: {"rank": "$progress"}),
       style: context.textTheme.caption,
     );
   }
@@ -207,8 +208,11 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
     final currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
     int progress = currentProg?.progressToNextLevel ?? 0;
     int total = currentProg?.nextLevelAt ?? 1;
+    final numberFormatter = NumberFormat.decimalPattern(context.currentLanguage);
+    String formattedProgress = numberFormatter.format(progress);
+    String formattedTotal = numberFormatter.format(total);
     return Text(
-      "$progress/$total",
+      "$formattedProgress/$formattedTotal",
       style: context.textTheme.caption,
     );
   }

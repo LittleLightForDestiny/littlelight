@@ -73,7 +73,7 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
   ) {
     final items = bucketContent.items;
     final bucketHash = bucketContent.bucketHash;
-    final sectionId = 'vault_$bucketHash';
+    final sectionId = 'vault $bucketHash';
     final defaultType = BucketDisplayType.Small;
     final displayType = bucketOptionsState(context).getDisplayTypeForItemSection(sectionId, defaultValue: defaultType);
     final itemDensity = displayType.unequippedDensity;
