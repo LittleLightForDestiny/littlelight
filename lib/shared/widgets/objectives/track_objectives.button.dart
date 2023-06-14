@@ -22,7 +22,7 @@ class TrackObjectivesButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final trackingState = context.watch<ObjectiveTracking>();
+    final trackingState = context.watch<ObjectiveTrackingBloc>();
     final isTracking = trackingState.isTracked(
       this.type,
       this.trackedHash,
@@ -39,7 +39,7 @@ class TrackObjectivesButton extends StatelessWidget {
         child: Text(
           isTracking ? "Stop tracking".translate(context) : "Track objectives".translate(context),
         ),
-        onPressed: () => context.read<ObjectiveTracking>().changeTrackingStatus(
+        onPressed: () => context.read<ObjectiveTrackingBloc>().changeTrackingStatus(
               this.type,
               trackedHash,
               track: !isTracking,

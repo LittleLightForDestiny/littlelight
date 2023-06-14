@@ -22,7 +22,7 @@ abstract class TriumphsBloc extends ChangeNotifier {
   @protected
   final SelectionBloc selectionBloc;
   @protected
-  final ObjectiveTracking trackingBloc;
+  final ObjectiveTrackingBloc trackingBloc;
 
   Map<int, RecordProgressData>? _recordsData;
 
@@ -43,7 +43,7 @@ abstract class TriumphsBloc extends ChangeNotifier {
         this.userSettings = context.read<UserSettingsBloc>(),
         this.manifest = context.read<ManifestService>(),
         this.selectionBloc = context.read<SelectionBloc>(),
-        this.trackingBloc = context.read<ObjectiveTracking>(),
+        this.trackingBloc = context.read<ObjectiveTrackingBloc>(),
         super() {
     init();
   }

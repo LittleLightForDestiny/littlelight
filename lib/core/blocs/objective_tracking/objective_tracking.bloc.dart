@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/storage/export.dart';
 
-class ObjectiveTracking extends ChangeNotifier with StorageConsumer {
+class ObjectiveTrackingBloc extends ChangeNotifier with StorageConsumer {
   final BuildContext context;
   List<TrackedObjective>? _trackedObjectives;
+  List<TrackedObjective>? get trackedObjectives => _trackedObjectives;
 
-  ObjectiveTracking(this.context) : super() {
+  ObjectiveTrackingBloc(this.context) : super() {
     _init();
   }
 

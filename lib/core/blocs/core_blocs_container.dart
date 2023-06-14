@@ -44,7 +44,7 @@ class CoreBlocsContainer extends MultiProvider {
             ChangeNotifierProvider<SelectionBloc>(create: (context) => SelectionBloc(context)),
             ChangeNotifierProvider<ContextMenuOptionsBloc>(create: (context) => ContextMenuOptionsBloc(context)),
             ChangeNotifierProvider<ItemSectionOptionsBloc>(create: (context) => ItemSectionOptionsBloc(context)),
-            ChangeNotifierProvider<ObjectiveTracking>(create: (context) => ObjectiveTracking(context)),
+            ChangeNotifierProvider<ObjectiveTrackingBloc>(create: (context) => ObjectiveTrackingBloc(context)),
           ],
         );
 }

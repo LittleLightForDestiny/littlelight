@@ -12,12 +12,13 @@ import 'package:little_light/modules/collections/pages/home/collections_home.pag
 import 'package:little_light/modules/dev_tools/pages/main/dev_tools_main.page.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
+import 'package:little_light/modules/progress/pages/objectives/objectives.page.dart';
 import 'package:little_light/modules/progress/pages/progress/progress.page.dart';
 import 'package:little_light/modules/settings/pages/about/about.screen.dart';
 import 'package:little_light/modules/triumphs/pages/home/triumphs_home.page.dart';
 import 'package:little_light/modules/duplicated_items/pages/duplicated_items/duplicated_items.page.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
-import 'package:little_light/pages/objectives/objectives.screen.dart';
+
 import 'package:little_light/modules/vendors/pages/home/vendors_home.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/utils/platform_data.dart';
@@ -73,7 +74,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                 open(context, ProgressPage());
               }),
               menuItem(context, Text("Objectives".translate(context)), onTap: () {
-                open(context, ObjectivesScreen());
+                open(context, ObjectivesPage());
               }),
               menuItem(context, Text("Loadouts".translate(context)), onTap: () {
                 open(context, LoadoutsHomePage());
