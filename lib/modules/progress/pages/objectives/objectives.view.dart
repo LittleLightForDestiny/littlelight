@@ -102,27 +102,69 @@ class ObjectivesView extends StatelessWidget {
       case TrackedObjectiveType.Triumph:
         final record = state.getRecord(objective);
         if (useSmall)
-          return RecordItemWidget(
+          return buildButton(
+            context,
+            objective,
+            RecordItemWidget(
+              objective.hash,
+              progress: record,
+            ),
+          );
+        return buildButton(
+          context,
+          objective,
+          ObjectiveTrackingRecordItemWidget(
             objective.hash,
             progress: record,
-          );
-        return ObjectiveTrackingRecordItemWidget(
-          objective.hash,
-          progress: record,
+          ),
         );
       case TrackedObjectiveType.Item:
         final item = state.getItem(objective);
         if (item == null) return Container();
-        if (useSmall) return HighDensityInventoryItem(item);
-        return ObjectiveTrackingBountyItemWidget(item);
+        if (useSmall)
+          return buildButton(
+            context,
+            objective,
+            HighDensityInventoryItem(item),
+          );
+        return buildButton(
+          context,
+          objective,
+          ObjectiveTrackingBountyItemWidget(item),
+        );
       case TrackedObjectiveType.Plug:
         return Text("plug ${objective.hash}");
       case TrackedObjectiveType.Questline:
         final item = state.getItem(objective);
         if (item == null) return Container();
-        if (useSmall) return HighDensityInventoryItem(item);
-        return ObjectiveTrackingQuestlineItemWidget(item);
+        if (useSmall)
+          return buildButton(
+            context,
+            objective,
+            HighDensityInventoryItem(item),
+          );
+        return buildButton(
+          context,
+          objective,
+          ObjectiveTrackingQuestlineItemWidget(item),
+        );
     }
+  }
+
+  Widget buildButton(BuildContext context, TrackedObjective objective, Widget child) {
+    return Stack(
+      children: [
+        child,
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => bloc.openDetails(objective),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildNotifications(BuildContext context) {
