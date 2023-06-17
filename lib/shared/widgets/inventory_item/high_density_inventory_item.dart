@@ -890,8 +890,8 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         });
   }
 
-  Widget buildObjectiveProgress(BuildContext context, DestinyInventoryItemDefinition definition) {
-    final objectiveHashes = definition.objectives?.objectiveHashes;
+  Widget buildObjectiveProgress(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    final objectiveHashes = definition?.objectives?.objectiveHashes;
     if (objectiveHashes == null || objectiveHashes.isEmpty) return Container();
     if (objectiveHashes.length == 1) {
       final objectiveHash = objectiveHashes.first;
@@ -900,7 +900,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
       return ObjectiveWidget(
         objectiveHash,
         objective: objective,
-        placeholder: definition.displayProperties?.description,
+        placeholder: definition?.displayProperties?.description,
       );
     }
     return Row(

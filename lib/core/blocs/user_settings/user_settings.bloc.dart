@@ -4,6 +4,7 @@ import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
@@ -20,6 +21,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   Set<String?>? _priorityTags;
   Map<String, BucketDisplayOptions>? _bucketDisplayOptions;
   Map<String, bool>? _detailsSectionDisplayVisibility;
+  ObjectiveViewMode? _objectiveViewMode;
 
   UserSettingsBloc._internal();
 
@@ -31,6 +33,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
       initPriorityTags(),
       initBucketDisplayOptions(),
       initDetailsSectionDisplayOptions(),
+      initObjectiveViewMode(),
     ]);
     notifyListeners();
   }
@@ -81,6 +84,11 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   Future<void> initDetailsSectionDisplayOptions() async {
     _detailsSectionDisplayVisibility = await currentMembershipStorage.getDetailsSectionDisplayVisibility();
     _detailsSectionDisplayVisibility ??= <String, bool>{};
+  }
+
+  Future<void> initObjectiveViewMode() async {
+    _objectiveViewMode = await globalStorage.getObjectiveViewMode();
+    _objectiveViewMode ??= ObjectiveViewMode.Large;
   }
 
   BucketDisplayOptions? getDisplayOptionsForItemSection(String? id) {
@@ -213,6 +221,16 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
 
   set startingPage(LittleLightPersistentPage page) {
     globalStorage.startingPage = page;
+  }
+
+  void set objectiveViewMode(ObjectiveViewMode mode) {
+    _objectiveViewMode = mode;
+    globalStorage.setObjectiveViewMode(mode);
+    notifyListeners();
+  }
+
+  ObjectiveViewMode get objectiveViewMode {
+    return _objectiveViewMode ?? ObjectiveViewMode.Large;
   }
 
   Duration get questExpirationWarningThreshold => Duration(hours: 4);

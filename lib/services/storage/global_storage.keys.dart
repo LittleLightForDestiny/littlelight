@@ -25,6 +25,7 @@ enum GlobalStorageKeys {
   wishlists,
   rawWishlists,
   enableAutoTransfers,
+  objectivesViewMode,
 }
 
 extension StorageKeysExtension on GlobalStorageKeys {

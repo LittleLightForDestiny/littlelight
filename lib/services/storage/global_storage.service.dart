@@ -9,6 +9,7 @@ import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
+import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/storage/migrations/storage_migrations.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
@@ -172,7 +173,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     }
   }
 
-  setWishlists(List<WishlistFile> wishlists) async {
+  Future<void> setWishlists(List<WishlistFile> wishlists) async {
     try {
       final json = wishlists.map((e) => e.toJson()).toList();
       await setJson(GlobalStorageKeys.wishlists, json);
@@ -261,6 +262,26 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       await setJson(GlobalStorageKeys.gameData, json);
     } catch (e) {
       logger.error("error saving collaborators", error: e);
+    }
+  }
+
+  Future<ObjectiveViewMode?> getObjectiveViewMode() async {
+    try {
+      final String? str = await getString(GlobalStorageKeys.objectivesViewMode);
+      final ObjectiveViewMode? mode = str?.asObjectiveViewMode;
+      return mode;
+    } catch (e) {
+      logger.error("can't parse objectives view mode", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setObjectiveViewMode(ObjectiveViewMode? mode) async {
+    try {
+      String? str = mode?.asString;
+      await setString(GlobalStorageKeys.objectivesViewMode, str);
+    } catch (e) {
+      logger.error("error saving objectives view mode", error: e);
     }
   }
 

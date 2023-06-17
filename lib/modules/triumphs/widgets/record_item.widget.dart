@@ -34,15 +34,14 @@ class RecordItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final foregroundColor = this.foregroundColor(context);
-    return LayoutBuilder(
-        builder: (context, constraints) => Container(
-            decoration: BoxDecoration(
-              border: Border.all(color: foregroundColor, width: 1),
-            ),
-            child: Stack(children: [
-              buildContent(context),
-              Positioned.fill(child: MaterialButton(child: Container(), onPressed: onTap))
-            ])));
+    return Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: foregroundColor, width: 1),
+        ),
+        child: Stack(children: [
+          buildContent(context),
+          Positioned.fill(child: MaterialButton(child: Container(), onPressed: onTap))
+        ]));
   }
 
   Widget buildContent(BuildContext context) {

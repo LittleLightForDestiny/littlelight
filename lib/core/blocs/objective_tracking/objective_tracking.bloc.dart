@@ -18,6 +18,7 @@ class ObjectiveTrackingBloc extends ChangeNotifier with StorageConsumer {
 
   Future<void> _loadTrackedObjectivesFromCache() async {
     _trackedObjectives = await currentMembershipStorage.getTrackedObjectives() ?? [];
+    notifyListeners();
   }
 
   void changeTrackingStatus(TrackedObjectiveType type, int? hash,
@@ -54,5 +55,10 @@ class ObjectiveTrackingBloc extends ChangeNotifier with StorageConsumer {
           characterId == element.characterId,
     );
     return found != null;
+  }
+
+  Future<void> updateOrder(List<TrackedObjective> objectives) async {
+    this._trackedObjectives = objectives;
+    await currentMembershipStorage.saveTrackedObjectives(objectives);
   }
 }
