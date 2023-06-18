@@ -1,13 +1,13 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/collections/blocs/base_collections.bloc.dart';
-import 'package:little_light/shared/views/base_presentation_node.view.dart';
+import 'package:little_light/modules/collections/pages/base/base_collections.view.dart';
 import 'package:little_light/modules/collections/widgets/collectible_item.widget.dart';
 import 'package:little_light/shared/widgets/presentation_nodes/presentation_node_item.widget.dart';
 import 'package:little_light/shared/widgets/presentation_nodes/presentation_node_item_list.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
-class CollectionsCategoryView extends BasePresentationNodeView {
+class CollectionsCategoryView extends BaseCollectionsView {
   final CollectionsBloc bloc;
   final CollectionsBloc state;
   const CollectionsCategoryView(this.bloc, this.state, {Key? key}) : super(key: key);

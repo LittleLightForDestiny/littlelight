@@ -233,5 +233,17 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
     return _objectiveViewMode ?? ObjectiveViewMode.Large;
   }
 
+  bool get hideUnavailableCollectibles => globalStorage.hideUnavailableCollectibles ?? false;
+  set hideUnavailableCollectibles(bool value) {
+    globalStorage.hideUnavailableCollectibles = value;
+    notifyListeners();
+  }
+
+  bool get sortCollectiblesByNewest => globalStorage.sortCollectiblesByNewest ?? true;
+  set sortCollectiblesByNewest(bool value) {
+    globalStorage.sortCollectiblesByNewest = value;
+    notifyListeners();
+  }
+
   Duration get questExpirationWarningThreshold => Duration(hours: 4);
 }

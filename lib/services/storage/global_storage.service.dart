@@ -285,6 +285,12 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     }
   }
 
+  bool? get hideUnavailableCollectibles => getBool(GlobalStorageKeys.hideUnavailableCollectibles);
+  set hideUnavailableCollectibles(bool? value) => setBool(GlobalStorageKeys.hideUnavailableCollectibles, value);
+
+  bool? get sortCollectiblesByNewest => getBool(GlobalStorageKeys.sortCollectiblesByNewest);
+  set sortCollectiblesByNewest(bool? value) => setBool(GlobalStorageKeys.sortCollectiblesByNewest, value);
+
   Future<void> purge() async {
     await purgePath("");
   }
