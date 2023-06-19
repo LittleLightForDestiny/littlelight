@@ -39,8 +39,8 @@ class DetailsItemCoverWidget extends StatelessWidget {
     final maxHeight = hasScreenshot ? kToolbarHeight + screenshotHeight : kToolbarHeight + paddingTop;
     return SliverPersistentHeader(
       pinned: true,
+      key: Key("item_cover_${state.itemHash}_${state.styleHash}"),
       delegate: DetailsItemCoverDelegate(
-        context,
         minHeight: minHeight,
         maxHeight: maxHeight,
       ),
@@ -49,8 +49,6 @@ class DetailsItemCoverWidget extends StatelessWidget {
 }
 
 class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
-  final BuildContext context;
-
   final double minHeight;
   final double maxHeight;
 
@@ -59,22 +57,11 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   DateTime? lastUpdated;
 
-  DetailsItemCoverDelegate(
-    BuildContext this.context, {
+  DetailsItemCoverDelegate({
     this.minHeight = 50,
     this.maxHeight = 200,
   })  : lastUpdated = DateTime.now(),
         super();
-
-  ItemDetailsBloc get state => context.watch<ItemDetailsBloc>();
-
-  DestinyItemInfo? get item => state.item;
-
-  DestinyInventoryItemDefinition? get itemDefinition =>
-      context.definition<DestinyInventoryItemDefinition>(item?.itemHash);
-
-  DestinyInventoryItemDefinition? get styleDefinition =>
-      context.definition<DestinyInventoryItemDefinition>(state.styleHash);
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -94,15 +81,7 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(DetailsItemCoverDelegate oldDelegate) {
-    final lastUpdated = this.lastUpdated ?? oldDelegate.lastUpdated ?? DateTime.fromMicrosecondsSinceEpoch(0);
-    final profileState = context.watch<ProfileBloc>();
-    final lastProfileUpdate = profileState.lastUpdate ?? DateTime.fromMicrosecondsSinceEpoch(0);
-    final shouldRebuild = !lastUpdated.isAfter(lastProfileUpdate) || this != oldDelegate;
-    if (!shouldRebuild) {
-      return false;
-    }
-    this.lastUpdated = DateTime.now();
-    return true;
+    return false;
   }
 }
 
