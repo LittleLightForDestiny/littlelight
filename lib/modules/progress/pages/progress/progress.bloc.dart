@@ -100,6 +100,7 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
   @override
   void dispose() {
     _profileBloc.removeListener(_update);
+    _userSettingsBloc.removeListener(_update);
     super.dispose();
   }
 
