@@ -13,5 +13,5 @@ mixin ManifestConsumer {
 extension ManifestProvider on BuildContext {
   T? definition<T>(hash, {bool useReadContext = false}) => useReadContext
       ? this.read<ManifestService>().definition<T>(hash)
-      : this.watch<ManifestService>().definition<T>(hash);
+      : this.select<ManifestService, T?>((m) => m.definition<T>(hash));
 }
