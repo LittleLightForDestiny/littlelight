@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.bloc.dart';
+import 'package:little_light/modules/search/pages/item_search/item_search.bloc.dart';
 import 'package:little_light/modules/search/widgets/item_search_drawer.widget.dart';
 import 'package:little_light/modules/search/widgets/text_search_filter.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
@@ -12,10 +12,10 @@ import 'package:little_light/shared/widgets/notifications/busy_indicator_line.wi
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 
-class QuickTransferView extends StatelessWidget {
-  final QuickTransferBloc bloc;
-  final QuickTransferBloc state;
-  const QuickTransferView(
+class ItemSearchView extends StatelessWidget {
+  final ItemSearchBloc bloc;
+  final ItemSearchBloc state;
+  const ItemSearchView(
     this.bloc,
     this.state, {
     Key? key,

@@ -66,13 +66,17 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
 
   void _queueDefinition<T>(hash) async {
     if (_queue[T]?.contains(hash) ?? false) return;
+    final cached = getDefinitionFromCache(hash);
+    if (cached != null) return;
     _queue[T] ??= {};
     _queue[T]?.add(hash);
     await Future.delayed(Duration(milliseconds: 10));
     final hashes = _queue[T];
     _queue.remove(T);
     if (hashes == null || hashes.isEmpty) return;
+    final previousLength = _cached.length;
     await getDefinitions<T>(hashes);
+    if (previousLength == _cached.length) return;
     notifyListeners();
   }
 
