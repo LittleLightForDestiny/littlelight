@@ -3,10 +3,10 @@ import 'dart:math';
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-import 'package:little_light/core/blocs/loadouts/loadout_item_info.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.bloc.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
@@ -16,7 +16,6 @@ import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.d
 import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
@@ -136,7 +135,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
         children: unequippable
             .map((e) => Container(
                   padding: const EdgeInsets.all(2),
-                  child: buildItemIcon(e.inventoryItem),
+                  child: buildItemIcon(context, e.inventoryItem),
                 ))
             .toList(),
       ),
@@ -155,7 +154,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
                 (e) => Expanded(
                   child: Container(
                     padding: const EdgeInsets.all(2),
-                    child: buildItemIcon(e?.inventoryItem),
+                    child: buildItemIcon(context, e?.inventoryItem),
                   ),
                 ),
               )
@@ -173,7 +172,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
     );
   }
 
-  Widget buildItemIcon(DestinyItemInfo? item) {
+  Widget buildItemIcon(BuildContext context, DestinyItemInfo? item) {
     final itemHash = item?.itemHash;
     if (item == null || itemHash == null) {
       return AspectRatio(
@@ -183,10 +182,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
     }
     return AspectRatio(
       aspectRatio: 1,
-      child: DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-        itemHash,
-        (def) => InventoryItemIcon(item),
-      ),
+      child: InventoryItemIcon(item),
     );
   }
 

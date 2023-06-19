@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -21,14 +21,13 @@ import 'package:little_light/shared/widgets/character/character_icon.widget.dart
 import 'package:little_light/shared/widgets/character/postmaster_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
+import 'package:little_light/shared/widgets/inventory_item/item_expiration_date.widget.dart';
 import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 import 'package:little_light/shared/widgets/objectives/small_objective.widget.dart';
 import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 import 'package:little_light/shared/widgets/tags/tag_icon.widget.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/utils/stats_total.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
-import 'package:little_light/shared/widgets/inventory_item/item_expiration_date.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
@@ -61,10 +60,8 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   Widget build(BuildContext context) {
     final itemHash = item.itemHash;
     if (itemHash == null) return emptyItem(context);
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-      itemHash,
-      (def) => buildWithDefinition(context, def),
-    );
+    final definition = context.definition<DestinyInventoryItemDefinition>(itemHash);
+    return buildWithDefinition(context, definition);
   }
 
   Widget emptyItem(BuildContext context) => Container();

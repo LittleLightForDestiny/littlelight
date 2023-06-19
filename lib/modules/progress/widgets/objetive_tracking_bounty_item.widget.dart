@@ -1,10 +1,8 @@
 import 'package:bungie_api/src/models/destiny_inventory_item_definition.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/widgets.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
 import 'package:little_light/shared/widgets/objectives/objective.widget.dart';

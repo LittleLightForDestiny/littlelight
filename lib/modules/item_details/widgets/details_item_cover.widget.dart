@@ -79,11 +79,41 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     final state = context.watch<ItemDetailsBloc>();
-    final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
     double expandRatio = max(0, 1 - shrinkOffset / (maxHeight - minHeight));
     if (maxHeight == minHeight) {
       expandRatio = 0;
     }
+    return ItemCoverContentsWidget(state, expandRatio);
+  }
+
+  @override
+  double get maxExtent => maxHeight;
+
+  @override
+  double get minExtent => minHeight;
+
+  @override
+  bool shouldRebuild(DetailsItemCoverDelegate oldDelegate) {
+    final lastUpdated = this.lastUpdated ?? oldDelegate.lastUpdated ?? DateTime.fromMicrosecondsSinceEpoch(0);
+    final profileState = context.watch<ProfileBloc>();
+    final lastProfileUpdate = profileState.lastUpdate ?? DateTime.fromMicrosecondsSinceEpoch(0);
+    final shouldRebuild = !lastUpdated.isAfter(lastProfileUpdate) || this != oldDelegate;
+    if (!shouldRebuild) {
+      return false;
+    }
+    this.lastUpdated = DateTime.now();
+    return true;
+  }
+}
+
+class ItemCoverContentsWidget extends StatelessWidget {
+  final ItemDetailsBloc state;
+  final double expandRatio;
+  ItemCoverContentsWidget(this.state, this.expandRatio);
+
+  @override
+  Widget build(BuildContext context) {
+    final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
     return Container(
         color: definition?.inventory?.tierType?.getColor(context),
         child: Stack(
@@ -109,10 +139,12 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget buildNamebarContents(BuildContext context, double expandRatio) {
+    final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    final item = state.item;
     double nameLeftOffset = lerpDouble(kToolbarHeight * 2 - 16, 104, expandRatio) ?? 0;
-    final name = state.customName ?? itemDefinition?.displayProperties?.name ?? "";
+    final name = state.customName ?? definition?.displayProperties?.name ?? "";
     final isMasterwork = item?.state?.contains(ItemState.Masterwork) ?? false;
-    bool isExotic = itemDefinition?.inventory?.tierType == TierType.Exotic;
+    bool isExotic = definition?.inventory?.tierType == TierType.Exotic;
     return Container(
       decoration: isMasterwork
           ? BoxDecoration(
@@ -140,7 +172,7 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget buildIcon(BuildContext context, double expandRatio) {
-    final item = this.item;
+    final item = state.item;
     final size = lerpDouble(kToolbarHeight - 8, 96, expandRatio) ?? 96;
     final bottom = lerpDouble(4, 8, expandRatio) ?? 8;
     final left = lerpDouble(kTextTabBarHeight, 8, expandRatio) ?? 8;
@@ -156,13 +188,14 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget buildBackButton(BuildContext context, double expandRatio) {
     double paddingTop = MediaQuery.of(context).padding.top;
+    final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
     return Positioned(
         left: 0,
         top: paddingTop,
         width: kToolbarHeight,
         height: kToolbarHeight,
         child: BackButton(
-            color: Color.lerp(itemDefinition?.inventory?.tierType?.getTextColor(context), Colors.grey.shade300,
+            color: Color.lerp(definition?.inventory?.tierType?.getTextColor(context), Colors.grey.shade300,
                 expandRatio.clamp(0, 1))));
   }
 
@@ -178,8 +211,8 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget buildBackgroundImage(BuildContext context) {
-    final definition = this.itemDefinition;
-    final styleDefinition = this.styleDefinition ?? definition;
+    final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    final styleDefinition = context.definition<DestinyInventoryItemDefinition>(state.styleHash) ?? definition;
 
     String? imgUrl = styleDefinition?.screenshot;
 
@@ -219,11 +252,13 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
   }
 
   Widget? buildPrimaryStat(BuildContext context) {
-    final statHash = itemDefinition?.stats?.primaryBaseStatHash;
-    final disableStat = itemDefinition?.stats?.disablePrimaryStatDisplay ?? false;
+    final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    final item = state.item;
+    final statHash = definition?.stats?.primaryBaseStatHash;
+    final disableStat = definition?.stats?.disablePrimaryStatDisplay ?? false;
     final value = item?.primaryStatValue;
-    final classType = itemDefinition?.classType ?? DestinyClass.Unknown;
-    final ammoType = itemDefinition?.equippingBlock?.ammoType ?? DestinyAmmunitionType.None;
+    final classType = definition?.classType ?? DestinyClass.Unknown;
+    final ammoType = definition?.equippingBlock?.ammoType ?? DestinyAmmunitionType.None;
     final damageType = item?.damageType ?? DamageType.None;
     final damageColor = damageType != DamageType.None
         ? damageType.getColorLayer(context).layer2
@@ -295,24 +330,5 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
         ],
       ),
     );
-  }
-
-  @override
-  double get maxExtent => maxHeight;
-
-  @override
-  double get minExtent => minHeight;
-
-  @override
-  bool shouldRebuild(DetailsItemCoverDelegate oldDelegate) {
-    final lastUpdated = this.lastUpdated ?? oldDelegate.lastUpdated ?? DateTime.fromMicrosecondsSinceEpoch(0);
-    final profileState = context.watch<ProfileBloc>();
-    final lastProfileUpdate = profileState.lastUpdate ?? DateTime.fromMicrosecondsSinceEpoch(0);
-    final shouldRebuild = !lastUpdated.isAfter(lastProfileUpdate) || this != oldDelegate;
-    if (!shouldRebuild) {
-      return false;
-    }
-    this.lastUpdated = DateTime.now();
-    return true;
   }
 }
