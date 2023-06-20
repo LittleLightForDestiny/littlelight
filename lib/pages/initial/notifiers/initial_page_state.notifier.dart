@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
@@ -201,7 +202,9 @@ class InitialPageStateNotifier
 
     final accounts = auth.accountIDs;
 
-    if ((accounts?.length ?? 0) > 0) {
+    final token = await auth.getCurrentToken();
+
+    if ((accounts?.length ?? 0) > 0 && token != null) {
       accountsChecked();
       return;
     }
