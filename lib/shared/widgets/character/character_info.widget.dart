@@ -265,11 +265,13 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
         context: context,
         useRootNavigator: true,
         builder: (context) {
-          return Wrap(children: [
-            CharacterGrindOptimizerWidget(character: character, onClose: () => Navigator.pop(context)),
-            // Buttons don't work at the bottom
-            SizedBox(height: 24, width: 32)
-          ]);
+          return SafeArea(
+            child: Wrap(
+              children: [
+                CharacterGrindOptimizerWidget(character: character, onClose: () => Navigator.pop(context)),
+              ],
+            ),
+          );
         });
   }
 }

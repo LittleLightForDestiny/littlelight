@@ -39,7 +39,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
         Positioned(
             bottom: sourceBottom + kToolbarHeight + viewPadding.bottom,
             left: 0,
-            top: 0,
+            top: viewPadding.top,
             right: sourceRight,
             child: Container(padding: const EdgeInsets.all(8), child: buildMenuItems(context))),
         Positioned(
