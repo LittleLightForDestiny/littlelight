@@ -107,8 +107,7 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     final bonusPower = character.artifactPower ?? 0;
     final bonusPowerProgress = state.getBonusPowerProgress();
     final items = state.getMaxPowerItems(classType);
-    return MenuBox(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       MenuInfoBox(
         child: Column(
           children: [
@@ -222,6 +221,6 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
             onClose();
           },
         ),
-    ]));
+    ]);
   }
 }

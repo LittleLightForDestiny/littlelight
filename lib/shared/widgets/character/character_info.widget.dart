@@ -4,6 +4,7 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
+import 'package:little_light/shared/widgets/character/grind_optimizer.bottomsheet.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/grind_optimizer.widget.dart';
 import 'package:little_light/shared/widgets/stats/small_armor_stats.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
@@ -261,17 +262,6 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   }
 
   void showGrindOptimizer(BuildContext context) {
-    showModalBottomSheet(
-        context: context,
-        useRootNavigator: true,
-        builder: (context) {
-          return SafeArea(
-            child: Wrap(
-              children: [
-                CharacterGrindOptimizerWidget(character: character, onClose: () => Navigator.pop(context)),
-              ],
-            ),
-          );
-        });
+    GrindOptimizerBottomsheet(character).show(context);
   }
 }

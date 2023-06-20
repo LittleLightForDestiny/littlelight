@@ -41,58 +41,39 @@ class MaxPowerOptionsWidget extends StatelessWidget {
     final items = state.getEquippableMaxPowerItems(classType);
     if (items == null) return Container();
     return MenuBox(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      MenuBoxTitle(
-        "Equippable max power".translate(context),
-        trailing: Text("${equippableAverage?.toStringAsFixed(2)}"),
-      ),
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: _bucketsOrder
-              .map((hash) {
-                final item = items[hash];
-                if (item == null) return null;
-                return Container(
-                  height: 64,
-                  width: 64,
-                  margin: EdgeInsets.only(right: 2),
-                  child: LowDensityInventoryItem(item),
-                );
-              })
-              .whereType<Widget>()
-              .toList(),
+      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+        MenuBoxTitle(
+          "Equippable max power".translate(context),
+          trailing: Text("${equippableAverage?.toStringAsFixed(2)}"),
         ),
-      ),
-      SizedBox(height: 8),
-      Row(
-        children: [
-          Expanded(
-              child: ElevatedButton(
-            style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-            child: Text("Equip max power".translate(context).toUpperCase()),
-            onPressed: () {
-              context.read<InventoryBloc>().equipMultiple(
-                  items.values.toList(),
-                  TransferDestination(
-                    TransferDestinationType.character,
-                    character: character,
-                  ));
-              onClose();
-            },
-          )),
-          SizedBox(width: 4),
-          Expanded(
-              child: ElevatedButton(
-            style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-            child: Text("Select all".translate(context).toUpperCase()),
-            onPressed: () {
-              context.read<SelectionBloc>().selectItems(items.values.toList());
-              onClose();
-            },
-          )),
-        ],
-      ),
-    ]));
+        SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: _bucketsOrder
+                .map((hash) {
+                  final item = items[hash];
+                  if (item == null) return null;
+                  return Container(
+                    height: 64,
+                    width: 64,
+                    margin: EdgeInsets.only(right: 2),
+                    child: LowDensityInventoryItem(item),
+                  );
+                })
+                .whereType<Widget>()
+                .toList(),
+          ),
+        ),
+        SizedBox(height: 8),
+        ElevatedButton(
+          style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+          child: Text("Select all".translate(context).toUpperCase()),
+          onPressed: () {
+            context.read<SelectionBloc>().selectItems(items.values.toList());
+            onClose();
+          },
+        ),
+      ]),
+    );
   }
 }

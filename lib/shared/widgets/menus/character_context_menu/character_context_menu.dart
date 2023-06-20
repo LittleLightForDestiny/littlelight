@@ -3,6 +3,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/shared/blocs/context_menu_options/context_menu_options.bloc.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
+import 'package:little_light/shared/widgets/containers/menu_box.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/create_loadout.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/grind_optimizer.widget.dart';
@@ -44,9 +46,9 @@ class CharacterContextMenu extends BaseOverlayWidget {
         Positioned(
             bottom: sourceBottom + kToolbarHeight + viewPadding.bottom,
             left: 0,
-            top: viewPadding.top,
+            top: 0,
             right: sourceRight,
-            child: Container(padding: const EdgeInsets.all(8), child: buildMenuItems(context))),
+            child: buildMenuItems(context)),
         Positioned(
           left: sourceLeft,
           height: kToolbarHeight,
@@ -67,6 +69,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
     return Container(
       alignment: Alignment.bottomRight,
       child: SingleChildScrollView(
+        padding: EdgeInsets.all(8) + EdgeInsets.only(top: context.mediaQuery.viewPadding.top),
         reverse: true,
         child: Stack(
           children: [
@@ -139,10 +142,11 @@ class CharacterContextMenu extends BaseOverlayWidget {
   Widget? buildGrindOptimizer(BuildContext context) {
     final character = this.character;
     if (character == null) return null;
-    return CharacterGrindOptimizerWidget(
+    return MenuBox(
+        child: CharacterGrindOptimizerWidget(
       character: character,
       onClose: onClose,
-    );
+    ));
   }
 
   Widget? buildMaxPower(BuildContext context) {
