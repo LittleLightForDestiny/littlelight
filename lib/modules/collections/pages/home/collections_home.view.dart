@@ -2,11 +2,11 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/modules/collections/blocs/base_collections.bloc.dart';
-import 'package:little_light/shared/views/base_presentation_node.view.dart';
+import 'package:little_light/modules/collections/pages/base/base_collections.view.dart';
 import 'package:little_light/shared/widgets/presentation_nodes/presentation_node_item.widget.dart';
 import 'package:little_light/shared/widgets/presentation_nodes/presentation_node_item_list.widget.dart';
 
-class CollectionsHomeView extends BasePresentationNodeView {
+class CollectionsHomeView extends BaseCollectionsView {
   final CollectionsBloc bloc;
   final CollectionsBloc state;
   const CollectionsHomeView(this.bloc, this.state, {Key? key}) : super(key: key);
@@ -49,5 +49,16 @@ class CollectionsHomeView extends BasePresentationNodeView {
         ),
       ),
     );
+  }
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () => {},
+      ),
+      ...(super.buildActions(context) ?? []),
+    ];
   }
 }

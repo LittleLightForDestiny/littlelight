@@ -39,7 +39,7 @@ abstract class CollectionsBloc extends ChangeNotifier {
   List<DestinyPresentationNodeDefinition>? get tabNodes;
 
   Map<int, PresentationNodeProgressData?>? _presentationNodesCompletionData;
-  List<DestinyPresentationNodeCollectibleChildEntry>? sortedCollectibles;
+  List<DestinyPresentationNodeCollectibleChildEntry>? overrideCollectibles;
 
   CollectionsBloc(BuildContext this.context)
       : this.profileBloc = context.read<ProfileBloc>(),
@@ -53,6 +53,7 @@ abstract class CollectionsBloc extends ChangeNotifier {
   @protected
   init() {
     profileBloc.addListener(_update);
+    userSettings.addListener(_loadDefinitions);
     _update();
     _loadDefinitions();
   }
@@ -60,6 +61,7 @@ abstract class CollectionsBloc extends ChangeNotifier {
   @override
   void dispose() {
     profileBloc.removeListener(_update);
+    userSettings.removeListener(_loadDefinitions);
     super.dispose();
   }
 
@@ -95,6 +97,14 @@ abstract class CollectionsBloc extends ChangeNotifier {
   }
 
   Future<void> _prepareChildCollectibles(List<DestinyPresentationNodeCollectibleChildEntry>? collectibles) async {
+    overrideCollectibles = null;
+    if (userSettings.hideUnavailableCollectibles) {
+      collectibles = collectibles?.where((e) {
+        final profileCollectible = context.read<ProfileBloc>().getProfileCollectible(e.collectibleHash);
+        return !(profileCollectible?.state?.contains(DestinyCollectibleState.Invisible) ?? false);
+      }).toList();
+      overrideCollectibles = collectibles;
+    }
     final collectibleHashes = collectibles?.map((e) => e.collectibleHash).whereType<int>() ?? <int>[];
     final collectibleDefinitions = await manifest.getDefinitions<DestinyCollectibleDefinition>(collectibleHashes);
     final itemHashes = collectibleDefinitions.values.map((c) => c.itemHash);
@@ -112,13 +122,14 @@ abstract class CollectionsBloc extends ChangeNotifier {
     _genericItems = genericItems;
     _inventoryItems = inventoryItems;
 
+    if (userSettings.sortCollectiblesByNewest == false) return;
     if (collectibles == null) return;
     final items = itemDefinitions.values.whereType<DestinyInventoryItemDefinition>().toList();
     Set<DestinyItemType?> itemTypes = items.map((e) => e.itemType).toSet();
     if (itemTypes.length != 1) return;
     if (items[0].itemSubType == DestinyItemSubType.Ornament ||
         itemTypes.first == DestinyItemType.Weapon && items[0].inventory?.tierType == TierType.Exotic) {
-      sortedCollectibles = collectibles.reversed.toList();
+      overrideCollectibles = collectibles.reversed.toList();
     } else if (itemTypes.first == DestinyItemType.Weapon ||
         itemTypes.first == DestinyItemType.Emblem ||
         items[0].itemSubType == DestinyItemSubType.Shader) {
@@ -157,7 +168,7 @@ abstract class CollectionsBloc extends ChangeNotifier {
         buckets[key] = [collectible];
     }
     final keys = buckets.keys.toList()..sort();
-    sortedCollectibles =
+    overrideCollectibles =
         <DestinyPresentationNodeCollectibleChildEntry>[for (final key in keys) ...buckets[key] ?? []] + leftovers;
   }
 

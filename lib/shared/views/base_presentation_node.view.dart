@@ -32,6 +32,7 @@ abstract class BasePresentationNodeView extends StatelessWidget {
             leading: buildAppBarLeading(context),
             title: Text(getTitle(context)),
             bottom: buildAppBarBottom(context),
+            actions: buildActions(context),
           ),
           body: Column(
             children: [
@@ -51,6 +52,7 @@ abstract class BasePresentationNodeView extends StatelessWidget {
               buildSelection(context)
             ],
           ),
+          endDrawer: buildEndDrawer(context),
         ),
       ),
     );
@@ -71,6 +73,9 @@ abstract class BasePresentationNodeView extends StatelessWidget {
     if (breadcrumb != null) return breadcrumb;
     return null;
   }
+
+  Widget? buildEndDrawer(BuildContext context) => null;
+  List<Widget>? buildActions(BuildContext context) => null;
 
   List<int>? get breadcrumbHashes;
 
