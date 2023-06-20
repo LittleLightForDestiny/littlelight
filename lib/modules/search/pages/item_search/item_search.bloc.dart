@@ -1,28 +1,32 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/selection/selection.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
-import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
+import 'package:little_light/modules/search/blocs/filter_options/item_bucket_type_filter_options.dart';
 import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
 import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';
+import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/shared/models/transfer_destination.dart';
+import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 import 'package:provider/provider.dart';
 
 class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
   final ProfileBloc _profileBloc;
-  final InventoryBloc _inventoryBloc;
   final SearchFilterBloc _filtersBloc;
   final SearchSorterBloc _sortersBloc;
-
-  final int? bucketHash;
-  final String? characterId;
+  final UserSettingsBloc _userSettingsBloc;
+  final SelectionBloc _selectionBloc;
+  Set<EquipmentBucketGroup> bucketGroups;
 
   List<DestinyItemInfo>? _unfilteredItems;
   List<DestinyItemInfo>? _unorderedItems;
   List<DestinyItemInfo>? _items;
+
   List<DestinyItemInfo>? get items => _items;
 
   final BuildContext _context;
@@ -30,31 +34,27 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
   ItemSearchBloc._(
     this._context,
     this._profileBloc,
-    this._inventoryBloc,
     this._filtersBloc,
-    this._sortersBloc, {
-    required this.bucketHash,
-    required this.characterId,
-  }) {
+    this._sortersBloc,
+    this._userSettingsBloc,
+    this._selectionBloc,
+    Set<EquipmentBucketGroup> this.bucketGroups,
+  ) {
     _init();
   }
 
-  factory ItemSearchBloc(
-    BuildContext context, {
-    int? bucketHash,
-    String? characterId,
-  }) =>
-      ItemSearchBloc._(
+  factory ItemSearchBloc(BuildContext context, {Set<EquipmentBucketGroup> bucketGroups = const {}}) => ItemSearchBloc._(
         context,
         context.read<ProfileBloc>(),
-        context.read<InventoryBloc>(),
         context.read<SearchFilterBloc>(),
         context.read<SearchSorterBloc>(),
-        bucketHash: bucketHash,
-        characterId: characterId,
+        context.read<UserSettingsBloc>(),
+        context.read<SelectionBloc>(),
+        bucketGroups,
       );
 
   void _init() async {
+    _filtersBloc.getFilter<ItemBucketTypeFilterOptions>()?.value = this.bucketGroups;
     _update();
     _profileBloc.addListener(_update);
     _sortersBloc.addListener(_sort);
@@ -73,19 +73,13 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
     final allItems = _profileBloc.allInstancedItems;
     final hashes = allItems.map((e) => e.itemHash).whereType<int>().toSet();
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
-    final character = _profileBloc.getCharacterById(characterId);
-    final characterClass = character?.character.classType;
-    final acceptedClasses = [characterClass, DestinyClass.Unknown].whereType<DestinyClass>();
-
     bool hasArmor = false;
     bool hasWeapon = false;
     final unfiltered = allItems.where((item) {
       final def = defs[item.itemHash];
       if (def == null) return false;
-      if (item.bucketHash == bucketHash && item.characterId == characterId) return false;
-      if (def.inventory?.bucketTypeHash != bucketHash) return false;
-      if (!acceptedClasses.contains(def.classType)) return false;
       if (def.itemType == DestinyItemType.Armor) hasArmor = true;
+      if (def.itemType == DestinyItemType.Weapon) hasWeapon = true;
       _filtersBloc.addValue(item);
       return true;
     });
@@ -117,11 +111,37 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
     notifyListeners();
   }
 
-  void onItemTap(InventoryItemInfo item) async {
-    final character = _profileBloc.getCharacterById(this.characterId);
-    _inventoryBloc.transfer(item, TransferDestination(TransferDestinationType.character, character: character));
-    Navigator.of(_context).pop();
+  void onItemTap(InventoryItemInfo item) {
+    final hash = item.itemHash;
+    final instanceId = item.instanceId;
+    final stackIndex = item.stackIndex;
+
+    if (hash == null) return;
+
+    if (_selectionBloc.hasSelection || _userSettingsBloc.tapToSelect) {
+      return _selectionBloc.toggleSelected(
+        hash,
+        instanceId: instanceId,
+        stackIndex: stackIndex,
+      );
+    }
+
+    Navigator.of(_context).push(InventoryItemDetailsPageRoute(item));
   }
 
-  void onItemHold(DestinyItemInfo item) {}
+  void onItemHold(DestinyItemInfo item) {
+    final hash = item.itemHash;
+    final instanceId = item.instanceId;
+    final stackIndex = item.stackIndex;
+    if (hash == null) return;
+    if (_userSettingsBloc.tapToSelect) {
+      Navigator.of(_context).push(ItemDetailsPageRoute.itemInfo(item: item));
+      return;
+    }
+    return _selectionBloc.toggleSelected(
+      hash,
+      instanceId: instanceId,
+      stackIndex: stackIndex,
+    );
+  }
 }

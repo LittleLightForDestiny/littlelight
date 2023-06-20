@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/selection/selection.bloc.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/search/pages/item_search/item_search.bloc.dart';
+import 'package:little_light/modules/search/widgets/item_bucket_type_bottom_bar_filter.widget.dart';
 import 'package:little_light/modules/search/widgets/item_search_drawer.widget.dart';
 import 'package:little_light/modules/search/widgets/text_search_filter.widget.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
@@ -10,7 +14,9 @@ import 'package:little_light/shared/widgets/multisection_scrollview/sliver_secti
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
+import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
+import 'package:provider/provider.dart';
 
 class ItemSearchView extends StatelessWidget {
   final ItemSearchBloc bloc;
@@ -45,22 +51,22 @@ class ItemSearchView extends StatelessWidget {
 
   Widget buildBody(BuildContext context) {
     final viewPaddingBottom = MediaQuery.of(context).viewPadding.bottom;
-    return Stack(
-      children: [
-        buildResultList(context),
-        Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: Column(
-              children: [
-                Container(padding: EdgeInsets.all(8), alignment: Alignment.bottomRight, child: NotificationsWidget()),
-                if (viewPaddingBottom <= 0) BusyIndicatorLineWidget(),
-                if (viewPaddingBottom > 0) BusyIndicatorBottomGradientWidget()
-              ],
-            )),
-      ],
-    );
+    return Column(children: [
+      Expanded(
+        child: Stack(
+          children: [
+            buildResultList(context),
+            Positioned(
+              child: buildNotifications(context),
+              bottom: 0,
+              left: 0,
+              right: 0,
+            ),
+          ],
+        ),
+      ),
+      buildFooter(context),
+    ]);
   }
 
   Widget buildResultList(BuildContext context) {
@@ -68,7 +74,6 @@ class ItemSearchView extends StatelessWidget {
     if (items == null) return LoadingAnimWidget();
     final mq = MediaQuery.of(context);
     final screenWidth = mq.size.width;
-    final viewPadding = mq.viewPadding;
     return MultiSectionScrollView(
       [
         FixedHeightScrollSection(
@@ -86,10 +91,37 @@ class ItemSearchView extends StatelessWidget {
           ),
         ),
       ],
-      padding: EdgeInsets.all(4) + EdgeInsets.only(bottom: viewPadding.bottom),
+      padding: EdgeInsets.all(4),
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
     );
+  }
+
+  Widget buildNotifications(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        Container(
+          padding: EdgeInsets.all(8),
+          child: NotificationsWidget(),
+        ),
+        BusyIndicatorLineWidget(),
+      ],
+    );
+  }
+
+  Widget buildFooter(BuildContext context) {
+    final hasSelection = context.watch<SelectionBloc>().hasSelection;
+    final bottomPadding = context.mediaQuery.viewPadding.bottom;
+    if (!hasSelection) return ItemBucketTypeBottomBarFilterWidget();
+    return Column(children: [
+      SelectedItemsWidget(),
+      if (bottomPadding > 0)
+        Container(
+          color: context.theme.surfaceLayers.layer1,
+          child: BusyIndicatorBottomGradientWidget(),
+        ),
+    ]);
   }
 
   Widget buildEndDrawer(BuildContext context) => ItemSearchDrawerWidget();

@@ -4,11 +4,12 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/search/blocs/filter_options/item_bucket_type_filter_options.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 
 import 'base_item_filter.dart';
 
 class ItemBucketTypeFilter extends BaseItemFilter<ItemBucketTypeFilterOptions> with ManifestConsumer {
-  ItemBucketTypeFilter() : super(ItemBucketTypeFilterOptions(<ItemBucketType>{}));
+  ItemBucketTypeFilter() : super(ItemBucketTypeFilterOptions(<EquipmentBucketGroup>{}));
 
   @override
   Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {
@@ -23,8 +24,7 @@ class ItemBucketTypeFilter extends BaseItemFilter<ItemBucketTypeFilterOptions> w
     final hash = item.itemHash;
     final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
     final bucketHash = def?.inventory?.bucketTypeHash;
-    final value = ItemBucketType.values.firstWhereOrNull((element) => element.availableBuckets.contains(bucketHash)) ??
-        ItemBucketType.Other;
+    final value = EquipmentBucketGroup.values.firstWhereOrNull((element) => element.bucketHashes.contains(bucketHash));
     return data.value.contains(value);
   }
 
@@ -33,8 +33,9 @@ class ItemBucketTypeFilter extends BaseItemFilter<ItemBucketTypeFilterOptions> w
     final hash = item.itemHash;
     final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
     final bucketHash = def?.inventory?.bucketTypeHash;
-    final value = ItemBucketType.values.firstWhereOrNull((element) => element.availableBuckets.contains(bucketHash)) ??
-        ItemBucketType.Other;
-    data.availableValues.add(value);
+    final value = EquipmentBucketGroup.values.firstWhereOrNull((element) => element.bucketHashes.contains(bucketHash));
+    if (value != null) {
+      data.availableValues.add(value);
+    }
   }
 }

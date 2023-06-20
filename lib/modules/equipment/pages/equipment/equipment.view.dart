@@ -5,6 +5,7 @@ import 'package:little_light/modules/equipment/widgets/equipment_character_tab_c
 import 'package:little_light/modules/equipment/widgets/equipment_type_tab_menu.widget.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_vault_tab_content.widget.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/character_context_menu.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
@@ -19,41 +20,6 @@ import 'package:little_light/shared/widgets/tabs/menus/character_header_tab_menu
 import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_indicator.dart';
 
 import 'equipment.bloc.dart';
-
-enum InventoryTab { Weapons, Armor, Inventory }
-
-extension on InventoryTab {
-  List<int> get bucketHashes {
-    switch (this) {
-      case InventoryTab.Weapons:
-        return [
-          InventoryBucket.subclass,
-          InventoryBucket.kineticWeapons,
-          InventoryBucket.energyWeapons,
-          InventoryBucket.powerWeapons,
-        ];
-      case InventoryTab.Armor:
-        return [
-          InventoryBucket.helmet,
-          InventoryBucket.gauntlets,
-          InventoryBucket.chestArmor,
-          InventoryBucket.legArmor,
-          InventoryBucket.classArmor,
-        ];
-      case InventoryTab.Inventory:
-        return [
-          InventoryBucket.lostItems,
-          InventoryBucket.engrams,
-          InventoryBucket.ghost,
-          InventoryBucket.vehicle,
-          InventoryBucket.ships,
-          InventoryBucket.emblems,
-          InventoryBucket.consumables,
-          InventoryBucket.modifications,
-        ];
-    }
-  }
-}
 
 class EquipmentView extends StatelessWidget {
   final EquipmentBloc bloc;
@@ -74,7 +40,7 @@ class EquipmentView extends StatelessWidget {
     return PageStorage(
       bucket: state.pageStorageBucket,
       child: CustomTabControllerBuilder(
-        InventoryTab.values.length,
+        EquipmentBucketGroup.values.length,
         builder: (context, typeTabController) => CustomTabControllerBuilder(
           characterCount,
           builder: (context, characterTabController) => Scaffold(
@@ -126,7 +92,11 @@ class EquipmentView extends StatelessWidget {
                           children: [
                             EquipmentTypeTabMenuWidget(typeTabController),
                             Expanded(
-                              child: buildCharacterContextMenuButton(context, characterTabController),
+                              child: buildCharacterContextMenuButton(
+                                context,
+                                characterTabController,
+                                typeTabController,
+                              ),
                             ),
                           ],
                         ),
@@ -198,7 +168,7 @@ class EquipmentView extends StatelessWidget {
         return CustomTabPassiveView(
             controller: typeTabController,
             pageBuilder: (context, index) {
-              final tab = InventoryTab.values[index];
+              final tab = EquipmentBucketGroup.values[index];
               if (character != null) {
                 return buildCharacterTabContent(context, tab, character);
               }
@@ -208,7 +178,7 @@ class EquipmentView extends StatelessWidget {
     );
   }
 
-  Widget buildCharacterTabContent(BuildContext context, InventoryTab tab, DestinyCharacterInfo character) {
+  Widget buildCharacterTabContent(BuildContext context, EquipmentBucketGroup tab, DestinyCharacterInfo character) {
     final bucketHashes = tab.bucketHashes;
     final currencies = state.relevantCurrencies;
     final buckets = bucketHashes
@@ -226,7 +196,7 @@ class EquipmentView extends StatelessWidget {
     );
   }
 
-  Widget buildVaultTabContent(BuildContext context, InventoryTab tab) {
+  Widget buildVaultTabContent(BuildContext context, EquipmentBucketGroup tab) {
     final bucketHashes = tab.bucketHashes;
     final buckets = bucketHashes
         .map((h) {
@@ -255,7 +225,11 @@ class EquipmentView extends StatelessWidget {
     );
   }
 
-  Widget buildCharacterContextMenuButton(BuildContext context, CustomTabController characterTabController) {
+  Widget buildCharacterContextMenuButton(
+    BuildContext context,
+    CustomTabController characterTabController,
+    CustomTabController typeTabController,
+  ) {
     final characters = state.characters;
     final viewPadding = MediaQuery.of(context).viewPadding;
     if (characters == null) return Container();
@@ -285,6 +259,11 @@ class EquipmentView extends StatelessWidget {
                             characterTabController,
                             sourceRenderBox: rect,
                             onClose: onClose,
+                            onSearchTap: () {
+                              final currentBucketGroup = EquipmentBucketGroup.values[typeTabController.index];
+                              final currentClassType = characters[characterTabController.index]?.character.classType;
+                              bloc.openSearch(currentBucketGroup, currentClassType);
+                            },
                           )));
                 }),
               ))

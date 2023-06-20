@@ -17,10 +17,15 @@ import 'package:provider/provider.dart';
 class CharacterContextMenu extends BaseOverlayWidget {
   final List<DestinyCharacterInfo?> characters;
   final CustomTabController charactersTabController;
+  final VoidCallback? onSearchTap;
 
-  const CharacterContextMenu(this.characters, this.charactersTabController,
-      {required RenderBox sourceRenderBox, required VoidCallback onClose})
-      : super(sourceRenderBox: sourceRenderBox, onClose: onClose);
+  const CharacterContextMenu(
+    this.characters,
+    this.charactersTabController, {
+    required RenderBox sourceRenderBox,
+    required VoidCallback onClose,
+    this.onSearchTap,
+  }) : super(sourceRenderBox: sourceRenderBox, onClose: onClose);
 
   DestinyCharacterInfo? get character => characters[charactersTabController.index];
 
@@ -74,12 +79,6 @@ class CharacterContextMenu extends BaseOverlayWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  // buildAchievableAverage(context),
-                  // buildCurrentAverage(context),
-                  // const Text('non exotic maxPower'),
-                  // buildMaxPowerNonExoticLoadoutItems(context),
-                  // const Text('maxPower'),
-                  // buildMaxPowerLoadoutItems(context),
                   buildCreateLoadout(context),
                   buildMaxPower(context),
                   buildGrindOptimizer(context),
@@ -118,7 +117,10 @@ class CharacterContextMenu extends BaseOverlayWidget {
               ),
               Text("Search".translate(context).toUpperCase()),
             ]),
-            onPressed: () {},
+            onPressed: () {
+              this.onClose();
+              this.onSearchTap?.call();
+            },
           )
         ],
       ),

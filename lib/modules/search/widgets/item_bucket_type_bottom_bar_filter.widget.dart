@@ -4,6 +4,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/search/blocs/filter_options/item_bucket_type_filter_options.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/base_drawer_filter.widget.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/base_filter.widget.dart';
+import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
@@ -45,7 +46,7 @@ class ItemBucketTypeBottomBarFilterWidget extends BaseFilterWidget<ItemBucketTyp
 
   Widget buildButton(
     BuildContext context, {
-    required ItemBucketType type,
+    required EquipmentBucketGroup type,
     required bool selected,
     required VoidCallback onTap,
     required VoidCallback onHold,
@@ -80,19 +81,19 @@ class ItemBucketTypeBottomBarFilterWidget extends BaseFilterWidget<ItemBucketTyp
     ]);
   }
 
-  Widget buildIcon(BuildContext context, ItemBucketType type) {
+  Widget buildIcon(BuildContext context, EquipmentBucketGroup type) {
     switch (type) {
-      case ItemBucketType.Weapons:
+      case EquipmentBucketGroup.Weapons:
         return ManifestImageWidget<DestinyPresentationNodeDefinition>(
           _weaponIconPresentationNodeHash,
           color: context.theme.onSurfaceLayers,
         );
-      case ItemBucketType.Armor:
+      case EquipmentBucketGroup.Armor:
         return ManifestImageWidget<DestinyPresentationNodeDefinition>(
           _armorIconPresentationNodeHash,
           color: context.theme.onSurfaceLayers,
         );
-      case ItemBucketType.Other:
+      case EquipmentBucketGroup.Inventory:
         return ManifestImageWidget<DestinyPresentationNodeDefinition>(
           _otherIconPresentationNodeHash,
           color: context.theme.onSurfaceLayers,
