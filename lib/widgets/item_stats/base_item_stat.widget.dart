@@ -7,7 +7,7 @@ import 'package:bungie_api/models/interpolation_point.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/destiny_data.dart';
-import 'package:little_light/utils/inventory_utils.dart';
+// import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 class BaseItemStatWidget extends StatelessWidget {
@@ -15,9 +15,7 @@ class BaseItemStatWidget extends StatelessWidget {
   final StatValues modValues;
   final DestinyStatDisplayDefinition scaled;
 
-  const BaseItemStatWidget(
-      {this.statHash, this.modValues, this.scaled, Key key})
-      : super(key: key);
+  const BaseItemStatWidget({this.statHash, this.modValues, this.scaled, Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +30,7 @@ class BaseItemStatWidget extends StatelessWidget {
             uppercase: true,
             maxLines: 1,
             softWrap: false,
-            style: TextStyle(
-                color: getNameColor(context),
-                fontWeight: FontWeight.bold,
-                fontSize: 12),
+            style: TextStyle(color: getNameColor(context), fontWeight: FontWeight.bold, fontSize: 12),
             overflow: TextOverflow.fade,
           )),
           Expanded(
@@ -50,21 +45,15 @@ class BaseItemStatWidget extends StatelessWidget {
         ]));
   }
 
-  Color getPositiveColor(BuildContext context) =>
-      LittleLightTheme.of(context).successLayers;
-  Color getNegativeColor(BuildContext context) =>
-      LittleLightTheme.of(context).errorLayers;
-  Color getMasterworkColor(BuildContext context) =>
-      LittleLightTheme.of(context).achievementLayers;
-  Color getHiddenStatColor(BuildContext context) =>
-      LittleLightTheme.of(context).upgradeLayers;
-  Color getNeutralColor(BuildContext context) =>
-      LittleLightTheme.of(context).onSurfaceLayers;
+  Color getPositiveColor(BuildContext context) => LittleLightTheme.of(context).successLayers;
+  Color getNegativeColor(BuildContext context) => LittleLightTheme.of(context).errorLayers;
+  Color getMasterworkColor(BuildContext context) => LittleLightTheme.of(context).achievementLayers;
+  Color getHiddenStatColor(BuildContext context) => LittleLightTheme.of(context).upgradeLayers;
+  Color getNeutralColor(BuildContext context) => LittleLightTheme.of(context).onSurfaceLayers;
 
   int get maxBarSize {
     if (scaled?.maximumValue != null) {
-      return max(
-          scaled?.maximumValue, baseBarSize + modBarSize + masterworkBarSize);
+      return max(scaled?.maximumValue, baseBarSize + modBarSize + masterworkBarSize);
     }
     return max(100, baseBarSize + modBarSize + masterworkBarSize);
   }
@@ -92,22 +81,22 @@ class BaseItemStatWidget extends StatelessWidget {
 
   int get modBarSize {
     if (scaled != null) {
-      return (InventoryUtils.interpolateStat(
-                  selected, scaled.displayInterpolation) -
-              InventoryUtils.interpolateStat(
-                  equipped, scaled.displayInterpolation))
-          .abs();
+      // return (InventoryUtils.interpolateStat(
+      //             selected, scaled.displayInterpolation) -
+      //         InventoryUtils.interpolateStat(
+      //             equipped, scaled.displayInterpolation))
+      //     .abs();
     }
     return (selected - equipped).abs();
   }
 
   int get masterworkBarSize {
     if (scaled != null) {
-      return (InventoryUtils.interpolateStat(
-                  selected + masterwork, scaled.displayInterpolation) -
-              InventoryUtils.interpolateStat(
-                  selected, scaled.displayInterpolation))
-          .abs();
+      // return (InventoryUtils.interpolateStat(
+      //             selected + masterwork, scaled.displayInterpolation) -
+      //         InventoryUtils.interpolateStat(
+      //             selected, scaled.displayInterpolation))
+      //     .abs();
     }
     return (masterwork).abs();
   }
@@ -158,7 +147,7 @@ class BaseItemStatWidget extends StatelessWidget {
   }
 
   interpolate(int i, List<InterpolationPoint> displayInterpolation) {
-    return InventoryUtils.interpolateStat(i, displayInterpolation);
+    // return InventoryUtils.interpolateStat(i, displayInterpolation);
   }
 }
 
@@ -167,9 +156,5 @@ class StatValues {
   int equipped;
   int selected;
   int masterwork;
-  StatValues(
-      {this.equipped = 0,
-      this.selected = 0,
-      this.masterwork = 0,
-      this.precalculated = 0});
+  StatValues({this.equipped = 0, this.selected = 0, this.masterwork = 0, this.precalculated = 0});
 }

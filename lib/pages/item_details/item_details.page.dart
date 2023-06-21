@@ -18,7 +18,6 @@ import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
-import 'package:little_light/utils/inventory_utils.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
@@ -177,7 +176,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
       return i.item.itemInstanceId != null && i.item.itemInstanceId != item?.itemInstanceId;
     }).toList();
 
-    duplicates = await InventoryUtils.sortDestinyItems(duplicates);
+    // duplicates = await InventoryUtils.sortDestinyItems(duplicates);
   }
 
   Future loadStatGroupDefinition() async {

@@ -12,7 +12,7 @@ import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
+// import 'package:little_light/widgets/item_list/items/weapon/weapon_inventory_item.widget.dart';
 
 class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
   RewardsInfoWidget(
@@ -47,15 +47,15 @@ class RewardsInfoWidget extends BaseDestinyStatelessItemWidget {
         return Container(
             margin: const EdgeInsets.all(4),
             child: Stack(children: [
-              SizedBox(
-                  height: 96,
-                  child: WeaponInventoryItemWidget(
-                    null,
-                    def,
-                    null,
-                    characterId: null,
-                    uniqueId: null,
-                  )),
+              // SizedBox(
+              //     height: 96,
+              //     child: WeaponInventoryItemWidget(
+              //       null,
+              //       def,
+              //       null,
+              //       characterId: null,
+              //       uniqueId: null,
+              //     )),
               Positioned.fill(
                   child: Material(
                 color: Colors.transparent,
