@@ -1,11 +1,8 @@
 import 'package:bungie_api/destiny2.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/modules/item_details/widgets/details_plug_info.widget.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
-import 'package:little_light/shared/widgets/sockets/paginated_plug_grid_view.dart';
 import 'package:little_light/shared/widgets/sockets/perk_icon.widget.dart';
 import 'package:little_light/shared/widgets/sockets/super_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';

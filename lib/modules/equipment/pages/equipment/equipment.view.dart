@@ -4,7 +4,6 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_character_tab_content.widget.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_type_tab_menu.widget.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_vault_tab_content.widget.dart';
-import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/character_context_menu.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';

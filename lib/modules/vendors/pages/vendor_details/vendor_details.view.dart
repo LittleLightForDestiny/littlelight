@@ -15,7 +15,6 @@ import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
-import 'package:provider/provider.dart';
 
 class VendorDetailsView extends StatelessWidget {
   final VendorDetailsBloc bloc;

@@ -5,7 +5,6 @@ import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/shared/widgets/character/grind_optimizer.bottomsheet.dart';
-import 'package:little_light/shared/widgets/menus/character_context_menu/grind_optimizer.widget.dart';
 import 'package:little_light/shared/widgets/stats/small_armor_stats.widget.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';

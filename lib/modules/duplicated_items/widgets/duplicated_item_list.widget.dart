@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/definition_item_info.dart';
 import 'package:little_light/modules/duplicated_items/pages/duplicated_items/duplicated_items.bloc.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/shared/widgets/inventory_item/duplicated_item.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';

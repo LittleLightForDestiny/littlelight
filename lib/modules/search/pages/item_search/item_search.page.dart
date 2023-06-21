@@ -7,7 +7,6 @@ import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
 import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';
 import 'package:little_light/modules/search/pages/item_search/item_search.bloc.dart';
 import 'package:little_light/modules/search/pages/item_search/item_search.view.dart';
-import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.bloc.dart';
 import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
 import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 import 'package:provider/provider.dart';

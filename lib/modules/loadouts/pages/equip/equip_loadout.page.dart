@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
 import 'equip_loadout.bloc.dart';
 import 'equip_loadout.view.dart';
 
