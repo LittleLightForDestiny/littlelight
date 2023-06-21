@@ -1,19 +1,13 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_info.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
-import 'package:provider/provider.dart';
 
 class LoadoutItemOptionsSocketControllerBloc extends SocketControllerBloc<LoadoutItemInfo> {
-  ProfileBloc _profileBloc;
-
   @protected
   LoadoutItemInfo? item;
 
-  LoadoutItemOptionsSocketControllerBloc(BuildContext context)
-      : _profileBloc = context.read<ProfileBloc>(),
-        super(context);
+  LoadoutItemOptionsSocketControllerBloc(BuildContext context) : super(context);
 
   @override
   Future<void> init(LoadoutItemInfo item) async {

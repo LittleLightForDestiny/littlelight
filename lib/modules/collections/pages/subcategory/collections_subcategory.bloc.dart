@@ -2,9 +2,6 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/collections/blocs/base_collections.bloc.dart';
 import 'package:little_light/modules/collections/pages/subcategory/collections_subcategory.page_route.dart';
-import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
-
-const _page = LittleLightPersistentPage.Collections;
 
 class CollectionsSubcategoryBloc extends CollectionsBloc {
   @override

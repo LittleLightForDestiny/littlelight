@@ -50,7 +50,6 @@ class ItemSearchView extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context) {
-    final viewPaddingBottom = MediaQuery.of(context).viewPadding.bottom;
     return Column(children: [
       Expanded(
         child: Stack(
