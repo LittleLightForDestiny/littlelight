@@ -91,14 +91,14 @@ class ItemSocketController extends ChangeNotifier
   }
 
   factory ItemSocketController.fromItem(ItemWithOwner item) {
-    final profile = getInjectedProfileService();
+    // final profile = getInjectedProfileService();
     final itemInstanceID = item.instanceId;
     final itemHash = item.itemHash;
     if (itemInstanceID == null || itemHash == null) {
       throw ("Can't initialize without itemInstanceID");
     }
-    final socketStates = profile.getItemSockets(itemInstanceID);
-    final reusablePlugs = profile.getItemReusablePlugs(itemInstanceID);
+    final socketStates = null; //profile.getItemSockets(itemInstanceID);
+    final reusablePlugs = null; //profile.getItemReusablePlugs(itemInstanceID);
     return ItemSocketController._(itemHash, item: item, socketStates: socketStates, reusablePlugs: reusablePlugs);
   }
 

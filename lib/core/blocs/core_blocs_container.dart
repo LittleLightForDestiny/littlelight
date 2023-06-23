@@ -1,6 +1,6 @@
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
-import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
 import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
+import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
 import 'package:little_light/core/blocs/vendors/vendors.bloc.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
@@ -19,7 +19,6 @@ import 'language/language.consumer.dart';
 import 'notifications/notifications.bloc.dart';
 import 'offline_mode/offline_mode.bloc.dart';
 import 'profile/profile.bloc.dart';
-import 'profile/profile.consumer.dart';
 import 'selection/selection.bloc.dart';
 import 'user_settings/user_settings.bloc.dart';
 
@@ -35,7 +34,7 @@ class CoreBlocsContainer extends MultiProvider {
                 create: (context) => getInjectedManifestService().initContext(context)),
             ChangeNotifierProvider<LanguageBloc>(create: (context) => getInjectedLanguageService()),
             ChangeNotifierProvider(create: (context) => getInjectedLittleLightDataService()),
-            ChangeNotifierProvider<ProfileBloc>(create: (context) => getInjectedProfileService()),
+            ChangeNotifierProvider<ProfileBloc>(create: (context) => ProfileBloc(context)),
             ChangeNotifierProvider<WishlistsService>(create: (context) => getInjectedWishlistsService()),
             ChangeNotifierProvider<NotificationsBloc>(create: (context) => NotificationsBloc()),
             ChangeNotifierProvider<InventoryBloc>(create: (context) => InventoryBloc(context)),
