@@ -7,19 +7,17 @@ import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
-import 'package:little_light/core/blocs/profile/profile.consumer.dart';
-import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/inventory/inventory.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
-import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
+// import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
 import 'package:little_light/widgets/item_details/item_cover/landscape_item_cover.widget.dart';
 import 'package:little_light/widgets/item_details/item_detail_loadouts.widget.dart';
 import 'package:little_light/widgets/item_details/item_level.widget.dart';
@@ -37,8 +35,7 @@ class ItemDetailsPage extends StatefulWidget {
   State<ItemDetailsPage> createState() => ItemDetailScreenState();
 }
 
-class ItemDetailScreenState extends State<ItemDetailsPage>
-    with AuthConsumer, ProfileConsumer, InventoryConsumer, ManifestConsumer {
+class ItemDetailScreenState extends State<ItemDetailsPage> with AuthConsumer, ManifestConsumer {
   ItemDetailsPageArgumentsBase get routeArgs {
     final args = ModalRoute.of(context).settings.arguments;
     if (args is ItemDetailsPageArgumentsBase) return args;
@@ -99,7 +96,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   DestinyItemComponent get item => null;
   String get characterId => itemInfo?.characterId;
 
-  DestinyItemInstanceComponent get instanceInfo => profile.getInstanceInfo(item?.itemInstanceId);
+  DestinyItemInstanceComponent get instanceInfo => null;
 
   @override
   initState() {
@@ -155,25 +152,25 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
   }
 
   findDuplicates() async {
-    List<ItemWithOwner> allItems = [];
-    Iterable<String> charIds = profile.characters.map((char) => char.characterId);
-    for (var charId in charIds) {
-      allItems.addAll(profile
-          .getCharacterEquipment(charId)
-          .where((i) => i.itemHash == definition.hash)
-          .map((item) => ItemWithOwner(item, charId)));
-      allItems.addAll(profile
-          .getCharacterInventory(charId)
-          .where((i) => i.itemHash == definition.hash)
-          .map((item) => ItemWithOwner(item, charId)));
-    }
-    allItems.addAll(profile
-        .getProfileInventory()
-        .where((i) => i.itemHash == definition.hash)
-        .map((item) => ItemWithOwner(item, null)));
-    duplicates = allItems.where((i) {
-      return i.item.itemInstanceId != null && i.item.itemInstanceId != item?.itemInstanceId;
-    }).toList();
+    // List<ItemWithOwner> allItems = [];
+    // Iterable<String> charIds = profile.characters.map((char) => char.characterId);
+    // for (var charId in charIds) {
+    //   allItems.addAll(profile
+    //       .getCharacterEquipment(charId)
+    //       .where((i) => i.itemHash == definition.hash)
+    //       .map((item) => ItemWithOwner(item, charId)));
+    //   allItems.addAll(profile
+    //       .getCharacterInventory(charId)
+    //       .where((i) => i.itemHash == definition.hash)
+    //       .map((item) => ItemWithOwner(item, charId)));
+    // }
+    // allItems.addAll(profile
+    //     .getProfileInventory()
+    //     .where((i) => i.itemHash == definition.hash)
+    //     .map((item) => ItemWithOwner(item, null)));
+    // duplicates = allItems.where((i) {
+    //   return i.item.itemInstanceId != null && i.item.itemInstanceId != item?.itemInstanceId;
+    // }).toList();
 
     // duplicates = await InventoryUtils.sortDestinyItems(duplicates);
   }
@@ -228,10 +225,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                   .toList()))
         ],
       ),
-      const InventoryNotificationWidget(
-        key: Key('inventory_notification_widget'),
-        barHeight: 0,
-      ),
     ]));
   }
 
@@ -275,10 +268,6 @@ class ItemDetailScreenState extends State<ItemDetailsPage>
                       : [LoadingAnimWidget()])
                   .toList()))
         ],
-      ),
-      const InventoryNotificationWidget(
-        key: Key('inventory_notification_widget'),
-        barHeight: 0,
       ),
     ]));
   }

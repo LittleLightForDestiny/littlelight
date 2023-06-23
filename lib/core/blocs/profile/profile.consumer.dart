@@ -7,7 +7,7 @@ import 'profile.bloc.dart';
 ProfileBloc getInjectedProfileService() => GetIt.I<ProfileBloc>();
 
 extension Service on ProfileConsumer {
-  ProfileBloc get profile => getInjectedProfileService();
+  // ProfileBloc get profile => getInjectedProfileService();
   ProfileBloc profileBloc(BuildContext context) => context.read<ProfileBloc>();
 }
 

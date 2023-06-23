@@ -3,6 +3,7 @@ import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
@@ -15,6 +16,7 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 const Duration _kExpand = Duration(milliseconds: 200);
@@ -163,7 +165,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   }
 
   Widget buildActivityInfo(BuildContext context) {
-    final lastCharacter = profile.characters?.first;
+    final lastCharacter = context.watch<ProfileBloc>().characters?.first;
     final lastCharacterID = lastCharacter?.characterId;
     if (lastCharacter == null || lastCharacterID == null) {
       return Container();
@@ -180,7 +182,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
         style: TextStyle(fontSize: 12, color: Colors.grey.shade100),
       );
     }
-    final activities = profile.getCharacterActivities(lastCharacterID);
+    final activities = context.watch<ProfileBloc>().getCharacterActivities(lastCharacterID);
     if (activities?.currentActivityHash == 82913930) {
       return ManifestText<DestinyPlaceDefinition>(2961497387,
           textExtractor: (def) => "${def.displayProperties?.description}",

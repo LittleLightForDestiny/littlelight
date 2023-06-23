@@ -3,6 +3,7 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/modules/settings/pages/settings/settings.bloc.dart';
+import 'package:little_light/modules/settings/widgets/item_order_parameter.widget.dart';
 import 'package:little_light/modules/settings/widgets/settings_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/switch_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/wishlist_file_item.dart';
@@ -92,18 +93,14 @@ class SettingsView extends StatelessWidget {
                 "Order characters by".translate(context).toUpperCase(),
                 buildCharacterOrdering(context),
               ),
-
-              Container(height: 32),
-              HeaderWidget(
-                  child: Text(
+              SettingsOptionWidget(
                 "Order items by".translate(context).toUpperCase(),
-              )),
-              // buildItemOrderList(context),
-              HeaderWidget(
-                  child: Text(
+                buildItemOrderList(context),
+              ),
+              SettingsOptionWidget(
                 "Order pursuits by".translate(context).toUpperCase(),
-              )),
-              // buildPursuitOrderList(context),
+                buildPursuitOrderList(context),
+              ),
               HeaderWidget(
                   child: Text(
                 "Priority Tags".translate(context).toUpperCase(),
@@ -112,11 +109,6 @@ class SettingsView extends StatelessWidget {
               Container(height: 32),
             ])));
   }
-
-  // Future<T> showWishlistsProcessing<T>(BuildContext context, Future<T> future) {
-  //   return Navigator.of(context)
-  //       .push(BusyDialogRoute(context, label: Text("Processing wishlists".translate(context)), awaitFuture: future));
-  // }
 
   Widget buildWishlistsList(BuildContext context) {
     final wishlists = _bloc.wishlists;
@@ -134,7 +126,7 @@ class SettingsView extends StatelessWidget {
                 .toList()));
   }
 
-  buildCharacterOrdering(BuildContext context) {
+  Widget buildCharacterOrdering(BuildContext context) {
     return Container(
         child: IntrinsicHeight(
             child: Row(
@@ -165,7 +157,7 @@ class SettingsView extends StatelessWidget {
     )));
   }
 
-  buildCharacterOrderItem(BuildContext context, String label, CharacterSortParameterType type) {
+  Widget buildCharacterOrderItem(BuildContext context, String label, CharacterSortParameterType type) {
     var selected = type == _state.characterOrderingType;
     return Expanded(
       child: Material(
@@ -183,62 +175,50 @@ class SettingsView extends StatelessWidget {
           ),
           onTap: () {
             _bloc.characterOrderingType = type;
-            // userSettings.characterOrdering = userSettings.characterOrdering;
-            // setState(() {});
           },
         ),
       ),
     );
   }
 
-  buildItemOrderList(BuildContext context) {
-    // return SizedBox(
-    //     height: (itemOrdering.length + 1) * 48.0,
-    //     child: ReorderableList(
-    //       itemCount: itemOrdering.length,
-    //       itemBuilder: (context, index) {
-    //         final item = itemOrdering[index];
-    //         return buildSortItem(context, item, index, onSave: () {
-    //           userSettings.itemOrdering = itemOrdering;
-    //         });
-    //       },
-    //       itemExtent: 48,
-    //       onReorder: (oldIndex, newIndex) {
-    //         final removed = itemOrdering.removeAt(oldIndex);
-    //         itemOrdering.insert(newIndex, removed);
-    //         userSettings.itemOrdering = itemOrdering;
-    //       },
-    //       shrinkWrap: true,
-    //       physics: const NeverScrollableScrollPhysics(),
-    //     ));
+  Widget buildItemOrderList(BuildContext context) {
+    final itemOrdering = _state.itemOrdering;
+    if (itemOrdering == null) return Container();
+    return ReorderableList(
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        final parameter = itemOrdering[index];
+        return ItemOrderParameterWidget(
+          parameter,
+          index,
+          key: Key("param $index ${parameter.type}"),
+          onChangeDirection: (direction) => _bloc.updateItemOrderingDirection(parameter, direction),
+          onToggle: (active) => _bloc.updateItemOrderingActive(parameter, active),
+        );
+      },
+      itemCount: itemOrdering.length,
+      onReorder: (o, n) => _bloc.reorderItemOrdering(o, n),
+    );
   }
 
-  Widget buildHandle(BuildContext context, int index) {
-    return ReorderableDragStartListener(
-        index: index,
-        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))));
-  }
-
-  buildPursuitOrderList(BuildContext context) {
-    // return SizedBox(
-    //     height: (pursuitOrdering.length + 1) * 48.0,
-    //     child: ReorderableList(
-    //       itemCount: pursuitOrdering.length,
-    //       itemExtent: 48,
-    //       onReorder: (oldIndex, newIndex) {
-    //         var removed = pursuitOrdering.removeAt(oldIndex);
-    //         pursuitOrdering.insert(newIndex, removed);
-    //         userSettings.pursuitOrdering = pursuitOrdering;
-    //       },
-    //       itemBuilder: (context, index) {
-    //         final item = pursuitOrdering[index];
-    //         return buildSortItem(context, item, index, onSave: () {
-    //           userSettings.pursuitOrdering = pursuitOrdering;
-    //         });
-    //       },
-    //       shrinkWrap: true,
-    //       physics: const NeverScrollableScrollPhysics(),
-    //     ));
+  Widget buildPursuitOrderList(BuildContext context) {
+    final pursuitOrdering = _state.pursuitOrdering;
+    if (pursuitOrdering == null) return Container();
+    return ReorderableList(
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        final parameter = pursuitOrdering[index];
+        return ItemOrderParameterWidget(
+          parameter,
+          index,
+          key: Key("param $index ${parameter.type}"),
+          onChangeDirection: (direction) => _bloc.updatePursuitOrderingDirection(parameter, direction),
+          onToggle: (active) => _bloc.updatePursuitOrderingActive(parameter, active),
+        );
+      },
+      itemCount: pursuitOrdering.length,
+      onReorder: (o, n) => _bloc.reorderPursuitOrdering(o, n),
+    );
   }
 
   Widget buildPriorityTags(BuildContext context) {
@@ -276,34 +256,6 @@ class SettingsView extends StatelessWidget {
     // setState(() {});
   }
 
-  // Widget buildSortItem(BuildContext context, ItemSortParameter parameter, int index, {@required Function onSave}) {
-  //   return Material(
-  //       key: Key("param_${parameter.type}"),
-  //       child: Container(
-  //           color: parameter.active
-  //               ? Theme.of(context).colorScheme.secondary
-  //               : Theme.of(context).colorScheme.secondaryContainer,
-  //           child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-  //             buildHandle(context, index),
-  //             Container(width: 8),
-  //             Expanded(child: buildSortLabel(parameter)),
-  //             buildDirectionButton(parameter, SorterDirection.Ascending, onSave: onSave),
-  //             Container(width: 4),
-  //             buildDirectionButton(parameter, SorterDirection.Descending, onSave: onSave),
-  //             Container(width: 8),
-  //             Container(
-  //                 padding: const EdgeInsets.all(8),
-  //                 child: Switch(
-  //                   onChanged: (value) {
-  //                     parameter.active = value;
-  //                     onSave();
-  //                     // setState(() {});
-  //                   },
-  //                   value: parameter.active,
-  //                 ))
-  //           ])));
-  // }
-
   // Widget buildDirectionButton(ItemSortParameter parameter, SorterDirection direction, {@required Function onSave}) {
   //   var selected = parameter.direction == direction;
   //   if (!parameter.active) return Container();
@@ -326,9 +278,5 @@ class SettingsView extends StatelessWidget {
   //           onSave();
   //         }),
   //   );
-  // }
-
-  // Widget buildSortLabel(ItemSortParameter parameter) {
-  //   // return Text(parameter.type.getName(context).toUpperCase());
   // }
 }

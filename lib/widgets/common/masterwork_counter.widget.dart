@@ -33,17 +33,17 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
 
   loadDefinitions() async {
     if (widget.item == null) return;
-    var plugObjectives = profile.getPlugObjectives(widget.item.itemInstanceId);
-    for (var objectives in plugObjectives.values) {
-      for (var objective in objectives) {
-        if (objective.visible) {
-          masterworkObjective = objective;
-          masterworkObjectiveDefinition =
-              await manifest.getDefinition<DestinyObjectiveDefinition>(
-                  objective.objectiveHash);
-        }
-      }
-    }
+    // var plugObjectives = profile.getPlugObjectives(widget.item.itemInstanceId);
+    // for (var objectives in plugObjectives.values) {
+    //   for (var objective in objectives) {
+    //     if (objective.visible) {
+    //       masterworkObjective = objective;
+    //       masterworkObjectiveDefinition =
+    //           await manifest.getDefinition<DestinyObjectiveDefinition>(
+    //               objective.objectiveHash);
+    //     }
+    //   }
+    // }
     if (mounted) {
       setState(() {});
     }
@@ -52,8 +52,7 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (masterworkObjective == null ||
-        masterworkObjectiveDefinition?.displayProperties?.icon == null) {
+    if (masterworkObjective == null || masterworkObjectiveDefinition?.displayProperties?.icon == null) {
       return Container();
     }
     return Container(
@@ -65,8 +64,7 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
               width: 26,
               height: 26,
               child: QueuedNetworkImage(
-                  imageUrl: BungieApiService.url(
-                      masterworkObjectiveDefinition.displayProperties.icon)),
+                  imageUrl: BungieApiService.url(masterworkObjectiveDefinition.displayProperties.icon)),
             ),
             Container(
               width: 4,
@@ -78,15 +76,11 @@ class MasterworkCounterWidgetState extends State<MasterworkCounterWidget>
                 Text(masterworkObjectiveDefinition.progressDescription,
                     softWrap: false,
                     overflow: TextOverflow.fade,
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSurface,
-                        fontSize: 11)),
+                    style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 11)),
                 Container(
                   width: 4,
                 ),
-                Text("${masterworkObjective.progress}",
-                    style:
-                        TextStyle(color: Colors.amber.shade200, fontSize: 15)),
+                Text("${masterworkObjective.progress}", style: TextStyle(color: Colors.amber.shade200, fontSize: 15)),
               ],
             ))
           ],

@@ -106,7 +106,7 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
 
   void _update() async {
     final equipmentState = _ProgressState();
-    final parameters = _userSettingsBloc.itemOrdering;
+    final parameters = _userSettingsBloc.pursuitOrdering;
     List<DestinyItemInfo> items = _profileBloc.allItems;
     final characters = _profileBloc.characters;
 

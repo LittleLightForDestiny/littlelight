@@ -8,9 +8,6 @@ import 'package:little_light/shared/widgets/sockets/super_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
 
-const _animationDuration = const Duration(milliseconds: 300);
-const _randomPerkIconHash = 29505215;
-
 class DetailsItemSupersWidget extends StatelessWidget {
   final DestinyItemSocketCategoryDefinition socketCategory;
   DetailsItemSupersWidget(this.socketCategory);

@@ -37,7 +37,7 @@ class MetricItemWidgetState extends State<MetricItemWidget> with AuthConsumer, P
   }
 
   DestinyMetricComponent get metric {
-    return profile.getMetric(definition?.hash);
+    // return profile.getMetric(definition?.hash);
   }
 
   @override

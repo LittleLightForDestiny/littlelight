@@ -38,13 +38,13 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
     super.initState();
     loadDefinitions();
     if (isLogged) {
-      profile.addListener(update);
+      // profile.addListener(update);
     }
   }
 
   @override
   void dispose() {
-    profile.removeListener(update);
+    // profile.removeListener(update);
     super.dispose();
   }
 
@@ -61,7 +61,7 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
   }
 
   DestinyRecordComponent get record {
-    return profile.getRecord(definition.hash, definition.scope);
+    // return profile.getRecord(definition.hash, definition.scope);
   }
 
   DestinyRecordState get recordState {
@@ -106,7 +106,7 @@ class RecordObjectivesWidgetState extends State<RecordObjectivesWidget>
             InkWell(
                 child: Container(padding: const EdgeInsets.all(8), child: const Icon(Icons.refresh)),
                 onTap: () {
-                  profile.refresh();
+                  // profile.refresh();
                 })
           ],
         ));

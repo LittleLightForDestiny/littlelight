@@ -19,8 +19,7 @@ class BaseMasterworkCounterWidget extends StatefulWidget {
   }
 }
 
-class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
-    extends State<T>
+class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget> extends State<T>
     with AutomaticKeepAliveClientMixin, ProfileConsumer, ManifestConsumer {
   DestinyObjectiveProgress? masterworkObjective;
   DestinyObjectiveDefinition? masterworkObjectiveDefinition;
@@ -34,19 +33,18 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
   loadDefinitions() async {
     final itemInstanceID = widget.item?.itemInstanceId;
     if (itemInstanceID == null) return;
-    final plugObjectives = profile.getPlugObjectives(itemInstanceID);
+    // final plugObjectives = profile.getPlugObjectives(itemInstanceID);
 
-    if (plugObjectives == null) return;
-    for (final objectives in plugObjectives.values) {
-      for (final objective in objectives) {
-        if (objective.visible ?? false) {
-          masterworkObjective = objective;
-          masterworkObjectiveDefinition =
-              await manifest.getDefinition<DestinyObjectiveDefinition>(
-                  objective.objectiveHash);
-        }
-      }
-    }
+    // if (plugObjectives == null) return;
+    // for (final objectives in plugObjectives.values) {
+    //   for (final objective in objectives) {
+    //     if (objective.visible ?? false) {
+    //       masterworkObjective = objective;
+    //       masterworkObjectiveDefinition =
+    //           await manifest.getDefinition<DestinyObjectiveDefinition>(objective.objectiveHash);
+    //     }
+    //   }
+    // }
     if (mounted) {
       setState(() {});
     }
@@ -55,8 +53,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    if (masterworkObjective == null ||
-        masterworkObjectiveDefinition?.displayProperties?.icon == null) {
+    if (masterworkObjective == null || masterworkObjectiveDefinition?.displayProperties?.icon == null) {
       return Container();
     }
     return Container(
@@ -90,8 +87,7 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
     return SizedBox(
       width: 26,
       height: 26,
-      child: QueuedNetworkImage.fromBungie(
-          masterworkObjectiveDefinition?.displayProperties?.icon),
+      child: QueuedNetworkImage.fromBungie(masterworkObjectiveDefinition?.displayProperties?.icon),
     );
   }
 
@@ -101,14 +97,12 @@ class BaseMasterworkCounterWidgetState<T extends BaseMasterworkCounterWidget>
     return Text(description,
         softWrap: false,
         overflow: TextOverflow.fade,
-        style: TextStyle(
-            color: Theme.of(context).colorScheme.onSurface, fontSize: 11));
+        style: TextStyle(color: Theme.of(context).colorScheme.onSurface, fontSize: 11));
   }
 
   Widget buildProgressValue(BuildContext context) {
     var formatter = NumberFormat.decimalPattern(context.currentLanguage);
     var formattedValue = formatter.format(masterworkObjective?.progress ?? 0);
-    return Text(formattedValue,
-        style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
+    return Text(formattedValue, style: TextStyle(color: Colors.amber.shade200, fontSize: 15));
   }
 }

@@ -4,7 +4,6 @@ import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
-import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
@@ -46,7 +45,6 @@ Future<void> setupServices() async {
   await setupLanguageService();
   await setupUserSettingsService();
   await setupManifest();
-  await setupProfileService();
   await setupLittleLightDataService();
   await setupWishlistsService();
   await setupBungieApiService();

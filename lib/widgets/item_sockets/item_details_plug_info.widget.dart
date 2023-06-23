@@ -161,8 +161,8 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
     if (requirementHash == null) {
       return Container();
     }
-    var inventory = profile.getProfileInventory();
-    var currencies = profile.getProfileCurrencies();
+    // var inventory = profile.getProfileInventory();
+    // var currencies = profile.getProfileCurrencies();
     final theme = LittleLightTheme.of(context);
     return Column(children: [
       Container(
@@ -182,11 +182,11 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
               padding: const EdgeInsets.symmetric(horizontal: 8),
               child: Column(
                 children: def.materials.where((m) => (m.count ?? 0) > 0).map((m) {
-                  var items = inventory.where((i) => i.itemHash == m.itemHash);
-                  var itemsTotal = items.fold<int>(0, (t, i) => t + i.quantity);
-                  var currency = currencies.where((curr) => curr.itemHash == m.itemHash);
-                  var total = currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
-                  bool isEnough = total >= m.count;
+                  // var items = inventory.where((i) => i.itemHash == m.itemHash);
+                  // var itemsTotal = items.fold<int>(0, (t, i) => t + i.quantity);
+                  // var currency = currencies.where((curr) => curr.itemHash == m.itemHash);
+                  // var total = currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
+                  // bool isEnough = total >= m.count;
                   return Row(
                     children: <Widget>[
                       SizedBox(
@@ -202,9 +202,9 @@ class ItemDetailsPlugInfoWidget extends BaseDestinyStatelessItemWidget with Prof
                           ),
                         ),
                       ),
-                      Text("${m.count}/$total",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w300, color: isEnough ? theme.onSurfaceLayers : theme.errorLayers))
+                      // Text("${m.count}/$total",
+                      //     style: TextStyle(
+                      //         fontWeight: FontWeight.w300, color: isEnough ? theme.onSurfaceLayers : theme.errorLayers))
                     ],
                   );
                 }).toList(),

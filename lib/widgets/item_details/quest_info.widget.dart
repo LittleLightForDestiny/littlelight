@@ -43,7 +43,7 @@ class QuestInfoWidgetState extends BaseDestinyItemState<QuestInfoWidget> with Pr
   }
 
   loadDefinitions() async {
-    itemObjectives = profile.getItemObjectives(item?.itemInstanceId, characterId, item?.itemHash);
+    // itemObjectives = profile.getItemObjectives(item?.itemInstanceId, characterId, item?.itemHash);
     questlineDefinition =
         await manifest.getDefinition<DestinyInventoryItemDefinition>(definition.objectives.questlineItemHash);
     List<int> stepHashes = questlineDefinition.setData?.itemList?.map((i) => i.itemHash)?.toList() ?? [];

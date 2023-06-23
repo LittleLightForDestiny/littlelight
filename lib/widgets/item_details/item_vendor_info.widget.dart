@@ -19,9 +19,7 @@ class ItemVendorInfoWidget extends StatefulWidget {
   final DestinyVendorSaleItemComponent sale;
   final int vendorHash;
 
-  const ItemVendorInfoWidget(
-      {Key key, this.sale, this.vendorHash, this.definition})
-      : super(key: key);
+  const ItemVendorInfoWidget({Key key, this.sale, this.vendorHash, this.definition}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -29,8 +27,7 @@ class ItemVendorInfoWidget extends StatefulWidget {
   }
 }
 
-class ItemVendorInfoState extends State<ItemVendorInfoWidget>
-    with ProfileConsumer, ManifestConsumer {
+class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsumer, ManifestConsumer {
   DestinyVendorDefinition vendorDefinition;
 
   @override
@@ -40,8 +37,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget>
   }
 
   loadDefinition() async {
-    vendorDefinition = await manifest
-        .getDefinition<DestinyVendorDefinition>(widget.vendorHash);
+    vendorDefinition = await manifest.getDefinition<DestinyVendorDefinition>(widget.vendorHash);
     setState(() {});
   }
 
@@ -49,14 +45,13 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget>
   Widget build(BuildContext context) {
     if (vendorDefinition == null) return Container();
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [buildFailures(context), buildCost(context)]);
+        crossAxisAlignment: CrossAxisAlignment.stretch, children: [buildFailures(context), buildCost(context)]);
   }
 
   buildCost(BuildContext context) {
     var costs = widget.sale.costs;
-    var inventory = profile.getProfileInventory();
-    var currencies = profile.getProfileCurrencies();
+    // var inventory = profile.getProfileInventory();
+    // var currencies = profile.getProfileCurrencies();
     return Container(
         color: Colors.grey.shade900,
         padding: const EdgeInsets.all(8),
@@ -71,35 +66,29 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget>
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ))
           ].followedBy(costs.map((c) {
-            var items = inventory.where((i) => i.itemHash == c.itemHash);
-            var itemsTotal = items.fold<int>(0, (t, i) => t + i.quantity);
-            var currency =
-                currencies.where((curr) => curr.itemHash == c.itemHash);
-            var total =
-                currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
-            bool isEnough = total >= c.quantity;
+            // var items = inventory.where((i) => i.itemHash == c.itemHash);
+            // var itemsTotal = items.fold<int>(0, (t, i) => t + i.quantity);
+            // var currency =
+            //     currencies.where((curr) => curr.itemHash == c.itemHash);
+            // var total =
+            //     currency.fold<int>(itemsTotal, (t, curr) => t + curr.quantity);
+            // bool isEnough = total >= c.quantity;
             return Container(
                 padding: const EdgeInsets.only(left: 8),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text(
-                      "${c.quantity}/$total",
-                      style: TextStyle(
-                          fontSize: 12,
-                          color: isEnough
-                              ? Theme.of(context).colorScheme.onSurface
-                              : Colors.red.shade300),
-                    ),
+                    // Text(
+                    //   "${c.quantity}/$total",
+                    //   style: TextStyle(
+                    //       fontSize: 12,
+                    //       color: isEnough ? Theme.of(context).colorScheme.onSurface : Colors.red.shade300),
+                    // ),
                     Container(
                       width: 4,
                     ),
                     SizedBox(
-                        width: 18,
-                        height: 18,
-                        child:
-                            ManifestImageWidget<DestinyInventoryItemDefinition>(
-                                c.itemHash)),
+                        width: 18, height: 18, child: ManifestImageWidget<DestinyInventoryItemDefinition>(c.itemHash)),
                   ],
                 ));
           })).toList(),
@@ -128,9 +117,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget>
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: messages.map((message) {
           return Container(
-              color: LittleLightTheme.of(context).errorLayers,
-              padding: const EdgeInsets.all(8),
-              child: message);
+              color: LittleLightTheme.of(context).errorLayers, padding: const EdgeInsets.all(8), child: message);
         }).toList());
   }
 
@@ -149,8 +136,7 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget>
     if (widget.sale.saleStatus.contains(VendorItemStatus.NoQuantity)) {
       //no message for now
     }
-    if (widget.sale.saleStatus
-        .contains(VendorItemStatus.OutsidePurchaseWindow)) {
+    if (widget.sale.saleStatus.contains(VendorItemStatus.OutsidePurchaseWindow)) {
       messages.add(Text("Outside Purchase Window".translate(context)));
     }
     if (widget.sale.saleStatus.contains(VendorItemStatus.NotAvailable)) {

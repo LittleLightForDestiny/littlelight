@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
@@ -23,7 +24,6 @@ import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/services/setup.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:provider/provider.dart';
@@ -45,7 +45,6 @@ class InitialPageStateNotifier
         AuthConsumer,
         LittleLightDataConsumer,
         WishlistsConsumer,
-        ProfileConsumer,
         AnalyticsConsumer,
         StorageConsumer,
         BungieApiConsumer {
@@ -278,7 +277,7 @@ class InitialPageStateNotifier
       analytics.registerNonFatal(e, stackTrace);
     }
 
-    final characters = profile.characters;
+    final characters = _context.read<ProfileBloc>().characters;
     if (characters?.isEmpty ?? true) {
       _error = InvalidMembershipError();
       notifyListeners();

@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
@@ -16,8 +17,10 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
   final ItemNotesBloc _itemNotesBloc;
 
   final BuildContext context;
-  List<ItemSortParameter>? itemOrdering;
-  List<ItemSortParameter>? pursuitOrdering;
+  List<ItemSortParameter>? _itemOrdering;
+  List<ItemSortParameter>? get itemOrdering => _itemOrdering;
+  List<ItemSortParameter>? _pursuitOrdering;
+  List<ItemSortParameter>? get pursuitOrdering => _pursuitOrdering;
   Set<String>? _priorityTags;
   List<WishlistFile>? wishlists;
 
@@ -28,8 +31,8 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
   }
 
   _init() async {
-    itemOrdering = _userSetttingsBloc.itemOrdering;
-    pursuitOrdering = _userSetttingsBloc.pursuitOrdering;
+    _itemOrdering = _userSetttingsBloc.itemOrdering;
+    _pursuitOrdering = _userSetttingsBloc.pursuitOrdering;
     _priorityTags = _userSetttingsBloc.priorityTags?.whereType<String>().toSet();
     wishlists = await wishlistsService.getWishlists();
     notifyListeners();
@@ -91,6 +94,60 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
   set characterOrderingType(CharacterSortParameterType? type) {
     if (type == null) return;
     _userSetttingsBloc.characterOrdering = CharacterSortParameter(type: type);
+    notifyListeners();
+  }
+
+  void updateItemOrderingDirection(ItemSortParameter parameter, SorterDirection direction) {
+    final item = this._itemOrdering?.firstWhereOrNull((element) => element.type == parameter.type);
+    if (item == null) return;
+    item.direction = direction;
+    this._userSetttingsBloc.itemOrdering = this._itemOrdering;
+    notifyListeners();
+  }
+
+  void updateItemOrderingActive(ItemSortParameter parameter, bool active) {
+    final item = this._itemOrdering?.firstWhereOrNull((element) => element.type == parameter.type);
+    if (item == null) return;
+    item.active = active;
+    this._userSetttingsBloc.itemOrdering = this._itemOrdering;
+    notifyListeners();
+  }
+
+  void reorderItemOrdering(int oldIndex, int newIndex) {
+    final order = this._itemOrdering?.toList();
+    if (order == null) return;
+    final removed = order.removeAt(oldIndex);
+    if (newIndex > oldIndex) newIndex = newIndex - 1;
+    order.insert(newIndex, removed);
+    this._itemOrdering = order;
+    this._userSetttingsBloc.itemOrdering = this._itemOrdering;
+    notifyListeners();
+  }
+
+  void updatePursuitOrderingDirection(ItemSortParameter parameter, SorterDirection direction) {
+    final item = this._pursuitOrdering?.firstWhereOrNull((element) => element.type == parameter.type);
+    if (item == null) return;
+    item.direction = direction;
+    this._userSetttingsBloc.pursuitOrdering = this._pursuitOrdering;
+    notifyListeners();
+  }
+
+  void updatePursuitOrderingActive(ItemSortParameter parameter, bool active) {
+    final item = this._pursuitOrdering?.firstWhereOrNull((element) => element.type == parameter.type);
+    if (item == null) return;
+    item.active = active;
+    this._userSetttingsBloc.pursuitOrdering = this._pursuitOrdering;
+    notifyListeners();
+  }
+
+  void reorderPursuitOrdering(int oldIndex, int newIndex) {
+    final order = this._pursuitOrdering?.toList();
+    if (order == null) return;
+    final removed = order.removeAt(oldIndex);
+    if (newIndex > oldIndex) newIndex = newIndex - 1;
+    order.insert(newIndex, removed);
+    this._pursuitOrdering = order;
+    this._userSetttingsBloc.pursuitOrdering = this._pursuitOrdering;
     notifyListeners();
   }
 

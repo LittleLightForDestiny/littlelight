@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
@@ -13,20 +12,17 @@ import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_last_played_sorter.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_sorter.dart';
+import 'package:provider/provider.dart';
 
-import 'destiny_character_info.dart';
 import '../../../models/item_info/inventory_item_info.dart';
+import '../user_settings/user_settings.bloc.dart';
+import 'destiny_character_info.dart';
 
 enum LastLoadedFrom { server, cache }
-
-setupProfileService() {
-  GetIt.I.registerSingleton<ProfileBloc>(ProfileBloc._internal());
-}
 
 class _CachedItemsContainer {
   Map<String, InventoryItemInfo> itemsByInstanceId = <String, InventoryItemInfo>{};
@@ -65,14 +61,9 @@ class _CachedItemsContainer {
 }
 
 class ProfileBloc extends ChangeNotifier
-    with
-        UserSettingsConsumer,
-        StorageConsumer,
-        AuthConsumer,
-        BungieApiConsumer,
-        ManifestConsumer,
-        WidgetsBindingObserver {
-  static const List<int> profileBuckets = [InventoryBucket.modifications, InventoryBucket.consumables];
+    with StorageConsumer, AuthConsumer, BungieApiConsumer, ManifestConsumer, WidgetsBindingObserver {
+  final BuildContext context;
+  final UserSettingsBloc userSettingsBloc;
 
   DestinyProfileResponse? _cachedProfileResponse;
   bool pauseAutomaticUpdater = false;
@@ -80,6 +71,7 @@ class ProfileBloc extends ChangeNotifier
   DateTime? _lastLocalChange;
 
   List<DestinyCharacterInfo>? _characters;
+
   List<DestinyCharacterInfo>? get characters => _characters;
 
   DestinyCharacterInfo? _lastPlayedCharacter;
@@ -92,7 +84,23 @@ class ProfileBloc extends ChangeNotifier
 
   DateTime? get lastUpdate => _lastLocalChange;
 
-  ProfileBloc._internal();
+  ProfileBloc(this.context) : this.userSettingsBloc = context.read<UserSettingsBloc>() {
+    init();
+  }
+
+  init() {
+    userSettingsBloc.addListener(_userSettingsUpdate);
+  }
+
+  void dispose() {
+    userSettingsBloc.removeListener(_userSettingsUpdate);
+    super.dispose();
+  }
+
+  void _userSettingsUpdate() {
+    if (_cachedProfileResponse == null) return;
+    _updateCharacters(_cachedProfileResponse);
+  }
 
   clearCached() {
     _characters = null;
@@ -196,7 +204,7 @@ class ProfileBloc extends ChangeNotifier
     if (profile == null) return;
     final profileCharacters = profile.characters?.data?.values.map((e) => _createCharacterInfo(e, profile)).toList();
     if (profileCharacters == null) return;
-    final sortType = userSettings.characterOrdering?.type;
+    final sortType = userSettingsBloc.characterOrdering?.type;
     if (sortType == null) {
       _characters = profileCharacters;
       return;

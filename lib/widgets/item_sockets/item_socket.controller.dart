@@ -213,14 +213,14 @@ class ItemSocketController extends ChangeNotifier
     final instanceID = item?.item.itemInstanceId;
     if (instanceID == null) throw ("No item instance available");
 
-    final characterID = profile.getItemOwner(instanceID) ?? profile.characters?.last.characterId;
-    if (characterID == null) throw ("No character available");
+    // final characterID = profile.getItemOwner(instanceID) ?? profile.characters?.last.characterId;
+    // if (characterID == null) throw ("No character available");
 
     notifications.push(NotificationEvent(NotificationType.requestApplyPlug, item: item?.item, plugHash: plugHash));
     _socketBusy?[socketIndex] = true;
     notifyListeners();
     try {
-      await bungieAPI.applySocket(instanceID, plugHash, socketIndex, characterID);
+      // await bungieAPI.applySocket(instanceID, plugHash, socketIndex, characterID);
       socketStates?[socketIndex].plugHash = plugHash;
     } on BungieApiException catch (e, stackTrace) {
       if ([
@@ -270,13 +270,13 @@ class ItemSocketController extends ChangeNotifier
         (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false);
     final plugSetHash = entry?.reusablePlugSetHash;
     if (isPlugSet && plugSetHash != null) {
-      var plugSet = profile.getPlugSets(plugSetHash);
-      hashes.addAll(plugSet.where((p) => p.canInsert ?? false).map((p) => p.plugItemHash).where((p) {
-        if (_armorTierIndex == null) return true;
-        var def = _plugDefinitions?[p];
-        var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-        return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
-      }).whereType<int>());
+      // var plugSet = profile.getPlugSets(plugSetHash);
+      // hashes.addAll(plugSet.where((p) => p.canInsert ?? false).map((p) => p.plugItemHash).where((p) {
+      //   if (_armorTierIndex == null) return true;
+      //   var def = _plugDefinitions?[p];
+      //   var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
+      //   return (energyType == armorEnergyType || energyType == DestinyEnergyType.Any);
+      // }).whereType<int>());
     }
 
     if (reusablePlugs?.containsKey("$socketIndex") ?? false) {

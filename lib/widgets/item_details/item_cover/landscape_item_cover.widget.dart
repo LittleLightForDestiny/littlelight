@@ -29,7 +29,6 @@ import 'package:little_light/widgets/item_sockets/screenshot_item_mods.widget.da
 import 'package:little_light/widgets/item_sockets/screenshot_item_perks.widget.dart';
 import 'package:little_light/widgets/item_sockets/screenshot_socket_details.widget.dart';
 import 'package:little_light/widgets/item_stats/screenshot_item_stats.widget.dart';
-import 'package:little_light/widgets/transfer_destinations/screenshot_transfer_destinations.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
@@ -346,14 +345,14 @@ class LandscapeItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   Widget transferBlock(BuildContext context, double expandRatio) {
     if (hideTransferBlock || item == null) return Container();
-    return Container(
-        child: ScreenshotTransferDestinationsWidget(
-      pixelSize: pixelSize(context).clamp(0, .7),
-      item: item?.item,
-      instanceInfo: instanceInfo,
-      definition: definition,
-      characterId: item?.ownerId,
-    ));
+    // return Container(
+    //     child: ScreenshotTransferDestinationsWidget(
+    //   pixelSize: pixelSize(context).clamp(0, .7),
+    //   item: item?.item,
+    //   instanceInfo: instanceInfo,
+    //   definition: definition,
+    //   characterId: item?.ownerId,
+    // ));
   }
 
   Widget statsBlock(BuildContext context, double expandRatio) {

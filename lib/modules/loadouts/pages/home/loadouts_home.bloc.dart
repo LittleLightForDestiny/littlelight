@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/confirm_delete_loadout/confirm_delete_loadout.bottomsheet.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
@@ -13,12 +13,15 @@ import 'package:little_light/shared/utils/extensions/string/remove_diacritics.da
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
 
-class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettingsConsumer {
+class LoadoutsHomeBloc extends ChangeNotifier with UserSettingsConsumer {
   @protected
   final BuildContext context;
 
   @protected
   final LoadoutsBloc loadoutsBloc;
+
+  @protected
+  final ProfileBloc profileBloc;
 
   @protected
   final ManifestService manifest;
@@ -33,17 +36,6 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
   List<LoadoutItemIndex>? _unfilteredLoadouts;
   List<LoadoutItemIndex>? _filteredLoadouts;
   List<LoadoutItemIndex>? get loadouts => _filteredLoadouts;
-  // List<LoadoutItemIndex>? get loadouts {
-  //   final text = _searchString.toLowerCase().replaceDiacritics();
-  //   if (text.isEmpty) return _allLoadouts;
-  //   return _allLoadouts?.where((l) {
-  //     final loadoutName = l.loadout?.name ?? "";
-  //     if (text.length <= 3) {
-  //       return loadoutName.toLowerCase().replaceDiacritics().startsWith(text);
-  //     }
-  //     return loadoutName.toLowerCase().replaceDiacritics().contains(text);
-  //   }).toList();
-  // }
 
   String _searchString = "";
 
@@ -52,6 +44,7 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
 
   LoadoutsHomeBloc(this.context)
       : loadoutsBloc = context.read<LoadoutsBloc>(),
+        profileBloc = context.read<ProfileBloc>(),
         manifest = context.read<ManifestService>() {
     _init();
   }
@@ -65,7 +58,7 @@ class LoadoutsHomeBloc extends ChangeNotifier with ProfileConsumer, UserSettings
   void _updateLoadouts() async {
     final loadouts = loadoutsBloc.loadouts;
     if (loadouts == null) return;
-    final loadoutIndexBuilders = loadouts.map((l) => l.generateIndex(profile: profile, manifest: manifest));
+    final loadoutIndexBuilders = loadouts.map((l) => l.generateIndex(profile: profileBloc, manifest: manifest));
     final loadoutIndexes = await Future.wait(loadoutIndexBuilders);
     this._unfilteredLoadouts = loadoutIndexes;
     _filter();
