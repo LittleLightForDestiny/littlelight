@@ -160,6 +160,8 @@ class PresentationNodeItemWidget extends StatelessWidget {
               definition?.displayProperties?.name ?? "",
               softWrap: true,
               style: context.textTheme.highlight.copyWith(color: color),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
             ),
             buildTitleInfo(context),
           ].whereType<Widget>().toList(),

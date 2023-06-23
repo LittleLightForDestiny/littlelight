@@ -15,6 +15,7 @@ import 'package:little_light/modules/item_details/widgets/details_item_notes.wid
 import 'package:little_light/modules/item_details/widgets/details_item_perks.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_progress.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_quest_info.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_rewards.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_stats.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_supers.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_tags.widget.dart';
@@ -91,6 +92,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         buildWishlistNotes(context),
         buildItemProgress(context),
         buildQuestSteps(context),
+        buildRewards(context),
         buildItemNotes(context),
         buildItemTags(context),
         buildLore(context),
@@ -259,6 +261,20 @@ abstract class BaseItemDetailsView extends StatelessWidget {
       child: DetailsItemQuestInfoWidget(
         item,
         canTrack: state.canTrack,
+      ),
+    );
+  }
+
+  Widget? buildRewards(BuildContext context) {
+    final item = state.item;
+    if (item == null) return null;
+    final definition = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
+    final items = definition?.value?.itemValue?.where((i) => i.itemHash != null).toList();
+    if (items == null || items.isEmpty) return null;
+    return SliverToBoxAdapter(
+      child: DetailsItemRewardsWidget(
+        item,
+        character: state.character,
       ),
     );
   }

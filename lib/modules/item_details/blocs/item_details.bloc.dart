@@ -1,5 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
@@ -52,6 +53,8 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
   Set<WishlistTag>? get wishlistTags;
   MappedWishlistBuilds? get wishlistBuilds;
   MappedWishlistNotes? get wishlistNotes;
+
+  DestinyCharacterInfo? get character;
 
   bool? get isLocked;
   bool get isLockBusy;

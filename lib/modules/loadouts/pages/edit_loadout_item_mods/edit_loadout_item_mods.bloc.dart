@@ -2,6 +2,7 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/models/item_notes_tag.dart';
@@ -213,4 +214,7 @@ class LoadoutItemDetailsBloc extends ItemDetailsBloc {
 
     Navigator.pop(context, plugHashes);
   }
+
+  @override
+  DestinyCharacterInfo? get character => null;
 }

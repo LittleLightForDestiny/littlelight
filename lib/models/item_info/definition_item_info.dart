@@ -4,20 +4,8 @@ import 'destiny_item_info.dart';
 
 class DefinitionItemInfo extends DestinyItemInfo {
   final DestinyInventoryItemDefinition _definition;
-
   factory DefinitionItemInfo.fromDefinition(DestinyInventoryItemDefinition definition) {
-    final sockets = definition.sockets?.socketEntries?.map((s) {
-      final initialHash = s.singleInitialItemHash ?? 0;
-      final firstReusable = s.reusablePlugItems?.firstOrNull?.plugItemHash ?? 0;
-      final plug = [initialHash, firstReusable].firstWhereOrNull((p) => p != 0);
-      final visible = (s.defaultVisible ?? false) && plug != null;
-      return DestinyItemSocketState()
-        ..plugHash = plug
-        ..isEnabled = visible
-        ..isVisible = visible;
-    }).toList();
-
-    return DefinitionItemInfo(definition, sockets: sockets);
+    return DefinitionItemInfo(definition);
   }
 
   DefinitionItemInfo(
