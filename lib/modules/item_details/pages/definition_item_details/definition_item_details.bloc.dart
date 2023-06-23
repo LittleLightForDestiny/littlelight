@@ -65,6 +65,7 @@ class DefinitionItemDetailsBloc extends ItemDetailsBloc {
     }
     _allWishlistBuilds = allWishlists.isNotEmpty ? organizeWishlistBuilds(allWishlists) : null;
     _allWishlistNotes = allWishlists.isNotEmpty ? organizeWishlistNotes(allWishlists) : null;
+    notifyListeners();
   }
 
   @override
