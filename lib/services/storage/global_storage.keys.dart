@@ -27,7 +27,6 @@ enum GlobalStorageKeys {
   enableAutoTransfers,
   objectivesViewMode,
   hideUnavailableCollectibles,
-  sortCollectiblesByNewest,
 }
 
 extension StorageKeysExtension on GlobalStorageKeys {

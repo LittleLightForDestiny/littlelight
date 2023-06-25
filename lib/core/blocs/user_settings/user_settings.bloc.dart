@@ -239,11 +239,5 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
     notifyListeners();
   }
 
-  bool get sortCollectiblesByNewest => globalStorage.sortCollectiblesByNewest ?? true;
-  set sortCollectiblesByNewest(bool value) {
-    globalStorage.sortCollectiblesByNewest = value;
-    notifyListeners();
-  }
-
   Duration get questExpirationWarningThreshold => Duration(hours: 4);
 }

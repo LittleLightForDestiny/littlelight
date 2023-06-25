@@ -33,12 +33,6 @@ abstract class BaseCollectionsView extends BasePresentationNodeView {
               value: userSettings.hideUnavailableCollectibles,
               onChanged: (value) => userSettings.hideUnavailableCollectibles = value,
             ),
-            SwitchOptionWidget(
-              "Sort Newest to Oldest".translate(context).toUpperCase(),
-              "Sort collectibles so that newest items appear first.".translate(context),
-              value: userSettings.sortCollectiblesByNewest,
-              onChanged: (value) => userSettings.sortCollectiblesByNewest = value,
-            ),
           ]))
     ]));
   }

@@ -121,55 +121,6 @@ abstract class CollectionsBloc extends ChangeNotifier {
     }
     _genericItems = genericItems;
     _inventoryItems = inventoryItems;
-
-    if (userSettings.sortCollectiblesByNewest == false) return;
-    if (collectibles == null) return;
-    final items = itemDefinitions.values.whereType<DestinyInventoryItemDefinition>().toList();
-    Set<DestinyItemType?> itemTypes = items.map((e) => e.itemType).toSet();
-    if (itemTypes.length != 1) return;
-    if (items[0].itemSubType == DestinyItemSubType.Ornament ||
-        itemTypes.first == DestinyItemType.Weapon && items[0].inventory?.tierType == TierType.Exotic) {
-      overrideCollectibles = collectibles.reversed.toList();
-    } else if (itemTypes.first == DestinyItemType.Weapon ||
-        itemTypes.first == DestinyItemType.Emblem ||
-        items[0].itemSubType == DestinyItemSubType.Shader) {
-      _bucketSortCollectibles(collectibles, collectibleDefinitions, itemDefinitions,
-          (DestinyInventoryItemDefinition item) => -(item.inventory?.tierType?.value ?? 0));
-    } else if (itemTypes.first == DestinyItemType.Armor && items[0].inventory?.tierType == TierType.Exotic) {
-      _bucketSortCollectibles(collectibles, collectibleDefinitions, itemDefinitions,
-          (DestinyInventoryItemDefinition item) => item.itemSubType?.value ?? 0);
-    }
-  }
-
-  // Sort collectibles by putting them into buckets based on their tier, type, subType, etc.
-  // and then combine the buckets back into a list
-  void _bucketSortCollectibles(
-      List<DestinyPresentationNodeCollectibleChildEntry> collectibles,
-      Map<int, DestinyCollectibleDefinition> collectibleDefinitions,
-      Map<int, DestinyInventoryItemDefinition> itemDefinitions,
-      Function getKey) {
-    Map<int, List<DestinyPresentationNodeCollectibleChildEntry>> buckets = {};
-    List<DestinyPresentationNodeCollectibleChildEntry> leftovers = [];
-    for (final collectible in collectibles.reversed) {
-      final collectibleDef = collectibleDefinitions[collectible.collectibleHash];
-      if (collectibleDef == null) {
-        leftovers.add(collectible);
-        continue;
-      }
-      final item = itemDefinitions[collectibleDef.itemHash];
-      if (item == null) {
-        leftovers.add(collectible);
-        continue;
-      }
-      final key = getKey(item);
-      if (buckets.containsKey(key))
-        buckets[key]?.add(collectible);
-      else
-        buckets[key] = [collectible];
-    }
-    final keys = buckets.keys.toList()..sort();
-    overrideCollectibles =
-        <DestinyPresentationNodeCollectibleChildEntry>[for (final key in keys) ...buckets[key] ?? []] + leftovers;
   }
 
   @protected
