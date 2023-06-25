@@ -6,6 +6,7 @@ import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/wishlist_index.dart';
+import 'package:little_light/modules/item_tags/pages/edit_priority_tags/edit_priority_tags.bottomsheet.dart';
 import 'package:little_light/modules/settings/pages/add_wishlist/add_wishlist.page_route.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
@@ -35,6 +36,18 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
     _pursuitOrdering = _userSetttingsBloc.pursuitOrdering;
     _priorityTags = _userSetttingsBloc.priorityTags?.whereType<String>().toSet();
     wishlists = await wishlistsService.getWishlists();
+    _userSetttingsBloc.addListener(_update);
+    notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    _userSetttingsBloc.removeListener(_update);
+    super.dispose();
+  }
+
+  _update() {
+    this._priorityTags = _userSetttingsBloc.priorityTags?.whereType<String>().toSet();
     notifyListeners();
   }
 
@@ -153,5 +166,17 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
 
   void saveDefaultFreeSlots() {
     this._userSetttingsBloc.saveDefaultFreeSlots(this.defaultFreeSlots);
+  }
+
+  void removePriorityTag(ItemNotesTag t) async {
+    final tags = _priorityTags;
+    if (tags == null) return;
+    tags.removeWhere((element) => element == t.tagId);
+    this._userSetttingsBloc.removePriorityTag(t);
+    notifyListeners();
+  }
+
+  void addPriorityTag() {
+    EditPriorityTagsBottomSheet().show(context);
   }
 }

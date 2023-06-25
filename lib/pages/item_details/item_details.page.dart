@@ -22,7 +22,6 @@ import 'package:little_light/widgets/item_details/item_cover/landscape_item_cove
 import 'package:little_light/widgets/item_details/item_detail_loadouts.widget.dart';
 import 'package:little_light/widgets/item_details/item_level.widget.dart';
 import 'package:little_light/widgets/item_details/item_vendor_info.widget.dart';
-import 'package:little_light/widgets/item_details/rewards_info.widget.dart';
 import 'package:little_light/widgets/item_sockets/item_socket.controller.dart';
 import 'package:provider/provider.dart';
 
@@ -216,7 +215,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage> with AuthConsumer, Ma
                           // buildWishlistBuilds(context),
                           // buildCosmetics(context),
                           // buildObjectives(context),
-                          buildRewards(context),
+                          // buildRewards(context),
                           // buildQuestInfo(context),
                           // buildLore(context),
                           Container(height: 50)
@@ -260,7 +259,7 @@ class ItemDetailScreenState extends State<ItemDetailsPage> with AuthConsumer, Ma
                           // buildWishlistBuilds(context),
                           // buildCosmetics(context),
                           // buildObjectives(context),
-                          buildRewards(context),
+                          // buildRewards(context),
                           // buildQuestInfo(context),
                           // buildLore(context),
                           Container(height: 50)
@@ -297,15 +296,5 @@ class ItemDetailScreenState extends State<ItemDetailsPage> with AuthConsumer, Ma
 
   Widget buildLoadouts(BuildContext context) {
     return ItemDetailLoadoutsWidget(item, definition, instanceInfo, loadouts: loadouts);
-  }
-
-  Widget buildRewards(BuildContext context) {
-    var screenPadding = MediaQuery.of(context).padding;
-    return Container(
-        padding: EdgeInsets.only(left: screenPadding.left, right: screenPadding.right),
-        child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: RewardsInfoWidget(item, definition, instanceInfo,
-                characterId: characterId, key: const Key("item_rewards_widget"))));
   }
 }

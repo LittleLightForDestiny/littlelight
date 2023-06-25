@@ -236,8 +236,9 @@ class TransferDestinationsWidget extends StatelessWidget {
         children: [
           SizedBox(width: 48, height: 48, child: child),
           Positioned(
-              width: 46,
-              bottom: 0,
+              left: 2,
+              right: 2,
+              bottom: 2,
               child: Stack(
                 alignment: Alignment.bottomCenter,
                 children: [

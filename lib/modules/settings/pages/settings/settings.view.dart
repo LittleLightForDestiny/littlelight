@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
@@ -8,6 +9,7 @@ import 'package:little_light/modules/settings/widgets/settings_option.widget.dar
 import 'package:little_light/modules/settings/widgets/switch_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/wishlist_file_item.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
+import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 
 class SettingsView extends StatelessWidget {
@@ -101,11 +103,10 @@ class SettingsView extends StatelessWidget {
                 "Order pursuits by".translate(context).toUpperCase(),
                 buildPursuitOrderList(context),
               ),
-              HeaderWidget(
-                  child: Text(
+              SettingsOptionWidget(
                 "Priority Tags".translate(context).toUpperCase(),
-              )),
-              // buildPriorityTags(context),
+                buildPriorityTags(context),
+              ),
               Container(height: 32),
             ])));
   }
@@ -222,8 +223,27 @@ class SettingsView extends StatelessWidget {
   }
 
   Widget buildPriorityTags(BuildContext context) {
-    final tags = _state.priorityTags;
-    return Container(padding: const EdgeInsets.all(8));
+    final tags = _state.priorityTags ?? [];
+    return Container(
+      child: Wrap(
+        spacing: 4,
+        runSpacing: 4,
+        children: tags
+                .map(
+                  (t) => TagPillWidget.fromTag(t, onRemove: () => _bloc.removePriorityTag(t)),
+                )
+                .toList() +
+            [
+              TagPillWidget(
+                icon: FontAwesomeIcons.circlePlus,
+                tagName: "Add Tag".translate(context),
+                background: context.theme.primaryLayers.layer0,
+                foreground: context.theme.onSurfaceLayers.layer0,
+                onTap: () => _bloc.addPriorityTag(),
+              ),
+            ],
+      ),
+    );
 
     ///TODO: redo this
     // child: Wrap(
@@ -247,36 +267,4 @@ class SettingsView extends StatelessWidget {
     //   ]).toList(),
     // ));
   }
-
-  void openAddTagDialog(BuildContext context) async {
-    // final tag = await Navigator.of(context).push(SelectTagDialogRoute(context));
-    // if (tag != null) {
-    //   userSettings.addPriorityTag(tag);
-    // }
-    // setState(() {});
-  }
-
-  // Widget buildDirectionButton(ItemSortParameter parameter, SorterDirection direction, {@required Function onSave}) {
-  //   var selected = parameter.direction == direction;
-  //   if (!parameter.active) return Container();
-  //   return SizedBox(
-  //     width: 20,
-  //     height: 20,
-  //     child: ElevatedButton(
-  //         style: ElevatedButton.styleFrom(
-  //           // primary: selected
-  //           //     ? Theme.of(context).toggleButtonsTheme.selectedColor
-  //           //     : Theme.of(context).toggleButtonsTheme.color,
-  //           padding: const EdgeInsets.all(0),
-  //         ),
-  //         child: Icon(
-  //             direction == SorterDirection.Ascending ? FontAwesomeIcons.chevronUp : FontAwesomeIcons.chevronDown,
-  //             size: 14),
-  //         onPressed: () {
-  //           parameter.direction = direction;
-  //           // setState(() {});
-  //           onSave();
-  //         }),
-  //   );
-  // }
 }
