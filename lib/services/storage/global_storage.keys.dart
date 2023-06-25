@@ -28,6 +28,9 @@ enum GlobalStorageKeys {
   objectivesViewMode,
   hideUnavailableCollectibles,
   sortCollectiblesByNewest,
+  topScrollAreaType,
+  bottomScrollAreaType,
+  scrollAreaDivisionThreshold,
 }
 
 extension StorageKeysExtension on GlobalStorageKeys {

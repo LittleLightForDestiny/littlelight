@@ -3,24 +3,24 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
+import 'package:little_light/models/scroll_area_type.dart';
 import 'package:little_light/modules/settings/pages/settings/settings.bloc.dart';
 import 'package:little_light/modules/settings/widgets/item_order_parameter.widget.dart';
 import 'package:little_light/modules/settings/widgets/settings_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/switch_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/wishlist_file_item.dart';
-import 'package:little_light/shared/widgets/headers/header.wiget.dart';
+import 'package:little_light/shared/widgets/tabs/custom_tab/divider_indicator_overlay.dart';
 import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
+
+typedef ScrollAreaTypeChangeCallback = void Function(ScrollAreaType);
+
+const _animationDuration = Duration(milliseconds: 500);
 
 class SettingsView extends StatelessWidget {
   final SettingsBloc _bloc;
   final SettingsBloc _state;
   const SettingsView(this._bloc, this._state, {Key? key}) : super(key: key);
-
-  // List<ItemSortParameter> itemOrdering;
-  // List<ItemSortParameter> pursuitOrdering;
-  // Set<String> priorityTags;
-  // List<WishlistFile> wishlists;
 
   @override
   Widget build(BuildContext context) {
@@ -28,87 +28,100 @@ class SettingsView extends StatelessWidget {
         appBar: AppBar(
           title: Text("Settings".translate(context)),
         ),
-        body: SingleChildScrollView(
-            padding: const EdgeInsets.all(8),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-              SwitchOptionWidget(
-                "Tap to select".translate(context).toUpperCase(),
-                "Tapping on items will select them for quick transfer and equip instead of opening details. Hold for details."
-                    .translate(context),
-                value: _state.tapToSelect,
-                onChanged: (value) => _bloc.tapToSelect = value,
-              ),
-              if (_state.canKeepAwake)
+        body: Stack(children: [
+          SingleChildScrollView(
+              padding: const EdgeInsets.all(8),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
                 SwitchOptionWidget(
-                  "Keep Awake".translate(context).toUpperCase(),
-                  "Keep device awake while the app is open.".translate(context),
-                  value: _state.keepAwake,
-                  onChanged: (value) => _bloc.keepAwake = value,
+                  "Tap to select".translate(context).toUpperCase(),
+                  "Tapping on items will select them for quick transfer and equip instead of opening details. Hold for details."
+                      .translate(context),
+                  value: _state.tapToSelect,
+                  onChanged: (value) => _bloc.tapToSelect = value,
                 ),
-              SwitchOptionWidget(
-                "Auto open Keyboard".translate(context).toUpperCase(),
-                "Open keyboard automatically in quick search.".translate(context),
-                value: _state.autoOpenKeyboard,
-                onChanged: (value) => _bloc.autoOpenKeyboard = value,
-              ),
-              SwitchOptionWidget(
-                "Enable auto transfers".translate(context).toUpperCase(),
-                "If enabled, Little Light will try to move items out of the way to make room for new transfers."
-                    .translate(context),
-                value: _state.enabledAutoTransfers,
-                onChanged: (value) => _bloc.enabledAutoTransfers = value,
-              ),
-              SettingsOptionWidget(
-                "Default free slots".translate(context).toUpperCase(),
-                Column(children: [
-                  Slider(
-                    min: 0,
-                    max: 9,
-                    value: _state.defaultFreeSlots.toDouble(),
-                    onChanged: (value) => _bloc.defaultFreeSlots = value.floor(),
-                    onChangeEnd: (value) => _bloc.saveDefaultFreeSlots(),
+                if (_state.canKeepAwake)
+                  SwitchOptionWidget(
+                    "Keep Awake".translate(context).toUpperCase(),
+                    "Keep device awake while the app is open.".translate(context),
+                    value: _state.keepAwake,
+                    onChanged: (value) => _bloc.keepAwake = value,
                   ),
-                  SizedBox(
-                    height: 8,
-                  ),
-                  Text(
-                      "This is the default count of slots that should be empty after you equip or transfer a loadout, not considering the pieces in the loadout itself."
-                          .translate(context))
-                ]),
-                trailing: Text("${_state.defaultFreeSlots}"),
-              ),
-              SettingsOptionWidget(
-                "Wishlists".translate(context).toUpperCase(),
-                Column(children: [
-                  Text(
-                      "You can add community curated wishlists (or your custom ones) on Little Light to check your rolls."
-                          .translate(context)),
-                ]),
-                trailing: ElevatedButton(
-                  child: Text("Add Wishlist".translate(context)),
-                  onPressed: () => _bloc.addWishlist(),
-                  style: ButtonStyle(visualDensity: VisualDensity.compact),
+                SwitchOptionWidget(
+                  "Auto open Keyboard".translate(context).toUpperCase(),
+                  "Open keyboard automatically in quick search.".translate(context),
+                  value: _state.autoOpenKeyboard,
+                  onChanged: (value) => _bloc.autoOpenKeyboard = value,
                 ),
-              ),
-              buildWishlistsList(context),
-              SettingsOptionWidget(
-                "Order characters by".translate(context).toUpperCase(),
-                buildCharacterOrdering(context),
-              ),
-              SettingsOptionWidget(
-                "Order items by".translate(context).toUpperCase(),
-                buildItemOrderList(context),
-              ),
-              SettingsOptionWidget(
-                "Order pursuits by".translate(context).toUpperCase(),
-                buildPursuitOrderList(context),
-              ),
-              SettingsOptionWidget(
-                "Priority Tags".translate(context).toUpperCase(),
-                buildPriorityTags(context),
-              ),
-              Container(height: 32),
-            ])));
+                SwitchOptionWidget(
+                  "Enable auto transfers".translate(context).toUpperCase(),
+                  "If enabled, Little Light will try to move items out of the way to make room for new transfers."
+                      .translate(context),
+                  value: _state.enabledAutoTransfers,
+                  onChanged: (value) => _bloc.enabledAutoTransfers = value,
+                ),
+                SettingsOptionWidget(
+                  "Default free slots".translate(context).toUpperCase(),
+                  Column(children: [
+                    Slider(
+                      min: 0,
+                      max: 9,
+                      value: _state.defaultFreeSlots.toDouble(),
+                      onChanged: (value) => _bloc.defaultFreeSlots = value.floor(),
+                      onChangeEnd: (value) => _bloc.saveDefaultFreeSlots(),
+                    ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                        "This is the default count of slots that should be empty after you equip or transfer a loadout, not considering the pieces in the loadout itself."
+                            .translate(context))
+                  ]),
+                  trailing: Text("${_state.defaultFreeSlots}"),
+                ),
+                SettingsOptionWidget(
+                  "Scroll areas".translate(context).toUpperCase(),
+                  buildScrollAreaOptions(context),
+                ),
+                SettingsOptionWidget(
+                  "Wishlists".translate(context).toUpperCase(),
+                  Column(children: [
+                    Text(
+                        "You can add community curated wishlists (or your custom ones) on Little Light to check your rolls."
+                            .translate(context)),
+                  ]),
+                  trailing: ElevatedButton(
+                    child: Text("Add Wishlist".translate(context)),
+                    onPressed: () => _bloc.addWishlist(),
+                    style: ButtonStyle(visualDensity: VisualDensity.compact),
+                  ),
+                ),
+                buildWishlistsList(context),
+                SettingsOptionWidget(
+                  "Order characters by".translate(context).toUpperCase(),
+                  buildCharacterOrdering(context),
+                ),
+                SettingsOptionWidget(
+                  "Order items by".translate(context).toUpperCase(),
+                  buildItemOrderList(context),
+                ),
+                SettingsOptionWidget(
+                  "Order pursuits by".translate(context).toUpperCase(),
+                  buildPursuitOrderList(context),
+                ),
+                SettingsOptionWidget(
+                  "Priority Tags".translate(context).toUpperCase(),
+                  buildPriorityTags(context),
+                ),
+              ])),
+          Positioned.fill(
+            child: AnimatedOpacity(
+                duration: _animationDuration,
+                opacity: _state.shouldShowScrollAreaOverlay ? 1 : 0,
+                child: DividerIndicatorOverlay(
+                  threshold: _state.scrollAreaDividerThreshold,
+                )),
+          ),
+        ]));
   }
 
   Widget buildWishlistsList(BuildContext context) {
@@ -244,27 +257,136 @@ class SettingsView extends StatelessWidget {
             ],
       ),
     );
+  }
 
-    ///TODO: redo this
-    // child: Wrap(
-    //   crossAxisAlignment: WrapCrossAlignment.start,
-    //   runSpacing: 4,
-    //   spacing: 4,
-    //   children: tags
-    //       .map((t) => ItemTagWidget.fromNoteTag(
-    //             context,
-    //             t,
-    //             onClick: () {
-    //               userSettings.removePriorityTag(t);
-    //               setState(() {});
-    //             },
-    //           ))
-    //       .followedBy([
-    //     ItemTagWidget.fromNoteTag(context, ItemNotesTag(icon: null, name: "Add Tag", backgroundColorHex: "#03A9f4"),
-    //         padding: 4,
-    //         trailing: const CenterIconWorkaround(FontAwesomeIcons.plusCircle, size: 18),
-    //         onClick: () => openAddTagDialog(context)),
-    //   ]).toList(),
-    // ));
+  Widget buildScrollAreaOptions(BuildContext context) {
+    return Column(children: [
+      Text("Define which part of the screen should scroll between characters and section type.".translate(context)),
+      SizedBox(height: 8),
+      buildScreenAreaSelector(
+        context,
+        Text(
+          "Top half".translate(context).toUpperCase(),
+          style: context.textTheme.highlight,
+        ),
+        _state.topScrollArea,
+        (value) => _bloc.topScrollArea = value,
+      ),
+      buildScreenAreaSelector(
+        context,
+        Text(
+          "Bottom half".translate(context).toUpperCase(),
+          style: context.textTheme.highlight,
+        ),
+        _state.bottomScrollArea,
+        (value) => _bloc.bottomScrollArea = value,
+      ),
+      buildScreenAreaDividerPosition(context),
+    ]);
+  }
+
+  Widget buildScreenAreaSelector(
+    BuildContext context,
+    Widget label,
+    ScrollAreaType value,
+    ScrollAreaTypeChangeCallback onChange,
+  ) {
+    return Container(
+      padding: EdgeInsets.all(4).copyWith(left: 8),
+      margin: EdgeInsets.only(bottom: 4),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer2,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: label,
+          ),
+          buildScreenAreaRadioSelector(
+            context,
+            ScrollAreaType.Characters,
+            value,
+            () => onChange(ScrollAreaType.Characters),
+          ),
+          buildScreenAreaRadioSelector(
+            context,
+            ScrollAreaType.Sections,
+            value,
+            () => onChange(ScrollAreaType.Sections),
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget buildScreenAreaRadioSelector(
+    BuildContext context,
+    ScrollAreaType value,
+    ScrollAreaType selectedValue,
+    VoidCallback onTap,
+  ) {
+    final selected = value == selectedValue;
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+        onTap: onTap,
+        child: Container(
+            padding: EdgeInsets.only(right: 8),
+            child: Row(
+              children: [
+                Radio(
+                  groupValue: selectedValue,
+                  value: value,
+                  onChanged: null,
+                ),
+                Text(
+                  value.label(context),
+                  style: context.textTheme.highlight.copyWith(
+                      color: selected ? context.theme.primaryLayers.layer3 : context.theme.onSurfaceLayers.layer0),
+                ),
+              ],
+            )),
+      ),
+    );
+  }
+
+  Widget buildScreenAreaDividerPosition(
+    BuildContext context,
+  ) {
+    if (_state.topScrollArea == _state.bottomScrollArea) return Container();
+    return Container(
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer2,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8).copyWith(bottom: 0),
+            child: Row(children: [
+              Expanded(
+                child: Text(
+                  "Divider position".translate(context).toUpperCase(),
+                  style: context.textTheme.highlight,
+                ),
+              ),
+              Text(
+                "${_state.scrollAreaDividerThreshold}%",
+                style: context.textTheme.highlight,
+              ),
+            ]),
+          ),
+          Slider(
+            min: 0,
+            max: 100,
+            value: _state.scrollAreaDividerThreshold.toDouble(),
+            onChanged: (value) => _bloc.scrollAreaDividerThreshold = value.floor(),
+            onChangeEnd: (value) => _bloc.saveScrollAreaDividerThreshold(),
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -4,11 +4,16 @@ import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/models/scroll_area_type.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/shared/utils/extensions/string/remove_diacritics.dart';
+
+const _defaultTopScrolAreaType = ScrollAreaType.Characters;
+const _defaultBottomScrolAreaType = ScrollAreaType.Sections;
+const _defaultScrollAreaDividerThreshold = 70;
 
 setupUserSettingsService() async {
   GetIt.I.registerSingleton<UserSettingsBloc>(UserSettingsBloc._internal());
@@ -22,6 +27,9 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   Map<String, BucketDisplayOptions>? _bucketDisplayOptions;
   Map<String, bool>? _detailsSectionDisplayVisibility;
   ObjectiveViewMode? _objectiveViewMode;
+  ScrollAreaType? _topScrollAreaType;
+  ScrollAreaType? _bottomScrollAreaType;
+  int? _scrollAreaDividerThreshold;
 
   UserSettingsBloc._internal();
 
@@ -34,6 +42,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
       initBucketDisplayOptions(),
       initDetailsSectionDisplayOptions(),
       initObjectiveViewMode(),
+      initScrollAreaOptions(),
     ]);
     notifyListeners();
   }
@@ -91,6 +100,17 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
     _objectiveViewMode ??= ObjectiveViewMode.Large;
   }
 
+  Future<void> initScrollAreaOptions() async {
+    _topScrollAreaType = await globalStorage.getTopScrollAreaType();
+    _topScrollAreaType ??= _defaultTopScrolAreaType;
+
+    _bottomScrollAreaType = await globalStorage.getBottomScrollAreaType();
+    _bottomScrollAreaType ??= _defaultBottomScrolAreaType;
+
+    _scrollAreaDividerThreshold = await globalStorage.getScrollAreaDivisionThreshold();
+    _scrollAreaDividerThreshold ??= _defaultScrollAreaDividerThreshold;
+  }
+
   BucketDisplayOptions? getDisplayOptionsForItemSection(String? id) {
     id = removeDiacritics(id ?? "").toLowerCase();
     if (_bucketDisplayOptions?.containsKey(id) ?? false) {
@@ -144,15 +164,9 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
     notifyListeners();
   }
 
-  int? _defaultFreeSlots;
-  int get defaultFreeSlots => _defaultFreeSlots ?? globalStorage.defaultFreeSlots ?? 0;
+  int get defaultFreeSlots => globalStorage.defaultFreeSlots ?? 0;
 
   set defaultFreeSlots(int value) {
-    _defaultFreeSlots = value;
-    notifyListeners();
-  }
-
-  void saveDefaultFreeSlots(int value) {
     globalStorage.defaultFreeSlots = value;
     notifyListeners();
   }
@@ -246,4 +260,27 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   }
 
   Duration get questExpirationWarningThreshold => Duration(hours: 4);
+
+  set topScrollArea(ScrollAreaType type) {
+    this._topScrollAreaType = type;
+    globalStorage.setTopScrollAreaType(type);
+    notifyListeners();
+  }
+
+  ScrollAreaType get topScrollArea => _topScrollAreaType ?? _defaultTopScrolAreaType;
+
+  set bottomScrollArea(ScrollAreaType type) {
+    this._bottomScrollAreaType = type;
+    globalStorage.setBottomScrollAreaType(type);
+    notifyListeners();
+  }
+
+  ScrollAreaType get bottomScrollArea => _bottomScrollAreaType ?? _defaultBottomScrolAreaType;
+
+  int get scrollAreaDividerThreshold => _scrollAreaDividerThreshold ?? _defaultScrollAreaDividerThreshold;
+  set scrollAreaDividerThreshold(int value) {
+    this._scrollAreaDividerThreshold = value;
+    globalStorage.setScrollAreaDivisionThreshold(value);
+    notifyListeners();
+  }
 }

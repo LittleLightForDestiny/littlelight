@@ -273,42 +273,49 @@ class LittleLightThemeData {
       });
 
   ThemeData get materialTheme => ThemeData.from(colorScheme: colorScheme).copyWith(
-        primaryColor: primaryLayers,
-        appBarTheme: _appBarTheme,
-        cardColor: _cardTheme.color,
-        cardTheme: _cardTheme,
-        textButtonTheme: TextButtonThemeData(
-            style: ButtonStyle(
-          foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3),
-        )),
-        elevatedButtonTheme: ElevatedButtonThemeData(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: primaryLayers,
-            disabledForegroundColor: primaryLayers,
-            disabledBackgroundColor: primaryLayers,
-          ),
+      primaryColor: primaryLayers,
+      appBarTheme: _appBarTheme,
+      cardColor: _cardTheme.color,
+      cardTheme: _cardTheme,
+      textButtonTheme: TextButtonThemeData(
+          style: ButtonStyle(
+        foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3),
+      )),
+      elevatedButtonTheme: ElevatedButtonThemeData(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: primaryLayers,
+          disabledForegroundColor: primaryLayers,
+          disabledBackgroundColor: primaryLayers,
         ),
-        toggleButtonsTheme: ToggleButtonsThemeData(
-          selectedColor: primaryLayers.layer1,
-          color: surfaceLayers.layer2,
-        ),
-        sliderTheme: SliderThemeData(
-          trackHeight: 12,
-          trackShape: RoundedRectSliderTrackShape(),
-          thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8),
-          activeTrackColor: primaryLayers.layer0,
-          inactiveTrackColor: onSurfaceLayers.layer3,
-          thumbColor: onSurfaceLayers.layer0,
-          overlayShape: RoundSliderOverlayShape(overlayRadius: 16),
-        ),
-        textTheme: _textTheme,
-        switchTheme: _switchTheme,
-        inputDecorationTheme: InputDecorationTheme(
-          floatingLabelStyle: labelStyle,
-          labelStyle: labelStyle,
-          focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: primaryLayers.layer3, width: 2)),
-        ),
-      );
+      ),
+      toggleButtonsTheme: ToggleButtonsThemeData(
+        selectedColor: primaryLayers.layer1,
+        color: surfaceLayers.layer2,
+      ),
+      sliderTheme: SliderThemeData(
+        trackHeight: 12,
+        trackShape: RoundedRectSliderTrackShape(),
+        thumbShape: RoundSliderThumbShape(enabledThumbRadius: 8),
+        activeTrackColor: primaryLayers.layer0,
+        inactiveTrackColor: onSurfaceLayers.layer3,
+        thumbColor: onSurfaceLayers.layer0,
+        overlayShape: RoundSliderOverlayShape(overlayRadius: 16),
+      ),
+      textTheme: _textTheme,
+      switchTheme: _switchTheme,
+      inputDecorationTheme: InputDecorationTheme(
+        floatingLabelStyle: labelStyle,
+        labelStyle: labelStyle,
+        focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: primaryLayers.layer3, width: 2)),
+      ),
+      radioTheme: RadioThemeData(
+        fillColor: MaterialStateColor.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) {
+            return primaryLayers.layer2;
+          }
+          return onSurfaceLayers.layer0;
+        }),
+      ));
 }
 
 class LittleLightTheme extends StatelessWidget {
