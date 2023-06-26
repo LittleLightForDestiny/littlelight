@@ -107,6 +107,9 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
     notifyListeners();
   }
 
+  bool get scrollAreaHintEnabled => _userSetttingsBloc.scrollAreasHintEnabled;
+  set scrollAreaHintEnabled(bool value) => _userSetttingsBloc.scrollAreasHintEnabled = value;
+
   void addWishlist() async {
     await Navigator.push(context, AddWishlistPageRoute());
     wishlists = await wishlistsService.getWishlists();

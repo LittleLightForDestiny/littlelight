@@ -31,6 +31,7 @@ enum GlobalStorageKeys {
   topScrollAreaType,
   bottomScrollAreaType,
   scrollAreaDivisionThreshold,
+  scrollAreaHintEnabled,
 }
 
 extension StorageKeysExtension on GlobalStorageKeys {

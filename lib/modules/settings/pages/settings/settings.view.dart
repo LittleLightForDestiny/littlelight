@@ -9,8 +9,9 @@ import 'package:little_light/modules/settings/widgets/item_order_parameter.widge
 import 'package:little_light/modules/settings/widgets/settings_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/switch_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/wishlist_file_item.dart';
-import 'package:little_light/shared/widgets/tabs/custom_tab/divider_indicator_overlay.dart';
+import 'package:little_light/shared/widgets/tabs/item_list_swipe_area/swipe_area_indicator_overlay.dart';
 import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
+import 'package:little_light/shared/widgets/ui/switch.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 
 typedef ScrollAreaTypeChangeCallback = void Function(ScrollAreaType);
@@ -119,6 +120,7 @@ class SettingsView extends StatelessWidget {
                 opacity: _state.shouldShowScrollAreaOverlay ? 1 : 0,
                 child: DividerIndicatorOverlay(
                   threshold: _state.scrollAreaDividerThreshold,
+                  enabled: true,
                 )),
           ),
         ]));
@@ -262,7 +264,7 @@ class SettingsView extends StatelessWidget {
   Widget buildScrollAreaOptions(BuildContext context) {
     return Column(children: [
       Text("Define which part of the screen should scroll between characters and section type.".translate(context)),
-      SizedBox(height: 8),
+      SizedBox(height: 4),
       buildScreenAreaSelector(
         context,
         Text(
@@ -281,6 +283,7 @@ class SettingsView extends StatelessWidget {
         _state.bottomScrollArea,
         (value) => _bloc.bottomScrollArea = value,
       ),
+      buildScreenAreaHintToggle(context),
       buildScreenAreaDividerPosition(context),
     ]);
   }
@@ -293,7 +296,7 @@ class SettingsView extends StatelessWidget {
   ) {
     return Container(
       padding: EdgeInsets.all(4).copyWith(left: 8),
-      margin: EdgeInsets.only(bottom: 4),
+      margin: EdgeInsets.only(top: 4),
       decoration: BoxDecoration(
         color: context.theme.surfaceLayers.layer2,
         borderRadius: BorderRadius.circular(4),
@@ -357,6 +360,7 @@ class SettingsView extends StatelessWidget {
   ) {
     if (_state.topScrollArea == _state.bottomScrollArea) return Container();
     return Container(
+      margin: EdgeInsets.only(top: 4),
       decoration: BoxDecoration(
         color: context.theme.surfaceLayers.layer2,
         borderRadius: BorderRadius.circular(4),
@@ -384,6 +388,35 @@ class SettingsView extends StatelessWidget {
             value: _state.scrollAreaDividerThreshold.toDouble(),
             onChanged: (value) => _bloc.scrollAreaDividerThreshold = value.floor(),
             onChangeEnd: (value) => _bloc.saveScrollAreaDividerThreshold(),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget buildScreenAreaHintToggle(
+    BuildContext context,
+  ) {
+    if (_state.topScrollArea == _state.bottomScrollArea) return Container();
+    return Container(
+      margin: EdgeInsets.only(top: 4),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer2,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            child: Row(children: [
+              Expanded(
+                child: Text(
+                  "Show scroll area hint".translate(context).toUpperCase(),
+                  style: context.textTheme.highlight,
+                ),
+              ),
+              LLSwitch.callback(_state.scrollAreaHintEnabled, (val) => _bloc.scrollAreaHintEnabled = val),
+            ]),
           ),
         ],
       ),

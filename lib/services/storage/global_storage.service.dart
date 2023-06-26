@@ -353,4 +353,22 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       logger.error("error saving scroll area threshold", error: e);
     }
   }
+
+  Future<bool?> getScrollAreaHintEnabled() async {
+    try {
+      final bool? enabled = await getBool(GlobalStorageKeys.scrollAreaHintEnabled);
+      return enabled;
+    } catch (e) {
+      logger.error("can't parse scroll area hint enabled", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setScrollAreaHintEnabled(bool value) async {
+    try {
+      await setBool(GlobalStorageKeys.scrollAreaDivisionThreshold, value);
+    } catch (e) {
+      logger.error("error saving scroll area hint enabled", error: e);
+    }
+  }
 }

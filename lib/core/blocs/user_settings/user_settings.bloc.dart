@@ -14,6 +14,7 @@ import 'package:little_light/shared/utils/extensions/string/remove_diacritics.da
 const _defaultTopScrolAreaType = ScrollAreaType.Characters;
 const _defaultBottomScrolAreaType = ScrollAreaType.Sections;
 const _defaultScrollAreaDividerThreshold = 70;
+const _defaultScrollAreaHintEnabled = true;
 
 setupUserSettingsService() async {
   GetIt.I.registerSingleton<UserSettingsBloc>(UserSettingsBloc._internal());
@@ -30,6 +31,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   ScrollAreaType? _topScrollAreaType;
   ScrollAreaType? _bottomScrollAreaType;
   int? _scrollAreaDividerThreshold;
+  bool? _scrollAreaHintEnabled;
 
   UserSettingsBloc._internal();
 
@@ -109,6 +111,9 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
 
     _scrollAreaDividerThreshold = await globalStorage.getScrollAreaDivisionThreshold();
     _scrollAreaDividerThreshold ??= _defaultScrollAreaDividerThreshold;
+
+    _scrollAreaHintEnabled = await globalStorage.getScrollAreaHintEnabled();
+    _scrollAreaHintEnabled ?? _defaultScrollAreaHintEnabled;
   }
 
   BucketDisplayOptions? getDisplayOptionsForItemSection(String? id) {
@@ -281,6 +286,14 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   set scrollAreaDividerThreshold(int value) {
     this._scrollAreaDividerThreshold = value;
     globalStorage.setScrollAreaDivisionThreshold(value);
+    notifyListeners();
+  }
+
+  bool get scrollAreasHintEnabled => _scrollAreaHintEnabled ?? _defaultScrollAreaHintEnabled;
+
+  set scrollAreasHintEnabled(bool value) {
+    this._scrollAreaHintEnabled = value;
+    globalStorage.setScrollAreaHintEnabled(value);
     notifyListeners();
   }
 }
