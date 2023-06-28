@@ -3,9 +3,11 @@ import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/scroll_area_type.dart';
 import 'package:little_light/modules/progress/pages/progress/milestones.bloc.dart';
+import 'package:little_light/modules/progress/pages/progress/ranks.bloc.dart';
 import 'package:little_light/modules/progress/widgets/character_milestones_tab_content.widget.dart';
 import 'package:little_light/modules/progress/widgets/progress_type_tab_menu.widget.dart';
 import 'package:little_light/modules/progress/widgets/pursuits_character_tab_content.widget.dart';
+import 'package:little_light/modules/progress/widgets/ranks_character_tab_content.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/character_context_menu.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
@@ -31,11 +33,13 @@ class ProgressView extends StatelessWidget {
   final ProgressBloc bloc;
   final ProgressBloc state;
   final MilestonesBloc milestonesState;
+  final RanksBloc ranksState;
 
   const ProgressView(
     this.bloc,
     this.state,
-    this.milestonesState, {
+    this.milestonesState,
+    this.ranksState, {
     Key? key,
   }) : super(key: key);
 
@@ -182,9 +186,9 @@ class ProgressView extends StatelessWidget {
       case ProgressTab.Milestones:
         return buildMilestonesTabContent(context, tab, character);
       case ProgressTab.Pursuits:
-        return buildPursuitTabContent(context, tab, character);
+        return buildPursuitsTabContent(context, tab, character);
       case ProgressTab.Ranks:
-        return LoadingAnimWidget();
+        return buildRanksTabContent(context, tab, character);
     }
   }
 
@@ -200,7 +204,7 @@ class ProgressView extends StatelessWidget {
     );
   }
 
-  Widget buildPursuitTabContent(BuildContext context, ProgressTab tab, DestinyCharacterInfo character) {
+  Widget buildPursuitsTabContent(BuildContext context, ProgressTab tab, DestinyCharacterInfo character) {
     final questCategories = state.pursuitCategoriesFor(character);
     final currencies = state.relevantCurrencies;
     final quests = questCategories
@@ -217,14 +221,11 @@ class ProgressView extends StatelessWidget {
     );
   }
 
-  Widget buildTabPanGestureDetector(BuildContext context, CustomTabController tabController) {
-    return Stack(
-      children: [
-        IgnorePointer(child: Container(color: Colors.red.withOpacity(.3))),
-        CustomTabGestureDetector(
-          controller: tabController,
-        ),
-      ],
+  Widget buildRanksTabContent(BuildContext context, ProgressTab tab, DestinyCharacterInfo character) {
+    return RanksCharacterTabContentWidget(
+      character,
+      scrollViewKey: PageStorageKey("character_tab_${tab.name}_${character.characterId}"),
+      coreProgressions: ranksState.getCoreProgression(character),
     );
   }
 

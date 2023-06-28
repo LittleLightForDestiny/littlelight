@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -7,12 +5,12 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 
 class FilledCircularProgressIndicator extends ProgressIndicator {
   const FilledCircularProgressIndicator({
-    Key key,
-    double value,
-    Color backgroundColor,
-    Animation<Color> valueColor,
-    String semanticsLabel,
-    String semanticsValue,
+    Key? key,
+    double? value,
+    Color? backgroundColor,
+    Animation<Color>? valueColor,
+    String? semanticsLabel,
+    String? semanticsValue,
   }) : super(
           key: key,
           value: value,
@@ -23,11 +21,12 @@ class FilledCircularProgressIndicator extends ProgressIndicator {
         );
 
   Widget _buildSemanticsWrapper({
-    @required BuildContext context,
-    @required Widget child,
+    required BuildContext context,
+    required Widget child,
   }) {
-    String expandedSemanticsValue = semanticsValue;
-    if (value?.isFinite ?? false) {
+    final value = this.value;
+    String? expandedSemanticsValue = semanticsValue;
+    if (value != null && value.isFinite) {
       expandedSemanticsValue ??= '${(value * 100).round()}%';
     }
     return Semantics(
@@ -37,12 +36,10 @@ class FilledCircularProgressIndicator extends ProgressIndicator {
     );
   }
 
-  Color _getValueColor(BuildContext context) =>
-      valueColor?.value ?? LittleLightTheme.of(context).upgradeLayers;
+  Color _getValueColor(BuildContext context) => valueColor?.value ?? LittleLightTheme.of(context).upgradeLayers;
 
   @override
-  _FilledCircularProgressIndicatorState createState() =>
-      _FilledCircularProgressIndicatorState();
+  _FilledCircularProgressIndicatorState createState() => _FilledCircularProgressIndicatorState();
 }
 
 // Tweens used by circular progress indicator
@@ -62,10 +59,9 @@ final Animatable<int> _kStepTween = StepTween(begin: 0, end: 5);
 
 final Animatable<double> _kRotationTween = CurveTween(curve: const SawTooth(5));
 
-class _FilledCircularProgressIndicatorState
-    extends State<FilledCircularProgressIndicator>
+class _FilledCircularProgressIndicatorState extends State<FilledCircularProgressIndicator>
     with SingleTickerProviderStateMixin {
-  AnimationController _controller;
+  AnimationController? _controller;
 
   @override
   void initState() {
@@ -74,27 +70,28 @@ class _FilledCircularProgressIndicatorState
       duration: const Duration(seconds: 5),
       vsync: this,
     );
-    if (widget.value == null) _controller.repeat();
+    if (widget.value == null) _controller?.repeat();
   }
 
   @override
   void didUpdateWidget(FilledCircularProgressIndicator oldWidget) {
     super.didUpdateWidget(oldWidget);
-    if (widget.value == null && !_controller.isAnimating) {
-      _controller.repeat();
-    } else if (widget.value != null && _controller.isAnimating) {
-      _controller.stop();
+    final isAnimating = _controller?.isAnimating ?? false;
+    if (widget.value == null && !isAnimating) {
+      _controller?.repeat();
+    } else if (widget.value != null && isAnimating) {
+      _controller?.stop();
     }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
-  Widget _buildIndicator(BuildContext context, double headValue,
-      double tailValue, int stepValue, double rotationValue) {
+  Widget _buildIndicator(
+      BuildContext context, double headValue, double tailValue, int stepValue, double rotationValue) {
     return widget._buildSemanticsWrapper(
       context: context,
       child: Container(
@@ -103,8 +100,7 @@ class _FilledCircularProgressIndicatorState
             backgroundColor: widget.backgroundColor,
             valueColor: widget._getValueColor(context),
             value: widget.value, // may be null
-            headValue:
-                headValue, // remaining arguments are ignored if widget.value is not null
+            headValue: headValue, // remaining arguments are ignored if widget.value is not null
             tailValue: tailValue,
             stepValue: stepValue,
             rotationValue: rotationValue,
@@ -115,15 +111,17 @@ class _FilledCircularProgressIndicatorState
   }
 
   Widget _buildAnimation() {
+    final controller = _controller;
+    if (controller == null) return Container();
     return AnimatedBuilder(
-      animation: _controller,
-      builder: (BuildContext context, Widget child) {
+      animation: controller,
+      builder: (BuildContext context, Widget? child) {
         return _buildIndicator(
           context,
-          _kStrokeHeadTween.evaluate(_controller),
-          _kStrokeTailTween.evaluate(_controller),
-          _kStepTween.evaluate(_controller),
-          _kRotationTween.evaluate(_controller),
+          _kStrokeHeadTween.evaluate(controller),
+          _kStrokeTailTween.evaluate(controller),
+          _kStepTween.evaluate(controller),
+          _kRotationTween.evaluate(controller),
         );
       },
     );
@@ -138,28 +136,23 @@ class _FilledCircularProgressIndicatorState
 
 class _CircularProgressIndicatorPainter extends CustomPainter {
   _CircularProgressIndicatorPainter({
-    this.backgroundColor,
-    this.valueColor,
+    required this.backgroundColor,
+    required this.valueColor,
     this.value,
-    this.headValue,
-    this.tailValue,
-    this.stepValue,
-    this.rotationValue,
+    required this.headValue,
+    required this.tailValue,
+    required this.stepValue,
+    required this.rotationValue,
   })  : arcStart = value != null
             ? _startAngle
-            : _startAngle +
-                tailValue * 3 / 2 * math.pi +
-                rotationValue * math.pi * 1.7 -
-                stepValue * 0.8 * math.pi,
+            : _startAngle + tailValue * 3 / 2 * math.pi + rotationValue * math.pi * 1.7 - stepValue * 0.8 * math.pi,
         arcSweep = value != null
             ? value.clamp(0.0, 1.0) * _sweep
-            : math.max(
-                headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi,
-                _epsilon);
+            : math.max(headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi, _epsilon);
 
-  final Color backgroundColor;
+  final Color? backgroundColor;
   final Color valueColor;
-  final double value;
+  final double? value;
   final double headValue;
   final double tailValue;
   final int stepValue;
@@ -178,6 +171,8 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
     final Paint paint = Paint()
       ..color = valueColor
       ..style = PaintingStyle.fill;
+
+    final backgroundColor = this.backgroundColor;
     if (backgroundColor != null) {
       final Paint backgroundPaint = Paint()
         ..color = backgroundColor
