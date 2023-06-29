@@ -5,12 +5,6 @@ enum StatType { NoBar, Direction, Normal }
 
 enum StatDifferenceType { Positive, Negative, Neutral }
 
-const List<int> _hiddenStats = [
-  1345609583, // Aim Assistance
-  2715839340, // Recoil Direction
-  3555269338, // Zoom
-];
-
 const List<int> _directionStats = [
   2715839340, // Recoil Direction
 ];
@@ -77,8 +71,6 @@ class StatValues {
   }
 
   int get maximumValue => scale?.maximumValue ?? double.maxFinite.floor();
-
-  bool get isHiddenStat => _hiddenStats.contains(statHash);
 
   int _interpolate(int value) {
     final interpolation = scale?.displayInterpolation?.toList();
@@ -224,7 +216,6 @@ List<DestinyItemInvestmentStatDefinition>? getAvailableStats(
   }
   final statWhitelist = scaledStats.map((s) => s.statHash).toList();
   final noBarStats = scaledStats.where((s) => s.displayAsNumeric ?? false).map((s) => s.statHash).toList();
-  statWhitelist.addAll(_hiddenStats);
   List<DestinyItemInvestmentStatDefinition> stats =
       itemDefinition?.investmentStats?.where((stat) => statWhitelist.contains(stat.statTypeHash)).toList() ?? [];
 
@@ -243,18 +234,8 @@ List<DestinyItemInvestmentStatDefinition>? getAvailableStats(
   stats.sort((statA, statB) {
     final isNoBarStatA = noBarStats.contains(statA.statTypeHash);
     final isNoBarStatB = noBarStats.contains(statB.statTypeHash);
-    final isHiddenA = _hiddenStats.contains(statA.statTypeHash);
-    final isHiddenB = _hiddenStats.contains(statB.statTypeHash);
-    final valA = isNoBarStatA
-        ? 2
-        : isHiddenA
-            ? 1
-            : 0;
-    final valB = isNoBarStatB
-        ? 2
-        : isHiddenB
-            ? 1
-            : 0;
+    final valA = isNoBarStatA ? 1 : 0;
+    final valB = isNoBarStatB ? 1 : 0;
     final result = valA.compareTo(valB);
     if (result != 0) return result;
     final posA = orderedStatHashes.indexOf(statA.statTypeHash);
@@ -346,18 +327,9 @@ List<StatComparison> comparePlugStats(
   results.sort((a, b) {
     final isNoBarStatA = noBarStats?.contains(a.statHash) ?? false;
     final isNoBarStatB = noBarStats?.contains(b.statHash) ?? false;
-    final isHiddenA = _hiddenStats.contains(a.statHash);
-    final isHiddenB = _hiddenStats.contains(b.statHash);
-    final valA = isNoBarStatA
-        ? 2
-        : isHiddenA
-            ? 1
-            : 0;
-    final valB = isNoBarStatB
-        ? 2
-        : isHiddenB
-            ? 1
-            : 0;
+
+    final valA = isNoBarStatA ? 1 : 0;
+    final valB = isNoBarStatB ? 1 : 0;
     final result = valA.compareTo(valB);
     if (result != 0) return result;
     final posA = orderedStatHashes?.indexOf(a.statHash) ?? 0;

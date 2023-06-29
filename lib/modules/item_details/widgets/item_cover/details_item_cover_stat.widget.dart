@@ -12,37 +12,58 @@ import 'package:tinycolor2/tinycolor2.dart';
 
 const _barAnimationDuration = Duration(milliseconds: 300);
 
-class DetailsItemStatWidget extends StatelessWidget {
+class DetailsItemCoverStatWidget extends StatelessWidget {
   final StatValues modValues;
+  final double pixelSize;
 
-  const DetailsItemStatWidget({
+  const DetailsItemCoverStatWidget({
     Key? key,
     required StatValues this.modValues,
+    this.pixelSize = 1,
   }) : super(
           key: key,
         );
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (ctx, constraints) => SizedBox(
-          height: 18,
-          child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Flexible(child: buildLabel(context)),
-                buildValue(context),
-                buildConstrainedBar(context, constraints)
-              ])),
+    return SizedBox(
+      height: 30 * pixelSize,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: buildParts(context),
+      ),
     );
+  }
+
+  List<Widget> buildParts(BuildContext context) {
+    if (modValues.type == StatType.NoBar) {
+      return [
+        buildLabel(context),
+        buildValue(context),
+        Container(width: 212 * pixelSize),
+      ];
+    }
+    if (modValues.type == StatType.Direction) {
+      return [
+        buildLabel(context),
+        buildValue(context),
+        buildDirectionBar(context),
+      ];
+    }
+    return [
+      buildLabel(context),
+      buildBar(context),
+      buildValue(context),
+    ];
   }
 
   Widget buildLabel(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(right: 12 * pixelSize),
       child: ManifestText<DestinyStatDefinition>(
         modValues.statHash,
-        style: context.textTheme.body.copyWith(color: getBaseColor(context)),
+        style: context.textTheme.body.copyWith(color: getBaseColor(context), fontSize: 20 * pixelSize),
         textAlign: TextAlign.end,
         softWrap: false,
       ),
@@ -52,49 +73,30 @@ class DetailsItemStatWidget extends StatelessWidget {
   Widget buildValue(BuildContext context) {
     final currentValue = modValues.selected + modValues.selectedMasterwork;
     return SizedBox(
-      width: 50,
+      width: 42 * pixelSize,
       child: Text(
         "$currentValue",
-        style: context.textTheme.highlight.copyWith(color: getValueColor(context)),
-        textAlign: TextAlign.center,
+        style: context.textTheme.highlight.copyWith(color: getValueColor(context), fontSize: 20 * pixelSize),
+        textAlign: TextAlign.end,
       ),
     );
   }
 
   int get maxValue => modValues.maximumValue;
 
-  Widget buildConstrainedBar(BuildContext context, BoxConstraints constraints) {
-    final width = constraints.maxWidth / 2;
+  Widget buildBar(BuildContext context) {
+    final width = 212 * pixelSize;
     final baseBarSize = min(modValues.equipped, modValues.selected);
     final diffBarSize = (modValues.selected - modValues.equipped);
     final masterWorkBarSize = max(modValues.selectedMasterwork, modValues.equippedMasterwork);
     final maxBarSize = maxValue;
-    final current = modValues.selected + modValues.selectedMasterwork;
+
     final total = baseBarSize + diffBarSize + masterWorkBarSize;
     final isNegative = total < 0;
 
-    if (modValues.type == StatType.Direction) {
-      return Container(
-          width: width,
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: SizedBox(
-              width: 40,
-              child: DirectionStatBarWidget(
-                  currentValue: modValues.selected.toInt(),
-                  equippedValue: current.round(),
-                  currentColor: getBaseColor(context),
-                  equippedColor: getDiffColor(context, modValues.diffType),
-                  backgroundColor: context.theme.surfaceLayers.layer3)));
-    }
-
-    if (modValues.type == StatType.NoBar) {
-      return Container(width: width);
-    }
-
     return Container(
       width: width,
-      height: 14,
+      height: 18 * pixelSize,
       color: Colors.grey.shade700.withOpacity(.7),
       child: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
@@ -136,6 +138,23 @@ class DetailsItemStatWidget extends StatelessWidget {
     );
   }
 
+  Widget buildDirectionBar(BuildContext context) {
+    final current = modValues.selected + modValues.selectedMasterwork;
+    return Container(
+        width: 212 * pixelSize,
+        alignment: Alignment.centerLeft,
+        padding: EdgeInsets.only(left: 16 * pixelSize, bottom: 8 * pixelSize),
+        child: SizedBox(
+            width: 36 * pixelSize,
+            height: 18 * pixelSize,
+            child: DirectionStatBarWidget(
+                currentValue: modValues.selected.toInt(),
+                equippedValue: current.round(),
+                currentColor: getBaseColor(context),
+                equippedColor: getDiffColor(context, modValues.diffType),
+                backgroundColor: context.theme.surfaceLayers.layer3)));
+  }
+
   Color getValueColor(BuildContext context) {
     if (modValues.equipped == modValues.selected) return getBaseColor(context);
     return getDiffColor(context, modValues.diffType);
@@ -153,8 +172,9 @@ class DetailsItemStatWidget extends StatelessWidget {
   Color getMasterworkColor(BuildContext context) => context.theme.achievementLayers.layer0;
 }
 
-class DetailsTotalItemStatWidget extends DetailsItemStatWidget {
-  DetailsTotalItemStatWidget({required StatValues modValues}) : super(modValues: modValues);
+class DetailsCoverTotalItemStatWidget extends DetailsItemCoverStatWidget {
+  DetailsCoverTotalItemStatWidget({required StatValues modValues, double pixelSize = 1})
+      : super(modValues: modValues, pixelSize: pixelSize);
 
   @override
   int get maxValue => 100;

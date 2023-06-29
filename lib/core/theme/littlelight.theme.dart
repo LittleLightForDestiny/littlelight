@@ -108,8 +108,13 @@ class LittleLightTextTheme {
   final TextStyle itemPrimaryStatMediumDensity;
   final TextStyle itemPrimaryStatLowDensity;
   final TextStyle caption;
+  final TextStyle quote;
   final TextStyle itemNameMediumDensity;
   final TextStyle primaryStatName;
+  final TextStyle itemTypeScreenshot;
+  final TextStyle itemNameScreenshot;
+  final TextStyle primaryStatTypeScreenshot;
+  final TextStyle primaryStatValueScreenshot;
 
   LittleLightTextTheme({
     required this.title,
@@ -121,11 +126,16 @@ class LittleLightTextTheme {
     required this.notification,
     required this.itemNameHighDensity,
     required this.caption,
+    required this.quote,
     required this.itemPrimaryStatHighDensity,
     required this.itemPrimaryStatMediumDensity,
     required this.itemPrimaryStatLowDensity,
     required this.itemNameMediumDensity,
     required this.primaryStatName,
+    required this.itemNameScreenshot,
+    required this.itemTypeScreenshot,
+    required this.primaryStatTypeScreenshot,
+    required this.primaryStatValueScreenshot,
   });
 }
 
@@ -133,21 +143,98 @@ class LittleLightThemeData {
   DamageTypeLayers get damageTypeLayers => DamageTypeLayers();
   final tierLayers = ItemTierLayers();
   LittleLightTextTheme get textTheme => LittleLightTextTheme(
-        largeTitle: TextStyle(fontSize: 28, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
-        title: TextStyle(fontSize: 18, fontWeight: FontWeight.w500, color: onSurfaceLayers.layer0),
-        subtitle: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
-        body: TextStyle(fontSize: 13, fontWeight: FontWeight.w400, color: onSurfaceLayers.layer0),
-        highlight: TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
-        button: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
-        notification: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: onSurfaceLayers.layer0),
+        largeTitle: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.w700,
+          color: onSurfaceLayers.layer0,
+        ),
+        title: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.w500,
+          color: onSurfaceLayers.layer0,
+        ),
+        subtitle: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: onSurfaceLayers.layer0,
+        ),
+        body: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w400,
+          color: onSurfaceLayers.layer0,
+        ),
+        highlight: TextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
+          color: onSurfaceLayers.layer0,
+        ),
+        button: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: onSurfaceLayers.layer0,
+        ),
+        notification: TextStyle(
+          fontSize: 15,
+          fontWeight: FontWeight.w600,
+          color: onSurfaceLayers.layer0,
+        ),
         itemNameHighDensity: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500),
         itemNameMediumDensity: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-        caption: TextStyle(fontSize: 12, fontWeight: FontWeight.w300, color: onSurfaceLayers.layer0),
-        primaryStatName: TextStyle(fontSize: 16, fontWeight: FontWeight.w200, color: onSurfaceLayers.layer0),
-        itemPrimaryStatHighDensity: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
-        itemPrimaryStatMediumDensity:
-            TextStyle(fontSize: 16, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
-        itemPrimaryStatLowDensity: TextStyle(fontSize: 12, fontWeight: FontWeight.w700, color: onSurfaceLayers.layer0),
+        caption: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w300,
+          color: onSurfaceLayers.layer0,
+        ),
+        quote: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w300,
+          color: onSurfaceLayers.layer0,
+          fontStyle: FontStyle.italic,
+        ),
+        primaryStatName: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w200,
+          color: onSurfaceLayers.layer0,
+        ),
+        itemPrimaryStatHighDensity: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: onSurfaceLayers.layer0,
+        ),
+        itemPrimaryStatMediumDensity: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w700,
+          color: onSurfaceLayers.layer0,
+        ),
+        itemPrimaryStatLowDensity: TextStyle(
+          fontSize: 12,
+          fontWeight: FontWeight.w700,
+          color: onSurfaceLayers.layer0,
+        ),
+        itemNameScreenshot: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w700,
+          color: onSurfaceLayers.layer0,
+          height: .94,
+        ),
+        itemTypeScreenshot: TextStyle(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
+          color: onSurfaceLayers.layer0,
+          height: .94,
+        ),
+        primaryStatValueScreenshot: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w800,
+          color: onSurfaceLayers.layer0,
+          height: 1,
+        ),
+        primaryStatTypeScreenshot: TextStyle(
+          fontSize: 20,
+          fontWeight: FontWeight.w300,
+          color: onSurfaceLayers.layer0,
+          height: .6,
+        ),
       );
 
   final surfaceLayers = LayeredSwatch({

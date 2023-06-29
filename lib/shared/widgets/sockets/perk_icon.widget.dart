@@ -9,7 +9,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:provider/provider.dart';
 
 const _maxPerkIconSize = 64.0;
-const _wishlistIconSize = 18.0;
+const _defaultWishlistIconSize = 18.0;
 const _animationDuration = const Duration(milliseconds: 300);
 
 class PerkIconWidget extends StatelessWidget {
@@ -21,6 +21,7 @@ class PerkIconWidget extends StatelessWidget {
   final bool equipped;
   final bool selected;
   final VoidCallback? onTap;
+  final double wishlistIconSize;
 
   PerkIconWidget({
     required int this.plugItemHash,
@@ -30,6 +31,7 @@ class PerkIconWidget extends StatelessWidget {
     this.available = true,
     this.selected = false,
     this.onTap,
+    this.wishlistIconSize = _defaultWishlistIconSize,
   }) : super();
 
   Color perkColor(BuildContext context) => context.theme.primaryLayers.layer1;
@@ -99,14 +101,14 @@ class PerkIconWidget extends StatelessWidget {
   }
 
   Widget? getPveTag(Set<WishlistTag> tags) {
-    if (tags.contains(WishlistTag.GodPVE)) return WishlistBadgeWidget(WishlistTag.GodPVE, size: _wishlistIconSize);
-    if (tags.contains(WishlistTag.PVE)) return WishlistBadgeWidget(WishlistTag.PVE, size: _wishlistIconSize);
+    if (tags.contains(WishlistTag.GodPVE)) return WishlistBadgeWidget(WishlistTag.GodPVE, size: wishlistIconSize);
+    if (tags.contains(WishlistTag.PVE)) return WishlistBadgeWidget(WishlistTag.PVE, size: wishlistIconSize);
     return null;
   }
 
   Widget? getPvpTag(Set<WishlistTag> tags) {
-    if (tags.contains(WishlistTag.GodPVP)) return WishlistBadgeWidget(WishlistTag.GodPVP, size: _wishlistIconSize);
-    if (tags.contains(WishlistTag.PVP)) return WishlistBadgeWidget(WishlistTag.PVP, size: _wishlistIconSize);
+    if (tags.contains(WishlistTag.GodPVP)) return WishlistBadgeWidget(WishlistTag.GodPVP, size: wishlistIconSize);
+    if (tags.contains(WishlistTag.PVP)) return WishlistBadgeWidget(WishlistTag.PVP, size: wishlistIconSize);
     return null;
   }
 
@@ -118,7 +120,16 @@ class PerkIconWidget extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [pve ?? Container(), pvp ?? Container()],
+      children: [
+        Transform.translate(
+          offset: Offset(-wishlistIconSize * .2, -wishlistIconSize * .2),
+          child: pve ?? Container(),
+        ),
+        Transform.translate(
+          offset: Offset(wishlistIconSize * .2, -wishlistIconSize * .2),
+          child: pvp ?? Container(),
+        )
+      ],
     );
   }
 }
