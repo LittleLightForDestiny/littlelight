@@ -552,7 +552,6 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Container(width: _iconWidth),
         Padding(
           padding: const EdgeInsets.only(right: 6),
           child: Icon(
@@ -561,13 +560,11 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
             size: textStyle.fontSize,
           ),
         ),
-        Flexible(
-            child: Text(
+        Text(
           "$powerLevel",
           style: textStyle.copyWith(color: damageColor),
-          overflow: TextOverflow.fade,
           softWrap: false,
-        )),
+        ),
       ],
     );
   }
