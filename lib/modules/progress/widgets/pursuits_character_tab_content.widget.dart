@@ -136,7 +136,11 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
         itemCount: 1,
         itemBuilder: (_, __) => ItemSectionHeaderWidget(
           sectionIdentifier: sectionId,
-          title: ManifestText<DestinyTraitDefinition>(categoryHash),
+          title: categoryHash != null
+              ? ManifestText<DestinyTraitDefinition>(categoryHash)
+              : ManifestText<DestinyInventoryBucketDefinition>(
+                  items.first.bucketHash,
+                ),
           defaultType: defaultDisplayType,
           availableOptions: _pursuitDisplayOptions,
           canEquip: false,

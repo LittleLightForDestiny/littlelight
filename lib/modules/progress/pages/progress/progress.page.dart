@@ -27,7 +27,6 @@ class ProgressPage extends StatelessWidget {
           return ItemInteractionHandlerBloc(
             onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
             onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
-            onEmptySlotTap: (bucketHash, characterId) => bloc.openSearch(bucketHash, characterId),
           );
         }),
       ],

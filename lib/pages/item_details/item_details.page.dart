@@ -6,7 +6,6 @@ import 'package:bungie_api/models/destiny_item_instance_component.dart';
 import 'package:bungie_api/models/destiny_stat_group_definition.dart';
 import 'package:bungie_api/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
@@ -18,7 +17,7 @@ import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 // import 'package:little_light/widgets/inventory_tabs/inventory_notification.widget.dart';
-import 'package:little_light/widgets/item_details/item_cover/landscape_item_cover.widget.dart';
+
 import 'package:little_light/widgets/item_details/item_detail_loadouts.widget.dart';
 import 'package:little_light/widgets/item_details/item_level.widget.dart';
 import 'package:little_light/widgets/item_details/item_vendor_info.widget.dart';
@@ -228,17 +227,10 @@ class ItemDetailScreenState extends State<ItemDetailsPage> with AuthConsumer, Ma
   }
 
   Widget buildLandscape(BuildContext context) {
-    final itemNotes = context.watch<ItemNotesBloc>();
-    final customName = itemNotes.customNameFor(item?.itemHash, item?.itemInstanceId);
     return Scaffold(
         body: Stack(children: [
       CustomScrollView(
         slivers: [
-          LandscapeItemCoverWidget(null, definition, instanceInfo,
-              uniqueId: uniqueId,
-              socketController: socketController,
-              hideTransferBlock: hideItemManagement,
-              key: Key("cover_${item?.itemHash}_${customName}_$loaded")),
           SliverList(
               delegate: SliverChildListDelegate([
             buildSaleDetails(context),

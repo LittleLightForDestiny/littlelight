@@ -259,6 +259,7 @@ class ProgressView extends StatelessWidget {
                             characterTabController,
                             sourceRenderBox: rect,
                             onClose: onClose,
+                            onSearchTap: () => bloc.openSearch(),
                           )));
                 }),
               ))
