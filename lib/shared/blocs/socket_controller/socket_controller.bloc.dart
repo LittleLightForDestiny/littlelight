@@ -114,10 +114,10 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     final categories = itemDefinition?.sockets?.socketCategories?.where((socketCategory) {
       return socketsForCategory(socketCategory)?.isNotEmpty ?? false;
     }).toList();
-    if (categories == null) return null;
     final categoryDefs = categoryDefinitions;
-    if (categoryDefs == null) return null;
     final cosmeticSockets = littlelightData.gameData?.cosmeticSocketCategories;
+    if (categories == null) return null;
+    if (categoryDefs == null) return null;
     categories.sort((a, b) {
       final isCosmeticsA = (cosmeticSockets?.contains(a.socketCategoryHash) ?? false) ? 1 : 0;
       final isCosmeticsB = (cosmeticSockets?.contains(b.socketCategoryHash) ?? false) ? 1 : 0;
@@ -127,6 +127,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
       final indexB = categoryDefs[b.socketCategoryHash]?.index ?? 0;
       return indexA.compareTo(indexB);
     });
+
     if (category == null) return categories;
 
     final filteredCategories = categories.where((element) {

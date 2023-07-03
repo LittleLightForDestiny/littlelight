@@ -106,7 +106,7 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(DetailsItemCoverDelegate oldDelegate) {
-    return false;
+    return true;
   }
 }
 
@@ -308,12 +308,10 @@ class ItemCoverContentsWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     buildManagementBlock(context, expandRatio, pixelSize),
-                    // Container(height: convertSize(16.0, context)),
                     Expanded(
                         child: DetailsItemCoverPlugInfoWidget(
                       pixelSize: pixelSize,
                     )),
-                    // Container(height: convertSize(16.0, context)),
                     buildStatsBlock(context, expandRatio, pixelSize)
                   ],
                 ))));
@@ -370,7 +368,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
         left: context.leftPadding(expandRatio, pixelSize),
         bottom: context.bottomPadding(expandRatio, pixelSize),
         child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
+          primary: true,
           child: Column(
             children: [
               Container(
@@ -527,12 +525,15 @@ class ItemCoverContentsWidget extends StatelessWidget {
   Widget buildManagementBlock(BuildContext context, double expandRatio, double pixelSize) {
     final item = state.item;
     if (item == null) return Container();
-    return DetailsItemCoverTransferBlockWidget(
-      item,
-      transferDestinations: state.transferDestinations,
-      equipDestinations: state.equipDestinations,
-      onAction: (type, destination) => bloc.onTransferAction(type, destination, 1),
-      pixelSize: pixelSize,
+    return Opacity(
+      opacity: (expandRatio * 2).clamp(0, 1),
+      child: DetailsItemCoverTransferBlockWidget(
+        item,
+        transferDestinations: state.transferDestinations,
+        equipDestinations: state.equipDestinations,
+        onAction: (type, destination) => bloc.onTransferAction(type, destination, 1),
+        pixelSize: pixelSize,
+      ),
     );
   }
 }

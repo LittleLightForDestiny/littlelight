@@ -35,11 +35,14 @@ import 'package:little_light/shared/widgets/notifications/busy_indicator_line.wi
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 
+const _animationDuration = const Duration(milliseconds: 300);
+
 abstract class BaseItemDetailsView extends StatelessWidget {
   final ItemDetailsBloc bloc;
   final ItemDetailsBloc state;
   final SocketControllerBloc socketState;
   final SelectionBloc selectionState;
+  final controller = ScrollController();
 
   BaseItemDetailsView(this.bloc, this.state, this.socketState, this.selectionState);
 
@@ -83,6 +86,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
 
   Widget buildLandscapeBody(BuildContext context, {required bool hasFooter}) {
     return CustomScrollView(
+      controller: controller,
       slivers: [
         DetailsItemLandscapeCoverWidget(
           state,
@@ -415,11 +419,23 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     return Container(
       color: context.theme.surfaceLayers.layer1,
       child: Column(children: [
-        DetailsTransferBlockWidget(
-          item,
-          transferDestinations: state.transferDestinations,
-          equipDestinations: state.equipDestinations,
-          onAction: bloc.onTransferAction,
+        AnimatedBuilder(
+          animation: controller,
+          builder: (context, child) {
+            final isLandscape = context.mediaQuery.isLandscape || context.mediaQuery.tabletOrBigger;
+            final isStart = controller.position.pixels < 100;
+            return AnimatedAlign(
+                alignment: Alignment.topCenter,
+                duration: _animationDuration,
+                heightFactor: isLandscape && isStart ? 0 : 1,
+                child: child);
+          },
+          child: DetailsTransferBlockWidget(
+            item,
+            transferDestinations: state.transferDestinations,
+            equipDestinations: state.equipDestinations,
+            onAction: bloc.onTransferAction,
+          ),
         ),
         SizedBox(
           height: mqPadding.bottom,
