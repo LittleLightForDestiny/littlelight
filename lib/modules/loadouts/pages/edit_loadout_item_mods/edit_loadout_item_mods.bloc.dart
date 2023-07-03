@@ -40,8 +40,6 @@ class LoadoutItemDetailsBloc extends ItemDetailsBloc {
   MappedWishlistNotes? _allWishlistNotes;
   MappedWishlistNotes? _matchedWishlistNotes;
 
-  bool _lockBusy = false;
-
   LoadoutItemDetailsBloc(BuildContext context, {LoadoutItemInfo? item})
       : _item = item,
         _profileBloc = context.read<ProfileBloc>(),

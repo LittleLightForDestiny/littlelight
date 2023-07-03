@@ -5,9 +5,6 @@ import 'package:little_light/shared/widgets/character/character_icon.widget.dart
 import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:bungie_api/src/models/destiny_class_definition.dart';
-import 'package:little_light/core/theme/littlelight.theme.dart';
 
 enum TransferActionType {
   Transfer,

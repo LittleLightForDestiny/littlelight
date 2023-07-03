@@ -1,6 +1,5 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/vendors/vendors.bloc.dart';
@@ -16,7 +15,6 @@ class VendorsHomeBloc extends ChangeNotifier with StorageConsumer {
   final ProfileBloc _profileBloc;
   final VendorsBloc _vendorsBloc;
   final ManifestService _manifestBloc;
-  final LittleLightDataBloc _littlelightDataBloc;
 
   final PageStorageBucket _pageStorageBucket = PageStorageBucket();
 
@@ -31,8 +29,7 @@ class VendorsHomeBloc extends ChangeNotifier with StorageConsumer {
   VendorsHomeBloc(this.context)
       : _profileBloc = context.read<ProfileBloc>(),
         _vendorsBloc = context.read<VendorsBloc>(),
-        _manifestBloc = context.read<ManifestService>(),
-        _littlelightDataBloc = context.read<LittleLightDataBloc>() {
+        _manifestBloc = context.read<ManifestService>() {
     _init();
   }
 
