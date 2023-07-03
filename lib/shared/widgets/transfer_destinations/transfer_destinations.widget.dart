@@ -193,7 +193,6 @@ class TransferDestinationsWidget extends StatelessWidget {
         VaultIconWidget(borderWidth: .5),
         action,
         destination,
-        "Vault".translate(context),
       );
     }
 
@@ -203,20 +202,16 @@ class TransferDestinationsWidget extends StatelessWidget {
         ProfileIconWidget(borderWidth: .5),
         action,
         destination,
-        "Inventory".translate(context),
       );
     }
 
     final character = destination.character;
     if (character == null) return null;
-    final classDef = context.definition<DestinyClassDefinition>(character.character.classHash);
-    final destinationName = classDef?.genderedClassNamesByGenderHash?["${character.character.genderHash}"] ?? "";
     return buildCharacterContainer(
       context,
       CharacterIconWidget(character),
       action,
       destination,
-      destinationName,
     );
   }
 
@@ -225,42 +220,13 @@ class TransferDestinationsWidget extends StatelessWidget {
     Widget child,
     TransferActionType type,
     TransferDestination destination,
-    String destinationName,
   ) {
-    destinationName = destinationName.toUpperCase();
-    final textStyle = context.textTheme.subtitle.copyWith(fontSize: 10);
     return Container(
       padding: const EdgeInsets.all(4),
       child: Stack(
         alignment: Alignment.bottomCenter,
         children: [
           SizedBox(width: 48, height: 48, child: child),
-          Positioned(
-              left: 2,
-              right: 2,
-              bottom: 2,
-              child: Stack(
-                alignment: Alignment.bottomCenter,
-                children: [
-                  Text(
-                    destinationName,
-                    style: textStyle.copyWith(
-                        foreground: Paint()
-                          ..style = PaintingStyle.stroke
-                          ..strokeWidth = 3),
-                    softWrap: false,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.fade,
-                  ),
-                  Text(
-                    destinationName,
-                    style: textStyle,
-                    softWrap: false,
-                    textAlign: TextAlign.center,
-                    overflow: TextOverflow.fade,
-                  )
-                ],
-              )),
           Positioned.fill(
             child: Material(
               color: Colors.transparent,

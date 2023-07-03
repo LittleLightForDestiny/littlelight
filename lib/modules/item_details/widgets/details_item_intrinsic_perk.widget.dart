@@ -75,12 +75,6 @@ class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
             Container(height: 4),
             ManifestText<DestinyInventoryItemDefinition>(
               plugHash,
-              textExtractor: (def) => def.itemTypeDisplayName,
-              style: const TextStyle(fontSize: 16),
-            ),
-            Container(height: 4),
-            ManifestText<DestinyInventoryItemDefinition>(
-              plugHash,
               textExtractor: (def) => def.displayProperties?.description,
               softWrap: true,
               style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),

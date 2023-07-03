@@ -5,8 +5,13 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/item_details/blocs/item_details.bloc.dart';
+import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_energy_meter.widget.dart';
+import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_intrinsic_perk.widget.dart';
 import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_perks.widget.dart';
+import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_plug_info.widget.dart';
 import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_stats.widget.dart';
+import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_supers.widget.dart';
+import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_transfer_block.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
@@ -20,6 +25,8 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
+
+import 'details_item_cover_mods.widget.dart';
 
 const _powerStatHash = 1935470627;
 
@@ -82,12 +89,13 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
     final state = context.watch<ItemDetailsBloc>();
+    final bloc = context.read<ItemDetailsBloc>();
     final socketState = context.watch<SocketControllerBloc>();
     double expandRatio = max(0, 1 - shrinkOffset / (maxHeight - minHeight));
     if (maxHeight == minHeight) {
       expandRatio = 0;
     }
-    return ItemCoverContentsWidget(state, socketState, expandRatio);
+    return ItemCoverContentsWidget(bloc, state, socketState, expandRatio);
   }
 
   @override
@@ -103,17 +111,22 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
 }
 
 class ItemCoverContentsWidget extends StatelessWidget {
+  final ItemDetailsBloc bloc;
   final ItemDetailsBloc state;
   final SocketControllerBloc socketState;
   final double expandRatio;
-  ItemCoverContentsWidget(this.state, this.socketState, this.expandRatio);
+  ItemCoverContentsWidget(this.bloc, this.state, this.socketState, this.expandRatio);
 
   @override
   Widget build(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
     final pixelSize = (1 / 1920) * context.mediaQuery.size.width;
+    Color? backgroundColor = definition?.inventory?.tierType?.getColor(context);
+    if (definition?.isSubclass ?? false) {
+      backgroundColor = definition?.talentGrid?.hudDamageType?.getColorLayer(context);
+    }
     return Container(
-        color: definition?.inventory?.tierType?.getColor(context),
+        color: backgroundColor,
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -150,6 +163,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
 
   Widget buildTierBar(BuildContext context, double expandRatio, double pixelSize) {
     final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    if (definition?.isSubclass ?? false) return Container();
     final tierColor = definition?.inventory?.tierType?.getColor(context) ?? Colors.transparent;
     final topPadding = context.topPadding(expandRatio, pixelSize);
     return Positioned(
@@ -241,6 +255,10 @@ class ItemCoverContentsWidget extends StatelessWidget {
     final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
     double paddingTop = MediaQuery.of(context).padding.top;
     final name = state.customName ?? definition?.displayProperties?.name ?? "";
+    Color? textColor = definition?.inventory?.tierType?.getTextColor(context);
+    if (definition?.isSubclass ?? false) {
+      textColor = context.theme.onSurfaceLayers;
+    }
     return Positioned(
         top: lerpDouble(paddingTop + 8, 96 * pixelSize, expandRatio),
         left: lerpDouble(kToolbarHeight * 2, pixelSize * (96.0 * 2 + 24), expandRatio),
@@ -256,7 +274,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,
                   style: context.textTheme.itemNameScreenshot.copyWith(
-                    color: definition?.inventory?.tierType?.getTextColor(context).withOpacity(.9),
+                    color: textColor?.withOpacity(.9),
                     fontSize: lerpDouble(kToolbarHeight * .5, pixelSize * 74, expandRatio),
                   ),
                 )),
@@ -264,7 +282,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
               definition?.itemTypeDisplayName?.toUpperCase() ?? "",
               style: context.textTheme.itemTypeScreenshot.copyWith(
                 fontSize: lerpDouble(kToolbarHeight * .3, pixelSize * 34, expandRatio),
-                color: definition?.inventory?.tierType?.getTextColor(context).withOpacity(.8),
+                color: textColor?.withOpacity(.8),
               ),
             ),
           ],
@@ -289,10 +307,12 @@ class ItemCoverContentsWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    // managementBlock(context, expandRatio),
+                    buildManagementBlock(context, expandRatio, pixelSize),
                     // Container(height: convertSize(16.0, context)),
-                    Expanded(child: Container()),
-                    // Expanded(child: socketController == null ? Container() : socketDetails(context, expandRatio)),
+                    Expanded(
+                        child: DetailsItemCoverPlugInfoWidget(
+                      pixelSize: pixelSize,
+                    )),
                     // Container(height: convertSize(16.0, context)),
                     buildStatsBlock(context, expandRatio, pixelSize)
                   ],
@@ -301,9 +321,10 @@ class ItemCoverContentsWidget extends StatelessWidget {
 
   Widget buildStatsBlock(BuildContext context, double expandRatio, double pixelSize) {
     final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
-    final hasPrimaryStat = definition?.stats?.primaryBaseStatHash != null;
+    if (definition?.isSubclass ?? false) return Container();
+    final hasPrimaryStatType = definition?.stats?.primaryBaseStatHash != null;
     final hasStats = definition?.investmentStats?.isNotEmpty ?? false;
-    if (!hasPrimaryStat && !hasStats) return Container();
+    if (!hasPrimaryStatType && !hasStats) return Container();
     return Opacity(
         opacity: expandRatio,
         child: IntrinsicHeight(
@@ -311,8 +332,8 @@ class ItemCoverContentsWidget extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (hasPrimaryStat) buildPrimaryStat(context, expandRatio, pixelSize),
-            if (hasPrimaryStat && hasStats)
+            if (hasPrimaryStatType) buildPrimaryStat(context, expandRatio, pixelSize),
+            if (hasPrimaryStatType && hasStats)
               Container(
                 width: 1 * pixelSize,
                 color: context.theme.onSurfaceLayers.layer0,
@@ -339,10 +360,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
   Widget buildLeftColumn(BuildContext context, double expandRatio, double pixelSize) {
     final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
     final width = 730 * pixelSize;
-    final reusable = socketState.getSocketCategories(DestinySocketCategoryStyle.Reusable) ?? [];
-    final armorTier = null;
-    final mods = null;
-    final intrinsic = null;
+    final categories = socketState.getSocketCategories(null) ?? [];
     final openTopPadding = (context.topPadding(expandRatio, pixelSize) + 180 * pixelSize) * expandRatio;
     final closedTopPadding = kToolbarHeight * (1 - expandRatio);
     final topPadding = openTopPadding + closedTopPadding;
@@ -363,10 +381,34 @@ class ItemCoverContentsWidget extends StatelessWidget {
                   style: context.textTheme.quote.copyWith(fontSize: 20 * pixelSize),
                 ),
               ),
-              ...reusable.map((c) => DetailsItemCoverPerksWidget(c, pixelSize)),
+              ...categories.map((c) => buildSocketCategory(context, expandRatio, pixelSize, c)),
             ],
           ),
         ));
+  }
+
+  Widget buildSocketCategory(
+      BuildContext context, double expandRatio, double pixelSize, DestinyItemSocketCategoryDefinition category) {
+    final categoryDef = context.definition<DestinySocketCategoryDefinition>(category.socketCategoryHash);
+    final categoryStyle = categoryDef?.categoryStyle;
+    if (categoryStyle == null) return Container();
+    switch (categoryStyle) {
+      case DestinySocketCategoryStyle.Reusable:
+        return DetailsItemCoverPerksWidget(category, pixelSize: pixelSize);
+      case DestinySocketCategoryStyle.LargePerk:
+      case DestinySocketCategoryStyle.Intrinsic:
+        return DetailsItemCoverIntrinsicPerkWidget(category, pixelSize: pixelSize);
+      case DestinySocketCategoryStyle.EnergyMeter:
+        return DetailsItemCoverEnergyMeterWidget(category, pixelSize: pixelSize);
+      case DestinySocketCategoryStyle.Supers:
+        return DetailsItemCoverSupersWidget(category, pixelSize: pixelSize);
+      case DestinySocketCategoryStyle.Consumable:
+      case DestinySocketCategoryStyle.Abilities:
+      case DestinySocketCategoryStyle.Unlockable:
+      case DestinySocketCategoryStyle.Unknown:
+      case DestinySocketCategoryStyle.ProtectedInvalidEnumValue:
+        return DetailsItemCoverModsWidget(category, pixelSize: pixelSize);
+    }
   }
 
   Widget buildBackground(BuildContext context, double expandRatio) {
@@ -412,16 +454,17 @@ class ItemCoverContentsWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        Container(
-          margin: EdgeInsets.only(right: 8 * pixelSize, bottom: 4 * pixelSize),
-          child: ManifestText<DestinyStatDefinition>(
-            _powerStatHash,
-            uppercase: true,
-            style: context.textTheme.primaryStatTypeScreenshot.copyWith(
-              fontSize: 30 * pixelSize,
+        if (primaryStatValue != null)
+          Container(
+            margin: EdgeInsets.only(right: 8 * pixelSize, bottom: 4 * pixelSize),
+            child: ManifestText<DestinyStatDefinition>(
+              _powerStatHash,
+              uppercase: true,
+              style: context.textTheme.primaryStatTypeScreenshot.copyWith(
+                fontSize: 30 * pixelSize,
+              ),
             ),
           ),
-        ),
         Flexible(
           flex: 2,
           child: SizedBox(
@@ -478,6 +521,18 @@ class ItemCoverContentsWidget extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+
+  Widget buildManagementBlock(BuildContext context, double expandRatio, double pixelSize) {
+    final item = state.item;
+    if (item == null) return Container();
+    return DetailsItemCoverTransferBlockWidget(
+      item,
+      transferDestinations: state.transferDestinations,
+      equipDestinations: state.equipDestinations,
+      onAction: (type, destination) => bloc.onTransferAction(type, destination, 1),
+      pixelSize: pixelSize,
     );
   }
 }

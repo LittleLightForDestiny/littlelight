@@ -179,12 +179,12 @@ class DetailsCoverTotalItemStatWidget extends DetailsItemCoverStatWidget {
   @override
   int get maxValue => 100;
 
-  @override
   Widget buildLabel(BuildContext context) {
     return Container(
+      padding: EdgeInsets.only(right: 12 * pixelSize),
       child: Text(
         "Total".translate(context),
-        style: context.textTheme.body.copyWith(color: getBaseColor(context)),
+        style: context.textTheme.body.copyWith(color: getBaseColor(context), fontSize: 20 * pixelSize),
         textAlign: TextAlign.end,
         softWrap: false,
       ),

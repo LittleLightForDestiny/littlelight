@@ -364,13 +364,20 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
               margin: const EdgeInsets.only(right: 4),
               width: _titleBarIconSize,
               height: _titleBarIconSize,
-              child: PostmasterIconWidget(borderWidth: .5),
+              child: PostmasterIconWidget(
+                borderWidth: .5,
+                hideName: true,
+              ),
             ),
             Container(
               margin: const EdgeInsets.only(right: 4),
               width: _titleBarIconSize,
               height: _titleBarIconSize,
-              child: CharacterIconWidget(character, borderWidth: .5),
+              child: CharacterIconWidget(
+                character,
+                borderWidth: .5,
+                hideName: true,
+              ),
             ),
           ],
         );
@@ -379,7 +386,11 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         margin: const EdgeInsets.only(right: 4),
         width: _titleBarIconSize,
         height: _titleBarIconSize,
-        child: CharacterIconWidget(character, borderWidth: .5),
+        child: CharacterIconWidget(
+          character,
+          borderWidth: .5,
+          hideName: true,
+        ),
       );
     }
     if (item.bucketHash == InventoryBucket.general) {
@@ -387,14 +398,20 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         margin: const EdgeInsets.only(right: 4),
         width: _titleBarIconSize,
         height: _titleBarIconSize,
-        child: VaultIconWidget(borderWidth: .5),
+        child: VaultIconWidget(
+          borderWidth: .5,
+          hideName: true,
+        ),
       );
     }
     return Container(
       margin: const EdgeInsets.only(right: 4),
       width: _titleBarIconSize,
       height: _titleBarIconSize,
-      child: ProfileIconWidget(borderWidth: .5),
+      child: ProfileIconWidget(
+        borderWidth: .5,
+        hideName: true,
+      ),
     );
   }
 
