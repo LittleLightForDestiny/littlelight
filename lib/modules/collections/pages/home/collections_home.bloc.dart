@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/modules/collections/blocs/base_collections.bloc.dart';
 import 'package:little_light/modules/collections/pages/category/collections_category.page_route.dart';
+import 'package:little_light/modules/collections/pages/search/collectibles_search.page_route.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
@@ -75,5 +76,12 @@ class CollectionsHomeBloc extends CollectionsBloc {
     final hashes = _tabNodeDefinitions?.map((e) => e.hash);
     if (hashes == null) return;
     updatePresentationNodeChildren(hashes);
+  }
+
+  @override
+  void openSearch() {
+    final hash = destinySettings.collectionsRootNode;
+    if (hash == null) return;
+    Navigator.of(context).push(CollectiblesSearchPageRoute(hash));
   }
 }

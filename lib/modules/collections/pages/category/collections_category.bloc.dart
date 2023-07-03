@@ -56,4 +56,7 @@ class CollectionsCategoryBloc extends CollectionsBloc {
       ]),
     );
   }
+
+  @override
+  void openSearch() {}
 }

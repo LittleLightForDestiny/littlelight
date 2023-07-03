@@ -56,7 +56,9 @@ class CollectionsHomeView extends BaseCollectionsView {
     return [
       IconButton(
         icon: Icon(Icons.search),
-        onPressed: () => {},
+        onPressed: () {
+          bloc.openSearch();
+        },
       ),
       ...(super.buildActions(context) ?? []),
     ];

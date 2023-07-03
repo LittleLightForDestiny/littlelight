@@ -202,4 +202,6 @@ abstract class CollectionsBloc extends ChangeNotifier {
       selectionBloc.selectItems(items);
     }
   }
+
+  void openSearch();
 }
