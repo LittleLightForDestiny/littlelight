@@ -7,15 +7,25 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
+const _defaultPlugIconSize = 24.0;
+const _defaultComparisonIconSize = 16.0;
+const _defaultFontSize = 13.0;
+
 class DetailsPlugStatsWidget extends StatelessWidget {
   final List<StatComparison> stats;
   final int? selectedPlugHash;
   final int? equippedPlugHash;
+  final double plugIconSize;
+  final double comparisonIconSize;
+  final double fontSize;
 
   const DetailsPlugStatsWidget(
     this.stats, {
-    int? this.selectedPlugHash,
-    int? this.equippedPlugHash,
+    this.selectedPlugHash,
+    this.equippedPlugHash,
+    this.plugIconSize = _defaultPlugIconSize,
+    this.comparisonIconSize = _defaultComparisonIconSize,
+    this.fontSize = _defaultFontSize,
   });
 
   @override
@@ -53,19 +63,19 @@ class DetailsPlugStatsWidget extends StatelessWidget {
         Container(
             alignment: Alignment.center,
             child: Container(
-              width: 24,
-              height: 24,
+              width: plugIconSize,
+              height: plugIconSize,
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(selectedPlugHash),
             )),
         if (!isSamePlug)
           Container(
               alignment: Alignment.center,
               child: Container(
-                width: 24,
-                height: 24,
+                width: plugIconSize,
+                height: plugIconSize,
                 child: ManifestImageWidget<DestinyInventoryItemDefinition>(equippedPlugHash),
               )),
-        if (!isSamePlug) Icon(FontAwesomeIcons.plusMinus, size: 16),
+        if (!isSamePlug) Icon(FontAwesomeIcons.plusMinus, size: comparisonIconSize),
       ],
     );
   }
@@ -76,6 +86,7 @@ class DetailsPlugStatsWidget extends StatelessWidget {
         stat.statHash,
         textAlign: TextAlign.end,
         softWrap: false,
+        style: context.textTheme.body.copyWith(fontSize: fontSize),
       ),
       buildStatValue(context, stat.selected, stat.selectedDiffType),
       if (!isSamePlug) buildStatValue(context, stat.equipped, stat.equippedDiffType),
@@ -96,6 +107,7 @@ class DetailsPlugStatsWidget extends StatelessWidget {
       softWrap: false,
       style: context.textTheme.highlight.copyWith(
         color: color.mix(context.theme.onSurfaceLayers.layer0, 10),
+        fontSize: fontSize,
       ),
     );
   }

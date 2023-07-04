@@ -10,7 +10,7 @@ import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
-import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
+import 'package:little_light/modules/search/pages/pursuit_search/pursuit_search.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -56,7 +56,7 @@ class _ProgressState {
     final characterId = item.characterId;
     if (characterId == null) return;
     final characterPursuits = pursuits[characterId] ??= CharacterPursuits();
-    final traitIndex = def?.traitIds?.indexWhere((element) => element.startsWith('quest.')) ?? -1;
+    final traitIndex = def?.traitIds?.indexWhere((element) => element.contains('quest.')) ?? -1;
     final traitHash = traitIndex >= 0 ? def?.traitHashes?.elementAtOrNull(traitIndex) : null;
     final categoryQuests = characterPursuits.quests[traitHash] ??= [];
     categoryQuests.add(item);
@@ -182,8 +182,8 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
     );
   }
 
-  void openSearch(int bucketHash, String characterId) {
-    Navigator.of(_context).push(QuickTransferPageRoute(bucketHash: bucketHash, characterId: characterId));
+  void openSearch() {
+    Navigator.of(_context).push(PursuitSearchPageRoute());
   }
 
   List<int?>? pursuitCategoriesFor(DestinyCharacterInfo character) {

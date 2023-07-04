@@ -42,6 +42,10 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) => GameData(
           (json['vendorsHomeHiddenCategories'] as List<dynamic>?)
               ?.map((e) => e as String)
               .toList(),
+      cosmeticSocketCategories:
+          (json['cosmeticSocketCategories'] as List<dynamic>?)
+              ?.map((e) => e as int)
+              .toList(),
     );
 
 Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
@@ -54,4 +58,5 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'relevantCurrencies': instance.relevantCurrencies,
       'raidPhases': instance.raidPhases,
       'vendorsHomeHiddenCategories': instance.vendorsHomeHiddenCategories,
+      'cosmeticSocketCategories': instance.cosmeticSocketCategories,
     };

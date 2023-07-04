@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/item_notes_tag.dart';
@@ -232,5 +233,13 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
       _inventoryBloc.equip(item, destination);
     }
     Navigator.of(context).pop();
+  }
+
+  @override
+  DestinyCharacterInfo? get character {
+    final characterId = item?.characterId;
+    if (characterId == null) return null;
+    final character = _profileBloc.getCharacterById(characterId);
+    return character;
   }
 }

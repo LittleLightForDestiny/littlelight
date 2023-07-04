@@ -25,7 +25,8 @@ setupManifest() {
 }
 
 class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiConsumer, AnalyticsConsumer {
-  BuildContext? _context;
+  @protected
+  BuildContext? context;
   sqflite.Database? _db;
   DestinyManifest? _manifestInfo;
   final Map<String, dynamic> _cached = {};
@@ -34,7 +35,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
   ManifestService._internal();
 
   ManifestService initContext(BuildContext context) {
-    this._context = context;
+    this.context = context;
     return this;
   }
 

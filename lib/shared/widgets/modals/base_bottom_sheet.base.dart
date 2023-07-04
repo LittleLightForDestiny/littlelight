@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 
 abstract class BaseBottomSheet<ReturnType> extends StatelessWidget {
@@ -7,14 +8,17 @@ abstract class BaseBottomSheet<ReturnType> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final header = this.buildHeader(context);
-    return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-      if (header != null)
-        Container(
-          padding: EdgeInsets.all(8),
-          child: HeaderWidget(child: header),
-        ),
-      Flexible(child: buildContent(context)),
-    ]);
+    return Container(
+      color: context.theme.surfaceLayers.layer1,
+      child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
+        if (header != null)
+          Container(
+            padding: EdgeInsets.all(8),
+            child: HeaderWidget(child: header),
+          ),
+        Flexible(child: buildContent(context)),
+      ]),
+    );
   }
 
   Widget? buildHeader(BuildContext context);

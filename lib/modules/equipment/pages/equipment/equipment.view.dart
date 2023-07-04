@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/models/scroll_area_type.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_character_tab_content.widget.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_type_tab_menu.widget.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_vault_tab_content.widget.dart';
@@ -12,6 +13,8 @@ import 'package:little_light/shared/widgets/notifications/notifications.widget.d
 import 'package:little_light/shared/widgets/overlay/show_overlay.dart';
 import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
+import 'package:little_light/shared/widgets/tabs/item_list_swipe_area/swipe_area_gesture_detector.widget.dart';
+import 'package:little_light/shared/widgets/tabs/item_list_swipe_area/swipe_area_indicator_overlay.dart';
 import 'package:little_light/shared/widgets/tabs/header/character_tab_header.widget.dart';
 import 'package:little_light/shared/widgets/tabs/header/loading_tab_header.widget.dart';
 import 'package:little_light/shared/widgets/tabs/header/vault_tab_header.widget.dart';
@@ -19,6 +22,8 @@ import 'package:little_light/shared/widgets/tabs/menus/character_header_tab_menu
 import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_indicator.dart';
 
 import 'equipment.bloc.dart';
+
+const _animationDuration = Duration(milliseconds: 500);
 
 class EquipmentView extends StatelessWidget {
   final EquipmentBloc bloc;
@@ -54,18 +59,15 @@ class EquipmentView extends StatelessWidget {
                       child: Stack(children: [
                         Positioned.fill(child: buildTabContent(context, characterTabController, typeTabController)),
                         Positioned.fill(
-                            child: Column(children: [
-                          Expanded(
-                              child: CustomTabGestureDetector(
-                            controller: characterTabController,
-                          )),
-                          SizedBox(
-                            height: 200,
-                            child: CustomTabGestureDetector(
-                              controller: typeTabController,
-                            ),
+                          child: buildScrollGestureDetectors(
+                            context,
+                            characterTabController,
+                            typeTabController,
                           ),
-                        ])),
+                        ),
+                        Positioned.fill(
+                          child: buildScrollIndicators(context, characterTabController, typeTabController),
+                        ),
                         Positioned(
                           left: 8,
                           bottom: 8,
@@ -213,17 +215,6 @@ class EquipmentView extends StatelessWidget {
     );
   }
 
-  Widget buildTabPanGestureDetector(BuildContext context, CustomTabController tabController) {
-    return Stack(
-      children: [
-        IgnorePointer(child: Container(color: Colors.red.withOpacity(.3))),
-        CustomTabGestureDetector(
-          controller: tabController,
-        ),
-      ],
-    );
-  }
-
   Widget buildCharacterContextMenuButton(
     BuildContext context,
     CustomTabController characterTabController,
@@ -269,5 +260,37 @@ class EquipmentView extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Widget buildScrollIndicators(
+    BuildContext context,
+    CustomTabController characterTabController,
+    CustomTabController typeTabController,
+  ) {
+    return AnimatedBuilder(
+        animation: typeTabController,
+        builder: (context, child) => AnimatedBuilder(
+            animation: characterTabController,
+            builder: (context, child) => AnimatedOpacity(
+                  duration: _animationDuration,
+                  opacity: typeTabController.isDragging || characterTabController.isDragging ? 1 : 0,
+                  child: DividerIndicatorOverlay(
+                    activeTypes: {
+                      ScrollAreaType.Characters: characterTabController.isDragging,
+                      ScrollAreaType.Sections: typeTabController.isDragging,
+                    },
+                  ),
+                )));
+  }
+
+  Widget buildScrollGestureDetectors(
+    BuildContext context,
+    CustomTabController characterTabController,
+    CustomTabController typeTabController,
+  ) {
+    return SwipeAreaGestureDetector({
+      ScrollAreaType.Characters: characterTabController,
+      ScrollAreaType.Sections: typeTabController,
+    });
   }
 }

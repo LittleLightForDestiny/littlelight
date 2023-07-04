@@ -9,7 +9,9 @@ class CustomTabGestureDetector extends StatelessWidget {
     return LayoutBuilder(
       builder: ((context, constraints) => GestureDetector(
             behavior: HitTestBehavior.translucent,
-            // onHorizontalDragStart: (details) {},
+            onPanStart: (details) {
+              controller._dragStart();
+            },
             onPanUpdate: (details) {
               final offset = -details.delta / constraints.maxWidth;
               final shouldConsider = offset.dx.abs() > offset.dy.abs();
@@ -17,6 +19,9 @@ class CustomTabGestureDetector extends StatelessWidget {
               controller._dragBy(offset.dx);
             },
             onPanEnd: (details) {
+              controller._dragStop();
+            },
+            onPanCancel: () {
               controller._dragStop();
             },
           )),

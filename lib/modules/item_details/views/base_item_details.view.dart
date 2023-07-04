@@ -9,17 +9,19 @@ import 'package:little_light/modules/item_details/widgets/details_item_collectib
 import 'package:little_light/modules/item_details/widgets/details_item_description.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_duplicates.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_intrinsic_perk.widget.dart';
+import 'package:little_light/modules/item_details/widgets/item_cover/details_item_landscape_cover.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_lore.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_mods.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_notes.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_perks.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_progress.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_quest_info.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_rewards.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_stats.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_supers.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_tags.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_transfer_block.widget.dart';
-import 'package:little_light/modules/item_details/widgets/details_item_cover.widget.dart';
+import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_wishlist_builds.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_wishlist_info.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_lock_status.widget.dart';
@@ -27,16 +29,20 @@ import 'package:little_light/modules/item_details/widgets/details_wishlist_notes
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
+
+const _animationDuration = const Duration(milliseconds: 300);
 
 abstract class BaseItemDetailsView extends StatelessWidget {
   final ItemDetailsBloc bloc;
   final ItemDetailsBloc state;
   final SocketControllerBloc socketState;
   final SelectionBloc selectionState;
+  final controller = ScrollController();
 
   BaseItemDetailsView(this.bloc, this.state, this.socketState, this.selectionState);
 
@@ -72,9 +78,20 @@ abstract class BaseItemDetailsView extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context, {required bool hasFooter}) {
+    if (context.mediaQuery.isLandscape || context.mediaQuery.tabletOrBigger) {
+      return buildLandscapeBody(context, hasFooter: hasFooter);
+    }
+    return buildPortraitBody(context, hasFooter: hasFooter);
+  }
+
+  Widget buildLandscapeBody(BuildContext context, {required bool hasFooter}) {
     return CustomScrollView(
+      controller: controller,
       slivers: [
-        DetailsItemCoverWidget(),
+        DetailsItemLandscapeCoverWidget(
+          state,
+          socketState,
+        ),
         buildDescription(context),
         buildWishlistInfo(context),
         buildLockState(context),
@@ -91,6 +108,37 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         buildWishlistNotes(context),
         buildItemProgress(context),
         buildQuestSteps(context),
+        buildRewards(context),
+        buildItemNotes(context),
+        buildItemTags(context),
+        buildLore(context),
+        buildCollectibleInfo(context),
+        buildEmptySpace(context, hasFooter: hasFooter),
+      ].whereType<Widget>().toList(),
+    );
+  }
+
+  Widget buildPortraitBody(BuildContext context, {required bool hasFooter}) {
+    return CustomScrollView(
+      slivers: [
+        DetailsItemCoverWidget(state),
+        buildDescription(context),
+        buildWishlistInfo(context),
+        buildLockState(context),
+        buildActions(context),
+        buildDuplicates(context),
+        ...buildIntrinsicPerks(context),
+        ...buildArmorEnergy(context),
+        buildStats(context),
+        ...buildSupers(context),
+        ...buildAbilities(context),
+        ...buildReusablePerks(context),
+        ...buildMods(context),
+        buildWishlistBuilds(context),
+        buildWishlistNotes(context),
+        buildItemProgress(context),
+        buildQuestSteps(context),
+        buildRewards(context),
         buildItemNotes(context),
         buildItemTags(context),
         buildLore(context),
@@ -263,6 +311,20 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     );
   }
 
+  Widget? buildRewards(BuildContext context) {
+    final item = state.item;
+    if (item == null) return null;
+    final definition = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
+    final items = definition?.value?.itemValue?.where((i) => i.itemHash != null).toList();
+    if (items == null || items.isEmpty) return null;
+    return SliverToBoxAdapter(
+      child: DetailsItemRewardsWidget(
+        item,
+        character: state.character,
+      ),
+    );
+  }
+
   Widget? buildItemNotes(BuildContext context) {
     return SliverToBoxAdapter(
         child: DetailsItemNotesWidget(
@@ -357,11 +419,23 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     return Container(
       color: context.theme.surfaceLayers.layer1,
       child: Column(children: [
-        DetailsTransferBlockWidget(
-          item,
-          transferDestinations: state.transferDestinations,
-          equipDestinations: state.equipDestinations,
-          onAction: bloc.onTransferAction,
+        AnimatedBuilder(
+          animation: controller,
+          builder: (context, child) {
+            final isLandscape = context.mediaQuery.isLandscape || context.mediaQuery.tabletOrBigger;
+            final isStart = controller.position.pixels < 100;
+            return AnimatedAlign(
+                alignment: Alignment.topCenter,
+                duration: _animationDuration,
+                heightFactor: isLandscape && isStart ? 0 : 1,
+                child: child);
+          },
+          child: DetailsTransferBlockWidget(
+            item,
+            transferDestinations: state.transferDestinations,
+            equipDestinations: state.equipDestinations,
+            onAction: bloc.onTransferAction,
+          ),
         ),
         SizedBox(
           height: mqPadding.bottom,

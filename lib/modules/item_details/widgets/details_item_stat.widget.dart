@@ -141,8 +141,7 @@ class DetailsItemStatWidget extends StatelessWidget {
     return getDiffColor(context, modValues.diffType);
   }
 
-  Color getBaseColor(BuildContext context) =>
-      modValues.isHiddenStat ? context.theme.achievementLayers.layer2 : context.theme.onSurfaceLayers.layer2;
+  Color getBaseColor(BuildContext context) => context.theme.onSurfaceLayers.layer2;
 
   Color getDiffColor(BuildContext context, StatDifferenceType diffType) {
     return (diffType == StatDifferenceType.Positive

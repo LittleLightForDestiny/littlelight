@@ -2,6 +2,7 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
@@ -9,12 +10,6 @@ import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:provider/provider.dart';
-
-const _cosmeticsCategories = [
-  1926152773, //armor cosmetics
-  2048875504, //weapon cosmetics
-  2549160099, //ghost cosmetics
-];
 
 class PlugSocket {
   final int index;
@@ -60,6 +55,9 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   final ItemNotesBloc itemNotes;
 
   @protected
+  final LittleLightDataBloc littlelightData;
+
+  @protected
   DestinyInventoryItemDefinition? itemDefinition;
 
   @protected
@@ -91,20 +89,44 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
       : manifest = context.read<ManifestService>(),
         wishlists = getInjectedWishlistsService(),
         itemNotes = context.read<ItemNotesBloc>(),
-        super();
+        littlelightData = context.read<LittleLightDataBloc>(),
+        super() {
+    _initGameData();
+  }
+
+  void _initGameData() {
+    littlelightData.addListener(_updateGameData);
+    _updateGameData();
+  }
+
+  void _updateGameData() {
+    notifyListeners();
+  }
+
+  @override
+  dispose() {
+    super.dispose();
+    littlelightData.removeListener(_updateGameData);
+  }
 
   List<DestinyItemSocketCategoryDefinition>? getSocketCategories(DestinySocketCategoryStyle? category) {
     final categories = itemDefinition?.sockets?.socketCategories?.where((socketCategory) {
       return socketsForCategory(socketCategory)?.isNotEmpty ?? false;
     }).toList();
-    if (categories == null) return null;
     final categoryDefs = categoryDefinitions;
+    final cosmeticSockets = littlelightData.gameData?.cosmeticSocketCategories;
+    if (categories == null) return null;
     if (categoryDefs == null) return null;
     categories.sort((a, b) {
+      final isCosmeticsA = (cosmeticSockets?.contains(a.socketCategoryHash) ?? false) ? 1 : 0;
+      final isCosmeticsB = (cosmeticSockets?.contains(b.socketCategoryHash) ?? false) ? 1 : 0;
+      final cosmeticsDiff = isCosmeticsA.compareTo(isCosmeticsB);
+      if (cosmeticsDiff != 0) return cosmeticsDiff;
       final indexA = categoryDefs[a.socketCategoryHash]?.index ?? 0;
       final indexB = categoryDefs[b.socketCategoryHash]?.index ?? 0;
       return indexA.compareTo(indexB);
     });
+
     if (category == null) return categories;
 
     final filteredCategories = categories.where((element) {
@@ -230,7 +252,22 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   }
 
   bool canFavorite(DestinyItemSocketCategoryDefinition category) {
-    return _cosmeticsCategories.contains(category.socketCategoryHash);
+    return littlelightData.gameData?.cosmeticSocketCategories?.contains(category.socketCategoryHash) ?? false;
+  }
+
+  bool canFavoriteSocket(int? socketIndex) {
+    final cosmeticCategories = littlelightData.gameData?.cosmeticSocketCategories;
+    if (cosmeticCategories == null) return false;
+    final categories = itemDefinition?.sockets?.socketCategories;
+    if (categories == null || categories.isEmpty) return false;
+    return categories.any((c) =>
+        cosmeticCategories.contains(
+          c.socketCategoryHash,
+        ) &&
+        (c.socketIndexes?.contains(
+              socketIndex,
+            ) ??
+            false));
   }
 
   bool isFavoritePlug(int plugHash) {
@@ -359,7 +396,6 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     int selected = 0;
     int selectedMasterwork = 0;
     for (final s in stats) {
-      if (s.isHiddenStat) continue;
       equipped += s.equipped;
       selected += s.equipped;
       equippedMasterWork += s.equippedMasterwork;

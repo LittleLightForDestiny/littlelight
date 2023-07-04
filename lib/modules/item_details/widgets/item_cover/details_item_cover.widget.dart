@@ -20,7 +20,9 @@ import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
 import 'package:provider/provider.dart';
 
 class DetailsItemCoverWidget extends StatelessWidget {
-  const DetailsItemCoverWidget({
+  final ItemDetailsBloc state;
+  const DetailsItemCoverWidget(
+    this.state, {
     Key? key,
   }) : super(key: key);
 

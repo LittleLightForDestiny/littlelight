@@ -9,7 +9,8 @@ import 'package:provider/provider.dart';
 class RecordDetailsBloc extends ChangeNotifier {
   @protected
   final ProfileBloc profileBloc;
-  final ManifestService _manifestBloc;
+  @protected
+  final ManifestService manifestBloc;
 
   int _recordHash;
   int get recordHash => _recordHash;
@@ -23,7 +24,7 @@ class RecordDetailsBloc extends ChangeNotifier {
   RecordDetailsBloc(BuildContext context, int recordHash)
       : this._recordHash = recordHash,
         profileBloc = context.read<ProfileBloc>(),
-        _manifestBloc = context.read<ManifestService>(),
+        manifestBloc = context.read<ManifestService>(),
         super() {
     _init();
   }

@@ -30,7 +30,20 @@ class MilestoneModifiersBottomSheet extends BaseListBottomSheet {
   Widget? buildItemLabel(BuildContext context, int index) {
     final hash = modifierHashes.elementAtOrNull(index);
     if (hash == null) return null;
-    final def = context.definition<DestinyActivityModifierDefinition>(hash);
+    return MilestoneModifierItem(milestoneHash: hash);
+  }
+
+  @override
+  int? get itemCount => modifierHashes.length;
+}
+
+class MilestoneModifierItem extends StatelessWidget {
+  final int milestoneHash;
+  const MilestoneModifierItem({Key? key, required this.milestoneHash}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final def = context.definition<DestinyActivityModifierDefinition>(milestoneHash);
     final description = def?.displayProperties?.description;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       Row(
@@ -41,22 +54,19 @@ class MilestoneModifiersBottomSheet extends BaseListBottomSheet {
                 width: 24,
                 height: 24,
                 margin: EdgeInsets.only(right: 8),
-                child: ManifestImageWidget<DestinyActivityModifierDefinition>(hash)),
-          Expanded(child: ManifestText<DestinyActivityModifierDefinition>(hash)),
+                child: ManifestImageWidget<DestinyActivityModifierDefinition>(milestoneHash)),
+          Expanded(child: ManifestText<DestinyActivityModifierDefinition>(milestoneHash)),
         ],
       ),
       if (description != null)
         Container(
           padding: EdgeInsets.all(4),
           child: ManifestText<DestinyActivityModifierDefinition>(
-            hash,
+            milestoneHash,
             textExtractor: (def) => def.displayProperties?.description?.replaceAll('\n\n', '\n'),
             style: context.textTheme.body,
           ),
         ),
     ]);
   }
-
-  @override
-  int? get itemCount => modifierHashes.length;
 }

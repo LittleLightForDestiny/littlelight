@@ -33,6 +33,7 @@ class GameData {
   List<int>? relevantCurrencies;
   Map<String, String>? raidPhases;
   List<String>? vendorsHomeHiddenCategories;
+  List<int>? cosmeticSocketCategories;
 
   GameData({
     required this.softCap,
@@ -44,6 +45,7 @@ class GameData {
     required this.relevantCurrencies,
     required this.raidPhases,
     required this.vendorsHomeHiddenCategories,
+    required this.cosmeticSocketCategories,
   });
 
   factory GameData.fromJson(dynamic json) {

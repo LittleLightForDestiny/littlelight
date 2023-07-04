@@ -9,6 +9,7 @@ import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
+import 'package:little_light/models/scroll_area_type.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/storage/migrations/storage_migrations.dart';
@@ -293,5 +294,81 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<void> purge() async {
     await purgePath("");
+  }
+
+  Future<ScrollAreaType?> getTopScrollAreaType() async {
+    try {
+      final String? str = await getString(GlobalStorageKeys.topScrollAreaType);
+      final ScrollAreaType? mode = str?.asScrollAreaType;
+      return mode;
+    } catch (e) {
+      logger.error("can't parse scroll top area", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setTopScrollAreaType(ScrollAreaType? mode) async {
+    try {
+      String? str = mode?.asString;
+      await setString(GlobalStorageKeys.topScrollAreaType, str);
+    } catch (e) {
+      logger.error("error saving scroll top area", error: e);
+    }
+  }
+
+  Future<ScrollAreaType?> getBottomScrollAreaType() async {
+    try {
+      final String? str = await getString(GlobalStorageKeys.bottomScrollAreaType);
+      final ScrollAreaType? mode = str?.asScrollAreaType;
+      return mode;
+    } catch (e) {
+      logger.error("can't parse scroll bottom area", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setBottomScrollAreaType(ScrollAreaType? mode) async {
+    try {
+      String? str = mode?.asString;
+      await setString(GlobalStorageKeys.bottomScrollAreaType, str);
+    } catch (e) {
+      logger.error("error saving scroll bottom area", error: e);
+    }
+  }
+
+  Future<int?> getScrollAreaDivisionThreshold() async {
+    try {
+      final int? threshold = await getInt(GlobalStorageKeys.scrollAreaDivisionThreshold);
+      return threshold;
+    } catch (e) {
+      logger.error("can't parse scroll area threshold", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setScrollAreaDivisionThreshold(int? threshold) async {
+    try {
+      await setInt(GlobalStorageKeys.scrollAreaDivisionThreshold, threshold);
+    } catch (e) {
+      logger.error("error saving scroll area threshold", error: e);
+    }
+  }
+
+  Future<bool?> getScrollAreaHintEnabled() async {
+    try {
+      final bool? enabled = await getBool(GlobalStorageKeys.scrollAreaHintEnabled);
+      return enabled;
+    } catch (e) {
+      logger.error("can't parse scroll area hint enabled", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setScrollAreaHintEnabled(bool value) async {
+    try {
+      await setBool(GlobalStorageKeys.scrollAreaDivisionThreshold, value);
+    } catch (e) {
+      logger.error("error saving scroll area hint enabled", error: e);
+    }
   }
 }

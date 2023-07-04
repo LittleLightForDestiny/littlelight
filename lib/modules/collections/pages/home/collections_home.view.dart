@@ -2,7 +2,7 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/modules/collections/blocs/base_collections.bloc.dart';
-import 'package:little_light/modules/collections/pages/base/base_collections.view.dart';
+import 'package:little_light/modules/collections/views/base_collections.view.dart';
 import 'package:little_light/shared/widgets/presentation_nodes/presentation_node_item.widget.dart';
 import 'package:little_light/shared/widgets/presentation_nodes/presentation_node_item_list.widget.dart';
 
@@ -56,7 +56,9 @@ class CollectionsHomeView extends BaseCollectionsView {
     return [
       IconButton(
         icon: Icon(Icons.search),
-        onPressed: () => {},
+        onPressed: () {
+          bloc.openSearch();
+        },
       ),
       ...(super.buildActions(context) ?? []),
     ];

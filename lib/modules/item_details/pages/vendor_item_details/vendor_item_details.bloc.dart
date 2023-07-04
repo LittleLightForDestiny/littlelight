@@ -2,6 +2,8 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/vendors/vendor_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/models/item_notes_tag.dart';
@@ -21,6 +23,7 @@ import 'package:provider/provider.dart';
 
 class VendorItemDetailsBloc extends ItemDetailsBloc {
   final ItemNotesBloc _itemNotesBloc;
+  final ProfileBloc _profileBloc;
   final SocketControllerBloc _socketControllerBloc;
   final ManifestService _manifestBloc;
   final WishlistsService _wishlists;
@@ -46,6 +49,7 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
         _socketControllerBloc = context.read<SocketControllerBloc>(),
         _manifestBloc = context.read<ManifestService>(),
         _wishlists = getInjectedWishlistsService(),
+        _profileBloc = context.read<ProfileBloc>(),
         super(context) {
     _init();
   }
@@ -189,6 +193,14 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
     if (_allWishlistNotes?.isEmpty ?? true) return null;
     if (showAllWishlistNotes) return _allWishlistNotes;
     return _matchedWishlistNotes ?? {};
+  }
+
+  @override
+  DestinyCharacterInfo? get character {
+    final characterId = item?.characterId;
+    if (characterId == null) return null;
+    final character = _profileBloc.getCharacterById(characterId);
+    return character;
   }
 
   @override

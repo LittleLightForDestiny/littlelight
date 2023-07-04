@@ -45,4 +45,7 @@ class CollectionsSubcategoryBloc extends CollectionsBloc {
     if (hashes == null) return;
     await updatePresentationNodeChildren(hashes);
   }
+
+  @override
+  void openSearch() {}
 }
