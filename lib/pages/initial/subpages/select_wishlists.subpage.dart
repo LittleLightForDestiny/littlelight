@@ -7,7 +7,6 @@ import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
 import 'package:little_light/pages/initial/notifiers/select_wishlists.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 class SelectWishlistsSubPage extends StatefulWidget {
@@ -17,8 +16,7 @@ class SelectWishlistsSubPage extends StatefulWidget {
   SelectWishlistsSubPageState createState() => SelectWishlistsSubPageState();
 }
 
-class SelectWishlistsSubPageState
-    extends SubpageBaseState<SelectWishlistsSubPage> {
+class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPage> {
   @override
   void initState() {
     super.initState();
@@ -26,8 +24,8 @@ class SelectWishlistsSubPageState
   }
 
   @override
-  Widget buildTitle(BuildContext context) => TranslatedTextWidget(
-        "Select Wishlists",
+  Widget buildTitle(BuildContext context) => Text(
+        "Select Wishlists".translate(context),
         key: const Key("title"),
       );
 
@@ -61,25 +59,18 @@ class SelectWishlistsSubPageState
             key: Key("select_count_$count")),
       ),
       ElevatedButton(
-        onPressed: () async {
-          await context.read<SelectWishlistNotifier>().saveSelections();
-          context.read<InitialPageStateNotifier>().wishlistsSelected();
-        },
-        child: count == 0
-            ? TranslatedTextWidget(
-                "I don't want weapon recommendations",
-              )
-            : TranslatedTextWidget(
-                "Done",
-              ),
-      )
+          onPressed: () async {
+            await context.read<SelectWishlistNotifier>().saveSelections();
+            context.read<InitialPageStateNotifier>().wishlistsSelected();
+          },
+          child:
+              Text(count == 0 ? "I don't want weapon recommendations".translate(context) : "Done".translate(context)))
     ]);
   }
 
   Widget buildWishlistsRootContent(BuildContext context) {
     return Container(
-        constraints: BoxConstraints(
-            maxHeight: max(240, MediaQuery.of(context).size.height - 300)),
+        constraints: BoxConstraints(maxHeight: max(240, MediaQuery.of(context).size.height - 300)),
         child: SingleChildScrollView(
             child: Container(
                 child: Column(
@@ -94,8 +85,7 @@ class SelectWishlistsSubPageState
 
   Widget buildWishlistsFolderContent(BuildContext context) {
     return Container(
-        constraints: BoxConstraints(
-            maxHeight: max(240, MediaQuery.of(context).size.height - 300)),
+        constraints: BoxConstraints(maxHeight: max(240, MediaQuery.of(context).size.height - 300)),
         child: Column(children: [
           buildFolderHeader(context),
           Expanded(
@@ -149,17 +139,21 @@ class SelectWishlistsSubPageState
       padding: const EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: 16),
       child: Column(
         children: [
-          TranslatedTextWidget(
-            "Wishlists are perk recommendations from community buildcrafters that may help you decide on what to shard or keep, by showing good/godroll crests on your weapons and perks, for both PvE and PvP.",
+          Text(
+            "Wishlists are perk recommendations from community buildcrafters that may help you decide on what to shard or keep, by showing good/godroll crests on your weapons and perks, for both PvE and PvP."
+                .translate(context),
           ),
-          TranslatedTextWidget(
-            "You can add bundles from multiple curators or pick specific seasons from each one of them and mix and match to your liking.",
+          Text(
+            "You can add bundles from multiple curators or pick specific seasons from each one of them and mix and match to your liking."
+                .translate(context),
           ),
-          TranslatedTextWidget(
-            "These selections can be changed later through the settings menu, and you can see which wishlist matches each weapon through weapon details or collections.",
+          Text(
+            "These selections can be changed later through the settings menu, and you can see which wishlist matches each weapon through weapon details or collections."
+                .translate(context),
           ),
-          TranslatedTextWidget(
-            "Please remember that these recommendations are based on personal choices and some may fit your playstyle more than others.",
+          Text(
+            "Please remember that these recommendations are based on personal choices and some may fit your playstyle more than others."
+                .translate(context),
           ),
         ],
       ),
@@ -170,16 +164,14 @@ class SelectWishlistsSubPageState
     final currentFolder = context.watch<SelectWishlistNotifier>().currentFolder;
     final files = currentFolder?.files;
     if (files == null) return Container();
-    return Column(
-        children: files.map((f) => buildWishlistFile(context, f)).toList());
+    return Column(children: files.map((f) => buildWishlistFile(context, f)).toList());
   }
 
   Widget buildFolders(BuildContext context) {
     final currentFolder = context.watch<SelectWishlistNotifier>().currentFolder;
     final folders = currentFolder?.folders;
     if (folders == null) return Container();
-    return Column(
-        children: folders.map((f) => buildWishlistFolder(context, f)).toList());
+    return Column(children: folders.map((f) => buildWishlistFolder(context, f)).toList());
   }
 
   Widget buildWishlistFile(BuildContext context, WishlistFile file) {
@@ -199,9 +191,7 @@ class SelectWishlistsSubPageState
                   children: [
                     Container(
                         padding: const EdgeInsets.all(8).copyWith(right: 16),
-                        child: Icon(checked
-                            ? FontAwesomeIcons.checkSquare
-                            : FontAwesomeIcons.square)),
+                        child: Icon(checked ? FontAwesomeIcons.checkSquare : FontAwesomeIcons.square)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,

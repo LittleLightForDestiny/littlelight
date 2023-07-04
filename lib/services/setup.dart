@@ -43,7 +43,6 @@ Future<void> setupServices() async {
   await setupAppConfig();
   await setupAuthService();
   await setupLanguageService();
-  await setupUserSettingsService();
   await setupManifest();
   await setupLittleLightDataService();
   await setupWishlistsService();

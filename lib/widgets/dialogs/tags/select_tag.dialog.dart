@@ -3,7 +3,6 @@ import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 import 'package:little_light/widgets/dialogs/tags/edit_tag.dialog.dart';
 import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
@@ -23,7 +22,7 @@ class SelectTagDialogRoute extends DialogRoute<ItemNotesTag?> {
 class SelectTagDialog extends LittleLightBaseDialog {
   SelectTagDialog()
       : super(
-            titleBuilder: (context) => TranslatedTextWidget('Select Tag'),
+            titleBuilder: (context) => Text("Select Tag".translate(context)),
             bodyBuilder: (context) => const TagListWidget());
 
   @override

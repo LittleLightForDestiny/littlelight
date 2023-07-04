@@ -4,7 +4,6 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/color_utils.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:uuid/uuid.dart';
 
@@ -157,11 +156,10 @@ class ItemNotesTag {
     return _$ItemNotesTagFromJson(json);
   }
 
-  factory ItemNotesTag.favorite() {
-    TranslatedTextWidget("Favorite");
+  factory ItemNotesTag.favorite(BuildContext context) {
     return ItemNotesTag(
       tagId: "favorite",
-      name: "Favorite",
+      name: "Favorite".translate(context),
       icon: ItemTagIcon.Heart,
       defaultTagType: DefaultTagType.Favorite,
       backgroundColorHex: hexFromColor(Colors.yellow.shade800),
@@ -169,11 +167,10 @@ class ItemNotesTag {
     );
   }
 
-  factory ItemNotesTag.trash() {
-    TranslatedTextWidget("Trash");
+  factory ItemNotesTag.trash(BuildContext context) {
     return ItemNotesTag(
       tagId: "trash",
-      name: "Trash",
+      name: "Trash".translate(context),
       icon: ItemTagIcon.Trash,
       defaultTagType: DefaultTagType.Trash,
       backgroundColorHex: hexFromColor(Colors.red.shade700),
@@ -181,11 +178,10 @@ class ItemNotesTag {
     );
   }
 
-  factory ItemNotesTag.infuse() {
-    TranslatedTextWidget("Infuse");
+  factory ItemNotesTag.infuse(BuildContext context) {
     return ItemNotesTag(
       tagId: "infuse",
-      name: "Infuse",
+      name: "Infuse".translate(context),
       icon: ItemTagIcon.Infuse,
       defaultTagType: DefaultTagType.Infuse,
       backgroundColorHex: hexFromColor(Colors.grey.shade900),

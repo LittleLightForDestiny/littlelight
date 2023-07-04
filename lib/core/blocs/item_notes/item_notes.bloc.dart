@@ -5,16 +5,17 @@ import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/services/littlelight/littlelight_api.service.dart';
 import 'package:little_light/services/storage/export.dart';
 
-final Map<String, ItemNotesTag> _defaultTags = {
-  "favorite": ItemNotesTag.favorite(),
-  "trash": ItemNotesTag.trash(),
-  "infuse": ItemNotesTag.infuse(),
-};
-
 class ItemNotesBloc extends ChangeNotifier with StorageConsumer {
-  LittleLightApiService get _api => LittleLightApiService();
+  final BuildContext context;
 
-  ItemNotesBloc() {
+  LittleLightApiService get _api => LittleLightApiService();
+  Map<String, ItemNotesTag> get _defaultTags => {
+        "favorite": ItemNotesTag.favorite(context),
+        "trash": ItemNotesTag.trash(context),
+        "infuse": ItemNotesTag.infuse(context),
+      };
+
+  ItemNotesBloc(this.context) {
     _loadAll();
   }
 

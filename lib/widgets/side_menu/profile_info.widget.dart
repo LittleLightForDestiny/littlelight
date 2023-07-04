@@ -3,6 +3,7 @@ import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
@@ -15,7 +16,6 @@ import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 // ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
@@ -176,9 +176,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     if (lastPlayed != null &&
         currentSession != null &&
         lastPlayed.add(Duration(minutes: currentSession + 10)).isBefore(DateTime.now().toUtc())) {
-      return TranslatedTextWidget(
-        "Last played {timeago}",
-        replace: {'timeago': time.toLowerCase()},
+      return Text(
+        "Last played {timeago}".translate(context, replace: {'timeago': time.toLowerCase()}),
         style: TextStyle(fontSize: 12, color: Colors.grey.shade100),
       );
     }

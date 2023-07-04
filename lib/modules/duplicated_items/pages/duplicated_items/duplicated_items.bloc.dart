@@ -10,7 +10,6 @@ import 'package:little_light/modules/item_details/pages/definition_item_details/
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/search/blocs/filter_options/export.dart';
 import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
-import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:provider/provider.dart';
 
@@ -181,7 +180,7 @@ class DuplicatedItemsBloc extends ChangeNotifier {
     final stackIndex = item.stackIndex;
     if (hash == null) return;
     if (userSettingsBloc.tapToSelect) {
-      Navigator.of(context).push(ItemDetailsPageRoute.itemInfo(item: item));
+      Navigator.of(context).push(InventoryItemDetailsPageRoute(item));
       return;
     }
     return selectionBloc.toggleSelected(

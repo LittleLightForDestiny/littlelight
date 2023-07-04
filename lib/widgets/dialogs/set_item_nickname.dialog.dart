@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
 class SetItemNicknameDialogRoute extends DialogRoute<String?> {
   SetItemNicknameDialogRoute(BuildContext context, String currentNickname)
       : super(
           context: context,
-          builder: (context) =>
-              SetItemNicknameDialog(context.nicknameArgument ?? ""),
+          builder: (context) => SetItemNicknameDialog(context.nicknameArgument ?? ""),
           settings: RouteSettings(arguments: currentNickname),
         );
 }
@@ -28,7 +26,7 @@ class SetItemNicknameDialog extends LittleLightBaseDialog {
   SetItemNicknameDialog(String initialValue)
       : _controller = TextEditingController(text: initialValue),
         super(
-          titleBuilder: (context) => TranslatedTextWidget('Set nickname'),
+          titleBuilder: (context) => Text("Set nickname".translate(context)),
         );
 
   @override

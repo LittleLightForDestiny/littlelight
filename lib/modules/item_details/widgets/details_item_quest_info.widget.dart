@@ -70,7 +70,7 @@ class DetailsItemQuestInfoWidget extends StatelessWidget {
             style: ElevatedButton.styleFrom(backgroundColor: def?.inventory?.tierType?.getColor(context)),
             onPressed: () => context.storeValue(_VisibleState(visibilityKey, true)),
             child: Text(
-              'Show previous steps ({stepCount})'.translate(context, replace: {'stepCount': "$currentStepIndex"}),
+              "Show previous steps ({stepCount})".translate(context, replace: {'stepCount': "$currentStepIndex"}),
             ),
           ));
     }
@@ -86,7 +86,7 @@ class DetailsItemQuestInfoWidget extends StatelessWidget {
               style: ElevatedButton.styleFrom(backgroundColor: def?.inventory?.tierType?.getColor(context)),
               onPressed: () => context.storeValue(_VisibleState(visibilityKey, false)),
               child: Text(
-                'Hide previous steps'.translate(context),
+                "Hide previous steps".translate(context),
               ),
             ),
             ...items.map((item) => Container(
@@ -130,7 +130,7 @@ class DetailsItemQuestInfoWidget extends StatelessWidget {
               style: ElevatedButton.styleFrom(backgroundColor: def?.inventory?.tierType?.getColor(context)),
               onPressed: () => context.storeValue(_VisibleState(visibilityKey, false)),
               child: Text(
-                'Hide next steps'.translate(context),
+                "Hide next steps".translate(context),
               ),
             ),
             ...items.map((item) => Container(

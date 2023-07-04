@@ -106,7 +106,7 @@ class TagPillWidget extends StatelessWidget {
 
   String getTagName(BuildContext context) {
     final name = tagName ?? "";
-    if (isCustom && name.isEmpty) return 'Untitled'.translate(context);
+    if (isCustom && name.isEmpty) return "Untitled".translate(context);
     if (isCustom) return name;
     return name.translate(context);
   }

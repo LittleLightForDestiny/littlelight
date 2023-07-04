@@ -7,7 +7,7 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/item_stats/direction_stat_bar.widget.dart';
+import 'package:little_light/modules/item_details/widgets/direction_stat_bar.widget.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 
 const _barAnimationDuration = Duration(milliseconds: 300);

@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/language_info.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 class LanguagesPage extends StatefulWidget {
@@ -34,9 +34,8 @@ class _LanguagesPageState extends State<LanguagesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TranslatedTextWidget(
-          "Change Language",
-          language: selectedLanguage,
+        title: Text(
+          "Change Language".translate(context, languageCode: selectedLanguage),
           key: Key("title_$selectedLanguage"),
         ),
       ),
@@ -58,9 +57,8 @@ class _LanguagesPageState extends State<LanguagesPage> {
             languageService.selectedLanguage = selectedLanguage;
             Phoenix.rebirth(context);
           },
-          child: TranslatedTextWidget(
-            "Change Language",
-            language: selectedLanguage,
+          child: Text(
+            "Change Language".translate(context, languageCode: selectedLanguage),
             key: Key("button_$selectedLanguage"),
           )),
     );
@@ -71,9 +69,7 @@ class _LanguagesPageState extends State<LanguagesPage> {
     if (languages == null) return LoadingAnimWidget();
     return SingleChildScrollView(
         padding: const EdgeInsets.all(8),
-        child: Column(
-            children:
-                languages.map((l) => buildLanguageItem(context, l)).toList()));
+        child: Column(children: languages.map((l) => buildLanguageItem(context, l)).toList()));
   }
 
   Widget buildLanguageItem(BuildContext context, LanguageInfo language) {
@@ -99,10 +95,7 @@ class _LanguagesPageState extends State<LanguagesPage> {
                   padding: const EdgeInsets.all(4),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        buildLanguageInfo(context, language),
-                        buildFileInfo(context, language)
-                      ]))),
+                      children: [buildLanguageInfo(context, language), buildFileInfo(context, language)]))),
         ));
   }
 
@@ -142,8 +135,8 @@ class _LanguagesPageState extends State<LanguagesPage> {
                   },
                   child: Container(
                       padding: const EdgeInsets.all(8),
-                      child: TranslatedTextWidget(
-                        "Delete",
+                      child: Text(
+                        "Delete".translate(context),
                         style: const TextStyle(fontWeight: FontWeight.bold),
                       )))),
       Container(

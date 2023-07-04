@@ -12,7 +12,6 @@ import 'package:little_light/models/game_data.dart';
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/search/pages/item_search/item_search.page_route.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
-import 'package:little_light/pages/item_details/item_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -183,13 +182,13 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
     Navigator.of(_context).push(InventoryItemDetailsPageRoute(item));
   }
 
-  void onItemHold(DestinyItemInfo item) {
+  void onItemHold(InventoryItemInfo item) {
     final hash = item.itemHash;
     final instanceId = item.instanceId;
     final stackIndex = item.stackIndex;
     if (hash == null) return;
     if (_userSettingsBloc.tapToSelect) {
-      Navigator.of(_context).push(ItemDetailsPageRoute.itemInfo(item: item));
+      Navigator.of(_context).push(InventoryItemDetailsPageRoute(item));
       return;
     }
     return _selectionBloc.toggleSelected(

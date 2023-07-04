@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
 class SetItemNotesDialogRoute extends DialogRoute<String?> {
@@ -27,7 +26,7 @@ class SetItemNotesDialog extends LittleLightBaseDialog {
   SetItemNotesDialog(String initialValue)
       : _controller = TextEditingController(text: initialValue),
         super(
-          titleBuilder: (context) => TranslatedTextWidget('Set item notes'),
+          titleBuilder: (context) => Text("Set item notes".translate(context)),
         );
 
   @override

@@ -12,7 +12,6 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 
 class ItemVendorInfoWidget extends StatefulWidget {
   final DestinyInventoryItemDefinition definition;
@@ -60,9 +59,8 @@ class ItemVendorInfoState extends State<ItemVendorInfoWidget> with ProfileConsum
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
             Expanded(
-                child: TranslatedTextWidget(
-              "Cost:",
-              uppercase: true,
+                child: Text(
+              "Cost:".translate(context).toUpperCase(),
               style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
             ))
           ].followedBy(costs.map((c) {

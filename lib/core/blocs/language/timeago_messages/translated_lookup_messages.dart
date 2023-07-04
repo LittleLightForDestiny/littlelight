@@ -16,35 +16,35 @@ class TranslatedLookupMessages implements LookupMessages {
   TranslatedLookupMessages(this.bloc);
 
   @override
-  String prefixAgo() => 'time_ago_prefix(default:empty)'.translate(bloc, overrideDefaultText: '');
+  String prefixAgo() => "time_ago_prefix(default:empty)".translate(bloc, overrideDefaultText: '');
   @override
-  String prefixFromNow() => 'time_from_now_prefix(default:in)'.translate(bloc, overrideDefaultText: 'in');
+  String prefixFromNow() => "time_from_now_prefix(default:in)".translate(bloc, overrideDefaultText: 'in');
   @override
-  String suffixAgo() => 'time_ago_suffix(default:ago)'.translate(bloc, overrideDefaultText: 'ago');
+  String suffixAgo() => "time_ago_suffix(default:ago)".translate(bloc, overrideDefaultText: 'ago');
   @override
-  String suffixFromNow() => 'time_from_now_suffix(defualt:empty)'.translate(bloc, overrideDefaultText: '');
+  String suffixFromNow() => "time_from_now_suffix(defualt:empty)".translate(bloc, overrideDefaultText: '');
   @override
-  String lessThanOneMinute(int seconds) => 'less than a minute'.translate(bloc);
+  String lessThanOneMinute(int seconds) => "less than a minute".translate(bloc);
   @override
-  String aboutAMinute(int minutes) => 'a minute'.translate(bloc);
+  String aboutAMinute(int minutes) => "a minute".translate(bloc);
   @override
-  String minutes(int minutes) => '{minutes} minutes'.translate(bloc, replace: {"minutes": "$minutes"});
+  String minutes(int minutes) => "{minutes} minutes".translate(bloc, replace: {"minutes": "$minutes"});
   @override
-  String aboutAnHour(int minutes) => 'about an hour'.translate(bloc);
+  String aboutAnHour(int minutes) => "about an hour".translate(bloc);
   @override
-  String hours(int hours) => '{hours} hours'.translate(bloc, replace: {"hours": "$hours"});
+  String hours(int hours) => "{hours} hours".translate(bloc, replace: {"hours": "$hours"});
   @override
-  String aDay(int hours) => '{hours} hours'.translate(bloc, replace: {"hours": "$hours"});
+  String aDay(int hours) => "{hours} hours".translate(bloc, replace: {"hours": "$hours"});
   @override
-  String days(int days) => '{days} days'.translate(bloc, replace: {"days": "$days"});
+  String days(int days) => "{days} days".translate(bloc, replace: {"days": "$days"});
   @override
-  String aboutAMonth(int days) => '{days} days'.translate(bloc, replace: {"days": "$days"});
+  String aboutAMonth(int days) => "{days} days".translate(bloc, replace: {"days": "$days"});
   @override
-  String months(int months) => '{months} months'.translate(bloc, replace: {"months": "$months"});
+  String months(int months) => "{months} months".translate(bloc, replace: {"months": "$months"});
   @override
-  String aboutAYear(int year) => '{months} months'.translate(bloc, replace: {"months": "$months"});
+  String aboutAYear(int year) => "{months} months".translate(bloc, replace: {"months": "$months"});
   @override
-  String years(int years) => '{years} years'.translate(bloc, replace: {"years": "$years"});
+  String years(int years) => "{years} years".translate(bloc, replace: {"years": "$years"});
   @override
   String wordSeparator() => ' ';
 }

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes_tag.dart';
@@ -16,11 +15,8 @@ const _defaultBottomScrolAreaType = ScrollAreaType.Sections;
 const _defaultScrollAreaDividerThreshold = 70;
 const _defaultScrollAreaHintEnabled = true;
 
-setupUserSettingsService() async {
-  GetIt.I.registerSingleton<UserSettingsBloc>(UserSettingsBloc._internal());
-}
-
 class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer {
+  final BuildContext context;
   List<ItemSortParameter>? _itemOrdering;
   List<ItemSortParameter>? _pursuitOrdering;
   CharacterSortParameter? _characterOrdering;
@@ -33,7 +29,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   int? _scrollAreaDividerThreshold;
   bool? _scrollAreaHintEnabled;
 
-  UserSettingsBloc._internal();
+  UserSettingsBloc(this.context);
 
   init() async {
     await Future.wait([
@@ -84,7 +80,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
 
   Future<void> initPriorityTags() async {
     _priorityTags = await currentMembershipStorage.getPriorityTags();
-    _priorityTags ??= {ItemNotesTag.favorite().tagId};
+    _priorityTags ??= {ItemNotesTag.favorite(context).tagId};
   }
 
   Future<void> initBucketDisplayOptions() async {

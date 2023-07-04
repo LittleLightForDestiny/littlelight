@@ -29,7 +29,7 @@ class CoreBlocsContainer extends MultiProvider {
             ChangeNotifierProvider<UserSettingsBloc>(create: (context) => getInjectedUserSettings()),
             ChangeNotifierProvider(create: (context) => AppLifecycleBloc()),
             ChangeNotifierProvider(create: (context) => OfflineModeBloc()),
-            ChangeNotifierProvider(create: (context) => ItemNotesBloc()),
+            ChangeNotifierProvider(create: (context) => ItemNotesBloc(context)),
             ChangeNotifierProvider<ManifestService>(
                 create: (context) => getInjectedManifestService().initContext(context)),
             ChangeNotifierProvider<LanguageBloc>(create: (context) => getInjectedLanguageService()),

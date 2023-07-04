@@ -2,38 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 class DownloadManifestProgressSubPage extends StatefulWidget {
   const DownloadManifestProgressSubPage();
 
   @override
-  DownloadManifestProgressSubPageState createState() =>
-      DownloadManifestProgressSubPageState();
+  DownloadManifestProgressSubPageState createState() => DownloadManifestProgressSubPageState();
 }
 
-class DownloadManifestProgressSubPageState
-    extends SubpageBaseState<DownloadManifestProgressSubPage> {
+class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadManifestProgressSubPage> {
   @override
   void initState() {
     super.initState();
   }
 
   @override
-  Widget buildTitle(BuildContext context) => TranslatedTextWidget(
-        "Download Database",
+  Widget buildTitle(BuildContext context) => Text(
+        "Download Database".translate(context),
       );
 
-  bool get downloading =>
-      !context.watch<ManifestDownloaderNotifier>().finishedDownloading;
+  bool get downloading => !context.watch<ManifestDownloaderNotifier>().finishedDownloading;
 
-  double get progress =>
-      context.watch<ManifestDownloaderNotifier>().downloadProgress;
-  int get totalDownloadSize =>
-      context.watch<ManifestDownloaderNotifier>().totalDownloadSize;
-  int get downloadedSize =>
-      context.watch<ManifestDownloaderNotifier>().downloadedSize;
+  double get progress => context.watch<ManifestDownloaderNotifier>().downloadProgress;
+  int get totalDownloadSize => context.watch<ManifestDownloaderNotifier>().totalDownloadSize;
+  int get downloadedSize => context.watch<ManifestDownloaderNotifier>().downloadedSize;
 
   @override
   Widget buildContent(BuildContext context) => Container(
@@ -47,12 +40,11 @@ class DownloadManifestProgressSubPageState
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             downloading
-                ? TranslatedTextWidget(
-                    "Downloading",
+                ? Text(
+                    "Downloading".translate(context),
                     key: const Key("downloading"),
                   )
-                : Text("Uncompressing".translate(context),
-                    key: const Key("unzipping")),
+                : Text("Uncompressing".translate(context), key: const Key("unzipping")),
             Text("$downloadedSize/${totalDownloadSize}KB")
           ],
         )

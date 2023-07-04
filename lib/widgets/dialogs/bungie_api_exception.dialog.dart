@@ -12,7 +12,6 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/setup.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 import 'package:provider/provider.dart';
 
@@ -35,14 +34,14 @@ class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, 
   @override
   Widget? buildTitle(BuildContext context) {
     final error = context.errorArgument;
-    return TranslatedTextWidget(error?.errorStatus ?? "error");
+    return Text(error?.errorStatus?.translate(context) ?? "error".translate(context));
   }
 
   @override
   Widget? buildBody(BuildContext context) {
     final error = context.errorArgument;
     if (error == null) return Container();
-    return Container(child: TranslatedTextWidget(error.message));
+    return Container(child: Text(error.message.translate(context)));
   }
 
   @override
@@ -77,9 +76,8 @@ class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, 
           },
         ),
         TextButton(
-          child: TranslatedTextWidget(
-            "Clear app data",
-            uppercase: true,
+          child: Text(
+            "Clear app data".translate(context).toUpperCase(),
             style: TextStyle(color: LittleLightTheme.of(context).errorLayers),
           ),
           onPressed: () async {
