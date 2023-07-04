@@ -139,8 +139,14 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   Widget? buildSeasonOverlay(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
     final versionNumber = itemInfo.versionNumber;
-    if (versionNumber == null) return null;
-    final badgeUrl = definition?.quality?.displayVersionWatermarkIcons?[versionNumber];
+    final watermarkIcons = definition?.quality?.displayVersionWatermarkIcons;
+    String? badgeUrl;
+    if (watermarkIcons == null) //
+      badgeUrl = definition?.iconWatermark ?? definition?.iconWatermarkShelved;
+    else if (versionNumber != null) //
+      badgeUrl = watermarkIcons[versionNumber];
+    else if (watermarkIcons.length == 1) //
+      badgeUrl = watermarkIcons[0];
     if (badgeUrl?.isEmpty ?? true) return null;
     return QueuedNetworkImage.fromBungie(
       badgeUrl,
