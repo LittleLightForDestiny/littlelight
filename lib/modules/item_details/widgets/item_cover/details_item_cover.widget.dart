@@ -151,6 +151,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
   }
 
   Widget buildIcon(BuildContext context, double expandRatio) {
+    final state = context.watch<ItemDetailsBloc>();
     final item = state.item;
     final size = lerpDouble(kToolbarHeight - 8, 96, expandRatio) ?? 96;
     final bottom = lerpDouble(4, 8, expandRatio) ?? 8;
@@ -238,7 +239,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
     final value = item?.primaryStatValue;
     final classType = definition?.classType ?? DestinyClass.Unknown;
     final ammoType = definition?.equippingBlock?.ammoType ?? DestinyAmmunitionType.None;
-    final damageType = item?.damageType ?? DamageType.None;
+    final damageType = definition?.defaultDamageType ?? DamageType.None;
     final damageColor = damageType != DamageType.None
         ? damageType.getColorLayer(context).layer2
         : context.textTheme.itemPrimaryStatHighDensity.color;
