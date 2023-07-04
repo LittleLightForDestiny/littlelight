@@ -8,11 +8,11 @@ extension ApplyModsErrorMessages on BuildContext {
   String getApplyModsErrorMessage(BungieApiException? exception) {
     switch (exception?.errorCode) {
       case PlatformErrorCodes.DestinySocketActionNotAllowed:
-        return "The selected socket can't be applied throught the API or third party apps like Little Light."
+        return "The selected change can't be applied throught the API or third party apps like Little Light."
             .translate(this, useReadContext: true);
 
       case PlatformErrorCodes.DestinyCharacterNotInTower:
-        return "Can't apply plugs on characters that are in combat zones.".translate(this, useReadContext: true);
+        return "Can't apply changes on characters that are in combat zones.".translate(this, useReadContext: true);
 
       default:
         if (exception != null) {

@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/modules/loadouts/pages/confirm_delete_loadout/confirm_delete_loadout.bottomsheet.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
-import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/shared/utils/extensions/string/remove_diacritics.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
 
-class LoadoutsHomeBloc extends ChangeNotifier with UserSettingsConsumer {
+class LoadoutsHomeBloc extends ChangeNotifier {
   @protected
   final BuildContext context;
 
@@ -25,6 +25,9 @@ class LoadoutsHomeBloc extends ChangeNotifier with UserSettingsConsumer {
 
   @protected
   final ManifestService manifest;
+
+  @protected
+  final UserSettingsBloc userSettings;
 
   bool _reordering = false;
   bool get reordering => _reordering;
@@ -45,7 +48,8 @@ class LoadoutsHomeBloc extends ChangeNotifier with UserSettingsConsumer {
   LoadoutsHomeBloc(this.context)
       : loadoutsBloc = context.read<LoadoutsBloc>(),
         profileBloc = context.read<ProfileBloc>(),
-        manifest = context.read<ManifestService>() {
+        manifest = context.read<ManifestService>(),
+        userSettings = context.read<UserSettingsBloc>() {
     _init();
   }
 

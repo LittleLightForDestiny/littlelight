@@ -21,7 +21,6 @@ import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
-import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:provider/provider.dart';
 
 import 'https_override/https_overrides.dart';
@@ -67,7 +66,7 @@ initServices(BuildContext context) async {
 }
 
 initPostLoadingServices(BuildContext context) async {
-  final settings = getInjectedUserSettings();
+  final settings = context.read<UserSettingsBloc>();
   await settings.init();
   final destinySettings = getInjectedDestinySettingsService();
   await destinySettings.init();

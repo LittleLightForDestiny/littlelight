@@ -88,7 +88,7 @@ class NotificationsWidget extends StatelessWidget {
             buildMainMessageAnimation(
               context,
               Text(
-                "Applying plugs".translate(context).toUpperCase(),
+                "Applying changes".translate(context).toUpperCase(),
               ),
               _state(context).actionIs<ApplyPlugsNotification>(),
             ),

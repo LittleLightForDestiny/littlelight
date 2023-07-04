@@ -67,7 +67,6 @@ class CustomTabController extends ChangeNotifier {
     _isDragging = false;
     _currentValue = _currentValue.roundToDouble();
     _animationController.animateTo(_currentValue, curve: Curves.easeIn);
-    print('onDragStop');
     notifyListeners();
   }
 

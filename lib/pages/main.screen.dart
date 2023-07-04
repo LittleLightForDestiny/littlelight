@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/modules/collections/pages/home/collections_home.page.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
 import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
@@ -9,7 +10,6 @@ import 'package:little_light/modules/progress/pages/progress/progress.page.dart'
 import 'package:little_light/modules/triumphs/pages/home/triumphs_home.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
-import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/dialogs/confirm_exit.dialog.dart';
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
@@ -22,7 +22,7 @@ class MainScreen extends StatefulWidget {
   MainScreenState createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen> with AuthConsumer, UserSettingsConsumer {
+class MainScreenState extends State<MainScreen> with AuthConsumer {
   Widget currentScreen;
 
   @override
@@ -39,6 +39,7 @@ class MainScreenState extends State<MainScreen> with AuthConsumer, UserSettingsC
   }
 
   getInitScreen() async {
+    final userSettings = context.read<UserSettingsBloc>();
     switch (userSettings.startingPage) {
       case LittleLightPersistentPage.Equipment:
         currentScreen = const EquipmentPage();
