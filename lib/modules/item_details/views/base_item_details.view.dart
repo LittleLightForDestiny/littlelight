@@ -42,7 +42,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
   final ItemDetailsBloc state;
   final SocketControllerBloc socketState;
   final SelectionBloc selectionState;
-  final controller = ScrollController();
+  final scrollController = ScrollController();
 
   BaseItemDetailsView(this.bloc, this.state, this.socketState, this.selectionState);
 
@@ -86,7 +86,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
 
   Widget buildLandscapeBody(BuildContext context, {required bool hasFooter}) {
     return CustomScrollView(
-      controller: controller,
+      controller: scrollController,
       slivers: [
         DetailsItemLandscapeCoverWidget(
           state,
@@ -120,6 +120,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
 
   Widget buildPortraitBody(BuildContext context, {required bool hasFooter}) {
     return CustomScrollView(
+      controller: scrollController,
       slivers: [
         DetailsItemCoverWidget(state),
         buildDescription(context),
@@ -420,10 +421,10 @@ abstract class BaseItemDetailsView extends StatelessWidget {
       color: context.theme.surfaceLayers.layer1,
       child: Column(children: [
         AnimatedBuilder(
-          animation: controller,
+          animation: scrollController,
           builder: (context, child) {
             final isLandscape = context.mediaQuery.isLandscape || context.mediaQuery.tabletOrBigger;
-            final isStart = controller.position.pixels < 100;
+            final isStart = scrollController.position.pixels < 100;
             return AnimatedAlign(
                 alignment: Alignment.topCenter,
                 duration: _animationDuration,
