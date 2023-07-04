@@ -29,8 +29,8 @@ class EditTagDialog extends LittleLightBaseDialog {
   EditTagDialog()
       : super(
           titleBuilder: (context) => context.tagArgument != null
-              ? Text("Select Tag".translate(context))
-              : Text("Create Tag".translate(context)),
+              ? Text("Select tag".translate(context))
+              : Text("Create tag".translate(context)),
         );
 
   @override

@@ -113,7 +113,7 @@ class DetailsItemQuestInfoWidget extends StatelessWidget {
             style: ElevatedButton.styleFrom(backgroundColor: def?.inventory?.tierType?.getColor(context)),
             onPressed: () => context.storeValue(_VisibleState(visibilityKey, true)),
             child: Text(
-              'Show next steps ({stepCount})'
+              "Show next steps ({stepCount})"
                   .translate(context, replace: {'stepCount': "${questStepsCount - currentStepIndex}"}),
             ),
           ));

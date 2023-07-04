@@ -12,7 +12,7 @@ class ConfirmDeleteTagDialogRoute extends DialogRoute<bool> {
 class ConfirmDeleteTagDialog extends LittleLightYesNoDialog {
   ConfirmDeleteTagDialog()
       : super(
-            titleBuilder: (context) => Text("Select Tag".translate(context)),
+            titleBuilder: (context) => Text("Select tag".translate(context)),
             bodyBuilder: (context) {
               final tag = ModalRoute.of(context)?.settings.arguments as ItemNotesTag;
               return Text(

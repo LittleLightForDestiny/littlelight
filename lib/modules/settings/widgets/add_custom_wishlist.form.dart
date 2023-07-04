@@ -91,7 +91,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
         Container(height: 16),
         ElevatedButton(
           onPressed: () => addWishlist(),
-          child: Text("Add wishlist".translate(context)),
+          child: Text("Add Wishlist".translate(context)),
         ),
       ],
     );

@@ -11,7 +11,7 @@ class SelectStatDialogRoute extends DialogRoute<int?> {
 }
 
 class SelectStatDialog extends LittleLightBaseDialog {
-  SelectStatDialog() : super(titleBuilder: (context) => Text('Select Stat'.translate(context)));
+  SelectStatDialog() : super(titleBuilder: (context) => Text("Select Stat".translate(context)));
 
   @override
   Widget? buildBody(BuildContext context) {

@@ -62,7 +62,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
               auth.openBungieLogin(true);
             },
             child: Text(
-              "Add Account".translate(context),
+              "Add account".translate(context),
             ),
           )
         ],

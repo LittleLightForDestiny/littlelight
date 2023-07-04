@@ -54,7 +54,7 @@ class _DevModeLoginPageWidgetState extends State<DevModeLoginPageWidget> with Au
                 await auth.addAccount(args.code!);
                 Navigator.of(context).pushAndRemoveUntil(DevModeMainPageRoute(), (route) => false);
               },
-              child: const Text("Add Account"))
+              child: const Text("Add account"))
         ],
       )
     ]));

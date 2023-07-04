@@ -22,7 +22,7 @@ class SelectTagDialogRoute extends DialogRoute<ItemNotesTag?> {
 class SelectTagDialog extends LittleLightBaseDialog {
   SelectTagDialog()
       : super(
-            titleBuilder: (context) => Text("Select Tag".translate(context)),
+            titleBuilder: (context) => Text("Select tag".translate(context)),
             bodyBuilder: (context) => const TagListWidget());
 
   @override
