@@ -18,7 +18,7 @@ Here are some tips to make sure your pull request can be merged smoothly:
 
 ### Pre-requisites
 * Install [Flutter SDK](https://flutter.dev/docs/get-started/install).
-* Make sure you're on Flutter's beta channel. To know what channel you're on, run ```flutter channel``` on Terminal/Bash.
+* Make sure you're on Flutter's stable channel. To know what channel you're on, run ```flutter channel``` on Terminal/Bash.
 * Setup your [favorite code editor](https://flutter.dev/docs/get-started/editor) (I recommend using [VS Code](https://code.visualstudio.com/))
 
 ### Clone the repo
