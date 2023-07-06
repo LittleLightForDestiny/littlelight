@@ -35,8 +35,7 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
 
   void openBungieLogin(bool forceReauth) async {
     var browser = BungieAuthBrowser();
-    OAuth.openOAuth(browser, appConfig.clientId,
-        getInjectedLanguageService().currentLanguage, forceReauth);
+    OAuth.openOAuth(browser, appConfig.clientId, getInjectedLanguageService().currentLanguage, forceReauth);
   }
 
   Future<UserMembershipData> addAccount(String authorizationCode) async {
@@ -54,18 +53,15 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
     List<GroupUserInfoCard> validMemberships = <GroupUserInfoCard>[];
     for (final membership in memberships) {
       try {
-        final profile = await bungieAPI.getProfile(
-            [DestinyComponentType.Characters],
-            membership.membershipId!,
-            membership.membershipType!);
+        final profile = await bungieAPI
+            .getProfile([DestinyComponentType.Characters], membership.membershipId!, membership.membershipType!);
         if (profile?.characters?.data?.isNotEmpty ?? false) {
           validMemberships.add(membership);
         }
       } catch (e) {}
     }
     if (validMemberships.isEmpty) {
-      throw InvalidMembershipException(
-          "Account doesn't have any valid memberships");
+      throw InvalidMembershipException("Account doesn't have any valid memberships");
     }
     membershipData.destinyMemberships = validMemberships;
     await storage.saveMembershipData(membershipData);
@@ -76,18 +72,14 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
     return await currentAccountStorage.getMembershipData();
   }
 
-  Future<UserMembershipData?> getMembershipDataForAccount(
-      String accountID) async {
+  Future<UserMembershipData?> getMembershipDataForAccount(String accountID) async {
     final membershipData = await accountStorage(accountID).getMembershipData();
     return membershipData;
   }
 
   Future<void> removeAccount(String accountID) async {
     final membershipData = await getMembershipDataForAccount(accountID);
-    final memberships = membershipData?.destinyMemberships
-            ?.map((e) => e.membershipId)
-            .whereType<String>() ??
-        [];
+    final memberships = membershipData?.destinyMemberships?.map((e) => e.membershipId).whereType<String>() ?? [];
 
     for (final m in memberships) {
       membershipStorage(m).purge();
@@ -124,14 +116,12 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
     globalStorage.currentAccountID = accountID;
   }
 
-  void changeMembership(
-      BuildContext context, String membershipID, String accountID) {
+  void changeMembership(BuildContext context, String membershipID, String accountID) {
     setCurrentMembershipID(membershipID, accountID);
     Phoenix.rebirth(context);
   }
 
-  Future<Map<String, UserMembershipData>>
-      fetchMembershipDataForAllAccounts() async {
+  Future<Map<String, UserMembershipData>> fetchMembershipDataForAllAccounts() async {
     final result = <String, UserMembershipData>{};
     if (_accountIDs == null) {
       return result;
@@ -149,8 +139,12 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
   }
 
   Future<BungieNetToken?> _getStoredToken() async {
-    final token = await currentAccountStorage.getLatestToken();
-    return token;
+    try {
+      final token = await currentAccountStorage.getLatestToken();
+      return token;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<BungieNetToken> refreshToken(BungieNetToken token) async {
@@ -180,8 +174,7 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
     if (tokenDate == null) return null;
 
     DateTime expire = tokenDate.add(Duration(seconds: token.expiresIn));
-    DateTime refreshExpire =
-        tokenDate.add(Duration(seconds: token.refreshExpiresIn));
+    DateTime refreshExpire = tokenDate.add(Duration(seconds: token.refreshExpiresIn));
     if (refreshExpire.isBefore(now)) {
       return null;
     }
@@ -200,8 +193,8 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
   Future<GroupUserInfoCard?> getMembership() async {
     if (_currentMembership == null) {
       final membershipData = await currentAccountStorage.getMembershipData();
-      _currentMembership = membershipData?.destinyMemberships
-          ?.firstWhereOrNull((m) => m.membershipId == currentMembershipID);
+      _currentMembership =
+          membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == currentMembershipID);
     }
     return _currentMembership;
   }
@@ -213,8 +206,7 @@ class BungieAuthBrowser implements OAuthBrowser {
   @override
   dynamic open(String url) async {
     if (Platform.isIOS) {
-      await launch(url,
-          forceSafariVC: true, statusBarBrightness: Brightness.light);
+      await launch(url, forceSafariVC: true, statusBarBrightness: Brightness.light);
     } else {
       await launch(url, forceSafariVC: true);
     }

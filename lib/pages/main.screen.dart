@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
@@ -14,16 +12,16 @@ import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/dialogs/confirm_exit.dialog.dart';
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
 import 'package:provider/provider.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({Key key}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
   @override
   MainScreenState createState() => MainScreenState();
 }
 
 class MainScreenState extends State<MainScreen> with AuthConsumer {
-  Widget currentScreen;
+  Widget? currentScreen;
 
   @override
   void initState() {
@@ -70,7 +68,7 @@ class MainScreenState extends State<MainScreen> with AuthConsumer {
     bool keepAwake = userSettings.keepAwake;
 
     if (PlatformCapabilities.keepScreenOnAvailable) {
-      Wakelock.toggle(enable: keepAwake);
+      WakelockPlus.toggle(enable: keepAwake);
     }
   }
 

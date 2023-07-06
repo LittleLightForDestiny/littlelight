@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
@@ -37,11 +35,9 @@ class WishlistsData {
       case WishlistTag.GodPVE:
       case WishlistTag.PVE:
         return Colors.blue.shade800;
-        break;
       case WishlistTag.GodPVP:
       case WishlistTag.PVP:
         return Colors.red.shade800;
-        break;
       case WishlistTag.Bungie:
         return Colors.black;
 
@@ -53,7 +49,6 @@ class WishlistsData {
 
       case WishlistTag.Trash:
         return Colors.lightGreen.shade500;
-        break;
 
       default:
         return Colors.transparent;
@@ -98,7 +93,6 @@ class WishlistsData {
       case WishlistTag.PVP:
         return Container(
             alignment: Alignment.center, child: CenterIconWorkaround(LittleLightIcons.crucible, size: size * .9));
-        break;
       case WishlistTag.Bungie:
         return Container(
             alignment: Alignment.center, child: CenterIconWorkaround(LittleLightIcons.bungie, size: size * .9));
@@ -109,7 +103,6 @@ class WishlistsData {
             child: Image.asset(
               "assets/imgs/trash-roll-icon.png",
             ));
-        break;
 
       case WishlistTag.Controller:
         return Container(

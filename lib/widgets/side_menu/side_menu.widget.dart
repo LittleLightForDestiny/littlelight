@@ -1,5 +1,4 @@
-// @dart=2.9
-
+import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
@@ -28,9 +27,9 @@ import 'package:little_light/widgets/side_menu/side_menu_settings.widget.dart';
 typedef OnPageChange = void Function(Widget screen);
 
 class SideMenuWidget extends StatefulWidget {
-  final OnPageChange onPageChange;
+  final OnPageChange? onPageChange;
 
-  const SideMenuWidget({Key key, this.onPageChange}) : super(key: key);
+  const SideMenuWidget({Key? key, this.onPageChange}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -39,7 +38,7 @@ class SideMenuWidget extends StatefulWidget {
 }
 
 class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
-  List<UserMembershipData> memberships;
+  List<UserMembershipData>? memberships;
 
   @override
   void initState() {
@@ -49,10 +48,11 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
 
   fetchMemberships() async {
     final accountIDs = auth.accountIDs;
+    if (accountIDs == null) return;
     final _accounts = await Future.wait(accountIDs.map((a) => auth.getMembershipDataForAccount(a)));
     if (!mounted) return;
     setState(() {
-      memberships = _accounts;
+      memberships = _accounts.whereType<UserMembershipData>().toList();
     });
   }
 
@@ -109,7 +109,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
   }
 
   Widget membershipButton(BuildContext context, GeneralUser bungieNetUser, GroupUserInfoCard membership) {
-    var plat = PlatformData.getPlatform(membership.membershipType);
+    var plat = PlatformData.getPlatform(membership.membershipType ?? BungieMembershipType.ProtectedInvalidEnumValue);
     return Container(
         color: Theme.of(context).colorScheme.secondary,
         padding: const EdgeInsets.all(8).copyWith(bottom: 0),
@@ -127,7 +127,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                   alignment: Alignment.centerRight,
                   child: Row(mainAxisSize: MainAxisSize.min, children: [
                     Text(
-                      membership.displayName,
+                      membership.displayName ?? "",
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Container(width: 4),
@@ -136,7 +136,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                 ))));
   }
 
-  Widget menuItem(BuildContext context, Widget label, {void Function() onTap}) {
+  Widget menuItem(BuildContext context, Widget label, {VoidCallback? onTap}) {
     return Material(
         color: Colors.transparent,
         child: InkWell(
@@ -151,9 +151,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
 
   open(BuildContext context, Widget screen) {
     Navigator.of(context).pop();
-    if (widget.onPageChange != null) {
-      widget.onPageChange(screen);
-    }
+    widget.onPageChange?.call(screen);
   }
 
   pushRoute(BuildContext context, MaterialPageRoute route) {

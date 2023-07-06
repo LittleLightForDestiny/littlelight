@@ -41,7 +41,7 @@ install_framework()
 
   if [ -L "${source}" ]; then
     echo "Symlinked..."
-    source="$(readlink -f "${source}")"
+    source="$(readlink "${source}")"
   fi
 
   if [ -d "${source}/${BCSYMBOLMAP_DIR}" ]; then
@@ -184,15 +184,15 @@ if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/GoogleDataTransport/GoogleDataTransport.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/device_info_plus_macos/device_info_plus_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/device_info_plus/device_info_plus.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/package_info_plus_macos/package_info_plus_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/package_info_plus/package_info_plus.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider_foundation/path_provider_foundation.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/shared_preferences_macos/shared_preferences_macos.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/sqflite/sqflite.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/uni_links_macos/uni_links_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/uni_links_desktop/uni_links_desktop.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/url_launcher_macos/url_launcher_macos.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/wakelock_macos/wakelock_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/wakelock_plus/wakelock_plus.framework"
 fi
 if [[ "$CONFIGURATION" == "Profile" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
@@ -203,15 +203,15 @@ if [[ "$CONFIGURATION" == "Profile" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/GoogleDataTransport/GoogleDataTransport.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/device_info_plus_macos/device_info_plus_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/device_info_plus/device_info_plus.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/package_info_plus_macos/package_info_plus_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/package_info_plus/package_info_plus.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider_foundation/path_provider_foundation.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/shared_preferences_macos/shared_preferences_macos.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/sqflite/sqflite.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/uni_links_macos/uni_links_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/uni_links_desktop/uni_links_desktop.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/url_launcher_macos/url_launcher_macos.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/wakelock_macos/wakelock_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/wakelock_plus/wakelock_plus.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/FMDB/FMDB.framework"
@@ -222,15 +222,15 @@ if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "${BUILT_PRODUCTS_DIR}/GoogleDataTransport/GoogleDataTransport.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/device_info_plus_macos/device_info_plus_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/device_info_plus/device_info_plus.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/package_info_plus_macos/package_info_plus_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/package_info_plus/package_info_plus.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/path_provider_foundation/path_provider_foundation.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/shared_preferences_macos/shared_preferences_macos.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/sqflite/sqflite.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/uni_links_macos/uni_links_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/uni_links_desktop/uni_links_desktop.framework"
   install_framework "${BUILT_PRODUCTS_DIR}/url_launcher_macos/url_launcher_macos.framework"
-  install_framework "${BUILT_PRODUCTS_DIR}/wakelock_macos/wakelock_macos.framework"
+  install_framework "${BUILT_PRODUCTS_DIR}/wakelock_plus/wakelock_plus.framework"
 fi
 if [ "${COCOAPODS_PARALLEL_CODE_SIGN}" == "true" ]; then
   wait

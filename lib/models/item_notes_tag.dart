@@ -156,10 +156,9 @@ class ItemNotesTag {
     return _$ItemNotesTagFromJson(json);
   }
 
-  factory ItemNotesTag.favorite(BuildContext context) {
+  factory ItemNotesTag.favorite() {
     return ItemNotesTag(
       tagId: "favorite",
-      name: "Favorite".translate(context),
       icon: ItemTagIcon.Heart,
       defaultTagType: DefaultTagType.Favorite,
       backgroundColorHex: hexFromColor(Colors.yellow.shade800),
@@ -167,10 +166,9 @@ class ItemNotesTag {
     );
   }
 
-  factory ItemNotesTag.trash(BuildContext context) {
+  factory ItemNotesTag.trash() {
     return ItemNotesTag(
       tagId: "trash",
-      name: "Trash".translate(context),
       icon: ItemTagIcon.Trash,
       defaultTagType: DefaultTagType.Trash,
       backgroundColorHex: hexFromColor(Colors.red.shade700),
@@ -178,10 +176,9 @@ class ItemNotesTag {
     );
   }
 
-  factory ItemNotesTag.infuse(BuildContext context) {
+  factory ItemNotesTag.infuse() {
     return ItemNotesTag(
       tagId: "infuse",
-      name: "Infuse".translate(context),
       icon: ItemTagIcon.Infuse,
       defaultTagType: DefaultTagType.Infuse,
       backgroundColorHex: hexFromColor(Colors.grey.shade900),

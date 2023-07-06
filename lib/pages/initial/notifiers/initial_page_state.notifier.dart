@@ -277,7 +277,9 @@ class InitialPageStateNotifier
       analytics.registerNonFatal(e, stackTrace);
     }
 
-    final characters = _context.read<ProfileBloc>().characters;
+    final profile = _context.read<ProfileBloc>();
+    await profile.refresh();
+    final characters = profile.characters;
     if (characters?.isEmpty ?? true) {
       _error = InvalidMembershipError();
       notifyListeners();

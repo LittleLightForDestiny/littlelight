@@ -1,5 +1,3 @@
-// @dart=2.9
-
 import 'package:bungie_api/models/general_user.dart';
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
@@ -19,9 +17,9 @@ class AccountsScreen extends StatefulWidget {
 }
 
 class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
-  Set<String> accounts;
-  String currentAccount;
-  Map<String, UserMembershipData> memberships;
+  Set<String>? accounts;
+  String? currentAccount;
+  Map<String, UserMembershipData>? memberships;
 
   @override
   void initState() {
@@ -72,13 +70,16 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   }
 
   Widget buildBody(BuildContext context) {
+    final accounts = this.accounts;
+    if (accounts == null) return Container();
     return SingleChildScrollView(
         padding: const EdgeInsets.all(8),
         child: Column(children: accounts.map((l) => buildAccountItem(context, l)).toList()));
   }
 
   Widget buildAccountItem(BuildContext context, String accountId) {
-    final membership = memberships[accountId];
+    final membership = memberships?[accountId];
+    if (membership == null) return Container();
     final isCurrent = accountId == currentAccount;
     return Container(
         margin: const EdgeInsets.symmetric(vertical: 4),
@@ -90,8 +91,8 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
             Positioned.fill(
                 child: QueuedNetworkImage(
               fit: BoxFit.cover,
-              imageUrl: BungieApiService.url(
-                  "/img/UserThemes/${membership?.bungieNetUser?.profileThemeName}/mobiletheme.jpg"),
+              imageUrl:
+                  BungieApiService.url("/img/UserThemes/${membership.bungieNetUser?.profileThemeName}/mobiletheme.jpg"),
             )),
             Positioned(
               left: 0,
@@ -120,7 +121,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
                 height: 48,
                 child: QueuedNetworkImage(
                   fit: BoxFit.cover,
-                  imageUrl: BungieApiService.url(membership?.bungieNetUser?.profilePicturePath),
+                  imageUrl: BungieApiService.url(membership.bungieNetUser?.profilePicturePath),
                 )),
             !isCurrent
                 ? Positioned(
@@ -147,10 +148,10 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   }
 
   Widget buildDestinyMemberships(BuildContext context, UserMembershipData membership) {
-    List<Widget> children = membership.destinyMemberships
+    List<Widget>? children = membership.destinyMemberships
         ?.map((m) => buildMembershipButton(context, m, membership.bungieNetUser))
-        ?.expand((w) => [w, Container(width: 4)])
-        ?.toList();
+        .expand((w) => [w, Container(width: 4)])
+        .toList();
     if (children == null) return Container();
     children.removeLast();
     return Row(
@@ -160,14 +161,16 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
         children: children);
   }
 
-  Widget buildMembershipButton(BuildContext context, GroupUserInfoCard membership, GeneralUser bungieNetUser) {
-    var plat = PlatformData.getPlatform(membership.membershipType);
+  Widget buildMembershipButton(BuildContext context, GroupUserInfoCard membership, GeneralUser? bungieNetUser) {
+    final membershipType = membership.membershipType;
+    if (membershipType == null) return Container();
+    var plat = PlatformData.getPlatform(membershipType);
     return Expanded(
         child: Material(
       color: plat.color,
       child: InkWell(
         onTap: () {
-          auth.setCurrentMembershipID(membership.membershipId, bungieNetUser.membershipId);
+          auth.setCurrentMembershipID(membership.membershipId, bungieNetUser?.membershipId);
           Navigator.pushReplacement(
               context,
               MaterialPageRoute(
@@ -180,7 +183,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
             Icon(plat.icon),
             Container(height: 4),
             Text(
-              membership.displayName,
+              membership.displayName ?? "",
               style: const TextStyle(fontWeight: FontWeight.bold),
             )
           ],
@@ -199,7 +202,9 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
   }
 
   void deleteAccount(UserMembershipData membership) async {
-    await auth.removeAccount(membership.bungieNetUser.membershipId);
+    var membershipId = membership.bungieNetUser?.membershipId;
+    if (membershipId == null) return;
+    await auth.removeAccount(membershipId);
     loadAccounts();
   }
 }

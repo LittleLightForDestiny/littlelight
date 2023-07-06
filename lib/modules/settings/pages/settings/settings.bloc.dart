@@ -14,7 +14,7 @@ import 'package:little_light/modules/settings/pages/add_wishlist/add_wishlist.pa
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:provider/provider.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
   final UserSettingsBloc _userSetttingsBloc;
@@ -70,7 +70,7 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
   set keepAwake(bool value) {
     _userSetttingsBloc.keepAwake = value;
     notifyListeners();
-    Wakelock.toggle(enable: value);
+    WakelockPlus.toggle(enable: value);
   }
 
   bool get autoOpenKeyboard => _userSetttingsBloc.autoOpenKeyboard;

@@ -133,9 +133,9 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
   }
 
   List<DestinyCharacterInfo?>? get characters {
-    List<DestinyCharacterInfo?>? characters = _profileBloc.characters;
+    List<DestinyCharacterInfo>? characters = _profileBloc.characters;
     if (characters == null) return null;
-    return characters + [null];
+    return [...characters, null];
   }
 
   DestinyItemInfo? getEquippedItem(DestinyCharacterInfo character, int bucketHash) => //

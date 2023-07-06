@@ -10,9 +10,9 @@ class ItemNotesBloc extends ChangeNotifier with StorageConsumer {
 
   LittleLightApiService get _api => LittleLightApiService();
   Map<String, ItemNotesTag> get _defaultTags => {
-        "favorite": ItemNotesTag.favorite(context),
-        "trash": ItemNotesTag.trash(context),
-        "infuse": ItemNotesTag.infuse(context),
+        "favorite": ItemNotesTag.favorite(),
+        "trash": ItemNotesTag.trash(),
+        "infuse": ItemNotesTag.infuse(),
       };
 
   ItemNotesBloc(this.context) {

@@ -1,7 +1,0 @@
-Little Light is an item manager for Destiny 2 that will make your guardian's life a lot easier.
-- Quick transfer any item between characters
-- transfer more than one item at once (hold an item to activate multi-select)
-- Create loadouts for equipping an entire set in one click
-- see all relevant mods of your items in the equipment list
-- quick switch between plaftorms
-- check your item collection status

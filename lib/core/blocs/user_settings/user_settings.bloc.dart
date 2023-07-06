@@ -80,7 +80,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
 
   Future<void> initPriorityTags() async {
     _priorityTags = await currentMembershipStorage.getPriorityTags();
-    _priorityTags ??= {ItemNotesTag.favorite(context).tagId};
+    _priorityTags ??= {ItemNotesTag.favorite().tagId};
   }
 
   Future<void> initBucketDisplayOptions() async {

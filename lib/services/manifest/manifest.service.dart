@@ -126,7 +126,8 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
 
   Future<void> _downloadManifest(StreamController<DownloadProgress> _controller, {bool skipCache = false}) async {
     try {
-      _db?.close();
+      await _db?.close();
+      _db = null;
     } catch (e, stackTrace) {
       analytics.registerNonFatal(e, stackTrace);
     }
@@ -172,6 +173,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
       await zipFile.delete();
 
       await _openDb();
+      await Future.delayed(Duration(milliseconds: 1));
 
       bool success = await test();
       if (!success) {
@@ -218,7 +220,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     final success = def?.displayProperties?.name != null;
     if (success) return success;
     try {
-      _db?.close();
+      await _db?.close();
     } catch (e, stackTrace) {
       analytics.registerNonFatal(e, stackTrace);
     }
