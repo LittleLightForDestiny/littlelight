@@ -18,7 +18,7 @@ before_all do
 end
 
 platform :android do
-  desc "Submit a new Beta Build to Crashlytics Beta"
+  desc "Submit a new Beta Build to Google Play Beta"
   lane :beta do
     upload_to_play_store(
       aab: './build/app/outputs/bundle/release/app-release.aab',
