@@ -2,7 +2,6 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:collection/collection.dart';
-
 import 'get_energy_socket_category_hash.dart';
 
 Future<DestinyEnergyCapacityEntry?> getEnergyCapacity(

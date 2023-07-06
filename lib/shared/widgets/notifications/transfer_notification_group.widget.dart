@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/shared/widgets/notifications/active_apply_mod_notification.widget.dart';
 import 'package:little_light/shared/widgets/notifications/active_transfer_notification.widget.dart';
 import 'package:little_light/shared/widgets/notifications/queued_transfer_notification.widget.dart';
-
 import '../../../core/blocs/notifications/notification_actions.dart';
 
 class TransferNotificationGroup extends StatelessWidget {

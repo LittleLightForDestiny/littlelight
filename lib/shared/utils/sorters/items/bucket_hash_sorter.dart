@@ -2,7 +2,6 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-
 import 'item_sorter.dart';
 
 class BucketHashSorter extends ItemSorter with ManifestConsumer {

@@ -4,7 +4,6 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/shared/widgets/tags/tag_icon.widget.dart';
 import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
-
 import 'confirm_delete_tag.bloc.dart';
 
 typedef OnColorSelect = void Function(Color color);

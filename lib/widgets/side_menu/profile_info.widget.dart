@@ -5,16 +5,13 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/utils/platform_data.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;

@@ -4,7 +4,6 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/modules/settings/pages/add_wishlist/add_wishlists.bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'wishlist_file_item.dart';
 
 class AddCommunityWishlistForm extends StatefulWidget {

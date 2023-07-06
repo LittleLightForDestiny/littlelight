@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/modules/search/blocs/filter_options/power_level_filter_options.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/filter_range_slider.widget.dart';
-
 import 'base_drawer_filter.widget.dart';
 
 class PowerLevelFilterWidget extends BaseDrawerFilterWidget<PowerLevelFilterOptions> {

@@ -1,5 +1,4 @@
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-
 import 'base_notification_action.dart';
 
 abstract class ActionNotification extends BaseNotification {

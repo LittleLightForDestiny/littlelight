@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-
 import 'edit_item_notes.bloc.dart';
 
 class EditItemNotesView extends StatelessWidget {

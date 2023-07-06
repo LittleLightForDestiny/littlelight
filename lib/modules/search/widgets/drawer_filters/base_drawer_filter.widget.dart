@@ -4,7 +4,6 @@ import 'package:little_light/modules/search/blocs/filter_options/base_filter_val
 import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
 import 'package:little_light/shared/widgets/ui/switch.dart';
 import 'package:provider/provider.dart';
-
 import 'base_filter.widget.dart';
 
 const _animationDuration = Duration(milliseconds: 300);

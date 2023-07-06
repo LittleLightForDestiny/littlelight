@@ -4,7 +4,6 @@ import 'package:little_light/core/blocs/notifications/notification_actions.dart'
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
-
 import 'queued_action.dart';
 
 class QueuedTransfer extends QueuedAction<TransferNotification> {

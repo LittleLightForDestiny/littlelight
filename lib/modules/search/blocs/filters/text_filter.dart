@@ -10,7 +10,6 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/string/remove_diacritics.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
-
 import 'base_item_filter.dart';
 
 class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer, WishlistsConsumer {

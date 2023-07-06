@@ -8,7 +8,6 @@ import 'package:little_light/shared/utils/extensions/character_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'base_drawer_filter.widget.dart';
 
 enum _NonCharacterOwners { Vault, Profile }

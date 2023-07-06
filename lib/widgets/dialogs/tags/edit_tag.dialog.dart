@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
-
 import 'create_tag_form.widget.dart';
 
 class EditTagDialogRoute extends DialogRoute<ItemNotesTag?> {

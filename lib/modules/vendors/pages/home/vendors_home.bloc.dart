@@ -7,7 +7,6 @@ import 'package:little_light/modules/vendors/pages/vendor_details/vendor_details
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:provider/provider.dart';
-
 import 'vendor_data.dart';
 
 class VendorsHomeBloc extends ChangeNotifier with StorageConsumer {

@@ -7,7 +7,6 @@ import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dar
 import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
 import 'package:little_light/shared/blocs/scoped_value_repository/scoped_value_repository.bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'progress.view.dart';
 
 class ProgressPage extends StatelessWidget {

@@ -3,7 +3,6 @@ import 'package:little_light/modules/search/widgets/drawer_filters/armor_stats_f
 import 'package:little_light/modules/search/widgets/drawer_filters/power_level_filter.widget.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/tier_type_filter.widget.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/wishlist_tag_filter.widget.dart';
-
 import 'drawer_filters/ammo_type_filter.widget.dart';
 import 'drawer_filters/class_type_filter.widget.dart';
 import 'drawer_filters/damage_type_filter.widget.dart';

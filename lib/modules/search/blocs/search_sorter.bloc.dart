@@ -6,7 +6,6 @@ import 'package:little_light/core/blocs/profile/sorters.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/sorters/items/export.dart';
 import 'package:provider/provider.dart';
-
 import 'sorter_options.dart';
 
 class SearchSorterBloc extends ChangeNotifier with ManifestConsumer {

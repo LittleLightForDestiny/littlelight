@@ -2,7 +2,6 @@ import 'package:bungie_api/src/enums/damage_type.dart';
 import 'package:bungie_api/src/enums/item_location.dart';
 import 'package:bungie_api/src/enums/item_state.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-
 import '../../../models/item_info/inventory_item_info.dart';
 
 class LoadoutItemInfo extends DestinyItemInfo {

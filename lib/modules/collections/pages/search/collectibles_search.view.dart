@@ -11,7 +11,6 @@ import 'package:little_light/shared/widgets/notifications/busy_indicator_line.wi
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'collectibles_search.bloc.dart';
 
 class CollectiblesSearchView extends StatelessWidget {

@@ -7,7 +7,6 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/search/blocs/filter_options/item_tag_filter_options.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:provider/provider.dart';
-
 import 'base_drawer_filter.widget.dart';
 import 'filter_button.widget.dart';
 

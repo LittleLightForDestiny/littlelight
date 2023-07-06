@@ -7,21 +7,11 @@ import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 
 const levelProgressionHash = 2899837482;
 const weaponLevelHash = 3077315735;
 const craftingDateHash = 3947811849;
-
-extension on List {
-  elementAtOrNull(int index) {
-    try {
-      return this[index];
-    } catch (e) {}
-    return null;
-  }
-}
 
 class ItemLevelWidget extends StatelessWidget with ProfileConsumer, DeepSightHelper {
   final DestinyItemComponent item;

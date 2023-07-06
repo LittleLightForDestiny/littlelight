@@ -5,7 +5,6 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 import 'package:little_light/shared/widgets/sockets/super_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'details_item_cover_persistent_collapsible_container.dart';
 
 class DetailsItemCoverSupersWidget extends DetailsItemSupersWidget {

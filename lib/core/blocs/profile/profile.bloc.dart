@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:math';
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -17,7 +16,6 @@ import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_last_played_sorter.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_sorter.dart';
 import 'package:provider/provider.dart';
-
 import '../../../models/item_info/inventory_item_info.dart';
 import '../user_settings/user_settings.bloc.dart';
 import 'destiny_character_info.dart';

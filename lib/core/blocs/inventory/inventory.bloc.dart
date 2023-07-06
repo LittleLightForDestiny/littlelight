@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/enums/platform_error_codes.dart';
 import 'package:collection/collection.dart';

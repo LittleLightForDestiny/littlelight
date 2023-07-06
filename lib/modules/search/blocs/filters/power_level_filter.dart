@@ -1,7 +1,6 @@
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/search/blocs/filter_options/power_level_filter_options.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-
 import 'base_item_filter.dart';
 import 'dart:math' as math;
 

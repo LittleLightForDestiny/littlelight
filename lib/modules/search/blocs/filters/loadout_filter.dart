@@ -4,7 +4,6 @@ import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/modules/search/blocs/filter_options/loadout_filter_options.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
-
 import 'base_item_filter.dart';
 
 class LoadoutFilter extends BaseItemFilter<LoadoutFilterOptions> {

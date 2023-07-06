@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:bungie_api/models/group_user_info_card.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:collection/collection.dart';

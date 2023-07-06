@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'record_details.page.dart';
 
 class RecordDetailsPageRoute extends MaterialPageRoute {

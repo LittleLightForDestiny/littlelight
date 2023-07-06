@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:little_light/models/littlelight_wishlist.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/parsers/wishlists.base.parser.dart';
@@ -20,8 +19,7 @@ class LittleLightWishlistParser implements WishlistBaseParser {
         .toList();
   }
 
-  List<Set<int>> parsePlugs(List<List<int>> plugs) =>
-      plugs.map((p) => Set<int>.from(p)).toList();
+  List<Set<int>> parsePlugs(List<List<int>> plugs) => plugs.map((p) => Set<int>.from(p)).toList();
 
   Set<WishlistTag> parseTags(List<String> tags) {
     return tags

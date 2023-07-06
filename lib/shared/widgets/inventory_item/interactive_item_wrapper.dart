@@ -9,7 +9,6 @@ import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 import 'package:little_light/shared/widgets/shapes/engram_shape.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'inventory_item.dart';
 
 class InteractiveItemWrapper extends StatelessWidget {

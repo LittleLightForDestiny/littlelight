@@ -22,7 +22,6 @@ import 'package:little_light/shared/widgets/tabs/item_list_swipe_area/swipe_area
 import 'package:little_light/shared/widgets/tabs/menus/character_header_tab_menu.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_indicator.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
-
 import 'progress.bloc.dart';
 
 enum ProgressTab { Milestones, Pursuits, Ranks }

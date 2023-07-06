@@ -1,6 +1,5 @@
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
-
 import 'action_notification.dart';
 
 enum TransferSteps {

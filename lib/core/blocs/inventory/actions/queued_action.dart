@@ -1,8 +1,6 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
-
 import '../../notifications/notification_actions.dart';
 
 abstract class QueuedAction<AN extends ActionNotification> {

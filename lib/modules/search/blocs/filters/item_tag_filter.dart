@@ -3,7 +3,6 @@ import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/search/blocs/filter_options/item_tag_filter_options.dart';
 import 'package:provider/provider.dart';
-
 import 'base_item_filter.dart';
 
 class ItemTagFilter extends BaseItemFilter<ItemTagFilterOptions> {

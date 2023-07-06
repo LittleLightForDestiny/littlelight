@@ -1,11 +1,9 @@
 import 'dart:math' as math;
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/modules/search/blocs/filter_options/damage_type_filter_options.dart';
 import 'package:little_light/utils/destiny_data.dart';
-
 import 'base_drawer_filter.widget.dart';
 import 'filter_button.widget.dart';
 

@@ -3,7 +3,6 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
 import 'package:provider/provider.dart';
-
 import 'details_item_stat.widget.dart';
 
 class DetailsItemStatsWidget extends StatelessWidget {

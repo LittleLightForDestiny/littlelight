@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'dev_tools_manifest.page.dart';
 
 class DevToolsManifestPageRoute extends MaterialPageRoute {

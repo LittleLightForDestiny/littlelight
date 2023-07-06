@@ -7,7 +7,6 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
-
 import 'base_persistent_notification.widget.dart';
 
 class LoadoutChangeResultNotificationWidget extends BasePersistentNotificationWidget<LoadoutChangeResultNotification> {

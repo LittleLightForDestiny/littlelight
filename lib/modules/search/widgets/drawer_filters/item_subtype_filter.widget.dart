@@ -6,7 +6,6 @@ import 'package:little_light/modules/search/blocs/filter_options/item_subtype_fi
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-
 import 'base_drawer_filter.widget.dart';
 import 'filter_button.widget.dart';
 

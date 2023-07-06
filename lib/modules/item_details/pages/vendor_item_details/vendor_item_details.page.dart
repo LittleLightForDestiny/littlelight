@@ -7,7 +7,6 @@ import 'package:little_light/modules/item_details/pages/vendor_item_details/vend
 import 'package:little_light/shared/blocs/scoped_value_repository/scoped_value_repository.bloc.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'vendor_item_details.view.dart';
 
 class VendorItemDetailsPage extends StatelessWidget {

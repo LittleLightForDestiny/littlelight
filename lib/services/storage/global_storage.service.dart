@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
@@ -15,7 +14,6 @@ import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/storage/migrations/storage_migrations.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'global_storage.keys.dart';
 import 'storage.base.dart';
 

@@ -2,7 +2,6 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
-
 import '../../blocs/filter_options/ammo_type_filter_options.dart';
 import 'base_drawer_filter.widget.dart';
 import 'filter_button.widget.dart';

@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as io;
 import 'dart:io';
-
 import 'package:bungie_api/common.dart';
 import 'package:bungie_api/core.dart';
 import 'package:bungie_api/destiny2.dart';

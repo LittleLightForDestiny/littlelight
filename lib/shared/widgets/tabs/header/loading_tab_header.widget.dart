@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
-
 import 'base_tab_header.widget.dart';
 
 class LoadingTabHeaderWidget extends BaseTabHeaderWidget {

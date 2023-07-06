@@ -6,7 +6,6 @@ import 'package:little_light/modules/search/blocs/filter_options/loadout_filter_
 import 'package:little_light/utils/destiny_data.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'base_drawer_filter.widget.dart';
 import 'filter_button.widget.dart';
 

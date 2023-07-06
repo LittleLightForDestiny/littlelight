@@ -10,7 +10,6 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'details_item_cover_plug_wishlistlist_info.widget.dart';
 
 const _perkIconSize = 64.0;

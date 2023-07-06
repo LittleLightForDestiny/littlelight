@@ -8,7 +8,6 @@ import 'package:little_light/widgets/dialogs/tags/edit_tag.dialog.dart';
 import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
 import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'confirm_delete_tag.dialog.dart';
 
 class SelectTagDialogRoute extends DialogRoute<ItemNotesTag?> {

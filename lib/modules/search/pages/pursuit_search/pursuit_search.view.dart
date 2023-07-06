@@ -16,7 +16,6 @@ import 'package:little_light/shared/widgets/notifications/notifications.widget.d
 import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'pursuit_search.bloc.dart';
 
 class PursuitSearchView extends StatelessWidget {

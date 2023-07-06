@@ -5,7 +5,6 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
-
 import 'base_tab_header.widget.dart';
 
 class CharacterTabHeaderWidget extends BaseTabHeaderWidget with DestinySettingsConsumer {

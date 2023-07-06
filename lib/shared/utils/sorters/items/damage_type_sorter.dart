@@ -2,7 +2,6 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/enums/damage_type.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-
 import 'item_sorter.dart';
 
 class DamageTypeSorter extends ItemSorter {

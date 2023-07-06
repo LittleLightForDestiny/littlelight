@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/triumphs/blocs/base_triumphs.bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'triumphs_home.bloc.dart';
 import 'triumphs_home.view.dart';
 

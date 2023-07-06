@@ -1,6 +1,5 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
-
 import 'loadout_item_info.dart';
 
 class LoadoutIndexSlot {

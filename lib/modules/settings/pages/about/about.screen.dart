@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';

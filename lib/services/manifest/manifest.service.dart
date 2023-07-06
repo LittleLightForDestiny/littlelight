@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:archive/archive.dart';
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/foundation.dart';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
@@ -16,7 +15,6 @@ import 'package:little_light/pages/initial/errors/initial_page_base.error.dart';
 import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
 import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
 import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';

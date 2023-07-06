@@ -1,7 +1,5 @@
 // @dart=2.12
-
 import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 
 enum CornerPosition {

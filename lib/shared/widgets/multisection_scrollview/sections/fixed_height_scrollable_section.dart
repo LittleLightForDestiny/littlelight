@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'base_scrollable_section.dart';
 
 class FixedHeightScrollSection extends ScrollableSection {

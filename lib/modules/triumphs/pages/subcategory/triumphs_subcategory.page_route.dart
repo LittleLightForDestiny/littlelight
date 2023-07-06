@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'triumphs_subcategory.page.dart';
 
 class TriumphsSubcategoryPageRoute extends MaterialPageRoute {

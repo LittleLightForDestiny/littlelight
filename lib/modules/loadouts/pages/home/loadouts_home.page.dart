@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'loadouts_home.bloc.dart';
 import 'loadouts_home.view.dart';
 

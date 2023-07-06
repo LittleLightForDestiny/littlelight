@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-
 import 'item_sorter.dart';
 
 class StatSorter extends ItemSorter {

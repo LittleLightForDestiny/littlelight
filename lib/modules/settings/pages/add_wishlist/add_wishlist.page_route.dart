@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-
 import 'package:provider/provider.dart';
-
 import 'add_wishlist.page.dart';
 import 'add_wishlists.bloc.dart';
 

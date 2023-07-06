@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'definition_item_details.page.dart';
 
 class DefinitionItemDetailsPageRoute extends MaterialPageRoute {

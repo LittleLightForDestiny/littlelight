@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
@@ -9,8 +8,7 @@ import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
 class ReportErrorDialogRoute extends DialogRoute<void> {
-  ReportErrorDialogRoute(BuildContext context,
-      {required FlutterErrorDetails error})
+  ReportErrorDialogRoute(BuildContext context, {required FlutterErrorDetails error})
       : super(
           context: context,
           builder: (context) => ReportErrorDialog(),
@@ -19,12 +17,10 @@ class ReportErrorDialogRoute extends DialogRoute<void> {
 }
 
 extension on BuildContext {
-  FlutterErrorDetails? get errorArgument =>
-      ModalRoute.of(this)?.settings.arguments as FlutterErrorDetails;
+  FlutterErrorDetails? get errorArgument => ModalRoute.of(this)?.settings.arguments as FlutterErrorDetails;
 }
 
-class ReportErrorDialog extends LittleLightBaseDialog
-    with AuthConsumer, AnalyticsConsumer {
+class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, AnalyticsConsumer {
   ReportErrorDialog() : super();
 
   @override
@@ -39,9 +35,7 @@ class ReportErrorDialog extends LittleLightBaseDialog
     return Container(
         child: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Text(
-          "This will be the info that will be sent along with the error report:"
-              .translate(context)),
+      Text("This will be the info that will be sent along with the error report:".translate(context)),
       Container(
         height: 8,
       ),
@@ -58,17 +52,13 @@ class ReportErrorDialog extends LittleLightBaseDialog
                 }
               }
             }
-            final cleanStack = error.stack
-                .toString()
-                .split('\n')
-                .where((s) => s.contains('package:little_light'))
-                .join('\n');
+            final cleanStack =
+                error.stack.toString().split('\n').where((s) => s.contains('package:little_light')).join('\n');
             text += "exception:\n${error.exceptionAsString()}\n";
             text += "stackTrace:\n$cleanStack\n";
             return Container(
               decoration: BoxDecoration(
-                  color: LittleLightTheme.of(context).surfaceLayers.layer2,
-                  borderRadius: BorderRadius.circular(8)),
+                  color: LittleLightTheme.of(context).surfaceLayers.layer2, borderRadius: BorderRadius.circular(8)),
               padding: const EdgeInsets.all(8),
               child: Text(
                 text,
@@ -97,8 +87,7 @@ class ReportErrorDialog extends LittleLightBaseDialog
             final error = context.errorArgument;
             if (error == null) return;
             final data = await getData(context);
-            analytics.registerUserFeedback(
-                error, data?["playerID"] ?? "", data ?? {});
+            analytics.registerUserFeedback(error, data?["playerID"] ?? "", data ?? {});
             Navigator.of(context).pop();
           },
         ),

@@ -12,7 +12,6 @@ import 'package:little_light/services/app_config/app_config.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
@@ -22,7 +21,6 @@ import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
 import 'package:provider/provider.dart';
-
 import 'https_override/https_overrides.dart';
 import 'littlelight/littlelight_api.service.dart';
 import 'manifest/manifest.service.dart';

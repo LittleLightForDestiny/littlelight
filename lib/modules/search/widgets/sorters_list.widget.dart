@@ -4,7 +4,6 @@ import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';
 import 'package:little_light/modules/search/widgets/drawer_sorters/available_sorter.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:provider/provider.dart';
-
 import 'drawer_sorters/active_sorter.widget.dart';
 
 class SortersListWidget extends StatelessWidget {

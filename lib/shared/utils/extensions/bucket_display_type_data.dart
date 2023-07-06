@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';

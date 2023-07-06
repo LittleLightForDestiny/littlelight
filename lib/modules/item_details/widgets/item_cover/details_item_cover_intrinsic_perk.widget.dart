@@ -1,4 +1,3 @@
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
@@ -7,7 +6,6 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 import 'package:little_light/shared/widgets/sockets/perk_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'details_item_cover_persistent_collapsible_container.dart';
 
 class DetailsItemCoverIntrinsicPerkWidget extends DetailsItemIntrinsicPerkWidget {

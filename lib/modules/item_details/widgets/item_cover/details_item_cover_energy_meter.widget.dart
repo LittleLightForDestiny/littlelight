@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -11,7 +10,6 @@ import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
-
 import 'details_item_cover_persistent_collapsible_container.dart';
 
 const _energyBarSize = 68.0;

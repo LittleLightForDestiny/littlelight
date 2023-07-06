@@ -22,7 +22,6 @@ import 'package:little_light/utils/stats_total.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'inventory_item_perks.dart';
 import 'inventory_item_stats.dart';
 import 'utils/get_energy_capacity.dart';

@@ -1,7 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
-
 import 'select_loadout_item.page.dart';
 
 class SelectLoadoutItemPageRouteArguments {

@@ -2,7 +2,6 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/exceptions.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
-
 import '../../../models/item_info/destiny_item_info.dart';
 
 extension ProfileDebuggerExtension on ProfileBloc {

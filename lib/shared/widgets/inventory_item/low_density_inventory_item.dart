@@ -19,7 +19,6 @@ import 'package:little_light/utils/stats_total.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'inventory_item_icon.dart';
 import 'utils/get_energy_capacity.dart';
 import 'utils/get_subclass_super_plug_item.dart';

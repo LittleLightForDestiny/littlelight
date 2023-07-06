@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';

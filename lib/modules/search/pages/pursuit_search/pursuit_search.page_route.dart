@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'pursuit_search.page.dart';
 
 class PursuitSearchPageRoute extends MaterialPageRoute {

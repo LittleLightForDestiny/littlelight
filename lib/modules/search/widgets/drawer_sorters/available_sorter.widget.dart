@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';

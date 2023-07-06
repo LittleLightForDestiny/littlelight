@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
-
 import 'package:little_light/core/theme/littlelight.theme.dart';
 
 class FilledCircularProgressIndicator extends ProgressIndicator {

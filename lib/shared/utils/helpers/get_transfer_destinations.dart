@@ -6,7 +6,6 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:provider/provider.dart';
-
 import '../../models/transfer_destination.dart';
 
 class _Destinations {

@@ -2,7 +2,6 @@ import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/models/user_membership_data.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
-
 import 'account_storage.keys.dart';
 import 'storage.base.dart';
 

@@ -1,5 +1,4 @@
 import 'package:bungie_api/destiny2.dart';
-
 import 'notification.event.dart';
 
 enum ErrorNotificationType {
@@ -14,7 +13,6 @@ enum ErrorNotificationType {
 class ErrorNotificationEvent extends NotificationEvent {
   final ErrorNotificationType errorType;
 
-  ErrorNotificationEvent(this.errorType,
-      {DestinyItemComponent? item, String? characterId})
+  ErrorNotificationEvent(this.errorType, {DestinyItemComponent? item, String? characterId})
       : super(null, item: item, characterId: characterId);
 }

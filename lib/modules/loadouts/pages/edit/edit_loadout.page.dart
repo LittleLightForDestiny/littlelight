@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'edit_loadout.bloc.dart';
 import 'edit_loadout.page_route.dart';
 import 'edit_loadout.view.dart';

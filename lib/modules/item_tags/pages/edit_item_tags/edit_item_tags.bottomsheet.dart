@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/shared/widgets/modals/base_bottom_sheet.base.dart';
 import 'package:provider/provider.dart';
-
 import 'edit_item_tags.bloc.dart';
 import 'edit_item_tags.view.dart';
 

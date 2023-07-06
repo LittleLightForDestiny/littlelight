@@ -6,7 +6,6 @@ import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
 import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';
 import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'select_loadout_item.bloc.dart';
 import 'select_loadout_item.page_route.dart';
 import 'select_loadout_item.view.dart';

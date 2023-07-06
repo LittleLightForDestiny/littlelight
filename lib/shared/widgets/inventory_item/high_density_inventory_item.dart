@@ -31,7 +31,6 @@ import 'package:little_light/utils/stats_total.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
-
 import 'inventory_item_icon.dart';
 import 'inventory_item_mods.dart';
 import 'inventory_item_perks.dart';

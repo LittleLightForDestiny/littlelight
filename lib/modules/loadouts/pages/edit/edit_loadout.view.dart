@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
@@ -13,7 +12,6 @@ import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-
 import 'edit_loadout.bloc.dart';
 
 class EditLoadoutView extends StatelessWidget {

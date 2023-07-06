@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';

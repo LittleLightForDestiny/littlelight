@@ -20,7 +20,6 @@ import 'package:little_light/shared/widgets/tabs/header/loading_tab_header.widge
 import 'package:little_light/shared/widgets/tabs/header/vault_tab_header.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/character_header_tab_menu.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_indicator.dart';
-
 import 'equipment.bloc.dart';
 
 const _animationDuration = Duration(milliseconds: 500);

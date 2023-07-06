@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -14,7 +13,6 @@ import 'package:little_light/shared/widgets/notifications/busy_indicator_line.wi
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
-
 import 'loadouts_home.bloc.dart';
 
 class LoadoutsHomeView extends StatelessWidget {

@@ -1,5 +1,4 @@
 import 'package:bungie_api/destiny2.dart';
-
 import 'inventory_item_info.dart';
 
 abstract class DestinyItemInfo {

@@ -2,7 +2,6 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/modules/triumphs/pages/record_details/record_details.bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'record_details.view.dart';
 
 class RecordDetailsPage extends StatelessWidget {

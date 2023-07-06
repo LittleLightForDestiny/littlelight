@@ -12,7 +12,6 @@ import 'package:little_light/shared/widgets/notifications/busy_indicator_line.wi
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
-
 import 'select_loadout_item.bloc.dart';
 
 class SelectLoadoutItemView extends StatelessWidget {

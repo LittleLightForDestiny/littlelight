@@ -9,7 +9,6 @@ import 'package:little_light/modules/loadouts/pages/loadout_item_options/loadout
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
-
 import 'loadout_item_options.bloc.dart';
 
 class LoadoutItemOptionsView extends StatelessWidget {

@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:little_light/services/setup.dart';
 import 'package:uni_links_platform_interface/uni_links_platform_interface.dart';
@@ -9,8 +8,7 @@ bool get _enabled => Platform.isAndroid;
 setupUnilinksHandler() async {
   if (_enabled) return;
   if (!getItCoreInstance.isRegistered<UnilinksHandler>()) {
-    getItCoreInstance
-        .registerSingleton<UnilinksHandler>(UnilinksHandler._internal());
+    getItCoreInstance.registerSingleton<UnilinksHandler>(UnilinksHandler._internal());
   }
 }
 

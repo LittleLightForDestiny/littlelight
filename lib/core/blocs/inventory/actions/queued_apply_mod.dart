@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
-
 import 'queued_action.dart';
 
 class QueuedApplyPlugs extends QueuedAction<ApplyPlugsNotification> {

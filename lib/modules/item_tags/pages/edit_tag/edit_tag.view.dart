@@ -6,7 +6,6 @@ import 'package:little_light/shared/widgets/containers/menu_box.dart';
 import 'package:little_light/shared/widgets/containers/menu_box_title.dart';
 import 'package:little_light/shared/widgets/tags/tag_icon.widget.dart';
 import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
-
 import 'edit_tag.bloc.dart';
 
 const _gridHeight = 144.0;

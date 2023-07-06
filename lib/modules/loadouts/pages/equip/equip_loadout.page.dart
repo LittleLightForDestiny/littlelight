@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'equip_loadout.bloc.dart';
 import 'equip_loadout.view.dart';
-
 import 'package:provider/provider.dart';
 
 class EquipLoadoutPage extends StatelessWidget {

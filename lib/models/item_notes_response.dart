@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-
 import 'item_notes.dart';
 import 'item_notes_tag.dart';
 
@@ -14,8 +13,7 @@ class NotesResponse {
       : notes = notes ?? [],
         tags = tags ?? [];
 
-  factory NotesResponse.fromJson(Map<String, dynamic> json) =>
-      _$NotesResponseFromJson(json);
+  factory NotesResponse.fromJson(Map<String, dynamic> json) => _$NotesResponseFromJson(json);
 
   Map<String, dynamic> toJson() => _$NotesResponseToJson(this);
 }

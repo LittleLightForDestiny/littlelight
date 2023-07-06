@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';

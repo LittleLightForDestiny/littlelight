@@ -3,7 +3,6 @@ import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/modules/search/blocs/filter_options/wishlist_tag_filter_options.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-
 import 'base_item_filter.dart';
 
 class WishlistTagFilter extends BaseItemFilter<WishlistTagFilterOptions> with WishlistsConsumer {

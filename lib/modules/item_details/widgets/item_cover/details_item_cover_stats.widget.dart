@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:provider/provider.dart';
-
 import 'details_item_cover_stat.widget.dart';
 
 class DetailsItemCoverStatsWidget extends StatelessWidget {

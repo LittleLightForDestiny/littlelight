@@ -8,7 +8,6 @@ import 'package:little_light/shared/widgets/sockets/paginated_plug_grid_view.dar
 import 'package:little_light/shared/widgets/sockets/perk_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'details_item_cover_persistent_collapsible_container.dart';
 
 const _randomPerkIconHash = 29505215;

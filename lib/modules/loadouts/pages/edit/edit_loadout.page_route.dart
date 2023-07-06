@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/loadout.dart';
-
 import 'edit_loadout.page.dart';
 
 class EditLoadoutPageRouteArguments {

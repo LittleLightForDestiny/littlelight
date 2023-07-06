@@ -1,7 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/shared/utils/sorters/items/export.dart';
-
 import 'destiny_character_info.dart';
 
 List<ItemSorter> getSortersFromStorage(

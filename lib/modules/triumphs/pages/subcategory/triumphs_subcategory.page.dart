@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/triumphs/blocs/base_triumphs.bloc.dart';
-
 import 'package:provider/provider.dart';
-
 import 'triumphs_subcategory.bloc.dart';
 import 'triumphs_subcategory.view.dart';
 

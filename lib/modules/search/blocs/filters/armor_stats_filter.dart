@@ -1,11 +1,9 @@
 import 'dart:math' as math;
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/search/blocs/filter_options/armor_stats_filter_options.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
-
 import 'base_item_filter.dart';
 
 class ArmorStatsFilter extends BaseItemFilter<ArmorStatsFilterOptions> with ManifestConsumer {

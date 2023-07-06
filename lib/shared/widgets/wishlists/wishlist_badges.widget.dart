@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
-
 import 'wishlist_badge.widget.dart';
 
 class WishlistBadgesWidget extends StatelessWidget {
