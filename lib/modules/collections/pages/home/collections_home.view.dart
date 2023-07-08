@@ -57,7 +57,10 @@ class CollectionsHomeView extends BaseCollectionsView {
       IconButton(
         icon: Icon(Icons.search),
         onPressed: () {
-          bloc.openSearch();
+          final tab = DefaultTabController.of(context).index;
+          final rootNodeHash = tabNodes?[tab].hash;
+          if (rootNodeHash == null) return;
+          bloc.openSearch(rootNodeHash);
         },
       ),
       ...(super.buildActions(context) ?? []),

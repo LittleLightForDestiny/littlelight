@@ -52,4 +52,20 @@ class CollectionsCategoryView extends BaseCollectionsView {
       ),
     );
   }
+
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.search),
+        onPressed: () {
+          final tab = DefaultTabController.of(context).index;
+          final rootNodeHash = tabNodes?[tab].hash;
+          if (rootNodeHash == null) return;
+          bloc.openSearch(rootNodeHash);
+        },
+      ),
+      ...(super.buildActions(context) ?? []),
+    ];
+  }
 }
