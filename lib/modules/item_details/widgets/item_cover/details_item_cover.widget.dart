@@ -80,7 +80,7 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
 
   @override
   bool shouldRebuild(DetailsItemCoverDelegate oldDelegate) {
-    return false;
+    return true;
   }
 }
 
