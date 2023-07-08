@@ -178,7 +178,7 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
   }
 
   List<InventoryItemInfo>? get duplicates {
-    return this.item?.duplicates?.where((element) => element != this.item).toList();
+    return this._profileBloc.getItemsByHash(this.itemHash);
   }
 
   @override
