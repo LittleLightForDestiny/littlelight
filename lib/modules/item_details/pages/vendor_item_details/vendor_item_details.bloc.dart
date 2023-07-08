@@ -178,6 +178,8 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
   }
 
   List<InventoryItemInfo>? get duplicates {
+    final def = _manifestBloc.definition<DestinyInventoryItemDefinition>(this.item?.itemHash);
+    if ((def?.equippable ?? true) == false) return null;
     return this._profileBloc.getItemsByHash(this.itemHash);
   }
 

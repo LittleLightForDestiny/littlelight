@@ -206,6 +206,8 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   }
 
   List<InventoryItemInfo>? get duplicates {
+    final def = _manifestBloc.definition<DestinyInventoryItemDefinition>(this.item?.itemHash);
+    if ((def?.equippable ?? true) == false) return null;
     return this.item?.duplicates?.where((element) => element != this.item).toList();
   }
 
