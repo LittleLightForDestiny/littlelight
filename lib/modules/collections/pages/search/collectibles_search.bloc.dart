@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bungie_api/destiny2.dart';
+import 'package:bungie_api/tokens.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
@@ -29,6 +30,8 @@ class CollectiblesSearchBloc extends ChangeNotifier {
 
   @protected
   final SelectionBloc selection;
+
+  Map<int, DestinyCollectibleDefinition>? _collectibleDefs;
 
   Map<int, DefinitionItemInfo>? _genericItems;
   Map<int, List<InventoryItemInfo>>? _inventoryItems;
@@ -71,50 +74,31 @@ class CollectiblesSearchBloc extends ChangeNotifier {
 
   Future<void> loadDefinitions() async {
     final collectibleHashes = await loadChildrenCollectibleHashes(rootNodeHash);
-    final collectibleDefinitions = await manifest.getDefinitions<DestinyCollectibleDefinition>(collectibleHashes);
-    final itemHashes = collectibleDefinitions.values.map((c) => c.itemHash);
-    final itemDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(itemHashes);
-
-    final genericItems = Map<int, DefinitionItemInfo>();
-
-    for (final h in collectibleHashes) {
-      final itemHash = collectibleDefinitions[h]?.itemHash;
-      final def = itemDefinitions[itemHash];
-      if (def == null) continue;
-      final item = DefinitionItemInfo.fromDefinition(def);
-      genericItems[h] = item;
-    }
-    _genericItems = genericItems;
+    final collectibleDefs = await manifest.getDefinitions<DestinyCollectibleDefinition>(collectibleHashes);
+    this._collectibleDefs = collectibleDefs;
     _updateFromProfile();
   }
 
   void _updateFromProfile() {
-    final genericItems = _genericItems;
-    if (genericItems == null) return;
-    final inventoryItems = Map<int, List<InventoryItemInfo>>();
-    for (final entry in genericItems.entries) {
-      inventoryItems[entry.key] = profile.getItemsByHash(entry.value.itemHash);
-    }
-    _inventoryItems = inventoryItems;
+    _inventoryItems = null;
     _updateFiltered();
   }
 
   Future<void> _updateFiltered() async {
     final filteredItems = <int>[];
-    final genericItems = _genericItems?.values;
-    if (genericItems == null) return;
+    final collectibles = _collectibleDefs;
+    if (collectibles == null) return;
     final hideUnachievable = userSettings.hideUnavailableCollectibles;
     final search = removeDiacritics(_textSearch.toLowerCase().trim());
-    for (final item in genericItems) {
-      final definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      final collectibleHash = definition?.collectibleHash;
+    for (final collectible in collectibles.values) {
+      final collectibleHash = collectible.hash;
       if (collectibleHash == null) continue;
       if (hideUnachievable) {
-        final profileCollectible = profile.getProfileCollectible(definition?.collectibleHash);
+        final profileCollectible = profile.getProfileCollectible(collectibleHash);
         final isInvisible = profileCollectible?.state?.contains(DestinyCollectibleState.Invisible) ?? false;
         if (isInvisible) continue;
       }
-      final name = removeDiacritics(definition?.displayProperties?.name?.toLowerCase().trim() ?? "");
+      final name = removeDiacritics(collectible.displayProperties?.name?.toLowerCase().trim() ?? "");
       if (search.isEmpty) {
         filteredItems.add(collectibleHash);
         continue;
@@ -170,11 +154,31 @@ class CollectiblesSearchBloc extends ChangeNotifier {
   }
 
   DefinitionItemInfo? getGenericItem(int? collectibleHash) {
-    return _genericItems?[collectibleHash];
+    if (collectibleHash == null) return null;
+    final generic = _genericItems?[collectibleHash];
+    if (generic == null) {
+      _loadGenericItem(collectibleHash);
+    }
+    return generic;
+  }
+
+  void _loadGenericItem(int collectibleHash) async {
+    final collectibleDef = await manifest.getDefinition<DestinyCollectibleDefinition>(collectibleHash);
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(collectibleDef?.itemHash);
+    if (def == null) return;
+    final genericItems = _genericItems ??= {};
+    final generic = DefinitionItemInfo.fromDefinition(def);
+    genericItems[collectibleHash] = generic;
+    notifyListeners();
   }
 
   List<InventoryItemInfo>? getInventoryItems(int? collectibleHash) {
-    return _inventoryItems?[collectibleHash];
+    if (collectibleHash == null) return null;
+    final inventoryItems = _inventoryItems ??= {};
+    final collectibleDef = _collectibleDefs?[collectibleHash];
+    if (collectibleDef == null) return null;
+    final items = inventoryItems[collectibleHash] ??= profile.getItemsByHash(collectibleDef.itemHash);
+    return _inventoryItems?[collectibleHash] ??= items;
   }
 
   void onCollectibleTap(DestinyItemInfo item) {
