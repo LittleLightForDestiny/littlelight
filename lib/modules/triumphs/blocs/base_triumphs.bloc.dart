@@ -7,6 +7,7 @@ import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/modules/triumphs/pages/record_details/record_details.page_route.dart';
+import 'package:little_light/modules/triumphs/pages/search/record_search.page_route.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/utils/helpers/presentation_node_helpers.dart';
 import 'package:provider/provider.dart';
@@ -126,5 +127,9 @@ abstract class TriumphsBloc extends ChangeNotifier {
   void onRecordTap(int? recordHash) {
     if (recordHash == null) return;
     Navigator.of(context).push(RecordDetailsPageRoute(recordHash));
+  }
+
+  void openSearch(int rootNodeHash) {
+    Navigator.of(context).push(RecordsSearchPageRoute(rootNodeHash));
   }
 }
