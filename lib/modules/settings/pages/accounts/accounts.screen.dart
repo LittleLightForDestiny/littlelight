@@ -103,7 +103,7 @@ class _AccountsScreenState extends State<AccountsScreen> with AuthConsumer {
                 alignment: Alignment.centerLeft,
                 color: Theme.of(context).backgroundColor,
                 padding: const EdgeInsets.all(8).copyWith(left: 70),
-                child: Text(membership?.bungieNetUser?.displayName ?? "",
+                child: Text(membership.bungieNetUser?.displayName ?? "",
                     style: const TextStyle(fontWeight: FontWeight.bold)),
               ),
             ),

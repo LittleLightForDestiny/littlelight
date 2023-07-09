@@ -47,7 +47,7 @@ class AccountStorage extends StorageBase<AccountStorageKeys> {
       final Map<String, dynamic> json = await getJson(AccountStorageKeys.membershipData);
       return UserMembershipData.fromJson(json);
     } catch (e) {
-      logger.error("can't parse latest token", error: e);
+      logger.error("can't parse membershipData", error: e);
     }
     return null;
   }

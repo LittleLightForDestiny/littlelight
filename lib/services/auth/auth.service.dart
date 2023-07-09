@@ -9,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
@@ -56,7 +57,9 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
         if (profile?.characters?.data?.isNotEmpty ?? false) {
           validMemberships.add(membership);
         }
-      } catch (e) {}
+      } catch (e) {
+        logger.error("Error getting membership info", error: e);
+      }
     }
     if (validMemberships.isEmpty) {
       throw InvalidMembershipException("Account doesn't have any valid memberships");

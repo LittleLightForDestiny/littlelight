@@ -564,7 +564,6 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       return;
     }
     if (shouldMoveToOtherCharacter) {
-      if (destinationCharacterId == null) throw ("Missing item owner when moving to character");
       logger.info('moving to character');
       for (int tries = 0; tries < 4; tries++) {
         try {

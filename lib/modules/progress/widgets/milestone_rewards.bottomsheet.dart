@@ -77,7 +77,7 @@ class MilestoneRewardsBottomSheet extends BaseListBottomSheet {
           Container(
             margin: EdgeInsets.all(8),
             child: Text(
-              entryDescription?.replaceBungieVariables(context) ?? "",
+              entryDescription.replaceBungieVariables(context),
               style: context.textTheme.body,
             ),
           )
