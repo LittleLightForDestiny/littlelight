@@ -1,6 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:provider/provider.dart';
@@ -42,6 +43,16 @@ bool isTrackerPlug(BuildContext context, DestinyInventoryItemDefinition? def) {
   final categoryId = def?.plug?.plugCategoryIdentifier;
   if (categoryId == null) return false;
   return _trackerPlugCategories.any((r) {
+    return RegExp(r).hasMatch(categoryId);
+  });
+}
+
+bool isCraftedProgressPlug(GameData gameData, DestinyInventoryItemDefinition? def) {
+  final craftedProgressPlugs = gameData.craftingSocketCategories;
+  final categoryId = def?.plug?.plugCategoryIdentifier;
+  if (categoryId == null) return false;
+  if (craftedProgressPlugs == null || craftedProgressPlugs.isEmpty) return false;
+  return craftedProgressPlugs.any((r) {
     return RegExp(r).hasMatch(categoryId);
   });
 }

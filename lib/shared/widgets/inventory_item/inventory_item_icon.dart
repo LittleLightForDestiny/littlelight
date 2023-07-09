@@ -1,12 +1,11 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
-import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -46,7 +45,6 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
                     buildIconImage(context),
                     buildMasterworkOverlay(context),
                     buildCraftedWeaponOverlay(context),
-                    buildDeepsightOverlay(context),
                     buildSeasonOverlay(context),
                   ].whereType<Widget>().toList(),
                 )),
@@ -66,7 +64,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   Widget? buildBorder(BuildContext context) {
     final theme = LittleLightTheme.of(context);
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
-    final isDeepSight = itemInfo.state?.contains(ItemState.HighlightedObjective) ?? false;
+    final isDeepSight = this.isDeepsight(context);
     final isMasterwork = itemInfo.state?.contains(ItemState.Masterwork) ?? false;
     if (isDeepSight) {
       return Container(color: theme.highlightedObjectiveLayers.layer0);
@@ -154,54 +152,20 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
     );
   }
 
-  Widget? buildDeepsightOverlay(BuildContext context) {
-    final isDeepSight = itemInfo.state?.contains(ItemState.HighlightedObjective) ?? false;
-    if (!isDeepSight) return null;
-    final color = LittleLightTheme.of(context).highlightedObjectiveLayers;
-    return LayoutBuilder(
-        builder: (context, constraints) => Container(
-              child: Stack(
-                children: [
-                  Container(
-                      decoration: CornerBadgeDecoration(
-                    colors: [color],
-                    badgeSize: constraints.maxWidth * .4,
-                    position: CornerPosition.BottomLeft,
-                  )),
-                  Positioned(
-                    bottom: 0,
-                    left: constraints.maxWidth * .07,
-                    child: FutureBuilder(
-                      future: isDeepsightObjectiveCompleted(context),
-                      builder: (context, snapshot) => snapshot.data == true
-                          ? Text(
-                              "!",
-                              style: LittleLightTheme.of(context)
-                                  .textTheme
-                                  .button
-                                  .copyWith(fontSize: constraints.maxWidth * .2),
-                            )
-                          : Container(),
-                    ),
-                  ),
-                ],
-              ),
-            ));
-  }
+  bool isDeepsight(BuildContext context) {
+    final isDeepsight = itemInfo.state?.contains(ItemState.HighlightedObjective) ?? false;
+    if (isDeepsight) return true;
 
-  Future<bool> isDeepsightObjectiveCompleted(BuildContext context) async {
-    final plugObjectives = itemInfo.plugObjectives;
-    if (plugObjectives == null) return false;
-    final completedObjectiveHashes = plugObjectives.values
-        .map((progressList) => progressList
-            .where((p) => p.complete == true) //
-            .map((e) => e.objectiveHash)
-            .whereType<int>()
-            .toList())
-        .fold<List<int>>([], (list, element) => list + element);
-    if (completedObjectiveHashes.isEmpty) return false;
-    final defs = await manifest.getDefinitions<DestinyObjectiveDefinition>(completedObjectiveHashes);
-    return defs.values.any((def) => def.uiStyle == DestinyObjectiveUiStyle.Highlighted);
+    /// quick workaround for returning deepsights while api doesn't return state.HighlightObjective correctly
+    return itemInfo.sockets?.any((element) {
+          final isEnabled = element.isEnabled ?? false;
+          if (!isEnabled) return false;
+          final isVisible = element.isVisible ?? false;
+          if (!isVisible) return false;
+          final socketDef = context.definition<DestinyInventoryItemDefinition>(element.plugHash);
+          return socketDef?.plug?.plugCategoryIdentifier?.contains('crafting.plugs.weapons.mods.memories') ?? false;
+        }) ??
+        false;
   }
 
   Widget? buildCraftedWeaponOverlay(BuildContext context) {

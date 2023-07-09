@@ -7,4 +7,4 @@ extension AppConfigProvider on AppConfigConsumer {
   AppConfig get appConfig => getInjectedAppConfig();
 }
 
-class AppConfigConsumer {}
+mixin AppConfigConsumer {}

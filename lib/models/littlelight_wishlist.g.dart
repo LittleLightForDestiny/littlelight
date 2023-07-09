@@ -11,7 +11,7 @@ LittleLightWishlist _$LittleLightWishlistFromJson(Map<String, dynamic> json) =>
       name: json['name'] as String?,
       description: json['description'] as String?,
       data: (json['data'] as List<dynamic>)
-          .map((e) => LittleLightWishlistBuild.fromJson(e))
+          .map(LittleLightWishlistBuild.fromJson)
           .toList(),
       versionRedirects:
           (json['versionRedirects'] as Map<String, dynamic>?)?.map(

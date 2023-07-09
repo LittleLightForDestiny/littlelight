@@ -10,19 +10,19 @@ CollaboratorsResponse _$CollaboratorsResponseFromJson(
         Map<String, dynamic> json) =>
     CollaboratorsResponse(
       developers: (json['developers'] as List<dynamic>?)
-          ?.map((e) => Collaborator.fromJson(e))
+          ?.map(Collaborator.fromJson)
           .toList(),
       designers: (json['designers'] as List<dynamic>?)
-          ?.map((e) => Collaborator.fromJson(e))
+          ?.map(Collaborator.fromJson)
           .toList(),
       curators: (json['curators'] as List<dynamic>?)
-          ?.map((e) => Collaborator.fromJson(e))
+          ?.map(Collaborator.fromJson)
           .toList(),
       translators: (json['translators'] as List<dynamic>?)
-          ?.map((e) => TranslationLanguage.fromJson(e))
+          ?.map(TranslationLanguage.fromJson)
           .toList(),
       supporters: (json['supporters'] as List<dynamic>?)
-          ?.map((e) => Collaborator.fromJson(e))
+          ?.map(Collaborator.fromJson)
           .toList(),
     );
 
@@ -41,7 +41,7 @@ TranslationLanguage _$TranslationLanguageFromJson(Map<String, dynamic> json) =>
       languages:
           (json['languages'] as List<dynamic>).map((e) => e as String).toList(),
       translators: (json['translators'] as List<dynamic>)
-          .map((e) => Collaborator.fromJson(e))
+          .map(Collaborator.fromJson)
           .toList(),
     );
 

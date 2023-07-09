@@ -207,4 +207,7 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
 
   @override
   void onTransferAction(TransferActionType actionType, TransferDestination destination, int stackSize) => null;
+
+  @override
+  List<DestinyObjectiveProgress>? get craftedObjectives => null;
 }

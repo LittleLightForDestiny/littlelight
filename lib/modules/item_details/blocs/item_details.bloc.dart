@@ -45,6 +45,7 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
   List<ItemNotesTag>? get tags;
 
   DestinyObjectiveProgress? get killTracker;
+  List<DestinyObjectiveProgress>? get craftedObjectives;
 
   void editNotes();
   void removeTag(ItemNotesTag tag);
