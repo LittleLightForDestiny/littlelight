@@ -18,24 +18,14 @@ import 'package:little_light/shared/widgets/multisection_scrollview/multisection
 import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
 import 'package:provider/provider.dart';
 
+import 'equipment_character_bucket_content.dart';
+
 const _defaultDisplayTypes = {
   InventoryBucket.engrams: BucketDisplayType.Small,
   InventoryBucket.lostItems: BucketDisplayType.Small,
   InventoryBucket.consumables: BucketDisplayType.Small,
   InventoryBucket.modifications: BucketDisplayType.Small,
 };
-
-class EquipmentCharacterBucketContent {
-  final int bucketHash;
-  final DestinyItemInfo? equipped;
-  final List<DestinyItemInfo> unequipped;
-
-  EquipmentCharacterBucketContent(
-    this.bucketHash, {
-    required this.equipped,
-    required this.unequipped,
-  });
-}
 
 const _characterInfoHeight = 128.0;
 

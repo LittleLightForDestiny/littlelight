@@ -1,6 +1,4 @@
 import 'package:bungie_api/destiny2.dart';
-import 'package:bungie_api/src/models/destiny_vendor_category.dart';
-import 'package:bungie_api/src/models/destiny_vendor_sale_item_component.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/vendors/vendor_item_info.dart';
 import 'package:little_light/core/blocs/vendors/vendors.bloc.dart';

@@ -6,7 +6,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/widgets/dialogs/busy.dialog.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class AddCustomWishlistForm extends StatefulWidget {
   @override
@@ -69,7 +69,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
       child: Row(children: [
         Container(
           padding: const EdgeInsets.only(right: 16),
-          child: const Icon(FontAwesomeIcons.exclamationCircle),
+          child: const Icon(FontAwesomeIcons.circleExclamation),
         ),
         Expanded(
             child: Text(
@@ -123,7 +123,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
   }
 
   onLinkClick(LinkableElement link) {
-    launch(link.url, forceSafariVC: true);
+    launchUrlString(link.url);
   }
 
   Widget buildInfo(BuildContext context) {

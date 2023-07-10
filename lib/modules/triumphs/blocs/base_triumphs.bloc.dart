@@ -112,7 +112,7 @@ abstract class TriumphsBloc extends ChangeNotifier {
         .toSet();
 
     final recordsData = _recordsData ??= <int, RecordProgressData>{};
-    recordsData.addEntries(recordChildHashes.map((e) => MapEntry(e, getRecordData(profileBloc, e))));
+    recordsData.addEntries(recordChildHashes.map((e) => MapEntry(e, getRecordData(profileBloc, trackingBloc, e))));
   }
 
   PresentationNodeProgressData? getProgress(int? presentationNodeHash) =>

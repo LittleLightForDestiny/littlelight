@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
 import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
 import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
@@ -9,7 +10,7 @@ import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class StartupErrorSubPage extends StatefulWidget {
   const StartupErrorSubPage();
@@ -143,7 +144,7 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
 
   Widget get clearDataAndRestartOption => ElevatedButton(
         onPressed: controller.clearDataAndRestart,
-        style: ElevatedButton.styleFrom(primary: Theme.of(context).errorColor),
+        style: ElevatedButton.styleFrom(backgroundColor: context.theme.errorLayers),
         child: Text("Clear data and restart".translate(context)),
       );
 
@@ -161,7 +162,7 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
       );
 
   Widget get checkBungieNetTwitterOption => ElevatedButton(
-      onPressed: () => launch("https://twitter.com/BungieHelp"),
+      onPressed: () => launchUrlString("https://twitter.com/BungieHelp"),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -172,7 +173,7 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
       ));
 
   Widget get checkLittleLightD2TwitterOption => ElevatedButton(
-      onPressed: () => launch("https://twitter.com/LittleLightD2"),
+      onPressed: () => launchUrlString("https://twitter.com/LittleLightD2"),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [

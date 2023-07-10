@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/modules/triumphs/pages/record_details/record_details.page_route.dart';
@@ -21,6 +22,9 @@ class RecordsSearchBloc extends ChangeNotifier {
 
   @protected
   final ProfileBloc profile;
+
+  @protected
+  final ObjectiveTrackingBloc tracking;
 
   Map<int, DestinyRecordDefinition>? _recordDefs;
 
@@ -45,6 +49,7 @@ class RecordsSearchBloc extends ChangeNotifier {
   RecordsSearchBloc(this.context, int this.rootNodeHash)
       : manifest = context.read<ManifestService>(),
         profile = context.read<ProfileBloc>(),
+        tracking = context.read<ObjectiveTrackingBloc>(),
         super() {
     _init();
   }
@@ -121,7 +126,7 @@ class RecordsSearchBloc extends ChangeNotifier {
   RecordProgressData? getProgressData(int? recordHash) {
     if (recordHash == null) return null;
     final recordData = _recordData ??= {};
-    final generic = recordData[recordHash] ??= getRecordData(profile, recordHash);
+    final generic = recordData[recordHash] ??= getRecordData(profile, tracking, recordHash);
     return generic;
   }
 

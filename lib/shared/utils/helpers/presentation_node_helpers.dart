@@ -1,6 +1,8 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
+import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/models/tracked_objective.dart';
 
 extension DestinyPresentationNodeComponentExtension on DestinyPresentationNodeComponent {
   bool get isComplete {
@@ -134,7 +136,7 @@ CollectibleData getCollectibleData(ProfileBloc profile, int collectibleHash) {
   );
 }
 
-RecordProgressData getRecordData(ProfileBloc profile, int recordHash) {
+RecordProgressData getRecordData(ProfileBloc profile, ObjectiveTrackingBloc tracking, int recordHash) {
   final profileRecord = profile.getProfileRecord(recordHash);
   final characterIds = profile.characters?.map((c) => c.characterId).whereType<String>() ?? <String>[];
 
@@ -144,7 +146,6 @@ RecordProgressData getRecordData(ProfileBloc profile, int recordHash) {
   return RecordProgressData(
     profile: profileRecord,
     characters: charactersRecords,
-    //TODO:implement tracking properly
-    tracking: recordHash.isEven,
+    tracking: tracking.isTracked(TrackedObjectiveType.Triumph, recordHash),
   );
 }

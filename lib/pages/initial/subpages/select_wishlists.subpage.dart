@@ -191,7 +191,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
                   children: [
                     Container(
                         padding: const EdgeInsets.all(8).copyWith(right: 16),
-                        child: Icon(checked ? FontAwesomeIcons.checkSquare : FontAwesomeIcons.square)),
+                        child: Icon(checked ? FontAwesomeIcons.squareCheck : FontAwesomeIcons.square)),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
