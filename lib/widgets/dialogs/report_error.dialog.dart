@@ -87,7 +87,7 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
             final error = context.errorArgument;
             if (error == null) return;
             final data = await getData(context);
-            analytics.registerUserFeedback(error, data?["playerID"] ?? "", data ?? {});
+            analytics?.registerUserFeedback(error, data?["playerID"] ?? "", data ?? {});
             Navigator.of(context).pop();
           },
         ),
@@ -105,14 +105,14 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
     };
     if (Platform.isAndroid) {
       final deviceInfo = await DeviceInfoPlugin().androidInfo;
-      data["manufacturer"] = deviceInfo.manufacturer ?? "";
-      data["model"] = deviceInfo.model ?? "";
-      data["androidVersion"] = deviceInfo.version.codename ?? "";
+      data["manufacturer"] = deviceInfo.manufacturer;
+      data["model"] = deviceInfo.model;
+      data["androidVersion"] = deviceInfo.version.codename;
     }
     if (Platform.isIOS) {
       final deviceInfo = await DeviceInfoPlugin().iosInfo;
-      data["model"] = deviceInfo.model ?? "";
-      data["iosVersion"] = deviceInfo.systemVersion ?? "";
+      data["model"] = deviceInfo.model;
+      data["iosVersion"] = deviceInfo.systemVersion;
     }
     return data;
   }

@@ -8,6 +8,7 @@ import 'package:little_light/core/navigator_key.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
+import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/dialogs/bungie_api_exception.dialog.dart';
 import 'package:little_light/widgets/dialogs/report_error.dialog.dart';
 
@@ -23,7 +24,7 @@ class ExceptionHandler with AuthConsumer {
       } else if (stack != null) {
         Zone.current.handleUncaughtError(details.exception, stack);
       }
-
+      if (!PlatformCapabilities.firebaseAnalyticsAvailable) return;
       FirebaseCrashlytics.instance.recordFlutterError(details);
     };
   }

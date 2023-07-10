@@ -879,13 +879,18 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         builder: (context, snapshot) {
           final categoryHash = snapshot.data;
           if (categoryHash == null) return Container();
-          return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              physics: const NeverScrollableScrollPhysics(),
-              child: InventoryItemPerks(
-                item,
-                categoryHash: categoryHash,
-              ));
+          return Stack(
+            alignment: Alignment.centerLeft,
+            children: [
+              Positioned(
+                left: 0,
+                child: InventoryItemPerks(
+                  item,
+                  categoryHash: categoryHash,
+                ),
+              )
+            ],
+          );
         });
   }
 
@@ -939,10 +944,8 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         builder: (context, snapshot) {
           final categories = snapshot.data;
           if (categories == null) return Container();
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const NeverScrollableScrollPhysics(),
-            child: Row(
+          return Stack(children: [
+            Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: categories //
@@ -976,7 +979,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
                     })
                     .whereType<Widget>()
                     .toList()),
-          );
+          ]);
         });
   }
 

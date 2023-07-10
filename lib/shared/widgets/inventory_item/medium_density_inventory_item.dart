@@ -705,14 +705,14 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
         builder: (context, snapshot) {
           final categoryHash = snapshot.data;
           if (categoryHash == null) return Container();
-          return SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: InventoryItemMods(
-                item,
-                plugSize: 20,
-                plugMargin: const EdgeInsets.only(left: 1),
-                categoryHash: categoryHash,
-              ));
+          return Stack(children: [
+            InventoryItemMods(
+              item,
+              plugSize: 20,
+              plugMargin: const EdgeInsets.only(left: 1),
+              categoryHash: categoryHash,
+            )
+          ]);
         });
   }
 }

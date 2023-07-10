@@ -19,19 +19,22 @@ import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
 import 'package:provider/provider.dart';
+
 import 'https_override/https_overrides.dart';
 import 'littlelight/littlelight_api.service.dart';
 import 'manifest/manifest.service.dart';
 
-final getItCoreInstance = GetIt.asNewInstance();
+GetIt? _getItCoreInstance;
+GetIt? get getItCoreInstance => _getItCoreInstance;
 
-Future<void> setupCoreServices() async {
-  getItCoreInstance.reset();
-  await setupAnalyticsService();
-  await setupHttpsOverrides();
-  await setupUnilinksHandler();
+Future<void> resetServices() async {
+  if (getItCoreInstance == null) {
+    _getItCoreInstance = GetIt.asNewInstance();
+  }
+  getItCoreInstance?.reset();
+  setupAnalyticsService();
+  setupHttpsOverrides();
 }
 
 Future<void> setupServices() async {
@@ -71,5 +74,5 @@ initPostLoadingServices(BuildContext context) async {
   final inventory = context.read<InventoryBloc>();
   await inventory.init();
   final analytics = getInjectedAnalyticsService();
-  analytics.updateCurrentUser();
+  analytics?.updateCurrentUser();
 }

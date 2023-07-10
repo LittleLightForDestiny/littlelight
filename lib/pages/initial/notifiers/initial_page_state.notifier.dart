@@ -76,7 +76,7 @@ class InitialPageStateNotifier
       await initServices(_context);
     } catch (e, stackTrace) {
       logger.error("initServicesError", error: e, stack: stackTrace);
-      analytics.registerNonFatal(e, stackTrace);
+      analytics?.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
       return;
@@ -103,12 +103,12 @@ class InitialPageStateNotifier
       }
       await auth.addAccount(code);
     } on InvalidMembershipException catch (e, stackTrace) {
-      analytics.registerNonFatal(e, stackTrace);
+      analytics?.registerNonFatal(e, stackTrace);
       _error = InvalidMembershipError();
       notifyListeners();
       return;
     } catch (e, stackTrace) {
-      analytics.registerNonFatal(e, stackTrace);
+      analytics?.registerNonFatal(e, stackTrace);
       _error = AuthorizationFailedError();
       notifyListeners();
       return;
@@ -262,7 +262,7 @@ class InitialPageStateNotifier
       await initPostLoadingServices(_context);
     } catch (e, stackTrace) {
       logger.error("initPostLoadingServicesError", error: e, stack: stackTrace);
-      analytics.registerNonFatal(e, stackTrace);
+      analytics?.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
       return;
@@ -272,7 +272,7 @@ class InitialPageStateNotifier
       await wishlistsService.checkForUpdates();
     } catch (e, stackTrace) {
       logger.error("non breaking error", error: e, stack: stackTrace);
-      analytics.registerNonFatal(e, stackTrace);
+      analytics?.registerNonFatal(e, stackTrace);
     }
 
     final profile = _context.read<ProfileBloc>();

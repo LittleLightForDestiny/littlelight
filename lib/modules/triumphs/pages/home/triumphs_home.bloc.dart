@@ -26,7 +26,7 @@ class TriumphsHomeBloc extends TriumphsBloc {
   final DestinySettingsService destinySettings;
 
   @protected
-  final AnalyticsService analytics;
+  final AnalyticsService? analytics;
 
   @protected
   final UserSettingsBloc userSettings;
@@ -40,7 +40,7 @@ class TriumphsHomeBloc extends TriumphsBloc {
   @override
   init() {
     super.init();
-    analytics.registerPageOpen(_page);
+    analytics?.registerPageOpen(_page);
     userSettings.startingPage = _page;
     profileBloc.refresh();
   }

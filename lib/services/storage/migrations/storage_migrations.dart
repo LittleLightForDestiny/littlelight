@@ -105,6 +105,9 @@ abstract class StorageMigration {
   }
 
   Future<String?> getDatabaseRoot() async {
+    if (Platform.isWindows) {
+      return getFileRoot();
+    }
     final dbPath = getDatabasesPath();
     return dbPath;
   }

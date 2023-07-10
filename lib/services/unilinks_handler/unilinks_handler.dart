@@ -1,34 +1,31 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:little_light/services/setup.dart';
-import 'package:uni_links_platform_interface/uni_links_platform_interface.dart';
+import 'package:uni_links/uni_links.dart';
 
-bool get _enabled => Platform.isAndroid;
-
-setupUnilinksHandler() async {
-  if (_enabled) return;
-  if (!getItCoreInstance.isRegistered<UnilinksHandler>()) {
-    getItCoreInstance.registerSingleton<UnilinksHandler>(UnilinksHandler._internal());
-  }
-}
+bool get _enabled => !Platform.isAndroid;
 
 class UnilinksHandler extends ChangeNotifier {
-  String? _currentLink;
-  UnilinksHandler._internal() {
-    if (_enabled) return;
+  Uri? _currentLink;
+  UnilinksHandler() {
+    if (!_enabled) return;
     _asyncInit();
   }
 
   _asyncInit() async {
-    UniLinksPlatform.instance.linkStream.listen((event) {
-      _currentLink = event;
-      notifyListeners();
-    });
+    uriLinkStream.listen(_linkListener);
   }
 
-  String? get currentLink {
+  _linkListener(Uri? event) async {
+    _currentLink = event;
+    notifyListeners();
+    await Future.delayed(Duration(milliseconds: 500));
+    // _currentLink = null;
+  }
+
+  Uri? get currentLink {
     final value = _currentLink;
-    _currentLink = null;
     return value;
   }
 }

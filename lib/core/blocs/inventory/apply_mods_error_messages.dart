@@ -16,7 +16,7 @@ extension ApplyModsErrorMessages on BuildContext {
 
       default:
         if (exception != null) {
-          getInjectedAnalyticsService().registerNonFatal(
+          getInjectedAnalyticsService()?.registerNonFatal(
               Exception("Got an unexpected error code while applying plugs ${exception.errorCode}"), null);
         }
         return "The operation couldn't be completed because of an unexpected error"
