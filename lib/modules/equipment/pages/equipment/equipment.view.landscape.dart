@@ -20,8 +20,6 @@ import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_ind
 
 import 'equipment.bloc.dart';
 
-const _animationDuration = Duration(milliseconds: 500);
-
 final _bucketHashes = [
   ...EquipmentBucketGroup.Weapons.bucketHashes,
   ...EquipmentBucketGroup.Armor.bucketHashes,
