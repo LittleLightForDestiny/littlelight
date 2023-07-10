@@ -33,9 +33,9 @@ class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsume
 
   Future<NotesResponse> fetchItemNotes() async {
     dynamic json = await _authorizedRequest("item-notes");
-    List<ItemNotes> _fetchedNotes = json['notes'].map<ItemNotes>((j) => ItemNotes.fromJson(j)).toList();
+    List<ItemNotes> _fetchedNotes = json['notes']?.map<ItemNotes>((j) => ItemNotes.fromJson(j)).toList() ?? [];
 
-    List<ItemNotesTag> _fetchedTags = json['tags'].map<ItemNotesTag>((j) => ItemNotesTag.fromJson(j)).toList();
+    List<ItemNotesTag> _fetchedTags = json['tags']?.map<ItemNotesTag>((j) => ItemNotesTag.fromJson(j)).toList() ?? [];
     return NotesResponse(notes: _fetchedNotes, tags: _fetchedTags);
   }
 

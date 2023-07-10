@@ -108,13 +108,13 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(account.bungieNetUser?.uniqueName ?? "", style: LittleLightTheme.of(context).textTheme.subtitle),
+                Text(account.bungieNetUser?.uniqueName ?? "", style: context.textTheme.subtitle),
                 if (account.bungieNetUser?.membershipId != null)
                   Text(
                       "membershipID: {membershipID}".translate(context, replace: {
                         "membershipID": account.bungieNetUser?.membershipId ?? "",
                       }),
-                      style: LittleLightTheme.of(context).textTheme.subtitle)
+                      style: context.textTheme.subtitle)
               ],
             ),
           )
@@ -176,8 +176,8 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
                     ),
                     Expanded(
                         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                      Text(destinyInfoCard.displayName ?? "", style: Theme.of(context).textTheme.button),
-                      Text(data.name, style: Theme.of(context).textTheme.bodyText1),
+                      Text(destinyInfoCard.displayName ?? "", style: context.textTheme.button),
+                      Text(data.name, style: context.textTheme.body),
                     ])),
                     if ((destinyInfoCard.applicableMembershipTypes?.length ?? 0) > 1)
                       Row(

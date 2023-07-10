@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
 import 'package:little_light/pages/initial/notifiers/select_wishlists.notifier.dart';
@@ -120,12 +121,12 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
               children: [
                 Text(
                   folder!.name!,
-                  style: Theme.of(context).textTheme.button,
+                  style: context.textTheme.button,
                 ),
                 Container(height: 4),
                 Text(
                   folder.description!,
-                  style: Theme.of(context).textTheme.caption,
+                  style: context.textTheme.caption,
                 ),
               ],
             ))
@@ -197,11 +198,11 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
                         children: [
                           Text(
                             file.name!,
-                            style: Theme.of(context).textTheme.button,
+                            style: context.textTheme.button,
                           ),
                           Text(
                             file.description!,
-                            style: Theme.of(context).textTheme.caption,
+                            style: context.textTheme.caption,
                           ),
                         ],
                       ),
@@ -235,11 +236,11 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
                         children: [
                           Text(
                             folder.name!,
-                            style: Theme.of(context).textTheme.button,
+                            style: context.textTheme.button,
                           ),
                           Text(
                             folder.description!,
-                            style: Theme.of(context).textTheme.caption,
+                            style: context.textTheme.caption,
                           ),
                         ],
                       ),

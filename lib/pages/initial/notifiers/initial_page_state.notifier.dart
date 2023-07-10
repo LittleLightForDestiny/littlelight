@@ -198,9 +198,7 @@ class InitialPageStateNotifier
 
     final accounts = auth.accountIDs;
 
-    final token = await auth.getCurrentToken();
-
-    if ((accounts?.length ?? 0) > 0 && token != null) {
+    if ((accounts?.length ?? 0) > 0) {
       accountsChecked();
       return;
     }
@@ -230,8 +228,15 @@ class InitialPageStateNotifier
     notifyListeners();
   }
 
-  void membershipSelected() {
-    _checkWishlist();
+  void membershipSelected() async {
+    final token = await auth.getCurrentToken();
+    if (token != null) {
+      _checkWishlist();
+      return;
+    }
+    _loading = false;
+    _phase = InitialPagePhase.AuthorizationRequest;
+    notifyListeners();
   }
 
   Future<void> _checkWishlist() async {
