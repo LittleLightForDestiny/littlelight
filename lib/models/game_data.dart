@@ -27,26 +27,23 @@ class GameData {
   int softCap;
   int powerfulCap;
   int pinnacleCap;
-  List<int>? seasonalModSlots;
-  List<int>? tabbedPresentationNodes;
-  ReputationRanks ranks;
+
   List<int>? relevantCurrencies;
   Map<String, String>? raidPhases;
-  List<String>? vendorsHomeHiddenCategories;
-  List<int>? cosmeticSocketCategories;
 
-  GameData({
-    required this.softCap,
-    required this.powerfulCap,
-    required this.pinnacleCap,
-    this.seasonalModSlots,
-    this.tabbedPresentationNodes,
-    required this.ranks,
-    required this.relevantCurrencies,
-    required this.raidPhases,
-    required this.vendorsHomeHiddenCategories,
-    required this.cosmeticSocketCategories,
-  });
+  List<int>? cosmeticSocketCategories;
+  List<String>? craftingSocketCategories;
+  List<String>? deepsightSocketCategories;
+
+  GameData(
+      {required this.softCap,
+      required this.powerfulCap,
+      required this.pinnacleCap,
+      this.relevantCurrencies,
+      this.raidPhases,
+      this.cosmeticSocketCategories,
+      this.craftingSocketCategories,
+      this.deepsightSocketCategories});
 
   factory GameData.fromJson(dynamic json) {
     return _$GameDataFromJson(json);

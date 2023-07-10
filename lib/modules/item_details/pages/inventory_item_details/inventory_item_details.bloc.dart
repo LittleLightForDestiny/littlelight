@@ -3,6 +3,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
@@ -42,6 +43,8 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   MappedWishlistNotes? _allWishlistNotes;
   MappedWishlistNotes? _matchedWishlistNotes;
 
+  LittleLightDataBloc _littleLightDataBloc;
+
   bool _lockBusy = false;
 
   InventoryItemDetailsBloc(BuildContext context, {InventoryItemInfo? item})
@@ -51,6 +54,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
         _itemNotesBloc = context.read<ItemNotesBloc>(),
         _socketControllerBloc = context.read<SocketControllerBloc>(),
         _manifestBloc = context.read<ManifestService>(),
+        _littleLightDataBloc = context.read<LittleLightDataBloc>(),
         _wishlists = getInjectedWishlistsService(),
         super(context) {
     _init();
@@ -97,6 +101,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     _matchedWishlistNotes = matchedWishlists.isNotEmpty ? organizeWishlistNotes(matchedWishlists) : null;
 
     _updateKillTracker();
+    _updateCraftedProgress();
 
     notifyListeners();
   }
@@ -108,6 +113,20 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     final trackerDef = defs.values.firstWhereOrNull((def) => isTrackerPlug(context, def));
     final objective = this.item?.plugObjectives?["${trackerDef?.hash}"]?.firstOrNull;
     _killTracker = objective;
+    notifyListeners();
+  }
+
+  void _updateCraftedProgress() async {
+    final gameData = _littleLightDataBloc.gameData;
+    if (gameData == null) return;
+    final isCrafted = item?.state?.contains(ItemState.Crafted) ?? false;
+    if (!isCrafted) return;
+    final plugHashes = this.item?.sockets?.map((s) => s.plugHash);
+    if (plugHashes == null) return;
+    final defs = await _manifestBloc.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
+    final craftedDef = defs.values.firstWhereOrNull((def) => isCraftedProgressPlug(gameData, def));
+    final objectives = this.item?.plugObjectives?["${craftedDef?.hash}"];
+    _craftedObjectives = objectives;
     notifyListeners();
   }
 
@@ -194,6 +213,11 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
   DestinyObjectiveProgress? _killTracker;
 
+  List<DestinyObjectiveProgress>? _craftedObjectives;
+
+  @override
+  List<DestinyObjectiveProgress>? get craftedObjectives => _craftedObjectives;
+
   @override
   DestinyObjectiveProgress? get killTracker => _killTracker;
 
@@ -206,6 +230,8 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   }
 
   List<InventoryItemInfo>? get duplicates {
+    final def = _manifestBloc.definition<DestinyInventoryItemDefinition>(this.item?.itemHash);
+    if ((def?.equippable ?? true) == false) return null;
     return this.item?.duplicates?.where((element) => element != this.item).toList();
   }
 

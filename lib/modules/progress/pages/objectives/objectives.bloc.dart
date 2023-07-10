@@ -86,7 +86,7 @@ class ObjectivesBloc extends ChangeNotifier {
       switch (objective.type) {
         case TrackedObjectiveType.Triumph:
           final def = await _manifest.getDefinition<DestinyRecordDefinition>(hash);
-          final recordData = hash != null ? getRecordData(_profile, hash) : null;
+          final recordData = hash != null ? getRecordData(_profile, _tracking, hash) : null;
           if (def != null) objectives.add(objective);
           if (recordData != null) recordsForObjectives[objective] = recordData;
           break;

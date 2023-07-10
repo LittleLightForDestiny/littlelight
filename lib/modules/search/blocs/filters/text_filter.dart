@@ -53,7 +53,7 @@ class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer
         }) ??
         <int>[];
 
-    final plugHashes = Set<int>.from(socketPlugHashes + reusablePlugHashes);
+    final plugHashes = Set<int?>.from(socketPlugHashes + reusablePlugHashes);
     final plugDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
 
     final wishlistBuildNotes = wishlistsService.getWishlistBuildNotes(itemHash: hash, reusablePlugs: reusablePlugs);

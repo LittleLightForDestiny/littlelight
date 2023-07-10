@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -21,10 +22,13 @@ class RecordDetailsBloc extends ChangeNotifier {
   RecordProgressData? _progress;
   RecordProgressData? get progress => _progress;
 
+  ObjectiveTrackingBloc trackingBloc;
+
   RecordDetailsBloc(BuildContext context, int recordHash)
       : this._recordHash = recordHash,
         profileBloc = context.read<ProfileBloc>(),
         manifestBloc = context.read<ManifestService>(),
+        trackingBloc = context.read<ObjectiveTrackingBloc>(),
         super() {
     _init();
   }
@@ -35,7 +39,7 @@ class RecordDetailsBloc extends ChangeNotifier {
   }
 
   void _update() async {
-    final recordData = getRecordData(profileBloc, recordHash);
+    final recordData = getRecordData(profileBloc, trackingBloc, recordHash);
     this._progress = recordData;
 
     final characters = profileBloc.characters?.asIdMap;

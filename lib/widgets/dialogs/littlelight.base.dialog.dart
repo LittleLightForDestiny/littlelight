@@ -3,8 +3,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 
 typedef DialogWidgetBuilder = Widget Function(BuildContext context);
 
-const _defaultInsetPaddings =
-    EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0);
+const _defaultInsetPaddings = EdgeInsets.symmetric(horizontal: 40.0, vertical: 24.0);
 
 abstract class LittleLightBaseDialog extends StatelessWidget {
   final WidgetBuilder? titleBuilder;
@@ -14,27 +13,19 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
   final double maxHeight;
 
   const LittleLightBaseDialog(
-      {Key? key,
-      this.titleBuilder,
-      this.bodyBuilder,
-      this.actionsBuilder,
-      this.maxWidth = 600,
-      this.maxHeight = 400})
+      {Key? key, this.titleBuilder, this.bodyBuilder, this.actionsBuilder, this.maxWidth = 600, this.maxHeight = 400})
       : super(key: key);
 
   CrossAxisAlignment get crossAxisAlignment => CrossAxisAlignment.stretch;
 
-  EdgeInsets? getDialogInsetPaddings(BuildContext context) =>
-      _defaultInsetPaddings;
+  EdgeInsets? getDialogInsetPaddings(BuildContext context) => _defaultInsetPaddings;
 
   @override
   Widget build(BuildContext context) {
     final padding = getDialogInsetPaddings(context) ?? const EdgeInsets.all(0);
     final size = MediaQuery.of(context).size;
-    double maxWidth =
-        this.maxWidth.clamp(0, size.width - padding.left - padding.right);
-    double maxHeight =
-        this.maxHeight.clamp(0, size.height - padding.top - padding.bottom);
+    double maxWidth = this.maxWidth.clamp(0, size.width - padding.left - padding.right);
+    double maxHeight = this.maxHeight.clamp(0, size.height - padding.top - padding.bottom);
     return Dialog(
       insetPadding: padding,
       child: Container(
@@ -42,11 +33,7 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
           child: Column(
             crossAxisAlignment: crossAxisAlignment,
             mainAxisSize: MainAxisSize.min,
-            children: [
-              buildTitleContainer(context),
-              buildBodyContainer(context),
-              buildActionsContainer(context)
-            ],
+            children: [buildTitleContainer(context), buildBodyContainer(context), buildActionsContainer(context)],
           )),
     );
   }
@@ -58,7 +45,7 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
       color: LittleLightTheme.of(context).surfaceLayers.layer3,
       padding: const EdgeInsets.all(8),
       child: DefaultTextStyle(
-        style: LittleLightTheme.of(context).textTheme.title,
+        style: context.textTheme.title,
         child: title,
       ),
     );
@@ -67,15 +54,13 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
   Widget buildBodyContainer(BuildContext context) {
     final body = buildBody(context);
     if (body == null) return Container();
-    return Flexible(
-        child: Container(padding: const EdgeInsets.all(16), child: body));
+    return Flexible(child: Container(padding: const EdgeInsets.all(16), child: body));
   }
 
   Widget buildActionsContainer(BuildContext context) {
     final actions = buildActions(context);
     if (actions == null) return Container();
-    return Container(
-        padding: const EdgeInsets.all(8).copyWith(top: 0), child: actions);
+    return Container(padding: const EdgeInsets.all(8).copyWith(top: 0), child: actions);
   }
 
   Widget? buildTitle(BuildContext context) => titleBuilder?.call(context);

@@ -50,17 +50,4 @@ class CollectionsHomeView extends BaseCollectionsView {
       ),
     );
   }
-
-  @override
-  List<Widget>? buildActions(BuildContext context) {
-    return [
-      IconButton(
-        icon: Icon(Icons.search),
-        onPressed: () {
-          bloc.openSearch();
-        },
-      ),
-      ...(super.buildActions(context) ?? []),
-    ];
-  }
 }

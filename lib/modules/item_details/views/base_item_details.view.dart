@@ -9,6 +9,7 @@ import 'package:little_light/modules/item_details/widgets/details_item_collectib
 import 'package:little_light/modules/item_details/widgets/details_item_description.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_duplicates.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_intrinsic_perk.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_shaped_weapon_progress.widget.dart';
 import 'package:little_light/modules/item_details/widgets/item_cover/details_item_landscape_cover.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_lore.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_mods.widget.dart';
@@ -97,6 +98,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         buildLockState(context),
         buildActions(context),
         buildDuplicates(context),
+        buildCraftedLevel(context),
         ...buildIntrinsicPerks(context),
         ...buildArmorEnergy(context),
         buildStats(context),
@@ -128,6 +130,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         buildLockState(context),
         buildActions(context),
         buildDuplicates(context),
+        buildCraftedLevel(context),
         ...buildIntrinsicPerks(context),
         ...buildArmorEnergy(context),
         buildStats(context),
@@ -296,6 +299,10 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         canTrack: state.canTrack,
       ),
     );
+  }
+
+  Widget? buildCraftedLevel(BuildContext context) {
+    return SliverToBoxAdapter(child: DetailsItemCraftedProgressWidget(state: state));
   }
 
   Widget? buildQuestSteps(BuildContext context) {

@@ -215,4 +215,7 @@ class LoadoutItemDetailsBloc extends ItemDetailsBloc {
 
   @override
   DestinyCharacterInfo? get character => null;
+
+  @override
+  List<DestinyObjectiveProgress>? get craftedObjectives => null;
 }

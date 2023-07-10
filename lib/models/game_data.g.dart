@@ -24,27 +24,23 @@ GameData _$GameDataFromJson(Map<String, dynamic> json) => GameData(
       softCap: json['softCap'] as int,
       powerfulCap: json['powerfulCap'] as int,
       pinnacleCap: json['pinnacleCap'] as int,
-      seasonalModSlots: (json['seasonalModSlots'] as List<dynamic>?)
-          ?.map((e) => e as int)
-          .toList(),
-      tabbedPresentationNodes:
-          (json['tabbedPresentationNodes'] as List<dynamic>?)
-              ?.map((e) => e as int)
-              .toList(),
-      ranks: ReputationRanks.fromJson(json['ranks']),
       relevantCurrencies: (json['relevantCurrencies'] as List<dynamic>?)
           ?.map((e) => e as int)
           .toList(),
       raidPhases: (json['raidPhases'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(k, e as String),
       ),
-      vendorsHomeHiddenCategories:
-          (json['vendorsHomeHiddenCategories'] as List<dynamic>?)
-              ?.map((e) => e as String)
-              .toList(),
       cosmeticSocketCategories:
           (json['cosmeticSocketCategories'] as List<dynamic>?)
               ?.map((e) => e as int)
+              .toList(),
+      craftingSocketCategories:
+          (json['craftingSocketCategories'] as List<dynamic>?)
+              ?.map((e) => e as String)
+              .toList(),
+      deepsightSocketCategories:
+          (json['deepsightSocketCategories'] as List<dynamic>?)
+              ?.map((e) => e as String)
               .toList(),
     );
 
@@ -52,11 +48,9 @@ Map<String, dynamic> _$GameDataToJson(GameData instance) => <String, dynamic>{
       'softCap': instance.softCap,
       'powerfulCap': instance.powerfulCap,
       'pinnacleCap': instance.pinnacleCap,
-      'seasonalModSlots': instance.seasonalModSlots,
-      'tabbedPresentationNodes': instance.tabbedPresentationNodes,
-      'ranks': instance.ranks,
       'relevantCurrencies': instance.relevantCurrencies,
       'raidPhases': instance.raidPhases,
-      'vendorsHomeHiddenCategories': instance.vendorsHomeHiddenCategories,
       'cosmeticSocketCategories': instance.cosmeticSocketCategories,
+      'craftingSocketCategories': instance.craftingSocketCategories,
+      'deepsightSocketCategories': instance.deepsightSocketCategories,
     };

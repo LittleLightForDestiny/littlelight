@@ -92,12 +92,12 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
             Expanded(
                 child: Text(
               "${def.displayProperties?.name}",
-              style: LittleLightTheme.of(context).textTheme.subtitle,
+              style: context.textTheme.subtitle,
             )),
             ManifestText<DestinyObjectiveDefinition>(
               def.objectiveHash!,
               textExtractor: (def) => "${def.completionValue}",
-              style: LittleLightTheme.of(context).textTheme.subtitle,
+              style: context.textTheme.subtitle,
             )
           ]),
         ),

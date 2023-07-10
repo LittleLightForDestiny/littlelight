@@ -178,7 +178,9 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
   }
 
   List<InventoryItemInfo>? get duplicates {
-    return this.item?.duplicates?.where((element) => element != this.item).toList();
+    final def = _manifestBloc.definition<DestinyInventoryItemDefinition>(this.item?.itemHash);
+    if ((def?.equippable ?? true) == false) return null;
+    return this._profileBloc.getItemsByHash(this.itemHash);
   }
 
   @override
@@ -205,4 +207,7 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
 
   @override
   void onTransferAction(TransferActionType actionType, TransferDestination destination, int stackSize) => null;
+
+  @override
+  List<DestinyObjectiveProgress>? get craftedObjectives => null;
 }

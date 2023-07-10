@@ -11,11 +11,11 @@ Loadout _$LoadoutFromJson(Map<String, dynamic> json) => Loadout(
       name: json['name'] as String? ?? "",
       emblemHash: json['emblemHash'] as int?,
       equipped: (json['equipped'] as List<dynamic>?)
-              ?.map((e) => LoadoutItem.fromJson(e))
+              ?.map(LoadoutItem.fromJson)
               .toList() ??
           const [],
       unequipped: (json['unequipped'] as List<dynamic>?)
-              ?.map((e) => LoadoutItem.fromJson(e))
+              ?.map(LoadoutItem.fromJson)
               .toList() ??
           const [],
       updatedAt: json['updated_at'] == null

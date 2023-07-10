@@ -74,7 +74,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   Widget _buildChildren(BuildContext context, Widget? child) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: context.theme.errorLayers,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -97,7 +97,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     return AnimatedBuilder(
       animation: _controller!.view,
       builder: _buildChildren,
-      child: closed ? null : Container(color: Theme.of(context).backgroundColor, child: widget.menuContent),
+      child: closed ? null : Container(color: context.theme.surfaceLayers, child: widget.menuContent),
     );
   }
 
@@ -126,14 +126,14 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   Widget get shimmer => const DefaultLoadingShimmer();
 
-  Widget background(context) {
+  Widget background(BuildContext context) {
     if (account == null) {
       return shimmer;
     }
     final profileThemeName = account?.bungieNetUser?.profileThemeName;
     if (profileThemeName == null) {
       return Container(
-        color: Theme.of(context).backgroundColor,
+        color: context.theme.surfaceLayers,
       );
     }
 

@@ -79,9 +79,7 @@ class CollectionsHomeBloc extends CollectionsBloc {
   }
 
   @override
-  void openSearch() {
-    final hash = destinySettings.collectionsRootNode;
-    if (hash == null) return;
-    Navigator.of(context).push(CollectiblesSearchPageRoute(hash));
+  void openSearch(int rootNodeHash) {
+    Navigator.of(context).push(CollectiblesSearchPageRoute(rootNodeHash));
   }
 }

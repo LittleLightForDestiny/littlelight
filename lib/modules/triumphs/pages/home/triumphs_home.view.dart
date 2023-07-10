@@ -2,16 +2,16 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/modules/triumphs/pages/home/triumphs_home.bloc.dart';
+import 'package:little_light/modules/triumphs/views/triumphs_base.view.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
-import 'package:little_light/shared/views/base_presentation_node.view.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sections/fixed_height_scrollable_section.dart';
 import 'package:little_light/shared/widgets/presentation_nodes/presentation_node_item.widget.dart';
 
 const _itemHeight = 96.0;
 
-class TriumphsHomeView extends BasePresentationNodeView {
+class TriumphsHomeView extends BaseTriumphsView {
   final TriumphsHomeBloc bloc;
   final TriumphsHomeBloc state;
   const TriumphsHomeView(this.bloc, this.state, {Key? key}) : super(key: key);

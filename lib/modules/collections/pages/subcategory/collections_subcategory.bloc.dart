@@ -1,6 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/collections/blocs/base_collections.bloc.dart';
+import 'package:little_light/modules/collections/pages/search/collectibles_search.page_route.dart';
 import 'package:little_light/modules/collections/pages/subcategory/collections_subcategory.page_route.dart';
 
 class CollectionsSubcategoryBloc extends CollectionsBloc {
@@ -47,5 +48,7 @@ class CollectionsSubcategoryBloc extends CollectionsBloc {
   }
 
   @override
-  void openSearch() {}
+  void openSearch(int rootNodeHash) {
+    Navigator.of(context).push(CollectiblesSearchPageRoute(rootNodeHash));
+  }
 }

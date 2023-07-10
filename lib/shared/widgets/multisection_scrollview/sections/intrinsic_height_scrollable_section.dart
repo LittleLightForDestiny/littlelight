@@ -10,7 +10,12 @@ class IntrinsicHeightScrollSection extends ScrollableSection {
     this.rowAlignment = CrossAxisAlignment.stretch,
     int itemCount = 1,
     this.itemsPerRow = 1,
-  }) : super.baseConstructor(itemBuilder, itemCount: itemCount);
+    double additionalCrossAxisSpacing = 0,
+  }) : super.baseConstructor(
+          itemBuilder,
+          itemCount: itemCount,
+          additionalCrossAxisSpacing: additionalCrossAxisSpacing,
+        );
 
   @override
   double? getRowHeight(SectionBuildOptions options) => null;
@@ -22,6 +27,7 @@ class IntrinsicHeightScrollSection extends ScrollableSection {
   Widget build(BuildContext context, int index, SectionBuildOptions options) {
     final startingIndex = index * itemsPerRow;
     final indexes = List.generate(itemsPerRow, (i) => startingIndex + i);
+    final crossAxisSpacing = options.crossAxisSpacing + additionalCrossAxisSpacing;
     if (itemsPerRow == 1) {
       return IntrinsicHeight(child: itemBuilder(context, index));
     }
@@ -34,9 +40,9 @@ class IntrinsicHeightScrollSection extends ScrollableSection {
             Expanded(
               child: indexes[i] < itemCount ? itemBuilder(context, indexes[i]) : SizedBox(),
             ),
-            if (i < itemsPerRow - 1 && options.crossAxisSpacing > 0)
+            if (i < itemsPerRow - 1 && crossAxisSpacing > 0)
               SizedBox(
-                width: options.crossAxisSpacing,
+                width: crossAxisSpacing,
               ),
           ],
         ],

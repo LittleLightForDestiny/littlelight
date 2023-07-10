@@ -879,18 +879,18 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         builder: (context, snapshot) {
           final categoryHash = snapshot.data;
           if (categoryHash == null) return Container();
-          return Stack(
-            alignment: Alignment.centerLeft,
-            children: [
-              Positioned(
-                left: 0,
+          return Stack(children: [
+            Positioned(
+              left: 0,
+              bottom: 0,
+              child: Container(
                 child: InventoryItemPerks(
                   item,
                   categoryHash: categoryHash,
                 ),
-              )
-            ],
-          );
+              ),
+            )
+          ]);
         });
   }
 
@@ -944,51 +944,59 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         builder: (context, snapshot) {
           final categories = snapshot.data;
           if (categories == null) return Container();
-          return Stack(children: [
-            Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: categories //
-                    .map((c) {
-                      final hash = c.hash;
-                      if (hash == null) return null;
-                      final categoryName = c.displayProperties?.name?.toUpperCase();
-                      return Container(
-                        color: Colors.black.withOpacity(.5),
-                        margin: const EdgeInsets.only(right: 4),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (categoryName != null)
-                              Container(
-                                padding: const EdgeInsets.only(bottom: 2),
-                                child: Text(
-                                  categoryName,
-                                  style: const TextStyle(fontSize: 9),
+          return Container(
+              height: 42,
+              child: Stack(
+                children: [
+                  Positioned(
+                    bottom: 0,
+                    left: 0,
+                    child: Row(
+                        children: categories //
+                            .map((c) {
+                              final hash = c.hash;
+                              if (hash == null) return null;
+                              final categoryName = c.displayProperties?.name?.toUpperCase();
+                              return Container(
+                                color: Colors.black.withOpacity(.5),
+                                margin: const EdgeInsets.only(right: 4),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    if (categoryName != null)
+                                      Container(
+                                        padding: const EdgeInsets.only(bottom: 2),
+                                        child: Text(
+                                          categoryName,
+                                          style: const TextStyle(fontSize: 9),
+                                        ),
+                                      ),
+                                    InventoryItemMods(
+                                      item,
+                                      plugSize: 24,
+                                      categoryHash: c.hash ?? 0,
+                                    ),
+                                  ],
                                 ),
-                              ),
-                            InventoryItemMods(
-                              item,
-                              plugSize: 24,
-                              categoryHash: c.hash ?? 0,
-                            ),
-                          ],
-                        ),
-                      );
-                    })
-                    .whereType<Widget>()
-                    .toList()),
-          ]);
+                              );
+                            })
+                            .whereType<Widget>()
+                            .toList()),
+                  )
+                ],
+              ));
         });
   }
 
   Widget buildStats(BuildContext context, DestinyInventoryItemDefinition definition) {
-    return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: const NeverScrollableScrollPhysics(),
+    return Stack(children: [
+      Positioned(
+        left: 0,
+        bottom: 0,
         child: InventoryItemStats(
           item,
-        ));
+        ),
+      ),
+    ]);
   }
 }

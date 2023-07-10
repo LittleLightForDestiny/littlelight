@@ -7,4 +7,4 @@ extension BungieApiServiceProvider on BungieApiConsumer {
   BungieApiService get bungieAPI => getInjectedBungieApi();
 }
 
-class BungieApiConsumer {}
+mixin BungieApiConsumer {}

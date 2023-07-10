@@ -1,8 +1,8 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:provider/provider.dart';
 
@@ -47,6 +47,16 @@ bool isTrackerPlug(BuildContext context, DestinyInventoryItemDefinition? def) {
   });
 }
 
+bool isCraftedProgressPlug(GameData gameData, DestinyInventoryItemDefinition? def) {
+  final craftedProgressPlugs = gameData.craftingSocketCategories;
+  final categoryId = def?.plug?.plugCategoryIdentifier;
+  if (categoryId == null) return false;
+  if (craftedProgressPlugs == null || craftedProgressPlugs.isEmpty) return false;
+  return craftedProgressPlugs.any((r) {
+    return RegExp(r).hasMatch(categoryId);
+  });
+}
+
 bool shouldPlugOverrideStyleItemHash(DestinyInventoryItemDefinition? def) {
   final categoryId = def?.plug?.plugCategoryIdentifier;
   if (categoryId == null) return false;
@@ -59,7 +69,7 @@ bool shouldPlugOverrideStyleItemHash(DestinyInventoryItemDefinition? def) {
 @protected
 Future<List<int>?> loadAvailableSocketPlugHashesForInventoryItem(
   int index, {
-  InventoryItemInfo? item,
+  DestinyItemInfo? item,
   required ManifestService manifest,
   required ProfileBloc profile,
 }) async {
@@ -117,4 +127,56 @@ Future<List<int>?> loadAvailableSocketPlugHashesForInventoryItem(
   final equippedPlugHash = item?.sockets?[index].plugHash;
   if (equippedPlugHash != null) hashes.add(equippedPlugHash);
   return hashes.toSet().toList();
+}
+
+Future<List<int>?> loadAvailableInventorySourcePlugHashesForSocket(
+  int index, {
+  DestinyInventoryItemDefinition? itemDefinition,
+  String? characterId,
+  required ManifestService manifest,
+  required ProfileBloc profile,
+}) async {
+  final socketDef = itemDefinition?.sockets?.socketEntries?[index];
+  final plugSources = socketDef?.plugSources;
+  final reusablePlugSetHash = socketDef?.reusablePlugSetHash;
+  final randomizedPlugSetHash = socketDef?.randomizedPlugSetHash;
+  final hashes = <int>[];
+  List<List<DestinyItemPlug>> plugSetList = [];
+  if (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false) {
+    if (reusablePlugSetHash != null) {
+      final plugSet = profile.getProfilePlugSets(reusablePlugSetHash);
+      if (plugSet != null) plugSetList.add(plugSet);
+    }
+    if (randomizedPlugSetHash != null) {
+      final plugSet = profile.getProfilePlugSets(randomizedPlugSetHash);
+      if (plugSet != null) plugSetList.add(plugSet);
+    }
+  }
+
+  if (plugSources?.contains(SocketPlugSources.CharacterPlugSet) ?? false) {
+    if (characterId != null) {
+      if (reusablePlugSetHash != null) {
+        final plugSet = profile.getCharacterPlugSets(characterId, reusablePlugSetHash);
+        if (plugSet != null) plugSetList.add(plugSet);
+      }
+      if (randomizedPlugSetHash != null) {
+        final plugSet = profile.getCharacterPlugSets(characterId, randomizedPlugSetHash);
+        if (plugSet != null) plugSetList.add(plugSet);
+      }
+    }
+  }
+
+  plugSetList.forEach((plugSet) {
+    final plugSetHashes = (plugSet)
+        .where((element) {
+          final canInsert = element.canInsert ?? false;
+          final enabled = element.enabled ?? false;
+          return canInsert && enabled;
+        })
+        .map((e) => e.plugItemHash)
+        .whereType<int>()
+        .toSet();
+    hashes.addAll(plugSetHashes);
+  });
+  return hashes;
 }

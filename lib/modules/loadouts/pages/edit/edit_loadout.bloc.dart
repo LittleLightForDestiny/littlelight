@@ -1,13 +1,13 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/notifications/loadout_change_result_notification.dart';
-import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
-import 'package:little_light/core/blocs/profile/profile.bloc.dart';
-import 'package:little_light/modules/loadouts/pages/edit_loadout_item_mods/loadout_item_details.page_route.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_info.dart';
 import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
-import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
+import 'package:little_light/core/blocs/notifications/loadout_change_result_notification.dart';
+import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/models/loadout.dart';
+import 'package:little_light/modules/loadouts/pages/edit_loadout_item_mods/loadout_item_details.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/loadout_item_options/loadout_item_options.bottomsheet.dart';
 import 'package:little_light/modules/loadouts/pages/select_background/select_loadout_background.page_route.dart';
 import 'package:little_light/modules/search/pages/select_loadout_item/select_loadout_item.page_route.dart';
@@ -51,27 +51,29 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
   Set<DestinyClass>? _availableClasses;
   Set<DestinyClass>? get availableClasses => _availableClasses;
 
-  EditLoadoutBloc(this.context, EditLoadoutPageRouteArguments args)
+  EditLoadoutBloc(this.context, {String? loadoutID, Loadout? preset})
       : loadoutsBloc = context.read<LoadoutsBloc>(),
         profileBloc = context.read<ProfileBloc>(),
         notificationBloc = context.read<NotificationsBloc>() {
-    _init(args);
+    _init(loadoutID: loadoutID, preset: preset);
   }
 
-  void _init(EditLoadoutPageRouteArguments args) async {
-    _initLoadout(args);
+  void _init({String? loadoutID, Loadout? preset}) async {
+    _initLoadout(loadoutID: loadoutID, preset: preset);
     profileBloc.addListener(_update);
     _update();
   }
 
-  void _initLoadout(EditLoadoutPageRouteArguments args) async {
+  void _initLoadout({String? loadoutID, Loadout? preset}) async {
     LoadoutItemIndex? loadout;
-    final id = args.loadoutID;
+    final id = loadoutID;
     if (id != null) {
       loadout = await loadoutsBloc.getLoadout(id)?.generateIndex(profile: profileBloc, manifest: manifest);
     }
-    this._creating = loadout == null;
-
+    if (preset != null) {
+      loadout = await preset.generateIndex(profile: profileBloc, manifest: manifest);
+    }
+    this._creating = loadoutID == null;
     loadout ??= LoadoutItemIndex("");
     _loadoutName = loadout.name;
     _emblemHash = loadout.emblemHash;

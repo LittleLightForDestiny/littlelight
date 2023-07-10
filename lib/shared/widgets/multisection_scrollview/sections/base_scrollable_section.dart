@@ -19,9 +19,16 @@ class SectionBuildOptions {
 abstract class ScrollableSection {
   final ItemBuilder itemBuilder;
   final int itemCount;
+  final double additionalMainAxisSpacing;
+  final double additionalCrossAxisSpacing;
 
   @protected
-  ScrollableSection.baseConstructor(this.itemBuilder, {this.itemCount = 1});
+  ScrollableSection.baseConstructor(
+    this.itemBuilder, {
+    this.itemCount = 1,
+    this.additionalMainAxisSpacing = 0,
+    this.additionalCrossAxisSpacing = 0,
+  });
 
   int getRowCount(SectionBuildOptions options);
   double? getRowHeight(SectionBuildOptions options);

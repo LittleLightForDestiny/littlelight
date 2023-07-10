@@ -80,12 +80,12 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
               children: [
                 Text(
                   folder!.name!,
-                  style: Theme.of(context).textTheme.button,
+                  style: context.textTheme.button,
                 ),
                 Container(height: 4),
                 Text(
                   folder.description!,
-                  style: Theme.of(context).textTheme.caption,
+                  style: context.textTheme.caption,
                 ),
               ],
             ))

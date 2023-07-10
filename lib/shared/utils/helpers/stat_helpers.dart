@@ -178,17 +178,12 @@ List<StatValues>? calculateStats(
       final equippedStat = equippedStatsMap[statHash];
       final selectedStat = selectedStatsMap[statHash];
 
-      // TODO: investigate if this needs to be accounted for or not
-      // this way it returns exactly the same values as the precalculated stats from the API
-      final equippedIsConditionallyActive = false; // equippedStat?.isConditionallyActive ?? false;
-      final selectedIsConditionallyActive = false; // selectedStat?.isConditionallyActive ?? false;
-      // ------------------------------------------
       final equippedIsMasterwork = equippedDef?.plug?.uiPlugLabel?.contains('masterwork') ?? false;
       final selectedIsMasterwork = selectedDef?.plug?.uiPlugLabel?.contains('masterwork') ?? false;
-      final equippedValue = equippedIsConditionallyActive || equippedIsMasterwork ? 0 : equippedStat?.value;
-      final equippedMasterworkValue = equippedIsConditionallyActive || !equippedIsMasterwork ? 0 : equippedStat?.value;
-      final selectedValue = selectedIsConditionallyActive || selectedIsMasterwork ? 0 : selectedStat?.value;
-      final selectedMasterworkValue = selectedIsConditionallyActive || !selectedIsMasterwork ? 0 : selectedStat?.value;
+      final equippedValue = equippedIsMasterwork ? 0 : equippedStat?.value;
+      final equippedMasterworkValue = !equippedIsMasterwork ? 0 : equippedStat?.value;
+      final selectedValue = selectedIsMasterwork ? 0 : selectedStat?.value;
+      final selectedMasterworkValue = !selectedIsMasterwork ? 0 : selectedStat?.value;
       final values = map[statHash] ?? StatValues(statHash);
       values.rawEquipped += equippedValue ?? 0;
       values.rawEquippedMasterwork += equippedMasterworkValue ?? 0;

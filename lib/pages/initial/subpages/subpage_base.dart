@@ -4,7 +4,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
   bool open = false;
 
-  TextStyle get titleStyle => LittleLightTheme.of(context).textTheme.title;
+  TextStyle get titleStyle => context.textTheme.title;
   @override
   void initState() {
     super.initState();
@@ -24,9 +24,7 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
     double maxWidth = 500;
     final showHorizontalBorders = mq.size.width > maxWidth;
     final borderSide = BorderSide(
-      color: open
-          ? LittleLightTheme.of(context).surfaceLayers.layer3
-          : LittleLightTheme.of(context).onSurfaceLayers,
+      color: open ? LittleLightTheme.of(context).surfaceLayers.layer3 : LittleLightTheme.of(context).onSurfaceLayers,
       width: open ? 4 : 0,
     );
     return Container(
@@ -37,9 +35,7 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
         ),
         child: AnimatedContainer(
             decoration: BoxDecoration(
-                color: open
-                    ? LittleLightTheme.of(context).surfaceLayers
-                    : LittleLightTheme.of(context).onSurfaceLayers,
+                color: open ? LittleLightTheme.of(context).surfaceLayers : LittleLightTheme.of(context).onSurfaceLayers,
                 border: Border(
                     left: showHorizontalBorders ? borderSide : BorderSide.none,
                     right: showHorizontalBorders ? borderSide : BorderSide.none,
@@ -48,29 +44,24 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
             constraints: BoxConstraints(maxHeight: open ? mq.size.height : 1),
             child: SingleChildScrollView(
                 physics: const NeverScrollableScrollPhysics(),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Container(
-                        color:
-                            LittleLightTheme.of(context).surfaceLayers.layer3,
-                        padding: const EdgeInsets.all(8).add(EdgeInsets.only(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+                  Container(
+                    color: LittleLightTheme.of(context).surfaceLayers.layer3,
+                    padding: const EdgeInsets.all(8).add(EdgeInsets.only(
+                      left: mq.viewPadding.left,
+                      right: mq.viewPadding.right,
+                    )),
+                    child: DefaultTextStyle(style: titleStyle, child: buildTitle(context)),
+                  ),
+                  Container(
+                    padding: EdgeInsets.all(showHorizontalBorders ? 16 : 8) +
+                        EdgeInsets.only(
                           left: mq.viewPadding.left,
                           right: mq.viewPadding.right,
-                        )),
-                        child: DefaultTextStyle(
-                            style: titleStyle, child: buildTitle(context)),
-                      ),
-                      Container(
-                        padding:
-                            EdgeInsets.all(showHorizontalBorders ? 16 : 8) +
-                                EdgeInsets.only(
-                                  left: mq.viewPadding.left,
-                                  right: mq.viewPadding.right,
-                                ),
-                        child: buildContent(context),
-                      ),
-                    ]))));
+                        ),
+                    child: buildContent(context),
+                  ),
+                ]))));
   }
 
   Widget buildTitle(BuildContext context);

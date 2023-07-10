@@ -203,5 +203,5 @@ abstract class CollectionsBloc extends ChangeNotifier {
     }
   }
 
-  void openSearch();
+  void openSearch(int rootNodeHash);
 }

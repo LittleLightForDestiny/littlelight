@@ -1,4 +1,5 @@
 import 'dart:io';
+
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -11,13 +12,13 @@ import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/language_info.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sliver_section.dart';
+import 'package:little_light/widgets/about/supporter_character.widget.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 enum AboutScreenActionType { ExternalLink, Rate }
 
@@ -201,7 +202,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
       ),
       AboutScreenAction(
         icon: FontAwesomeIcons.github,
-        color: Theme.of(context).errorColor,
+        color: context.theme.errorLayers,
         label: Text("Issues".translate(context)),
         url: "https://discord.gg/ztdFGGz",
       ),
@@ -316,7 +317,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
     return ElevatedButton(
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.all(4),
-          primary: action.color ?? LittleLightTheme.of(context).primaryLayers,
+          backgroundColor: action.color ?? context.theme.primaryLayers,
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
         ),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
@@ -334,7 +335,8 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
   void doAction(AboutScreenAction action) {
     switch (action.type) {
       case AboutScreenActionType.ExternalLink:
-        if (action.url != null) launch(action.url!);
+        final url = action.url;
+        if (url != null) launchUrlString(url);
         break;
       case AboutScreenActionType.Rate:
         LaunchReview.launch(androidAppId: 'me.markezine.luzinha', iOSAppId: '1373037254');

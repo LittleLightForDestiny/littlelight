@@ -1,14 +1,18 @@
 import 'dart:math';
+
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
+import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
 
 const _equipmentBuckets = {
@@ -281,14 +285,16 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
       if (isArmor) return includeArmor;
       return false;
     });
-    //TODO: adapt this to the new loadout structure
-    // final loadout = LoadoutItemIndex.fromScratch();
-    // for (final item in items) {
-    //   final isEquipped = item.instanceInfo?.isEquipped ?? false;
-    //   if (item.bucketHash == InventoryBucket.subclass && !isEquipped) continue;
-    //   await loadout.addItem(item, isEquipped);
-    // }
-    // loadout.emblemHash = character.character.emblemHash;
-    // Navigator.of(navigatorContext).push(EditLoadoutPageRoute.createFromPreset(loadout));
+
+    final itemIndex = await LoadoutItemIndex("");
+
+    for (final item in items) {
+      final isEquipped = item.instanceInfo?.isEquipped ?? false;
+      if (item.bucketHash == InventoryBucket.subclass && !isEquipped) continue;
+      await itemIndex.addItem(manifest, item, equipped: isEquipped);
+    }
+    final loadout = itemIndex.toLoadout();
+    loadout.emblemHash = character.character.emblemHash;
+    Navigator.of(navigatorContext).push(EditLoadoutPageRoute.createFromPreset(loadout));
   }
 }

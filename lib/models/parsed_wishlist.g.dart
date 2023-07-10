@@ -58,7 +58,7 @@ ParsedWishlistItem _$ParsedWishlistItemFromJson(Map<String, dynamic> json) =>
     ParsedWishlistItem(
       itemHash: json['itemHash'] as int,
       builds: (json['builds'] as List<dynamic>?)
-          ?.map((e) => ParsedWishlistBuild.fromJson(e))
+          ?.map(ParsedWishlistBuild.fromJson)
           .toList(),
       perks: (json['perks'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(
