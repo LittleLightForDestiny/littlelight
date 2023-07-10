@@ -705,16 +705,6 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
         builder: (context, snapshot) {
           final categoryHash = snapshot.data;
           if (categoryHash == null) return Container();
-<<<<<<< HEAD
-          return Stack(children: [
-            InventoryItemMods(
-              item,
-              plugSize: 20,
-              plugMargin: const EdgeInsets.only(left: 1),
-              categoryHash: categoryHash,
-            )
-          ]);
-=======
           return Container(
             height: 24,
             child: Stack(children: [
@@ -730,7 +720,6 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
               )
             ]),
           );
->>>>>>> origin/loadout_mods
         });
   }
 }
