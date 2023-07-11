@@ -45,7 +45,7 @@ class DetailsPlugStatsWidget extends StatelessWidget {
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
       columnWidths: {
         0: IntrinsicColumnWidth(flex: 2),
-        1: FlexColumnWidth(isSamePlug ? 2 : 1),
+        1: FlexColumnWidth(omitComparison ? 2 : 1),
       },
       children: [
         buildHeaderRow(context),
@@ -54,7 +54,7 @@ class DetailsPlugStatsWidget extends StatelessWidget {
     );
   }
 
-  bool get isSamePlug => selectedPlugHash == equippedPlugHash;
+  bool get omitComparison => selectedPlugHash == equippedPlugHash || equippedPlugHash == null;
 
   TableRow buildHeaderRow(BuildContext context) {
     return TableRow(
@@ -67,7 +67,7 @@ class DetailsPlugStatsWidget extends StatelessWidget {
               height: plugIconSize,
               child: ManifestImageWidget<DestinyInventoryItemDefinition>(selectedPlugHash),
             )),
-        if (!isSamePlug)
+        if (!omitComparison)
           Container(
               alignment: Alignment.center,
               child: Container(
@@ -75,7 +75,7 @@ class DetailsPlugStatsWidget extends StatelessWidget {
                 height: plugIconSize,
                 child: ManifestImageWidget<DestinyInventoryItemDefinition>(equippedPlugHash),
               )),
-        if (!isSamePlug) Icon(FontAwesomeIcons.plusMinus, size: comparisonIconSize),
+        if (!omitComparison) Icon(FontAwesomeIcons.plusMinus, size: comparisonIconSize),
       ],
     );
   }
@@ -89,8 +89,8 @@ class DetailsPlugStatsWidget extends StatelessWidget {
         style: context.textTheme.body.copyWith(fontSize: fontSize),
       ),
       buildStatValue(context, stat.selected, stat.selectedDiffType),
-      if (!isSamePlug) buildStatValue(context, stat.equipped, stat.equippedDiffType),
-      if (!isSamePlug) buildStatValue(context, stat.diff, stat.diffType),
+      if (!omitComparison) buildStatValue(context, stat.equipped, stat.equippedDiffType),
+      if (!omitComparison) buildStatValue(context, stat.diff, stat.diffType),
     ]);
   }
 

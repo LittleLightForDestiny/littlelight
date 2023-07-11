@@ -39,9 +39,9 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     final sources = socket.plugSources;
     if (sources == null) return null;
     final available = <int>{};
-
-    final isPlugSet =
-        sources.contains(SocketPlugSources.CharacterPlugSet) || sources.contains(SocketPlugSources.ProfilePlugSet);
+    final isPlugSet = sources.contains(SocketPlugSources.CharacterPlugSet) ||
+        sources.contains(SocketPlugSources.ProfilePlugSet) ||
+        sources.value == 0;
     final isInventorySourced = sources.contains(SocketPlugSources.InventorySourced);
     final reusablePlugSetHash = socket.reusablePlugSetHash;
 
@@ -51,8 +51,8 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
       if (plugHashes != null) available.addAll(plugHashes.whereType<int>());
     }
 
-    if (isPlugSet) {
-      final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(socket.reusablePlugSetHash);
+    if (isPlugSet && reusablePlugSetHash != null) {
+      final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(reusablePlugSetHash);
       final plugHashes = plugSetDef?.reusablePlugItems?.map((e) => e.plugItemHash);
       if (plugHashes != null) available.addAll(plugHashes.whereType<int>());
     }
@@ -84,6 +84,7 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     final socket = itemDefinition?.sockets?.socketEntries?[socketIndex];
     if (socket == null) return null;
     if (!(socket.defaultVisible ?? true)) return null;
+    if (socket.singleInitialItemHash == 0) return null;
     return socket.singleInitialItemHash;
   }
 
@@ -113,7 +114,8 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     if (socket == null) return null;
     if (!(socket.defaultVisible ?? true)) return null;
     final sources = socket.plugSources;
-    final isPlugSet = sources?.contains(SocketPlugSources.ReusablePlugItems) ?? false;
+    if (sources == null) return null;
+    final isPlugSet = sources.contains(SocketPlugSources.ReusablePlugItems) || sources.value == 0;
     if (!isPlugSet) return null;
 
     final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(socket.randomizedPlugSetHash);
@@ -133,4 +135,7 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
 
   @override
   bool isAvailable(int? index, int plugHash) => true;
+
+  @override
+  bool canApply(int socketIndex, int plugHash) => equippedPlugHashForSocket(socketIndex) != plugHash;
 }
