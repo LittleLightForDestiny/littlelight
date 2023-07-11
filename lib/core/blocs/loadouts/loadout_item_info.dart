@@ -76,4 +76,7 @@ class LoadoutItemInfo extends DestinyItemInfo {
 
   @override
   int? get versionNumber => inventoryItem?.versionNumber;
+
+  @override
+  List<int>? get tooltipNotificationIndexes => inventoryItem?.tooltipNotificationIndexes;
 }

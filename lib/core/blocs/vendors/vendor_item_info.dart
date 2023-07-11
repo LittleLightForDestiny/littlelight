@@ -93,4 +93,7 @@ class VendorItemInfo extends DestinyItemInfo {
         stats: stats,
         stackIndex: stackIndex,
       );
+
+  @override
+  List<int>? get tooltipNotificationIndexes => null;
 }

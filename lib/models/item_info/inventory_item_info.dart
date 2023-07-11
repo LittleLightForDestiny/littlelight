@@ -92,4 +92,7 @@ class InventoryItemInfo extends DestinyItemInfo {
 
   @override
   int? get quality => instanceInfo?.quality;
+
+  @override
+  List<int>? get tooltipNotificationIndexes => _item.tooltipNotificationIndexes;
 }
