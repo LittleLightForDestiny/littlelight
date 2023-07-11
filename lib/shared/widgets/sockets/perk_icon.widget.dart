@@ -4,6 +4,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/shared/widgets/wishlists/wishlist_badge.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +82,17 @@ class PerkIconWidget extends StatelessWidget {
                   ),
                   Padding(
                       padding: EdgeInsets.all(intrinsic ? 0 : 4 * scale),
-                      child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash)),
+                      child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                        plugItemHash,
+                        noIconPlaceholder: Container(),
+                        placeholder: DefaultLoadingShimmer(
+                            child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(64),
+                            color: Colors.white,
+                          ),
+                        )),
+                      )),
                   InkWell(
                     customBorder: isRound ? CircleBorder() : RoundedRectangleBorder(borderRadius: radius),
                     onTap: selectable ? onTap : null,
