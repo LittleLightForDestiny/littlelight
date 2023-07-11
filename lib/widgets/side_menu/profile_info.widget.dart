@@ -74,7 +74,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   Widget _buildChildren(BuildContext context, Widget? child) {
     return Container(
-      color: context.theme.errorLayers,
+      color: context.theme.surfaceLayers,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
