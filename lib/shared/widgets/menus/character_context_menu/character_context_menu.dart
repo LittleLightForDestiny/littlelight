@@ -7,6 +7,7 @@ import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/containers/menu_box.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/create_loadout.widget.dart';
+import 'package:little_light/shared/widgets/menus/character_context_menu/equip_loadout.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/grind_optimizer.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/max_power_options.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/postmaster_options.widget.dart';
@@ -82,6 +83,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
+                  buildEquipLoadout(context),
                   buildCreateLoadout(context),
                   buildMaxPower(context),
                   buildGrindOptimizer(context),
@@ -153,6 +155,15 @@ class CharacterContextMenu extends BaseOverlayWidget {
     final character = this.character;
     if (character == null) return null;
     return MaxPowerOptionsWidget(
+      character: character,
+      onClose: onClose,
+    );
+  }
+
+  Widget? buildEquipLoadout(BuildContext context) {
+    final character = this.character;
+    if (character == null) return null;
+    return EquipLoadoutWidget(
       character: character,
       onClose: onClose,
     );
