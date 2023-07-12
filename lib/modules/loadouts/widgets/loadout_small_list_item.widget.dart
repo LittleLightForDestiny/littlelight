@@ -18,31 +18,47 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
   static const maxWidth = _loadoutListItemMaxWidth;
   final LoadoutItemIndex loadout;
   final DestinyClass? classFilter;
+  final List<int>? bucketFilter;
+  final VoidCallback? onTap;
 
-  const LoadoutSmallListItemWidget(this.loadout, {Key? key, this.classFilter}) : super(key: key);
+  const LoadoutSmallListItemWidget(this.loadout, {Key? key, this.classFilter, this.bucketFilter, this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      constraints: BoxConstraints(minHeight: kToolbarHeight),
       margin: const EdgeInsets.all(4),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
+        border: Border.all(width: 1, color: context.theme.onSurfaceLayers.withOpacity(.5)),
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Stack(children: [
-        Positioned.fill(child: buildBackground(context)),
-        Container(
-          padding: EdgeInsets.all(4),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              buildTitle(context),
-              buildItems(context),
-            ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(4),
+        child: Stack(children: [
+          Positioned.fill(child: buildBackground(context)),
+          Container(
+            padding: EdgeInsets.all(2),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                buildTitle(context),
+                buildItems(context),
+              ],
+            ),
           ),
-        )
-      ]),
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: onTap,
+              ),
+            ),
+          )
+        ]),
+      ),
     );
   }
 
@@ -63,6 +79,10 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
     return Container(
         padding: const EdgeInsets.all(4),
         alignment: Alignment.centerLeft,
+        decoration: BoxDecoration(
+          color: context.theme.surfaceLayers.withOpacity(.7),
+          borderRadius: BorderRadius.circular(4),
+        ),
         child: Text(
           loadout.name.toUpperCase(),
           style: context.textTheme.highlight,
@@ -78,23 +98,31 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
         alignment: WrapAlignment.start,
         runAlignment: WrapAlignment.start,
         crossAxisAlignment: WrapCrossAlignment.start,
-        children: items.map((e) => buildItem(context, e)).toList(),
+        children: items.map((e) => buildItem(context, e)).whereType<Widget>().toList(),
       ),
     );
   }
 
-  Widget buildItem(BuildContext context, LoadoutItemInfo item) {
+  Widget? buildItem(BuildContext context, LoadoutItemInfo item) {
+    final def = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
     if (classFilter != null) {
-      final def = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
-      if (def?.classType != classFilter && def?.classType != DestinyClass.Unknown) return Container();
+      final classType = def?.classType;
+      if (classType != classFilter && classType != DestinyClass.Unknown) return null;
+    }
+    if (bucketFilter != null) {
+      final bucketHash = def?.inventory?.bucketTypeHash;
+      final matches = bucketFilter?.contains(bucketHash) ?? false;
+      if (!matches) {
+        return null;
+      }
     }
     return Container(
-        width: 36,
-        height: 36,
+        width: 32,
+        height: 32,
         margin: EdgeInsets.only(right: 2),
         child: InventoryItemIcon(
           item,
-          borderSize: 1,
+          borderSize: .5,
         ));
   }
 }

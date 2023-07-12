@@ -34,6 +34,6 @@ class ScopedValueRepositoryBloc extends ChangeNotifier {
   }
 
   T? getValue<T extends StorableValue>(T param) {
-    return _repository[T]?[param.key] as T;
+    return _repository[T]?[param.key] as T?;
   }
 }

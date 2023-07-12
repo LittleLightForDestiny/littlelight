@@ -259,14 +259,14 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
   }
 
   List<LoadoutItemInfo> getEquippedItems(DestinyClass? classType) {
-    return this
-        .slots
-        .values
-        .map((s) {
+    return InventoryBucket.loadoutBucketHashes
+        .map((bucketHash) {
+          final slot = this.slots[bucketHash];
+          if (slot == null) return [];
           if (classType == null) {
-            return [...s.classSpecificEquipped.values, s.genericEquipped];
+            return [...slot.classSpecificEquipped.values, slot.genericEquipped];
           }
-          return [s.classSpecificEquipped[classType], s.genericEquipped];
+          return [slot.classSpecificEquipped[classType], slot.genericEquipped];
         })
         .fold<List<LoadoutItemInfo?>>([], (previousValue, element) => [...previousValue, ...element])
         .whereType<LoadoutItemInfo>()
@@ -274,12 +274,48 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
   }
 
   List<LoadoutItemInfo> getNonEquippedItems() {
-    return this
-        .slots
-        .values
-        .map((s) => s.unequipped)
+    return InventoryBucket.loadoutBucketHashes
+        .map((bucketHash) {
+          final slot = this.slots[bucketHash];
+          if (slot == null) return [];
+          return slot.unequipped;
+        })
         .fold<List<LoadoutItemInfo?>>([], (previousValue, element) => [...previousValue, ...element])
         .whereType<LoadoutItemInfo>()
         .toList();
+  }
+
+  Future<LoadoutItemIndex> duplicateWithFilters(ManifestService manifest,
+      {DestinyClass? classFilter, List<int>? bucketFilter}) async {
+    final result = LoadoutItemIndex(name, emblemHash: emblemHash);
+    final equipped = this.getEquippedItems(classFilter);
+    final nonEquipped = this.getNonEquippedItems();
+    for (final e in equipped) {
+      if (e.inventoryItem == null) continue;
+      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(e.itemHash);
+      if (classFilter != null) {
+        final classType = def?.classType;
+        if (classType != classFilter && classType != DestinyClass.Unknown) continue;
+      }
+      if (bucketFilter != null) {
+        final bucket = def?.inventory?.bucketTypeHash;
+        if (!bucketFilter.contains(bucket)) continue;
+      }
+      await result.addItem(manifest, e.inventoryItem, equipped: true);
+    }
+    for (final e in nonEquipped) {
+      if (e.inventoryItem == null) continue;
+      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(e.itemHash);
+      if (classFilter != null) {
+        final classType = def?.classType;
+        if (classType != classFilter && classType != DestinyClass.Unknown) continue;
+      }
+      if (bucketFilter != null) {
+        final bucket = def?.inventory?.bucketTypeHash;
+        if (!bucketFilter.contains(bucket)) continue;
+      }
+      await result.addItem(manifest, e.inventoryItem);
+    }
+    return result;
   }
 }
