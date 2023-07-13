@@ -106,14 +106,10 @@ class DetailsItemCoverTransferBlockWidget extends StatelessWidget {
 
   Widget? buildCharacterIcon(BuildContext context, TransferDestination destination, TransferActionType action) {
     double borderWidth = .5 * pixelSize;
-    double fontSize = 18 * pixelSize;
     if (destination.type == TransferDestinationType.vault) {
       return buildCharacterContainer(
         context,
-        VaultIconWidget(
-          borderWidth: borderWidth,
-          fontSize: fontSize,
-        ),
+        VaultIconWidget(borderWidth: borderWidth),
         action,
         destination,
       );
@@ -122,10 +118,7 @@ class DetailsItemCoverTransferBlockWidget extends StatelessWidget {
     if (destination.type == TransferDestinationType.profile) {
       return buildCharacterContainer(
         context,
-        ProfileIconWidget(
-          borderWidth: borderWidth,
-          fontSize: fontSize,
-        ),
+        ProfileIconWidget(borderWidth: borderWidth),
         action,
         destination,
       );
@@ -135,11 +128,7 @@ class DetailsItemCoverTransferBlockWidget extends StatelessWidget {
     if (character == null) return null;
     return buildCharacterContainer(
       context,
-      CharacterIconWidget(
-        character,
-        borderWidth: borderWidth,
-        fontSize: fontSize,
-      ),
+      CharacterIconWidget(character, borderWidth: borderWidth),
       action,
       destination,
     );
