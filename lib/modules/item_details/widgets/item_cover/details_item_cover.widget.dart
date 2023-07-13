@@ -240,6 +240,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
 
   Widget? buildPrimaryStat(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    if (definition?.isSubclass ?? false) return null;
     final item = state.item;
     final statHash = definition?.stats?.primaryBaseStatHash;
     final disableStat = definition?.stats?.disablePrimaryStatDisplay ?? false;
