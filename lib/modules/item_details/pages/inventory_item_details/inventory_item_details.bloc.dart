@@ -14,6 +14,7 @@ import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/modules/item_details/blocs/item_details.bloc.dart';
 import 'package:little_light/modules/item_details/pages/edit_item_notes/edit_item_notes.bottomsheet.dart';
 import 'package:little_light/modules/item_tags/pages/edit_item_tags/edit_item_tags.bottomsheet.dart';
+import 'package:little_light/modules/loadouts/pages/add_to_loadout_quickmenu/add_to_loadout_quickmenu.bottomsheet.dart';
 import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
@@ -305,5 +306,9 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   }
 
   @override
-  void addToLoadout() {}
+  void addToLoadout() {
+    final item = this.item;
+    if (item == null) return;
+    AddToLoadoutBottomsheet(item).show(context);
+  }
 }

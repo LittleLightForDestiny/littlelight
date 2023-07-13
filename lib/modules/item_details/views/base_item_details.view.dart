@@ -361,6 +361,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         child: DetailsItemLoadoutsWidget(
       loadouts: loadouts,
       onSelectLoadout: (l) => bloc.openLoadout(l),
+      onAddToLoadout: () => bloc.addToLoadout(),
     ));
   }
 
