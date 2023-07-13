@@ -17,19 +17,18 @@ class DetailsItemCollectibleInfoWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final def = context.definition<DestinyInventoryItemDefinition>(itemHash);
     final collectibleDef = context.definition<DestinyCollectibleDefinition>(def?.collectibleHash);
-    if (collectibleDef == null || collectibleDef.sourceString == null) return Container();
+    final sourceString = collectibleDef?.sourceString;
+    if (sourceString == null || sourceString.isEmpty) return Container();
     return Container(
         padding: EdgeInsets.all(4),
         child: PersistentCollapsibleContainer(
           title: Text("How to get".translate(context).toUpperCase()),
           persistenceID: 'item collectible info',
-          content: buildContent(context, collectibleDef),
+          content: buildContent(context, sourceString),
         ));
   }
 
-  Widget buildContent(BuildContext context, DestinyCollectibleDefinition loreDef) {
-    final text = loreDef.sourceString;
-    if (text == null) return Container();
+  Widget buildContent(BuildContext context, String text) {
     return Container(
         padding: EdgeInsets.all(8),
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
