@@ -9,6 +9,7 @@ import 'package:little_light/modules/item_details/widgets/details_item_collectib
 import 'package:little_light/modules/item_details/widgets/details_item_description.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_duplicates.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_intrinsic_perk.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_loadouts.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_shaped_weapon_progress.widget.dart';
 import 'package:little_light/modules/item_details/widgets/item_cover/details_item_landscape_cover.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_lore.widget.dart';
@@ -113,6 +114,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         buildRewards(context),
         buildItemNotes(context),
         buildItemTags(context),
+        buildItemLoadouts(context),
         buildLore(context),
         buildCollectibleInfo(context),
         buildEmptySpace(context, hasFooter: hasFooter),
@@ -145,6 +147,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         buildRewards(context),
         buildItemNotes(context),
         buildItemTags(context),
+        buildItemLoadouts(context),
         buildLore(context),
         buildCollectibleInfo(context),
         buildEmptySpace(context, hasFooter: hasFooter),
@@ -348,6 +351,16 @@ abstract class BaseItemDetailsView extends StatelessWidget {
       tags: state.tags,
       onRemoveTag: state.removeTag,
       onAddTap: state.editTags,
+    ));
+  }
+
+  Widget? buildItemLoadouts(BuildContext context) {
+    final loadouts = state.loadouts;
+    if (loadouts == null || loadouts.isEmpty) return null;
+    return SliverToBoxAdapter(
+        child: DetailsItemLoadoutsWidget(
+      loadouts: loadouts,
+      onSelectLoadout: (l) => bloc.openLoadout(l),
     ));
   }
 

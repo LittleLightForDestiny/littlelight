@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
+import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
@@ -12,12 +14,14 @@ import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/modules/item_details/blocs/item_details.bloc.dart';
 import 'package:little_light/modules/item_details/pages/edit_item_notes/edit_item_notes.bottomsheet.dart';
 import 'package:little_light/modules/item_tags/pages/edit_item_tags/edit_item_tags.bottomsheet.dart';
+import 'package:little_light/modules/loadouts/pages/equip/equip_loadout.page_route.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/utils/helpers/get_transfer_destinations.dart';
+import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/wishlist_helpers.dart';
 import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';
@@ -30,6 +34,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   final SocketControllerBloc _socketControllerBloc;
   final ManifestService _manifestBloc;
   final WishlistsService _wishlists;
+  final LoadoutsBloc _loadoutsBloc;
 
   @protected
   InventoryItemInfo? _item;
@@ -45,6 +50,8 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
   LittleLightDataBloc _littleLightDataBloc;
 
+  List<LoadoutItemIndex>? _loadouts;
+
   bool _lockBusy = false;
 
   InventoryItemDetailsBloc(BuildContext context, {InventoryItemInfo? item})
@@ -56,6 +63,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
         _manifestBloc = context.read<ManifestService>(),
         _littleLightDataBloc = context.read<LittleLightDataBloc>(),
         _wishlists = getInjectedWishlistsService(),
+        _loadoutsBloc = context.read<LoadoutsBloc>(),
         super(context) {
     _init();
   }
@@ -63,14 +71,17 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   _init() {
     _profileBloc.addListener(_updateItem);
     _itemNotesBloc.addListener(notifyListeners);
+    _loadoutsBloc.addListener(_updateLoadouts);
     _socketControllerBloc.init(this._item);
     _updateItem();
+    _updateLoadouts();
   }
 
   @override
   void dispose() {
     _profileBloc.removeListener(_updateItem);
     _itemNotesBloc.removeListener(notifyListeners);
+    _loadoutsBloc.removeListener(_updateLoadouts);
     super.dispose();
   }
 
@@ -103,6 +114,21 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     _updateKillTracker();
     _updateCraftedProgress();
 
+    notifyListeners();
+  }
+
+  void _updateLoadouts() async {
+    final loadouts = _loadoutsBloc.loadouts;
+    final instanceId = this.item?.instanceId;
+    if (instanceId == null) return null;
+    if (loadouts == null || loadouts.isEmpty) return;
+    final filteredLoadouts = <LoadoutItemIndex>[];
+    for (final l in loadouts) {
+      if (!l.containsItem(instanceId)) continue;
+      final loadoutIndex = await l.generateIndex(profile: _profileBloc, manifest: _manifestBloc);
+      filteredLoadouts.add(loadoutIndex);
+    }
+    this._loadouts = filteredLoadouts;
     notifyListeners();
   }
 
@@ -268,4 +294,16 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     final character = _profileBloc.getCharacterById(characterId);
     return character;
   }
+
+  @override
+  List<LoadoutItemIndex>? get loadouts => _loadouts;
+
+  void openLoadout(LoadoutItemIndex loadout) {
+    final id = loadout.loadoutId;
+    if (id == null) return;
+    Navigator.of(context).push(EquipLoadoutPageRoute(id));
+  }
+
+  @override
+  void addToLoadout() {}
 }
