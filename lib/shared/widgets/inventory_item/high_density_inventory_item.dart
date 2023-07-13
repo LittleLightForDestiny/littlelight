@@ -365,7 +365,6 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
               height: _titleBarIconSize,
               child: PostmasterIconWidget(
                 borderWidth: .5,
-                hideName: true,
               ),
             ),
             Container(
@@ -375,7 +374,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
               child: CharacterIconWidget(
                 character,
                 borderWidth: .5,
-                hideName: true,
+                hideClassIcon: true,
               ),
             ),
           ],
@@ -388,7 +387,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         child: CharacterIconWidget(
           character,
           borderWidth: .5,
-          hideName: true,
+          hideClassIcon: true,
         ),
       );
     }
@@ -399,7 +398,6 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         height: _titleBarIconSize,
         child: VaultIconWidget(
           borderWidth: .5,
-          hideName: true,
         ),
       );
     }
@@ -409,7 +407,6 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
       height: _titleBarIconSize,
       child: ProfileIconWidget(
         borderWidth: .5,
-        hideName: true,
       ),
     );
   }
