@@ -142,7 +142,7 @@ jobs:
         run: pod install --repo-update
 
       - name: Build MacOS via Flutter
-        run: flutter build macos --no-codesign
+        run: flutter build macos --release
 
       - name: Build MacOS via Fastlane
         run: bundle exec fastlane macos build
