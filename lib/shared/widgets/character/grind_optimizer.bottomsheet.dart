@@ -14,19 +14,14 @@ class GrindOptimizerBottomsheet extends BaseBottomSheet<int> {
 
   @override
   Widget buildContent(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer3,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-        ),
-        padding: EdgeInsets.all(4) + context.mediaQuery.viewPadding.copyWith(top: 0),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            CharacterGrindOptimizerWidget(
-              character: character,
-              onClose: () => Navigator.pop(context),
-            )
-          ],
-        ),
-      );
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer2,
+        borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+      ),
+      child: SingleChildScrollView(
+          padding: EdgeInsets.all(4) + context.mediaQuery.viewPadding.copyWith(top: 0),
+          child: CharacterGrindOptimizerWidget(
+            character: character,
+            onClose: () => Navigator.pop(context),
+          )));
 }

@@ -40,8 +40,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
 
   @override
   Widget buildContent(BuildContext context) => Container(
-      constraints: const BoxConstraints(maxWidth: 400),
-      child: Column(
+          child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [

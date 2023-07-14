@@ -9,6 +9,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/character/character_info.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/empty_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/interactive_item_wrapper.dart';
@@ -80,7 +81,11 @@ class EquipmentCharacterLandscapeTabContentWidget extends StatelessWidget {
               ],
               crossAxisSpacing: 0,
               mainAxisSpacing: 0,
-              padding: const EdgeInsets.all(8).copyWith(top: 0, bottom: 64),
+              padding: const EdgeInsets.all(8).copyWith(top: 0, bottom: 64) +
+                  EdgeInsets.only(
+                    left: context.mediaQuery.padding.left,
+                    right: context.mediaQuery.padding.right,
+                  ),
               scrollViewKey: scrollViewKey,
             ));
   }

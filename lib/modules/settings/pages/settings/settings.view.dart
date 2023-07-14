@@ -9,6 +9,7 @@ import 'package:little_light/modules/settings/widgets/item_order_parameter.widge
 import 'package:little_light/modules/settings/widgets/settings_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/switch_option.widget.dart';
 import 'package:little_light/modules/settings/widgets/wishlist_file_item.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/tabs/item_list_swipe_area/swipe_area_indicator_overlay.dart';
 import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 import 'package:little_light/shared/widgets/ui/switch.dart';
@@ -31,7 +32,11 @@ class SettingsView extends StatelessWidget {
         ),
         body: Stack(children: [
           SingleChildScrollView(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8) +
+                  EdgeInsets.only(
+                    left: context.mediaQuery.padding.left,
+                    right: context.mediaQuery.padding.right,
+                  ),
               child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
                 SwitchOptionWidget(
                   "Tap to select".translate(context).toUpperCase(),

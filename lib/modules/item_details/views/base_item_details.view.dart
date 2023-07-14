@@ -172,19 +172,33 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     );
   }
 
+  Widget sectionContainer(BuildContext context, Widget child) {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: EdgeInsets.only(
+          left: context.mediaQuery.padding.left,
+          right: context.mediaQuery.padding.right,
+        ),
+        child: child,
+      ),
+    );
+  }
+
   Widget? buildDescription(BuildContext context) {
     final itemHash = state.itemHash;
     if (itemHash == null) return null;
-    return SliverToBoxAdapter(
-      child: DetailsItemDescriptionWidget(itemHash, item: state.item),
+    return sectionContainer(
+      context,
+      DetailsItemDescriptionWidget(itemHash, item: state.item),
     );
   }
 
   Widget? buildWishlistInfo(BuildContext context) {
     final tags = state.wishlistTags;
     if (tags == null || tags.isEmpty) return null;
-    return SliverToBoxAdapter(
-      child: DetailsWishlistInfoWidget(tags),
+    return sectionContainer(
+      context,
+      DetailsWishlistInfoWidget(tags),
     );
   }
 
@@ -192,8 +206,9 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final locked = state.isLocked;
     if (locked == null) return null;
     final busy = state.isLockBusy;
-    return SliverToBoxAdapter(
-      child: DetailsLockStatusWidget(
+    return sectionContainer(
+      context,
+      DetailsLockStatusWidget(
         locked,
         onChange: (locked) => bloc.changeLockState(locked),
         busy: busy,
@@ -211,11 +226,12 @@ abstract class BaseItemDetailsView extends StatelessWidget {
           def?.inventory?.bucketTypeHash,
         );
     if (!canViewInCollection && !canAddToLoadout) return null;
-    return SliverToBoxAdapter(
-        child: DetailsItemActionsWidget(
-      onAddToLoadout: canAddToLoadout ? bloc.addToLoadout : null,
-      onViewInCollections: canViewInCollection ? bloc.viewInCollections : null,
-    ));
+    return sectionContainer(
+        context,
+        DetailsItemActionsWidget(
+          onAddToLoadout: canAddToLoadout ? bloc.addToLoadout : null,
+          onViewInCollections: canViewInCollection ? bloc.viewInCollections : null,
+        ));
   }
 
   List<Widget> buildIntrinsicPerks(BuildContext context) {
@@ -224,13 +240,13 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final all = intrinsic + largePerks;
     return all
         .map(
-          (e) => SliverToBoxAdapter(child: DetailsItemIntrinsicPerkWidget(e)),
+          (e) => sectionContainer(context, DetailsItemIntrinsicPerkWidget(e)),
         )
         .toList();
   }
 
   Widget buildStats(BuildContext context) {
-    return SliverToBoxAdapter(child: DetailsItemStatsWidget());
+    return sectionContainer(context, DetailsItemStatsWidget());
   }
 
   List<Widget> buildReusablePerks(BuildContext context) {
@@ -238,7 +254,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final all = reusable;
     return all
         .map(
-          (e) => SliverToBoxAdapter(child: DetailsItemPerksWidget(e)),
+          (e) => sectionContainer(context, DetailsItemPerksWidget(e)),
         )
         .toList();
   }
@@ -248,7 +264,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final all = reusable;
     return all
         .map(
-          (e) => SliverToBoxAdapter(child: DetailsItemSupersWidget(e)),
+          (e) => sectionContainer(context, DetailsItemSupersWidget(e)),
         )
         .toList();
   }
@@ -258,7 +274,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final all = reusable;
     return all
         .map(
-          (e) => SliverToBoxAdapter(child: DetailsItemModsWidget(e)),
+          (e) => sectionContainer(context, DetailsItemModsWidget(e)),
         )
         .toList();
   }
@@ -268,7 +284,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final all = reusable;
     return all
         .map(
-          (e) => SliverToBoxAdapter(child: DetailsItemModsWidget(e)),
+          (e) => sectionContainer(context, DetailsItemModsWidget(e)),
         )
         .toList();
   }
@@ -278,7 +294,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final all = reusable;
     return all
         .map(
-          (e) => SliverToBoxAdapter(child: DetailsEnergyMeterWidget(e)),
+          (e) => sectionContainer(context, DetailsEnergyMeterWidget(e)),
         )
         .toList();
   }
@@ -286,7 +302,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
   Widget? buildDuplicates(BuildContext context) {
     final items = state.duplicates;
     if (items == null || items.isEmpty) return null;
-    return SliverToBoxAdapter(child: DetailsItemDuplicatesWidget(items));
+    return sectionContainer(context, DetailsItemDuplicatesWidget(items));
   }
 
   Widget? buildItemProgress(BuildContext context) {
@@ -296,8 +312,9 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     if (def?.itemType == DestinyItemType.QuestStep) return null;
     final objectives = def?.objectives?.objectiveHashes;
     if (objectives == null || objectives.isEmpty) return null;
-    return SliverToBoxAdapter(
-      child: DetailsItemProgressWidget(
+    return sectionContainer(
+      context,
+      DetailsItemProgressWidget(
         item,
         canTrack: state.canTrack,
       ),
@@ -305,7 +322,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
   }
 
   Widget? buildCraftedLevel(BuildContext context) {
-    return SliverToBoxAdapter(child: DetailsItemCraftedProgressWidget(state: state));
+    return sectionContainer(context, DetailsItemCraftedProgressWidget(state: state));
   }
 
   Widget? buildQuestSteps(BuildContext context) {
@@ -314,8 +331,9 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final def = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
     if (def?.itemType != DestinyItemType.QuestStep) return null;
     if (def?.objectives?.questlineItemHash == null) return null;
-    return SliverToBoxAdapter(
-      child: DetailsItemQuestInfoWidget(
+    return sectionContainer(
+      context,
+      DetailsItemQuestInfoWidget(
         item,
         canTrack: state.canTrack,
       ),
@@ -328,8 +346,9 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final definition = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
     final items = definition?.value?.itemValue?.where((i) => i.itemHash != null).toList();
     if (items == null || items.isEmpty) return null;
-    return SliverToBoxAdapter(
-      child: DetailsItemRewardsWidget(
+    return sectionContainer(
+      context,
+      DetailsItemRewardsWidget(
         item,
         character: state.character,
       ),
@@ -337,83 +356,91 @@ abstract class BaseItemDetailsView extends StatelessWidget {
   }
 
   Widget? buildItemNotes(BuildContext context) {
-    return SliverToBoxAdapter(
-        child: DetailsItemNotesWidget(
-      customName: state.customName,
-      notes: state.itemNotes,
-      onEditTap: state.editNotes,
-    ));
+    return sectionContainer(
+        context,
+        DetailsItemNotesWidget(
+          customName: state.customName,
+          notes: state.itemNotes,
+          onEditTap: state.editNotes,
+        ));
   }
 
   Widget? buildItemTags(BuildContext context) {
-    return SliverToBoxAdapter(
-        child: DetailsItemTagsWidget(
-      tags: state.tags,
-      onRemoveTag: state.removeTag,
-      onAddTap: state.editTags,
-    ));
+    return sectionContainer(
+        context,
+        DetailsItemTagsWidget(
+          tags: state.tags,
+          onRemoveTag: state.removeTag,
+          onAddTap: state.editTags,
+        ));
   }
 
   Widget? buildItemLoadouts(BuildContext context) {
     final loadouts = state.loadouts;
     if (loadouts == null || loadouts.isEmpty) return null;
-    return SliverToBoxAdapter(
-        child: DetailsItemLoadoutsWidget(
-      loadouts: loadouts,
-      onSelectLoadout: (l) => bloc.openLoadout(l),
-      onAddToLoadout: () => bloc.addToLoadout(),
-    ));
+    return sectionContainer(
+        context,
+        DetailsItemLoadoutsWidget(
+          loadouts: loadouts,
+          onSelectLoadout: (l) => bloc.openLoadout(l),
+          onAddToLoadout: () => bloc.addToLoadout(),
+        ));
   }
 
   Widget? buildWishlistBuilds(BuildContext context) {
     final builds = state.wishlistBuilds;
     if (builds == null) return null;
-    return SliverToBoxAdapter(
-        child: DetailsWishlistBuildsWidget(
-      builds,
-      allAvailablePlugHashes: socketState.allAvailablePlugHashes,
-      allSelectedPlugHashes: socketState.allSelectedPlugHashes,
-      allEquippedPlugHashes: socketState.allEquippedPlugHashes,
-      viewAllBuilds: bloc.showAllWishlistBuilds,
-      enableViewAllBuilds: true,
-      onToggleViewAllBuilds: (value) => bloc.showAllWishlistBuilds = value,
-    ));
+    return sectionContainer(
+        context,
+        DetailsWishlistBuildsWidget(
+          builds,
+          allAvailablePlugHashes: socketState.allAvailablePlugHashes,
+          allSelectedPlugHashes: socketState.allSelectedPlugHashes,
+          allEquippedPlugHashes: socketState.allEquippedPlugHashes,
+          viewAllBuilds: bloc.showAllWishlistBuilds,
+          enableViewAllBuilds: true,
+          onToggleViewAllBuilds: (value) => bloc.showAllWishlistBuilds = value,
+        ));
   }
 
   Widget? buildWishlistNotes(BuildContext context) {
     final notes = state.wishlistNotes;
     if (notes == null) return null;
-    return SliverToBoxAdapter(
-        child: DetailsWishlistNotesWidget(
-      notes,
-      viewAllNotes: bloc.showAllWishlistNotes,
-      enableViewAllNotes: true,
-      onToggleViewAllNotes: (value) => bloc.showAllWishlistNotes = value,
-    ));
+    return sectionContainer(
+        context,
+        DetailsWishlistNotesWidget(
+          notes,
+          viewAllNotes: bloc.showAllWishlistNotes,
+          enableViewAllNotes: true,
+          onToggleViewAllNotes: (value) => bloc.showAllWishlistNotes = value,
+        ));
   }
 
   Widget? buildLore(BuildContext context) {
     final hash = state.itemHash;
     if (hash == null) return null;
-    return SliverToBoxAdapter(
-        child: DetailsItemLoreWidget(
-      hash,
-    ));
+    return sectionContainer(
+        context,
+        DetailsItemLoreWidget(
+          hash,
+        ));
   }
 
   Widget? buildCollectibleInfo(BuildContext context) {
     final hash = state.itemHash;
     if (hash == null) return null;
-    return SliverToBoxAdapter(
-        child: DetailsItemCollectibleInfoWidget(
-      hash,
-    ));
+    return sectionContainer(
+        context,
+        DetailsItemCollectibleInfoWidget(
+          hash,
+        ));
   }
 
   Widget buildEmptySpace(BuildContext context, {required bool hasFooter}) {
     final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
-    return SliverToBoxAdapter(
-      child: SizedBox(
+    return sectionContainer(
+      context,
+      SizedBox(
         height: 64 + (!hasFooter ? bottomPadding : 0),
       ),
     );

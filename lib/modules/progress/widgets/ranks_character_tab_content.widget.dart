@@ -42,11 +42,14 @@ class RanksCharacterTabContentWidget extends StatelessWidget with ManifestConsum
             ),
           ),
           buildMainRanks(context),
-          // for (final q in quests) ...buildQuestSections(context, q, constraints)
         ],
         crossAxisSpacing: 4,
         mainAxisSpacing: 4,
-        padding: const EdgeInsets.all(8).copyWith(top: 0),
+        padding: const EdgeInsets.all(8).copyWith(top: 0) +
+            EdgeInsets.only(
+              left: context.mediaQuery.padding.left,
+              right: context.mediaQuery.padding.right,
+            ),
         scrollViewKey: scrollViewKey,
       ),
     );
