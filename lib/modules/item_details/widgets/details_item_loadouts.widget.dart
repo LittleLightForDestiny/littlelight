@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
-import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_small_list_item.widget.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
 
@@ -31,7 +30,6 @@ class DetailsItemLoadoutsWidget extends StatelessWidget {
 
   Widget buildContent(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 4),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -53,10 +51,13 @@ class DetailsItemLoadoutsWidget extends StatelessWidget {
         .toList();
   }
 
-  Widget buildAddToLoadoutButton(BuildContext context) => ElevatedButton(
-        onPressed: onAddToLoadout,
-        child: Text(
-          "Add to Loadout".translate(context),
+  Widget buildAddToLoadoutButton(BuildContext context) => Container(
+        padding: EdgeInsets.symmetric(horizontal: 4),
+        child: ElevatedButton(
+          onPressed: onAddToLoadout,
+          child: Text(
+            "Add to Loadout".translate(context),
+          ),
         ),
       );
 }

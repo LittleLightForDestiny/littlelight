@@ -78,7 +78,7 @@ class MultiSectionScrollViewState extends State<MultiSectionScrollView> {
       return Container(
           key: scrollViewKey,
           child: ListView.builder(
-              padding: padding,
+              padding: padding ?? EdgeInsets.all(0),
               restorationId: scrollViewKey?.toString(),
               controller: controller,
               shrinkWrap: shrinkWrap,
@@ -87,9 +87,10 @@ class MultiSectionScrollViewState extends State<MultiSectionScrollView> {
                 final rowBuilder = builders[index];
                 if (rowBuilder == null) return null;
                 bool isLast = index == totalRows - 1;
+                final height = rowBuilder.section.getRowHeight(options);
                 return Container(
                     margin: !isLast ? EdgeInsets.only(bottom: mainAxisSpacing) : null,
-                    height: rowBuilder.section.getRowHeight(options),
+                    height: height,
                     child: rowBuilder.section.build(
                       context,
                       index - rowBuilder.rowOffset,
