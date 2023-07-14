@@ -1,1 +1,8 @@
-- quick fixes for lightfall
+- transfers and inventory management were almost entirely reworked
+- loadouts now supports saving mods
+- subclasses can apply aspects and abilities
+- customizable scroll areas
+- auto transfers can be disabled
+- faster item transfers
+- better milestones view
+- and a lot more

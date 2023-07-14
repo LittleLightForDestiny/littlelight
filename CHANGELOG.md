@@ -1,3 +1,14 @@
+## [2.0.0] - 2023-07-14
+
+- transfers and inventory management were almost entirely reworked
+- loadouts now supports saving mods
+- subclasses can apply aspects and abilities
+- customizable scroll areas
+- auto transfers can be disabled
+- faster item transfers
+- better milestones view
+- and a lot more
+
 ## [1.9.8] - 2023-03-04
 
 - quick fixes for lightfall
