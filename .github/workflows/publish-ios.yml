@@ -114,11 +114,6 @@ jobs:
           bundle config path vendor/bundle
           bundle install
 
-      - name: Test fastlane
-        run: bundle exec fastlane match
-        env:
-          APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
-
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
         with:
