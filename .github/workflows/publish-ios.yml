@@ -92,7 +92,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
         with:
-          flutter-version: "2.10.0"
+          flutter-version: "3.10.5"
 
       - name: Create assets/_env
         run: |
