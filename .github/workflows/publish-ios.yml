@@ -48,8 +48,8 @@ jobs:
     runs-on: macos-latest
 
     env:
-      APPSTORE_CONNECT_KEY_ID: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}
-      APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
+      APP_STORE_CONNECT_API_KEY_KEY_ID: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}
+      APP_STORE_CONNECT_API_KEY_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
       APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
       APPLE_APP_IDENTIFIER: ${{ secrets.APPLE_APP_IDENTIFIER }}
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
@@ -88,6 +88,13 @@ jobs:
       - name: Config GIT API Keys
         run: |
           git config --global url."https://${{ secrets.MATCH_GIT_API_AUTH }}@github.com/".insteadOf "git@github.com:"
+
+      - name: Download Appstore Connect key
+        id: app_store_connect_key
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: appstore_connect_key.p8
+          encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
 
       - name: Cache bundle dependencies
         uses: actions/cache@v2
@@ -141,13 +148,6 @@ jobs:
       - name: Pod repo update
         working-directory: ios
         run: pod install --repo-update
-
-      - name: Download Appstore Connect key
-        id: app_store_connect_key
-        uses: timheuer/base64-to-file@v1.1
-        with:
-          fileName: appstore_connect_key.p8
-          encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
 
       - name: Build iOS via Flutter
         run: flutter build ios --no-codesign --release
