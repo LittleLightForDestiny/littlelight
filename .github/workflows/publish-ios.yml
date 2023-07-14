@@ -89,6 +89,29 @@ jobs:
         run: |
           git config --global url."https://${{ secrets.MATCH_GIT_API_AUTH }}@github.com/".insteadOf "git@github.com:"
 
+      - name: Cache bundle dependencies
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: ${{ runner.os }}-gems-
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.6
+
+      - name: Download bundle dependencies
+        run: |
+          gem install bundler
+          bundle config path vendor/bundle
+          bundle install
+
+      - name: Test fastlane
+        run: bundle exec fastlane match --readonly
+        env:
+          APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
         with:
@@ -125,24 +148,6 @@ jobs:
         with:
           fileName: appstore_connect_key.p8
           encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
-
-      - name: Cache bundle dependencies
-        uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: ${{ runner.os }}-gems-
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.6
-
-      - name: Download bundle dependencies
-        run: |
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install
 
       - name: Build iOS via Flutter
         run: flutter build ios --no-codesign --release
