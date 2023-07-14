@@ -137,7 +137,7 @@ platform :ios do
   end
 end
 
-platform :macos do
+platform :mac do
 
   desc "Setup certificates before doing anything"
   private_lane :setup_api_key do

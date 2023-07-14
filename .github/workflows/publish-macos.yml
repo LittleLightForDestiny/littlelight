@@ -145,18 +145,18 @@ jobs:
         run: flutter build macos --release
 
       - name: Build MacOS via Fastlane
-        run: bundle exec fastlane macos build
+        run: bundle exec fastlane mac build
         env:
           APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
 
       - name: Upload to App Store (manual release)
         if: steps.variables.outputs.track == 'beta'
-        run: bundle exec fastlane macos beta
+        run: bundle exec fastlane mac beta
         env:
           APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
 
       - name: Release to App Store (automatic release)
         if: steps.variables.outputs.track == 'production'
-        run: bundle exec fastlane macos deploy
+        run: bundle exec fastlane mac deploy
         env:
           APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
