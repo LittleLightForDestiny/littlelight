@@ -90,7 +90,7 @@ class ItemSearchView extends StatelessWidget {
           ),
         ),
       ],
-      padding: EdgeInsets.all(4),
+      padding: EdgeInsets.all(4) + context.mediaQuery.viewPadding.copyWith(top: 0, bottom: 0),
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,
     );

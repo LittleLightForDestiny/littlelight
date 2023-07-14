@@ -25,31 +25,31 @@ class EquipLoadoutWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         MenuBoxTitle(
-          "Equip Loadout".translate(context),
+          "Loadout".translate(context),
         ),
-        Row(children: [
-          Expanded(
-              child: ElevatedButton(
-            style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-            child: Text("Equip".translate(context).toUpperCase()),
-            onPressed: () async {
-              final bloc = context.read<ContextMenuOptionsBloc>();
-              bloc.openLoadoutTransfer(context, character, true);
-              onClose();
-            },
-          )),
-          SizedBox(width: 4),
-          Expanded(
-              child: ElevatedButton(
-            style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-            child: Text("Transfer".translate(context).toUpperCase()),
-            onPressed: () {
-              final bloc = context.read<ContextMenuOptionsBloc>();
-              bloc.openLoadoutTransfer(context, character, false);
-              onClose();
-            },
-          ))
-        ]),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            ElevatedButton(
+              style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+              child: Text("Equip".translate(context).toUpperCase()),
+              onPressed: () async {
+                final bloc = context.read<ContextMenuOptionsBloc>();
+                bloc.openLoadoutTransfer(context, character, true);
+                onClose();
+              },
+            ),
+            ElevatedButton(
+              style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+              child: Text("Transfer".translate(context).toUpperCase()),
+              onPressed: () {
+                final bloc = context.read<ContextMenuOptionsBloc>();
+                bloc.openLoadoutTransfer(context, character, false);
+                onClose();
+              },
+            )
+          ],
+        ),
       ],
     ));
   }

@@ -83,7 +83,6 @@ class CharacterContextMenu extends BaseOverlayWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  buildEquipLoadout(context),
                   buildCreateLoadout(context),
                   buildMaxPower(context),
                   buildGrindOptimizer(context),
@@ -113,6 +112,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,
         children: [
+          buildEquipLoadout(context),
           ElevatedButton(
             style: ButtonStyle(visualDensity: VisualDensity.standard),
             child: Row(children: [
@@ -127,7 +127,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
               this.onSearchTap?.call();
             },
           )
-        ],
+        ].whereType<Widget>().toList(),
       ),
     );
   }
