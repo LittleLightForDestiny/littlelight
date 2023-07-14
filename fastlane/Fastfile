@@ -172,10 +172,7 @@ platform :macos do
       type: "appstore",
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
       git_url: ENV["MATCH_GIT_URL"],
-    )
-    update_project_team(
-      path: "macos/Runner.xcodeproj",
-      teamid: ENV["APPLE_TEAM_ID"]
+      team_id: ENV["APPLE_TEAM_ID"],
     )
     update_project_provisioning(
       xcodeproj: "macos/Runner.xcodeproj",
@@ -187,7 +184,7 @@ platform :macos do
       workspace: "macos/Runner.xcworkspace",
       scheme: "Runner",
       output_directory:"build/macos",
-      output_name: "LittleLight.ipa",
+      output_name: "littlelight.ipa",
       export_method: "app-store"
     )
   end
@@ -196,7 +193,7 @@ platform :macos do
   lane :beta do
       setup_api_key
       upload_to_app_store(
-      ipa: "build/macos/LittleLight.ipa",
+      ipa: "build/macos/littlelight.ipa",
       skip_screenshots: true,
       force: true,
       precheck_include_in_app_purchases: false,
