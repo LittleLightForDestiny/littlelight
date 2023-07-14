@@ -1,8 +1,6 @@
-//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/initial/initial.page.dart';
 import 'package:provider/provider.dart';
-
 import 'notifiers/initial_page_state.notifier.dart';
 import 'notifiers/manifest_downloader.notifier.dart';
 import 'notifiers/select_membership.notifier.dart';
@@ -30,7 +28,7 @@ class InitialPageContianer extends StatelessWidget {
               create: (context) => InitialPageStateNotifier(context),
             ),
           ],
-          child: InitialPage(),
+          child: const InitialPage(),
         ));
   }
 }

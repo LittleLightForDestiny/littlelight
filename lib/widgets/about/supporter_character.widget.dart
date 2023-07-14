@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:bungie_api/enums/destiny_component_type.dart';
 import 'package:bungie_api/models/destiny_character_component.dart';
@@ -20,7 +18,7 @@ class SupporterCharacterWidget extends StatefulWidget {
   final BungieMembershipType membershipType;
   final String? link;
   final Widget? badge;
-  SupporterCharacterWidget(this.membershipId, this.membershipType, [this.link, this.badge]);
+  const SupporterCharacterWidget(this.membershipId, this.membershipType, [this.link, this.badge]);
 
   @override
   State<StatefulWidget> createState() {
@@ -40,10 +38,10 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
   }
 
   loadCharacters() async {
-    var profile = await bungieAPI.getProfile([DestinyComponentType.Characters, DestinyComponentType.Profiles],
-        "${widget.membershipId}", widget.membershipType);
+    var profile = await bungieAPI.getProfile(
+        [DestinyComponentType.Characters, DestinyComponentType.Profiles], widget.membershipId, widget.membershipType);
     List<DestinyCharacterComponent>? list = profile?.characters?.data?.values.toList();
-    if (list == null || list.length == 0) return;
+    if (list == null || list.isEmpty) return;
     list.sort((charA, charB) {
       DateTime dateA = DateTime.tryParse(charA.dateLastPlayed ?? "") ?? DateTime.fromMillisecondsSinceEpoch(0);
       DateTime dateB = DateTime.tryParse(charB.dateLastPlayed ?? "") ?? DateTime.fromMillisecondsSinceEpoch(0);
@@ -58,7 +56,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    return Container(
+    return SizedBox(
         height: 72,
         child: Stack(children: [
           Positioned.fill(child: buildEmblemBackground(context)),
@@ -86,15 +84,20 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () {
-                      launch(widget.link ??
-                          "https://www.bungie.net/en/Profile/${widget.membershipType.value}/${widget.membershipId}");
+                      final link = widget.link;
+                      final membershipType = widget.membershipType.value;
+                      final membershipId = widget.membershipId;
+                      final defaultLink = "https://www.bungie.net/en/Profile/${membershipType}/${membershipId}";
+                      final uri = Uri.tryParse(link ?? defaultLink);
+                      if (uri == null) return;
+                      launchUrl(uri);
                     },
                   )))
         ]));
   }
 
   Widget buildEmblemBackground(BuildContext context) {
-    final emblemHash = this.lastPlayed?.emblemHash;
+    final emblemHash = lastPlayed?.emblemHash;
     if (emblemHash == null) return Container();
     return ManifestImageWidget<DestinyInventoryItemDefinition>(
       emblemHash,
@@ -107,9 +110,9 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
   }
 
   Widget buildEmblemIcon(BuildContext context) {
-    final emblemHash = this.lastPlayed?.emblemHash;
+    final emblemHash = lastPlayed?.emblemHash;
     if (emblemHash == null) return Container();
-    return Container(
+    return SizedBox(
         width: 64,
         child: ManifestImageWidget<DestinyInventoryItemDefinition>(
           emblemHash,
@@ -124,13 +127,13 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
     if (userInfo == null) return Container();
     return Text(
       "${userInfo.displayName}",
-      style: TextStyle(fontWeight: FontWeight.bold),
+      style: const TextStyle(fontWeight: FontWeight.bold),
     );
   }
 
   Widget buildPlayerLevel(BuildContext context) {
     final lightLevel = lastPlayed?.light;
-    if (lightLevel == null) return Text(" ");
+    if (lightLevel == null) return const Text(" ");
     return Row(
       children: <Widget>[
         Icon(
@@ -146,7 +149,7 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
   Widget buildPlatformIcon(BuildContext context) {
     var plat = PlatformData.getPlatform(widget.membershipType);
     return Container(
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         decoration: BoxDecoration(color: plat.color, borderRadius: BorderRadius.circular(20)),
         child: Icon(
           plat.icon,
@@ -162,13 +165,13 @@ class SupporterCharacterWidgetState extends State<SupporterCharacterWidget>
       classHash != null
           ? ManifestText<DestinyClassDefinition>(classHash, textExtractor: (def) {
               return def.genderedClassNamesByGenderHash?["$genderHash"] ?? def.displayProperties?.name;
-            }, style: TextStyle(fontSize: 12))
+            }, style: const TextStyle(fontSize: 12))
           : Container(),
-      Text(" - ", style: TextStyle(fontSize: 12)),
+      const Text(" - ", style: TextStyle(fontSize: 12)),
       raceHash != null
           ? ManifestText<DestinyRaceDefinition>(raceHash, textExtractor: (def) {
               return def.genderedRaceNamesByGenderHash?["$genderHash"] ?? def.displayProperties?.name;
-            }, style: TextStyle(fontSize: 12))
+            }, style: const TextStyle(fontSize: 12))
           : Container(),
     ]);
   }

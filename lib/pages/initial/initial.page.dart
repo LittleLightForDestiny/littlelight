@@ -1,5 +1,4 @@
 //@dart = 2.12
-
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/initial/subpages/authorization_request.subpage.dart';
 import 'package:little_light/pages/initial/subpages/download_manifest_progress.subpage.dart';
@@ -8,24 +7,22 @@ import 'package:little_light/pages/initial/subpages/select_language.subpage.dart
 import 'package:little_light/pages/initial/subpages/select_membership.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_wishlists.subpage.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
-
 import 'notifiers/initial_page_state.notifier.dart';
 
 class InitialPage extends StatefulWidget {
-  InitialPage() : super();
+  const InitialPage() : super();
 
   @override
   InitialPageState createState() => InitialPageState();
 }
 
-class InitialPageState extends State<InitialPage> with AuthConsumer, LanguageConsumer {
+class InitialPageState extends State<InitialPage> with AuthConsumer {
   @override
   Widget build(BuildContext context) => Scaffold(
       body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             image: DecorationImage(
               image: AssetImage("assets/imgs/background.jpg"),
               fit: BoxFit.cover,
@@ -60,15 +57,15 @@ class InitialPageState extends State<InitialPage> with AuthConsumer, LanguageCon
 
   Widget buildLoadingAnim(BuildContext context) => LoadingAnimWidget();
 
-  Widget languageSelectPage(BuildContext context) => SelectLanguageSubPage();
+  Widget languageSelectPage(BuildContext context) => const SelectLanguageSubPage();
 
-  Widget downloadManifestPage(BuildContext context) => DownloadManifestProgressSubPage();
+  Widget downloadManifestPage(BuildContext context) => const DownloadManifestProgressSubPage();
 
-  Widget authorizationRequestPage(BuildContext context) => AuthorizationRequestSubPage();
+  Widget authorizationRequestPage(BuildContext context) => const AuthorizationRequestSubPage();
 
-  Widget selectMembershipPage(BuildContext context) => SelectMembershipSubPage();
+  Widget selectMembershipPage(BuildContext context) => const SelectMembershipSubPage();
 
-  Widget selectWishlistsPage(BuildContext context) => SelectWishlistsSubPage();
+  Widget selectWishlistsPage(BuildContext context) => const SelectWishlistsSubPage();
 
-  Widget buildError(BuildContext context) => StartupErrorSubPage();
+  Widget buildError(BuildContext context) => const StartupErrorSubPage();
 }

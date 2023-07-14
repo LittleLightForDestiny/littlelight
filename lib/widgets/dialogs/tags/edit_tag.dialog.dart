@@ -1,10 +1,7 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
-
 import 'create_tag_form.widget.dart';
 
 class EditTagDialogRoute extends DialogRoute<ItemNotesTag?> {
@@ -30,29 +27,34 @@ class EditTagDialog extends LittleLightBaseDialog {
   final newTag = ItemNotesTag.newCustom();
   EditTagDialog()
       : super(
-          titleBuilder: (context) =>
-              context.tagArgument != null ? TranslatedTextWidget('Select Tag') : TranslatedTextWidget('Create Tag'),
+          titleBuilder: (context) => context.tagArgument != null
+              ? Text("Select tag".translate(context))
+              : Text("Create tag".translate(context)),
         );
 
   @override
   Widget? buildBody(BuildContext context) {
-    return CreateTagFormWidget(context.tagArgument ?? this.newTag);
+    return CreateTagFormWidget(context.tagArgument ?? newTag);
   }
 
   @override
   Widget? buildActions(BuildContext context) {
-    final tag = context.tagArgument ?? this.newTag;
+    final tag = context.tagArgument ?? newTag;
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          child: TranslatedTextWidget("Cancel", uppercase: true),
+          child: Text(
+            "Cancel".translate(context).toUpperCase(),
+          ),
           onPressed: () async {
             Navigator.of(context).pop(null);
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Save", uppercase: true),
+          child: Text(
+            "Save".translate(context).toUpperCase(),
+          ),
           onPressed: () async {
             Navigator.of(context).pop(tag);
           },

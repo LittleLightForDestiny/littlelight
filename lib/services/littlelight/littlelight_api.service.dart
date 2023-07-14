@@ -1,9 +1,7 @@
-//@dart=2.12
-
 import 'dart:convert';
-
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:http/http.dart' as http;
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_notes_response.dart';
@@ -20,7 +18,7 @@ class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsume
   String? _uuid;
   String? _secret;
 
-  String get apiRoot => appConfig.littleLightApiRoot;
+  String? get apiRoot => appConfig.littleLightApiRoot;
 
   static final LittleLightApiService _singleton = LittleLightApiService._internal();
   factory LittleLightApiService() {
@@ -35,9 +33,9 @@ class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsume
 
   Future<NotesResponse> fetchItemNotes() async {
     dynamic json = await _authorizedRequest("item-notes");
-    List<ItemNotes> _fetchedNotes = json['notes'].map<ItemNotes>((j) => ItemNotes.fromJson(j)).toList();
+    List<ItemNotes> _fetchedNotes = json['notes']?.map<ItemNotes>((j) => ItemNotes.fromJson(j)).toList() ?? [];
 
-    List<ItemNotesTag> _fetchedTags = json['tags'].map<ItemNotesTag>((j) => ItemNotesTag.fromJson(j)).toList();
+    List<ItemNotesTag> _fetchedTags = json['tags']?.map<ItemNotesTag>((j) => ItemNotesTag.fromJson(j)).toList() ?? [];
     return NotesResponse(notes: _fetchedNotes, tags: _fetchedTags);
   }
 
@@ -75,11 +73,14 @@ class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsume
   Future<int> deleteLoadout(Loadout loadout) async {
     Map<String, dynamic> body = loadout.toJson();
     dynamic json = await _authorizedRequest("loadout/delete", body: body);
-    print(json);
     return json["result"] ?? 0;
   }
 
   Future<dynamic> _authorizedRequest(String path, {Map<String, dynamic> body = const {}}) async {
+    if (apiRoot == null) {
+      logger.info("Warning: running Little Light without a proper API root config will not save data in the cloud");
+      return null;
+    }
     String? membershipID = auth.currentMembershipID;
     BungieNetToken? token = await auth.getCurrentToken();
     String? accessToken = token?.accessToken;
@@ -117,7 +118,7 @@ class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsume
     if (uuid != null) return uuid;
     uuid = currentMembershipStorage.littleLightMembershipUUID;
     if (uuid != null) return uuid;
-    uuid = Uuid().v4();
+    uuid = const Uuid().v4();
     currentMembershipStorage.littleLightMembershipUUID = uuid;
     _uuid = uuid;
     return uuid;

@@ -1,9 +1,8 @@
-//@dart=2.12
-
 import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:bungie_api/models/destiny_season_definition.dart';
 import 'package:bungie_api/models/destiny_season_pass_definition.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
@@ -31,7 +30,7 @@ class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestCo
     var seasonEnd = endDateStr != null ? DateTime.parse(endDateStr) : DateTime.fromMillisecondsSinceEpoch(0);
     var now = DateTime.now();
     if (now.isAfter(seasonEnd)) {
-      print("loaded settings from web");
+      logger.info("loaded settings from web");
       settings = await bungieAPI.getCommonSettings();
       seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
       seasonDef = await manifest.getDefinition<DestinySeasonDefinition>(seasonHash);

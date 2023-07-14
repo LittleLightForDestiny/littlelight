@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/storage/migrations/storage_migrations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -55,41 +55,41 @@ class MigrationV1x9x0 extends StorageMigration {
   removeLegacyCurrentVersion(SharedPreferences prefs, Iterable<String> prefKeys) {
     try {
       final manifestVersionKeys = prefKeys.where((k) {
-        final regexp = RegExp("languages\/.*?\/manifestVersion");
+        final regexp = RegExp("languages/.*?/manifestVersion");
         return regexp.hasMatch(k);
       });
       for (final key in manifestVersionKeys) {
         prefs.remove(key);
       }
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
   }
 
   void removeLittleLightAPICredentials(SharedPreferences prefs, Iterable<String> prefKeys) {
     try {
       final membershipSecretKeys = prefKeys.where((k) {
-        final regexp = RegExp("memberships\/.*?\/membership_secret");
+        final regexp = RegExp("memberships/.*?/membership_secret");
         return regexp.hasMatch(k);
       });
       for (final key in membershipSecretKeys) {
         prefs.remove(key);
       }
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
 
     /// remove membership files `membership_uuid`
     try {
       final membershipUUIDKeys = prefKeys.where((k) {
-        final regexp = RegExp("memberships\/.*?\/membership_u_u_i_d");
+        final regexp = RegExp("memberships/.*?/membership_u_u_i_d");
         return regexp.hasMatch(k);
       });
       for (final key in membershipUUIDKeys) {
         prefs.remove(key);
       }
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
   }
 
@@ -100,7 +100,7 @@ class MigrationV1x9x0 extends StorageMigration {
         await File("$storageRoot/accountIDs.json").writeAsString(jsonEncode(accountIDs));
       }
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
   }
 }

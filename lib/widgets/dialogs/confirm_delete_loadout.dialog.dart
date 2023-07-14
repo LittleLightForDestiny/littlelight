@@ -1,8 +1,6 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/loadout.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.yes_no.dialog.dart';
 
 extension on BuildContext {
@@ -26,10 +24,10 @@ class ConfirmDeleteLoadoutDialogRoute extends DialogRoute<bool> {
 class ConfirmDeleteLoadoutDialog extends LittleLightYesNoDialog {
   ConfirmDeleteLoadoutDialog()
       : super(
-          titleBuilder: (context) => TranslatedTextWidget('Delete loadout'),
-          bodyBuilder: (context) => TranslatedTextWidget(
-            'Do you really want to delete the loadout {loadoutName} ?',
-            replace: {"loadoutName": context.loadoutArgument?.name ?? ""},
+          titleBuilder: (context) => Text("Delete loadout".translate(context)),
+          bodyBuilder: (context) => Text(
+            "Do you really want to delete the loadout {loadoutName} ?"
+                .translate(context, replace: {"loadoutName": context.loadoutArgument?.name ?? ""}),
           ),
         );
 }

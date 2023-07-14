@@ -1,7 +1,5 @@
-// @dart=2.9
-
+// @dart=2.12
 import 'dart:ui' as ui;
-
 import 'package:flutter/material.dart';
 
 enum CornerPosition {
@@ -16,13 +14,12 @@ class CornerBadgeDecoration extends Decoration {
   final double badgeSize;
   final CornerPosition position;
 
-  const CornerBadgeDecoration(
-      {@required this.colors, @required this.badgeSize, this.position = CornerPosition.TopRight});
+  const CornerBadgeDecoration({required this.colors, required this.badgeSize, this.position = CornerPosition.TopRight});
 
   List<Color> get badgeColors => colors;
 
   @override
-  BoxPainter createBoxPainter([onChanged]) => CornerBadgePainter(badgeColors, badgeSize, this.position);
+  BoxPainter createBoxPainter([void Function()? onChanged]) => CornerBadgePainter(badgeColors, badgeSize, position);
 }
 
 class CornerBadgePainter extends BoxPainter {
@@ -35,7 +32,7 @@ class CornerBadgePainter extends BoxPainter {
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {
-    double size = badgeSize ?? configuration.size.width;
+    double size = badgeSize;
     canvas.save();
     var points = getPoints(size);
     var o = getOffset(offset, configuration, size);
@@ -49,7 +46,7 @@ class CornerBadgePainter extends BoxPainter {
     var topRight = Offset(size, 0);
     var bottomLeft = Offset(0, size);
     var bottomRight = Offset(size, size);
-    switch (this.position) {
+    switch (position) {
       case CornerPosition.TopLeft:
         return [bottomLeft, bottomRight, topRight];
       case CornerPosition.TopRight:
@@ -59,25 +56,25 @@ class CornerBadgePainter extends BoxPainter {
       case CornerPosition.BottomRight:
         return [topRight, topLeft, bottomLeft];
     }
-    return [bottomLeft, bottomRight, topRight];
   }
 
   Offset getOffset(Offset offset, ImageConfiguration configuration, double size) {
-    switch (this.position) {
+    final width = configuration.size?.width ?? 0;
+    final height = configuration.size?.height ?? 0;
+    switch (position) {
       case CornerPosition.TopLeft:
         return Offset(offset.dx, offset.dy);
       case CornerPosition.TopRight:
-        return Offset(offset.dx + configuration.size.width - size, offset.dy);
+        return Offset(offset.dx + width - size, offset.dy);
       case CornerPosition.BottomLeft:
-        return Offset(offset.dx, offset.dy + configuration.size.height - size);
+        return Offset(offset.dx, offset.dy + height - size);
       case CornerPosition.BottomRight:
-        return Offset(offset.dx + configuration.size.width - size, offset.dy + configuration.size.height - size);
+        return Offset(offset.dx + width - size, offset.dy + height - size);
     }
-    return Offset(0, 0);
   }
 
   Paint getSingleColorPaint(List<Color> colors) => Paint()
-    ..color = colors?.single ?? Color(0x0000000)
+    ..color = colors.single
     ..isAntiAlias = true;
 
   Paint getMultiColorPaint(List<Offset> points, List<Color> colors) => Paint()
@@ -85,7 +82,7 @@ class CornerBadgePainter extends BoxPainter {
     ..isAntiAlias = true;
 
   ui.Gradient gradient(List<Offset> points, List<Color> colors) {
-    double partSize = 1 / (colors?.length ?? 1);
+    double partSize = 1 / (colors.length);
     var stops = colors
         .expand((element) => [colors.indexOf(element) * partSize, (colors.indexOf(element) + 1) * partSize + .001])
         .toList();
@@ -94,14 +91,18 @@ class CornerBadgePainter extends BoxPainter {
         Offset(points[0].dx, points[0].dy), Offset(points[2].dx, points[2].dy), doubledColors, stops);
   }
 
-  Paint getBadgePaint(List<Offset> points, List<Color> colors) =>
-      (colors?.length ?? 0) > 1 ? getMultiColorPaint(points, colors) : getSingleColorPaint(colors);
+  Paint getBadgePaint(List<Offset> points, List<Color> colors) => (colors.length) > 1
+      ? getMultiColorPaint(
+          points,
+          colors,
+        )
+      : getSingleColorPaint(colors);
 
   Path buildBadgePath(List<Offset> points) => Path.combine(
       PathOperation.difference,
       Path()
         ..addRRect(RRect.fromLTRBAndCorners(points[0].dx, points[0].dy, points[2].dx, points[2].dy,
-            topRight: Radius.circular(CORNER_RADIUS))),
+            topRight: const Radius.circular(CORNER_RADIUS))),
       Path()
         ..moveTo(points[0].dx, points[0].dy)
         ..lineTo(points[1].dx, points[1].dy)

@@ -1,31 +1,27 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/collections/collections_root.page.dart';
-import 'package:little_light/pages/equipment/equipment.screen.dart';
-import 'package:little_light/pages/loadouts/loadouts.screen.dart';
-import 'package:little_light/pages/progress/progress.screen.dart';
-import 'package:little_light/pages/triumphs/triumphs_root.page.dart';
+import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
+import 'package:little_light/modules/collections/pages/home/collections_home.page.dart';
+import 'package:little_light/modules/equipment/pages/equipment/equipment.page.dart';
+import 'package:little_light/modules/loadouts/pages/home/loadouts_home.page.dart';
+import 'package:little_light/modules/progress/pages/progress/progress.page.dart';
+import 'package:little_light/modules/triumphs/pages/home/triumphs_home.page.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
-import 'package:little_light/services/littlelight/loadouts.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
-import 'package:little_light/services/user_settings/user_settings.consumer.dart';
 import 'package:little_light/utils/platform_capabilities.dart';
 import 'package:little_light/widgets/dialogs/confirm_exit.dialog.dart';
 import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
-import 'package:wakelock/wakelock.dart';
+import 'package:provider/provider.dart';
+import 'package:wakelock_plus/wakelock_plus.dart';
 
 class MainScreen extends StatefulWidget {
-  MainScreen({Key key}) : super(key: key);
+  const MainScreen({Key? key}) : super(key: key);
   @override
   MainScreenState createState() => MainScreenState();
 }
 
-class MainScreenState extends State<MainScreen>
-    with AuthConsumer, UserSettingsConsumer, LoadoutsConsumer, ProfileConsumer, ItemNotesConsumer {
-  Widget currentScreen;
+class MainScreenState extends State<MainScreen> with AuthConsumer {
+  Widget? currentScreen;
 
   @override
   void initState() {
@@ -36,34 +32,35 @@ class MainScreenState extends State<MainScreen>
 
   initUpdaters() async {
     auth.getMembershipData();
-    await loadoutService.getLoadouts(forceFetch: true);
-    await itemNotes.getNotes(forceFetch: true);
+    final isOffline = context.read<OfflineModeBloc>().isOffline;
+    if (isOffline) return;
   }
 
   getInitScreen() async {
+    final userSettings = context.read<UserSettingsBloc>();
     switch (userSettings.startingPage) {
       case LittleLightPersistentPage.Equipment:
-        currentScreen = EquipmentScreen();
+        currentScreen = const EquipmentPage();
         break;
 
       case LittleLightPersistentPage.Progress:
-        currentScreen = ProgressScreen();
+        currentScreen = const ProgressPage();
         break;
 
       case LittleLightPersistentPage.Collections:
-        currentScreen = CollectionsRootPage();
+        currentScreen = CollectionsHomePage();
         break;
 
       case LittleLightPersistentPage.Triumphs:
-        currentScreen = TriumphsRootPage();
+        currentScreen = TriumphsHomePage();
         break;
 
       case LittleLightPersistentPage.Loadouts:
-        currentScreen = LoadoutsScreen();
+        currentScreen = LoadoutsHomePage();
         break;
 
       default:
-        currentScreen = EquipmentScreen();
+        currentScreen = const EquipmentPage();
         break;
     }
 
@@ -71,7 +68,7 @@ class MainScreenState extends State<MainScreen>
     bool keepAwake = userSettings.keepAwake;
 
     if (PlatformCapabilities.keepScreenOnAvailable) {
-      Wakelock.toggle(enable: keepAwake);
+      WakelockPlus.toggle(enable: keepAwake);
     }
   }
 
@@ -84,7 +81,7 @@ class MainScreenState extends State<MainScreen>
           drawer: Container(
             child: SideMenuWidget(
               onPageChange: (page) {
-                this.currentScreen = page;
+                currentScreen = page;
                 setState(() {});
               },
             ),

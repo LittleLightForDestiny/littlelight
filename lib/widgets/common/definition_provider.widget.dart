@@ -1,46 +1,18 @@
-//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 
-typedef DefinitionWidgetBuilder<T> = Widget Function(T definition);
+typedef DefinitionWidgetBuilder<T> = Widget Function(T? definition);
 
-class DefinitionProviderWidget<T> extends StatefulWidget {
-  final int hash;
+class DefinitionProviderWidget<T> extends StatelessWidget with ManifestConsumer {
+  final int definitionHash;
   final DefinitionWidgetBuilder<T> widgetBuilder;
   final Widget? placeholder;
-  DefinitionProviderWidget(this.hash, this.widgetBuilder, {this.placeholder, Key? key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() {
-    return DefinitionProviderWidgetState<T>();
-  }
-}
-
-class DefinitionProviderWidgetState<T> extends State<DefinitionProviderWidget<T>> with ManifestConsumer {
-  T? definition;
-  @override
-  void initState() {
-    super.initState();
-    loadDefinition();
-  }
-
-  void loadDefinition() async {
-    definition = await manifest.getDefinition<T>(widget.hash);
-    if (mounted == true) {
-      setState(() {});
-    }
-  }
+  DefinitionProviderWidget(this.definitionHash, this.widgetBuilder, {this.placeholder, Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final definition = this.definition;
-    if (definition != null) {
-      return widget.widgetBuilder(definition);
-    }
-    final placeholder = widget.placeholder;
-    if (placeholder != null) {
-      return placeholder;
-    }
-    return Container();
+    final def = context.definition<T>(definitionHash);
+    if (def != null) return widgetBuilder(def);
+    return placeholder ?? Container();
   }
 }

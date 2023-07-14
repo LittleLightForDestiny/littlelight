@@ -1,5 +1,3 @@
-//@dart=2.12
-
 enum GlobalStorageKeys {
   currentAccountID,
   accountIDs,
@@ -25,12 +23,20 @@ enum GlobalStorageKeys {
   detailsSectionDisplayVisibility,
   parsedWishlists,
   wishlists,
-  rawWishlists
+  rawWishlists,
+  enableAutoTransfers,
+  objectivesViewMode,
+  hideUnavailableCollectibles,
+  sortCollectiblesByNewest,
+  topScrollAreaType,
+  bottomScrollAreaType,
+  scrollAreaDivisionThreshold,
+  scrollAreaHintEnabled,
 }
 
 extension StorageKeysExtension on GlobalStorageKeys {
   String get path {
-    String name = this.toString().split(".")[1];
+    String name = toString().split(".")[1];
     return name;
   }
 }

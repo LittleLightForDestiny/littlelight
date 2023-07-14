@@ -1,25 +1,25 @@
-// @dart=2.9
-
 import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:little_light/utils/destiny_data.dart';
 
 class GenericProgressBarWidget extends StatelessWidget {
-  final Color color;
+  final Color? color;
 
-  final Widget description;
+  final Widget? description;
   final bool completed;
   final int total;
   final int progress;
 
-  const GenericProgressBarWidget(
-      {Key key, this.color, this.completed = false, this.total = 0, this.progress = 0, this.description})
-      : super(key: key);
+  const GenericProgressBarWidget({Key? key, this.color, bool? completed, int? total, int? progress, this.description})
+      : this.total = total ?? 0,
+        this.progress = progress ?? 0,
+        this.completed = completed ?? false,
+        super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
+        padding: const EdgeInsets.all(4),
         child: Row(children: [
           buildCheck(context),
           Expanded(
@@ -30,10 +30,10 @@ class GenericProgressBarWidget extends StatelessWidget {
 
   Widget buildCheck(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(border: Border.all(width: 1, color: this.color ?? Colors.grey.shade300)),
+        decoration: BoxDecoration(border: Border.all(width: 1, color: color ?? Colors.grey.shade300)),
         width: 22,
         height: 22,
-        padding: EdgeInsets.all(2),
+        padding: const EdgeInsets.all(2),
         child: buildCheckFill(context));
   }
 
@@ -44,13 +44,13 @@ class GenericProgressBarWidget extends StatelessWidget {
 
   buildBar(BuildContext context) {
     if (total <= 1) {
-      return Container(padding: EdgeInsets.only(left: 8), child: buildTitle(context));
+      return Container(padding: const EdgeInsets.only(left: 8), child: buildTitle(context));
     }
     return Container(
-        margin: EdgeInsets.only(left: 4),
+        margin: const EdgeInsets.only(left: 4),
         height: 22,
         decoration:
-            completed ? null : BoxDecoration(border: Border.all(width: 1, color: this.color ?? Colors.grey.shade300)),
+            completed ? null : BoxDecoration(border: Border.all(width: 1, color: color ?? Colors.grey.shade300)),
         child: Stack(
           children: <Widget>[
             Positioned.fill(
@@ -75,14 +75,14 @@ class GenericProgressBarWidget extends StatelessWidget {
     if (total <= 1) return Container();
 
     return Text("$progress/$total",
-        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: this.color ?? Colors.grey.shade300));
+        style: TextStyle(fontWeight: FontWeight.w500, fontSize: 13, color: color ?? Colors.grey.shade300));
   }
 
   buildProgressBar(BuildContext context) {
-    Color color = Color.lerp(barColor, Colors.black, .1);
+    Color? color = Color.lerp(barColor, Colors.black, .1);
     if (completed) return Container();
     return Container(
-        margin: EdgeInsets.all(2),
+        margin: const EdgeInsets.all(2),
         color: Theme.of(context).colorScheme.secondaryContainer,
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(

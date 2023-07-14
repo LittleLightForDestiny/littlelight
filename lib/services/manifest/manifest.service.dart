@@ -1,18 +1,18 @@
-//@dart=2.12
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:archive/archive.dart';
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/parse.exception.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/manifest/manifest_download_progress.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,12 +23,20 @@ setupManifest() {
   GetIt.I.registerSingleton<ManifestService>(ManifestService._internal());
 }
 
-class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer, AnalyticsConsumer {
+class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiConsumer, AnalyticsConsumer {
+  @protected
+  BuildContext? context;
   sqflite.Database? _db;
   DestinyManifest? _manifestInfo;
-  final Map<String, dynamic> _cached = Map();
+  final Map<String, dynamic> _cached = {};
+  final Map<Type, Set<int>> _queue = {};
 
   ManifestService._internal();
+
+  ManifestService initContext(BuildContext context) {
+    this.context = context;
+    return this;
+  }
 
   Future<void> setup() async {
     _cached.clear();
@@ -48,9 +56,42 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
     return _cached.keys.contains("${type}_$hash");
   }
 
-  T? getDefinitionFromCache<T>(int hash) {
+  T? definition<T>(int? hash) {
+    if (hash == null) return null;
+    final fromCache = getDefinitionFromCache<T>(hash);
+    if (fromCache != null) return fromCache;
+    _queueDefinition<T>(hash);
+    return null;
+  }
+
+  void _queueDefinition<T>(hash) async {
+    if (_queue[T]?.contains(hash) ?? false) return;
+    final cached = getDefinitionFromCache(hash);
+    if (cached != null) return;
+    _queue[T] ??= {};
+    _queue[T]?.add(hash);
+    await Future.delayed(Duration(milliseconds: 10));
+    final hashes = _queue[T];
+    _queue.remove(T);
+    if (hashes == null || hashes.isEmpty) return;
+    final previousLength = _cached.length;
+    await getDefinitions<T>(hashes);
+    if (previousLength == _cached.length) return;
+    notifyListeners();
+  }
+
+  T? getDefinitionFromCache<T>(int? hash) {
     var type = DefinitionTableNames.fromClass[T];
     return _cached["${type}_$hash"];
+  }
+
+  Map<int, T?> getDefinitionsFromCache<T>(Iterable<int?> hashes) {
+    var type = DefinitionTableNames.fromClass[T];
+    final map = <int, T>{
+      for (final h in hashes)
+        if (h != null) h: _cached["${type}_$h"]
+    };
+    return map;
   }
 
   Future<DestinyManifest> _getManifestInfo() async {
@@ -77,20 +118,21 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
   Future<bool> needsUpdate() async {
     DestinyManifest manifestInfo = await _getManifestInfo();
     String? currentVersion = await getSavedVersion();
-    String language = languageService.currentLanguage;
+    String language = getInjectedLanguageService().currentLanguage;
     var working = await test();
     return !working || currentVersion != manifestInfo.mobileWorldContentPaths?[language];
   }
 
   Future<void> _downloadManifest(StreamController<DownloadProgress> _controller, {bool skipCache = false}) async {
     try {
-      _db?.close();
+      await _db?.close();
+      _db = null;
     } catch (e, stackTrace) {
       analytics.registerNonFatal(e, stackTrace);
     }
     try {
       DestinyManifest info = await _getManifestInfo();
-      String language = languageService.currentLanguage;
+      String language = getInjectedLanguageService().currentLanguage;
       String? manifestFileURL = info.mobileWorldContentPaths?[language];
       String? url = BungieApiService.url(manifestFileURL);
       String localPath = await _localPath;
@@ -100,7 +142,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
       }
       Uri uri = Uri.parse(url);
       if (skipCache) {
-        final uuid = Uuid().v4();
+        final uuid = const Uuid().v4();
         uri = Uri.parse("$uri?cache_killer=$uuid");
       }
       HttpClientRequest req = await httpClient.getUrl(uri);
@@ -130,6 +172,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
       await zipFile.delete();
 
       await _openDb();
+      await Future.delayed(Duration(milliseconds: 1));
 
       bool success = await test();
       if (!success) {
@@ -176,7 +219,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
     final success = def?.displayProperties?.name != null;
     if (success) return success;
     try {
-      _db?.close();
+      await _db?.close();
     } catch (e, stackTrace) {
       analytics.registerNonFatal(e, stackTrace);
     }
@@ -194,7 +237,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
       sqflite.Database database = await sqflite.openDatabase(dbFile.path, readOnly: true);
       _db = database;
     } catch (e) {
-      print(e);
+      logger.error(e);
       return null;
     }
 
@@ -212,13 +255,11 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
   Future<Map<int, T>> searchDefinitions<T>(List<String>? parameters,
       {int limit = 50, DefinitionTableIdentityFunction? identity}) async {
     final tableName = DefinitionTableNames.fromClass[T];
-    if (identity == null) {
-      identity = DefinitionTableNames.identities[T];
-    }
-    Map<int, T> defs = Map();
+    identity ??= DefinitionTableNames.identities[T];
+    Map<int, T> defs = {};
     sqflite.Database? db = await _openDb();
     String? where;
-    if (parameters != null && parameters.length > 0) {
+    if (parameters != null && parameters.isNotEmpty) {
       where = parameters.map((p) {
         return "UPPER(json) LIKE \"%${p.toUpperCase()}%\"";
       }).join(" AND ");
@@ -246,12 +287,10 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
 
   Future<Map<int, T>> getDefinitions<T>(Iterable<int?> hashes, [DefinitionTableIdentityFunction? identity]) async {
     Set<int> hashesSet = hashes.whereType<int>().toSet();
-    if (hashesSet.length == 0) return Map<int, T>();
+    if (hashesSet.isEmpty) return <int, T>{};
     var tableName = DefinitionTableNames.fromClass[T];
-    if (identity == null) {
-      identity = DefinitionTableNames.identities[T];
-    }
-    Map<int, T> defs = Map();
+    identity ??= DefinitionTableNames.identities[T];
+    Map<int, T> defs = {};
     hashesSet.removeWhere((hash) {
       if (_cached.keys.contains("${tableName}_$hash")) {
         defs[hash] = _cached["${tableName}_$hash"];
@@ -260,11 +299,11 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
       return false;
     });
 
-    if (hashesSet.length == 0) {
+    if (hashesSet.isEmpty) {
       return defs;
     }
     List<int> searchHashes = hashesSet.map((hash) => hash > 2147483648 ? hash - 4294967296 : hash).toList();
-    String idList = "(" + List.filled(hashesSet.length, '?').join(',') + ")";
+    String idList = "(${List.filled(hashesSet.length, '?').join(',')})";
 
     sqflite.Database? db = await _openDb();
     if (tableName == null) {
@@ -276,7 +315,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
     try {
       List<Map<String, dynamic>>? results =
           await db?.query(tableName, columns: ['id', 'json'], where: "id in $idList", whereArgs: searchHashes);
-      if (results == null) return Map<int, T>();
+      if (results == null) return <int, T>{};
       for (var res in results) {
         int id = res['id'];
         int hash = id < 0 ? id + 4294967296 : id;
@@ -310,9 +349,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
       }
     } catch (e) {}
 
-    if (identity == null) {
-      identity = DefinitionTableNames.identities[T];
-    }
+    identity ??= DefinitionTableNames.identities[T];
     if (tableName == null) {
       throw ("no db table found for class $T");
     }
@@ -324,7 +361,7 @@ class ManifestService with StorageConsumer, LanguageConsumer, BungieApiConsumer,
     try {
       List<Map<String, dynamic>>? results =
           await db?.query(tableName, columns: ['json'], where: "id=?", whereArgs: [searchHash]);
-      if (results == null || results.length < 1) {
+      if (results == null || results.isEmpty) {
         return null;
       }
       String resultString = results.first['json'];

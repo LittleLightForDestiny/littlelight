@@ -1,10 +1,7 @@
-//@dart=2.12
-
 import 'dart:io';
-
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:sqflite/sqflite.dart';
-
 import 'language_storage.keys.dart';
 import 'storage.base.dart';
 
@@ -51,8 +48,7 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
       if (json == null) return null;
       return Map<String, String>.from(json);
     } catch (e) {
-      print("can't parse translations");
-      print(e);
+      logger.error("can't parse translations", error: e);
     }
     return null;
   }
@@ -62,6 +58,6 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
   }
 
   Future<void> purge() async {
-    await purgePath(this.basePath);
+    await purgePath(basePath);
   }
 }

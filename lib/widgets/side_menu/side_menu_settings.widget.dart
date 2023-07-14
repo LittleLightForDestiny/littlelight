@@ -1,16 +1,15 @@
-//@dart=2.12
 import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/modules/settings/pages/settings/settings.page_route.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
-import 'package:little_light/pages/settings/settings.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/logout.dialog.dart';
 
 class SideMenuSettingsWidget extends StatefulWidget {
@@ -47,9 +46,9 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              TranslatedTextWidget("Logout"),
+              Text("Logout".translate(context)),
               Container(width: 4),
-              Icon(Icons.logout, size: 16),
+              const Icon(Icons.logout, size: 16),
             ],
           ), onTap: () async {
         final context = this.context;
@@ -58,13 +57,13 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
         Navigator.of(context).pop();
         await Navigator.push(context, LogoutDialogRoute(context, account: account));
       }),
-      settingsItem(TranslatedTextWidget("Add account"), onTap: () {
+      settingsItem(Text("Add account".translate(context)), onTap: () {
         auth.openBungieLogin(true);
       }),
-      settingsItem(TranslatedTextWidget("Change Language"), onTap: () {
+      settingsItem(Text("Change Language".translate(context)), onTap: () {
         pushRoute(context, LanguagesPageRoute());
       }),
-      settingsItem(TranslatedTextWidget("Settings"), onTap: () {
+      settingsItem(Text("Settings".translate(context)), onTap: () {
         Navigator.of(context).push(SettingsPageRoute());
       })
     ]);
@@ -75,7 +74,7 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
     Navigator.of(context).push(route);
   }
 
-  Widget settingsItem(Widget child, {void onTap()?}) {
+  Widget settingsItem(Widget child, {void Function()? onTap}) {
     return Material(
       child: InkWell(
           onTap: onTap,
@@ -83,8 +82,8 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
             alignment: Alignment.centerRight,
             decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(width: 1, color: LittleLightTheme.of(context).surfaceLayers.layer1))),
-            padding: EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            child: DefaultTextStyle(style: LittleLightTheme.of(context).textTheme.button, child: child),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+            child: DefaultTextStyle(style: context.textTheme.button, child: child),
           )),
     );
   }
@@ -100,16 +99,16 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
     if (availableMemberships == 0) return Container();
 
     return Container(
-      padding: EdgeInsets.all(8),
+      padding: const EdgeInsets.all(8),
       decoration: BoxDecoration(
           border: Border(bottom: BorderSide(width: 1, color: LittleLightTheme.of(context).surfaceLayers.layer1))),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Container(
-                padding: EdgeInsets.all(8),
+                padding: const EdgeInsets.all(8),
                 alignment: Alignment.centerRight,
-                child: TranslatedTextWidget("Change account", style: LittleLightTheme.of(context).textTheme.subtitle))
+                child: Text("Change account".translate(context), style: context.textTheme.subtitle))
           ].followedBy(accounts!.map((m) => buildAccount(m))).toList()),
     );
   }
@@ -125,10 +124,10 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
       Container(
         decoration: BoxDecoration(
             color: LittleLightTheme.of(context).surfaceLayers.layer2,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(8))),
-        padding: EdgeInsets.all(8),
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(8))),
+        padding: const EdgeInsets.all(8),
         child: Row(children: [
-          Container(
+          SizedBox(
             width: 24,
             height: 24,
             child: pictureUrl != null ? QueuedNetworkImage(imageUrl: pictureUrl) : null,
@@ -140,11 +139,11 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
         ]),
       ),
       Container(
-          margin: EdgeInsets.only(bottom: 8),
+          margin: const EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
               border: Border.all(color: LittleLightTheme.of(context).surfaceLayers.layer2, width: 2),
-              borderRadius: BorderRadius.vertical(bottom: Radius.circular(8))),
-          padding: EdgeInsets.all(8).copyWith(bottom: 0),
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8))),
+          padding: const EdgeInsets.all(8).copyWith(bottom: 0),
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [buildMainMembership(account), buildOtherMemberships(account)])),
@@ -162,7 +161,7 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
   Widget buildOtherMemberships(UserMembershipData account) {
     final memberships =
         account.destinyMemberships?.where((m) => m.membershipId != account.primaryMembershipId).toList() ?? [];
-    if (memberships.length == 0) return Container();
+    if (memberships.isEmpty) return Container();
     return Column(
       children: memberships.map((m) => buildMembership(account, m)).toList(),
     );
@@ -173,11 +172,12 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
     final platform = crossSave ? PlatformData.crossPlayData : membership.membershipType?.data;
     if (membership.membershipId == auth.currentMembershipID) return Container();
     return Container(
+      margin: const EdgeInsets.only(bottom: 8),
       child: Material(
         color: platform?.color,
-        borderRadius: BorderRadius.all(Radius.circular(8)),
+        borderRadius: const BorderRadius.all(Radius.circular(8)),
         child: InkWell(
-            borderRadius: BorderRadius.all(Radius.circular(8)),
+            borderRadius: const BorderRadius.all(Radius.circular(8)),
             onTap: () {
               final accountID = account.bungieNetUser?.membershipId;
               final membershipID = membership.membershipId;
@@ -185,7 +185,7 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
               auth.changeMembership(context, membershipID, accountID);
             },
             child: Container(
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Row(children: [
                 platform?.icon != null ? Icon(platform?.icon) : Container(),
                 Container(
@@ -196,17 +196,16 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
                   Row(
                       children: membership.applicableMembershipTypes
                               ?.map((m) => Container(
-                                  padding: EdgeInsets.all(4),
-                                  margin: EdgeInsets.only(left: 2),
+                                  padding: const EdgeInsets.all(4),
+                                  margin: const EdgeInsets.only(left: 2),
                                   decoration: BoxDecoration(
-                                      color: m.data.color, borderRadius: BorderRadius.all(Radius.circular(8))),
+                                      color: m.data.color, borderRadius: const BorderRadius.all(Radius.circular(8))),
                                   child: Icon(m.data.icon, size: 18)))
                               .toList() ??
                           [])
               ]),
             )),
       ),
-      margin: EdgeInsets.only(bottom: 8),
     );
   }
 }

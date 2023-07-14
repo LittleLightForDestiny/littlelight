@@ -1,31 +1,26 @@
-//@dart=2.12
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
-import 'package:little_light/services/language/language.consumer.dart';
-// ignore: import_of_legacy_library_into_null_safe
-import 'package:little_light/services/profile/profile.consumer.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/utils/platform_data.dart';
-import 'package:little_light/utils/shimmer_helper.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:provider/provider.dart';
 import 'package:timeago/timeago.dart' as timeago;
 
 const Duration _kExpand = Duration(milliseconds: 200);
 
 class ProfileInfoWidget extends StatefulWidget {
   final Widget? menuContent;
-  ProfileInfoWidget({this.menuContent});
+  const ProfileInfoWidget({this.menuContent});
 
   @override
   createState() {
@@ -34,7 +29,7 @@ class ProfileInfoWidget extends StatefulWidget {
 }
 
 class ProfileInfoState extends State<ProfileInfoWidget>
-    with SingleTickerProviderStateMixin, AuthConsumer, LanguageConsumer, ProfileConsumer {
+    with SingleTickerProviderStateMixin, AuthConsumer, ProfileConsumer {
   UserMembershipData? account;
   GroupUserInfoCard? membership;
 
@@ -50,7 +45,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     super.initState();
     _controller = AnimationController(duration: _kExpand, vsync: this);
     _heightFactor = _controller?.drive(_easeInTween);
-    _isExpanded = PageStorage.of(context)?.readState(context) ?? false;
+    _isExpanded = PageStorage.of(context).readState(context) ?? false;
     if (_isExpanded) _controller?.value = 1.0;
 
     loadUser();
@@ -73,13 +68,13 @@ class ProfileInfoState extends State<ProfileInfoWidget>
           setState(() {});
         });
       }
-      PageStorage.of(context)?.writeState(context, _isExpanded);
+      PageStorage.of(context).writeState(context, _isExpanded);
     });
   }
 
   Widget _buildChildren(BuildContext context, Widget? child) {
     return Container(
-      color: Theme.of(context).backgroundColor,
+      color: context.theme.surfaceLayers,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -102,7 +97,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     return AnimatedBuilder(
       animation: _controller!.view,
       builder: _buildChildren,
-      child: closed ? null : Container(color: Theme.of(context).backgroundColor, child: widget.menuContent),
+      child: closed ? null : Container(color: context.theme.surfaceLayers, child: widget.menuContent),
     );
   }
 
@@ -121,24 +116,24 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     return Stack(children: [
       Column(
         children: <Widget>[
-          Container(height: 150, child: background(context)),
-          Container(height: kToolbarHeight, child: profileInfo(context)),
+          SizedBox(height: 150, child: background(context)),
+          SizedBox(height: kToolbarHeight, child: profileInfo(context)),
         ],
       ),
-      Positioned(child: profilePicture(context), left: 8, bottom: 8, width: 72, height: 72)
+      Positioned(left: 8, bottom: 8, width: 72, height: 72, child: profilePicture(context))
     ]);
   }
 
-  Widget get shimmer => ShimmerHelper.getDefaultShimmer(context);
+  Widget get shimmer => const DefaultLoadingShimmer();
 
-  Widget background(context) {
+  Widget background(BuildContext context) {
     if (account == null) {
       return shimmer;
     }
     final profileThemeName = account?.bungieNetUser?.profileThemeName;
     if (profileThemeName == null) {
       return Container(
-        color: Theme.of(context).backgroundColor,
+        color: context.theme.surfaceLayers,
       );
     }
 
@@ -158,8 +153,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
               gradient: LinearGradient(
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
-                  colors: [Colors.black26, Colors.transparent, Colors.transparent, Colors.black54],
-                  stops: [0, .2, .7, 1])),
+                  colors: const [Colors.black26, Colors.transparent, Colors.transparent, Colors.black54],
+                  stops: const [0, .2, .7, 1])),
         ),
         Positioned(bottom: 4, left: 88, child: buildActivityInfo(context))
       ],
@@ -167,26 +162,23 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   }
 
   Widget buildActivityInfo(BuildContext context) {
-    final lastCharacter = profile.getCharacters(CharacterSortParameter())?.first;
+    final lastCharacter = context.watch<ProfileBloc>().characters?.first;
     final lastCharacterID = lastCharacter?.characterId;
     if (lastCharacter == null || lastCharacterID == null) {
       return Container();
     }
-    final lastPlayed = DateTime.tryParse(lastCharacter.dateLastPlayed ?? "");
-    final currentSession = int.tryParse(lastCharacter.minutesPlayedThisSession ?? "");
-    final time = lastPlayed != null
-        ? timeago.format(lastPlayed, allowFromNow: true, locale: languageService.currentLanguage)
-        : "";
+    final lastPlayed = DateTime.tryParse(lastCharacter.character.dateLastPlayed ?? "");
+    final currentSession = int.tryParse(lastCharacter.character.minutesPlayedThisSession ?? "");
+    final time = lastPlayed != null ? timeago.format(lastPlayed, allowFromNow: true) : "";
     if (lastPlayed != null &&
         currentSession != null &&
         lastPlayed.add(Duration(minutes: currentSession + 10)).isBefore(DateTime.now().toUtc())) {
-      return TranslatedTextWidget(
-        "Last played {timeago}",
-        replace: {'timeago': time.toLowerCase()},
+      return Text(
+        "Last played {timeago}".translate(context, replace: {'timeago': time.toLowerCase()}),
         style: TextStyle(fontSize: 12, color: Colors.grey.shade100),
       );
     }
-    final activities = profile.getCharacterActivities(lastCharacterID);
+    final activities = context.watch<ProfileBloc>().getCharacterActivities(lastCharacterID);
     if (activities?.currentActivityHash == 82913930) {
       return ManifestText<DestinyPlaceDefinition>(2961497387,
           textExtractor: (def) => "${def.displayProperties?.description}",
@@ -227,15 +219,15 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     PlatformData? platform = isCrossSaveAccount ? PlatformData.crossPlayData : membership?.membershipType?.data;
     return Container(
         color: platform?.color,
-        padding: EdgeInsets.only(left: 80),
+        padding: const EdgeInsets.only(left: 80),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: <Widget>[
-            Padding(padding: EdgeInsets.symmetric(horizontal: 8), child: Icon(platform?.icon)),
+            Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: Icon(platform?.icon)),
             Expanded(child: Text(membership?.displayName ?? "")),
             IconButton(
               enableFeedback: false,
-              icon: Transform.rotate(angle: -(_heightFactor?.value ?? 0) * 1.5, child: Icon(Icons.settings)),
+              icon: Transform.rotate(angle: -(_heightFactor?.value ?? 0) * 1.5, child: const Icon(Icons.settings)),
               onPressed: _handleTap,
             )
           ],

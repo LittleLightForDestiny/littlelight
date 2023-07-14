@@ -1,6 +1,4 @@
-//@dart=2.12
 import 'dart:convert';
-
 import 'package:little_light/models/littlelight_wishlist.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/parsers/wishlists.base.parser.dart';

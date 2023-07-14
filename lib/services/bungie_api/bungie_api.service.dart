@@ -1,8 +1,7 @@
-//@dart=2.12
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io' as io;
-
+import 'dart:io';
 import 'package:bungie_api/common.dart';
 import 'package:bungie_api/core.dart';
 import 'package:bungie_api/destiny2.dart';
@@ -13,6 +12,8 @@ import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/settings.dart';
 import 'package:bungie_api/user.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
+import 'package:little_light/exceptions/network_error.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
@@ -32,7 +33,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
 
   static String? url(String? url) {
     if (url == null) return null;
-    if (url.length == 0) return null;
+    if (url.isEmpty) return null;
     if (url.contains('://')) return url;
     return "$baseUrl$url";
   }
@@ -97,7 +98,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
   }
 
   Future<int?> transferItem(
-      int itemHash, int stackSize, bool transferToVault, String itemId, String characterId) async {
+      int itemHash, int stackSize, bool transferToVault, String? itemId, String characterId) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipID = membership?.membershipId;
@@ -117,7 +118,7 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return response.response;
   }
 
-  Future<int?> pullFromPostMaster(int itemHash, int stackSize, String itemId, String characterId) async {
+  Future<int?> pullFromPostMaster(int itemHash, int stackSize, String? itemId, String characterId) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipType = membership?.membershipType;
@@ -236,8 +237,14 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
 
   @override
   Future<HttpResponse> request(HttpClientConfig config) async {
-    var req = await _request(config);
-    return req;
+    try {
+      final req = await _request(config);
+      return req;
+    } on SocketException catch (e) {
+      throw NetworkErrorException(e, url: config.url);
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<HttpResponse> _request(HttpClientConfig config) async {
@@ -246,7 +253,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
     if (bodyContentType != null) {
       headers['Content-Type'] = bodyContentType;
     }
-    final accessToken = this.token?.accessToken;
+    final accessToken = token?.accessToken;
     if (accessToken != null) {
       headers['Authorization'] = "Bearer $accessToken";
     }
@@ -264,7 +271,7 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
         valueStr = value.join(',');
       }
       if (valueStr == null) return;
-      if (paramsString.length == 0) {
+      if (paramsString.isEmpty) {
         paramsString += "?";
       } else {
         paramsString += "&";
@@ -277,18 +284,14 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
 
     if (config.method == 'GET') {
       var req = await client.getUrl(Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
-      headers.forEach((name, value) {
-        req.headers.add(name, value);
-      });
-      response = await req.close().timeout(Duration(seconds: 12));
+      headers.forEach((name, value) => req.headers.add(name, value));
+      response = await req.close().timeout(const Duration(seconds: 15));
     } else {
       String body = config.bodyContentType == 'application/json' ? jsonEncode(config.body) : config.body;
       var req = await client.postUrl(Uri.parse("${BungieApiService.apiUrl}${config.url}$paramsString"));
-      headers.forEach((name, value) {
-        req.headers.add(name, value);
-      });
+      headers.forEach((name, value) => req.headers.add(name, value));
       req.write(body);
-      response = await req.close().timeout(Duration(seconds: 12));
+      response = await req.close().timeout(const Duration(seconds: 15));
     }
 
     if (response.statusCode == 401 && autoRefreshToken) {
@@ -300,24 +303,28 @@ class Client with AuthConsumer, AppConfigConsumer implements HttpClient {
       return _request(config);
     }
     dynamic json;
+    String? textResponse;
     try {
-      var stream = response.transform(Utf8Decoder());
-      var text = "";
+      final stream = response.transform(const Utf8Decoder());
+      String text = "";
       await for (var t in stream) {
         text += t;
       }
+      textResponse = text;
       json = jsonDecode(text);
-    } catch (e) {
-      json = {};
-    }
+    } catch (e) {}
 
     if (response.statusCode != 200) {
-      throw BungieApiException.fromJson(json, response.statusCode);
+      logger.error("got an error status ${response.statusCode} from API", error: json ?? textResponse);
+      throw BungieApiException.fromJson(json ?? {}, response.statusCode);
     }
+
+    json ??= {};
 
     if (json["ErrorCode"] != null && json["ErrorCode"] > 2) {
       throw BungieApiException.fromJson(json, response.statusCode);
     }
+
     return HttpResponse(json, response.statusCode);
   }
 }

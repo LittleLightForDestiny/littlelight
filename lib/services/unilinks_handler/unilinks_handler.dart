@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:little_light/services/setup.dart';
 import 'package:uni_links_platform_interface/uni_links_platform_interface.dart';

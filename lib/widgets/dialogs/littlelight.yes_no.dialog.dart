@@ -1,7 +1,5 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
 typedef DialogOptionSelected = Function(BuildContext context, bool value);
@@ -9,8 +7,11 @@ typedef DialogOptionSelected = Function(BuildContext context, bool value);
 abstract class LittleLightYesNoDialog extends LittleLightBaseDialog {
   final DialogOptionSelected? onSelectCallback;
 
-  LittleLightYesNoDialog(
-      {Key? key, DialogWidgetBuilder? titleBuilder, DialogWidgetBuilder? bodyBuilder, this.onSelectCallback})
+  const LittleLightYesNoDialog(
+      {Key? key,
+      DialogWidgetBuilder? titleBuilder,
+      DialogWidgetBuilder? bodyBuilder,
+      this.onSelectCallback})
       : super(
           key: key,
           titleBuilder: titleBuilder,
@@ -23,14 +24,14 @@ abstract class LittleLightYesNoDialog extends LittleLightBaseDialog {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          child: TranslatedTextWidget("No", uppercase: true),
+          child: Text("No".translate(context).toUpperCase()),
           onPressed: () {
             onSelect(context, false);
             Navigator.of(context).pop(false);
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Yes", uppercase: true),
+          child: Text("Yes".translate(context).toUpperCase()),
           onPressed: () async {
             onSelect(context, true);
             Navigator.of(context).pop(true);

@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:collection/collection.dart' show IterableExtension;
 import 'package:get_it/get_it.dart';
 import 'package:little_light/utils/item_with_owner.dart';
 
@@ -11,10 +9,10 @@ setupSelectionService() {
 class SelectionService {
   SelectionService._internal();
 
-  List<ItemWithOwner> _selectedItems = [];
+  final List<ItemWithOwner> _selectedItems = [];
 
   Stream<List<ItemWithOwner>>? _eventsStream;
-  StreamController<List<ItemWithOwner>> _streamController = StreamController.broadcast();
+  final StreamController<List<ItemWithOwner>> _streamController = StreamController.broadcast();
 
   List<ItemWithOwner> get items => _selectedItems;
 
@@ -38,10 +36,10 @@ class SelectionService {
   }
 
   isSelected(ItemWithOwner item) {
-    final itemHash = item.item.itemHash;
-    final itemInstanceId = item.item.itemInstanceId;
-    return _selectedItems.any(
-        (i) => i.item.itemHash == itemHash && i.ownerId == item.ownerId && i.item.itemInstanceId == itemInstanceId);
+    // final itemHash = item.itemHash;
+    // final itemInstanceId = item.instanceId;
+    // return _selectedItems.any(
+    //     (i) => i.item.itemHash == itemHash && i.ownerId == item.ownerId && i.item.itemInstanceId == itemInstanceId);
   }
 
   setItem(ItemWithOwner item) {
@@ -51,28 +49,28 @@ class SelectionService {
   }
 
   addItem(ItemWithOwner item) {
-    ItemWithOwner? alreadyAdded = _selectedItems.firstWhereOrNull((i) {
-      if (item.item.itemInstanceId != null) {
-        return i.item.itemInstanceId == item.item.itemInstanceId;
-      }
-      return i.item.itemHash == item.item.itemHash && i.ownerId == item.ownerId;
-    });
-    if (alreadyAdded != null) {
-      return removeItem(item);
-    }
+    // ItemWithOwner? alreadyAdded = _selectedItems.firstWhereOrNull((i) {
+    //   if (item.instanceId != null) {
+    //     return i.item.itemInstanceId == item.instanceId;
+    //   }
+    //   return i.item.itemHash == item.itemHash && i.ownerId == item.ownerId;
+    // });
+    // if (alreadyAdded != null) {
+    //   return removeItem(item);
+    // }
 
-    _selectedItems.add(item);
+    // _selectedItems.add(item);
 
     _onUpdate();
   }
 
   removeItem(ItemWithOwner item) {
-    if (item.item.itemInstanceId != null) {
-      _selectedItems.removeWhere((i) => i.item.itemInstanceId == item.item.itemInstanceId);
-    } else {
-      _selectedItems.removeWhere((i) => i.item.itemHash == item.item.itemHash && i.ownerId == item.ownerId);
-    }
-    if (_selectedItems.length == 0) {
+    // if (item.instanceId != null) {
+    //   _selectedItems.removeWhere((i) => i.item.itemInstanceId == item.instanceId);
+    // } else {
+    //   _selectedItems.removeWhere((i) => i.item.itemHash == item.itemHash && i.ownerId == item.ownerId);
+    // }
+    if (_selectedItems.isEmpty) {
       _multiSelectActivated = false;
     }
     _onUpdate();

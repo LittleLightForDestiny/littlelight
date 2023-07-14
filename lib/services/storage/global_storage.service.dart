@@ -1,26 +1,25 @@
-//@dart=2.12
-
 import 'dart:convert';
-
 import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
+import 'package:little_light/models/scroll_area_type.dart';
+import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/storage/migrations/storage_migrations.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'global_storage.keys.dart';
 import 'storage.base.dart';
 
 extension on WishlistFile {
   String get filename {
-    final _filename = md5.convert(Utf8Encoder().convert(url!)).toString() + ".json";
+    final _filename = "${md5.convert(const Utf8Encoder().convert(url!))}.json";
     return _filename;
   }
 }
@@ -57,7 +56,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     await super.setup();
 
     if (kDebugMode) {
-      print("root storage path: ${getFilePath(null)}");
+      logger.info("root storage path: ${getFilePath(null)}");
     }
 
     _hasRunSetup = true;
@@ -72,7 +71,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   String? get currentMembershipID => getString(GlobalStorageKeys.currentMembershipID);
   set currentMembershipID(String? selectedMembershipID) {
     if (selectedMembershipID == null) {
-      print(selectedMembershipID);
+      logger.info(selectedMembershipID);
     }
     setString(GlobalStorageKeys.currentMembershipID, selectedMembershipID);
   }
@@ -116,6 +115,9 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
   bool? get autoOpenKeyboard => getBool(GlobalStorageKeys.autoOpenKeyboard);
   set autoOpenKeyboard(bool? value) => setBool(GlobalStorageKeys.autoOpenKeyboard, value);
 
+  bool? get enableAutoTransfers => getBool(GlobalStorageKeys.enableAutoTransfers);
+  set enableAutoTransfers(bool? value) => setBool(GlobalStorageKeys.enableAutoTransfers, value);
+
   DateTime? get lastUpdated => getDate(GlobalStorageKeys.versionUpdatedDate);
 
   setBungieCommonSettings(CoreSettingsConfiguration? settings) =>
@@ -156,9 +158,8 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       final json = parsedWishlists.toJson();
       await setJson(GlobalStorageKeys.parsedWishlists, json);
     } catch (e) {
-      print("error saving parsed wishlists");
-      print(e);
-      print(parsedWishlists);
+      logger.error("error saving parsed wishlists", error: e);
+      logger.info(parsedWishlists);
     }
   }
 
@@ -171,14 +172,13 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     }
   }
 
-  setWishlists(List<WishlistFile> wishlists) async {
+  Future<void> setWishlists(List<WishlistFile> wishlists) async {
     try {
       final json = wishlists.map((e) => e.toJson()).toList();
       await setJson(GlobalStorageKeys.wishlists, json);
     } catch (e) {
-      print("error saving wishlists");
-      print(e);
-      print(wishlists);
+      logger.error("error saving wishlists", error: e);
+      logger.info(wishlists);
     }
   }
 
@@ -206,36 +206,33 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<WishlistFolder?> getFeaturedWishlists() async {
     try {
-      dynamic data = await getExpireableJson(GlobalStorageKeys.featuredWishlists, Duration(minutes: 5));
+      dynamic data = await getExpireableJson(GlobalStorageKeys.featuredWishlists, const Duration(minutes: 5));
       if (data == null) return null;
       return WishlistFolder.fromJson(data);
     } catch (e) {
-      print("error parsing featured wishlists");
-      print(e);
+      logger.error("error parsing featured wishlists", error: e);
     }
     return null;
   }
 
   Future<CollaboratorsResponse?> getCollaborators() async {
     try {
-      dynamic data = await getExpireableJson(GlobalStorageKeys.collaboratorsData, Duration(minutes: 1));
+      dynamic data = await getExpireableJson(GlobalStorageKeys.collaboratorsData, const Duration(minutes: 1));
       if (data == null) return null;
       return CollaboratorsResponse.fromJson(data);
     } catch (e) {
-      print("error parsing collaborators");
-      print(e);
+      logger.error("error parsing collaborators", error: e);
     }
     return null;
   }
 
   Future<GameData?> getGameData() async {
     try {
-      dynamic data = await getExpireableJson(GlobalStorageKeys.gameData, Duration(days: 7));
+      dynamic data = await getExpireableJson(GlobalStorageKeys.gameData, const Duration(days: 1));
       if (data == null) return null;
       return GameData.fromJson(data);
     } catch (e) {
-      print("error parsing game data");
-      print(e);
+      logger.error("error parsing game data", error: e);
     }
     return null;
   }
@@ -245,8 +242,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       dynamic json = data.toJson();
       await setJson(GlobalStorageKeys.featuredWishlists, json);
     } catch (e) {
-      print("error saving featured wishlists");
-      print(e);
+      logger.error("error saving featured wishlists", error: e);
     }
   }
 
@@ -255,8 +251,7 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       dynamic json = data.toJson();
       await setJson(GlobalStorageKeys.gameData, json);
     } catch (e) {
-      print("error saving game data");
-      print(e);
+      logger.error("error saving game data", error: e);
     }
   }
 
@@ -265,12 +260,113 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       dynamic json = data.toJson();
       await setJson(GlobalStorageKeys.gameData, json);
     } catch (e) {
-      print("error saving collaborators");
-      print(e);
+      logger.error("error saving collaborators", error: e);
     }
   }
 
+  Future<ObjectiveViewMode?> getObjectiveViewMode() async {
+    try {
+      final String? str = await getString(GlobalStorageKeys.objectivesViewMode);
+      final ObjectiveViewMode? mode = str?.asObjectiveViewMode;
+      return mode;
+    } catch (e) {
+      logger.error("can't parse objectives view mode", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setObjectiveViewMode(ObjectiveViewMode? mode) async {
+    try {
+      String? str = mode?.asString;
+      await setString(GlobalStorageKeys.objectivesViewMode, str);
+    } catch (e) {
+      logger.error("error saving objectives view mode", error: e);
+    }
+  }
+
+  bool? get hideUnavailableCollectibles => getBool(GlobalStorageKeys.hideUnavailableCollectibles);
+  set hideUnavailableCollectibles(bool? value) => setBool(GlobalStorageKeys.hideUnavailableCollectibles, value);
+
+  bool? get sortCollectiblesByNewest => getBool(GlobalStorageKeys.sortCollectiblesByNewest);
+  set sortCollectiblesByNewest(bool? value) => setBool(GlobalStorageKeys.sortCollectiblesByNewest, value);
+
   Future<void> purge() async {
     await purgePath("");
+  }
+
+  Future<ScrollAreaType?> getTopScrollAreaType() async {
+    try {
+      final String? str = await getString(GlobalStorageKeys.topScrollAreaType);
+      final ScrollAreaType? mode = str?.asScrollAreaType;
+      return mode;
+    } catch (e) {
+      logger.error("can't parse scroll top area", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setTopScrollAreaType(ScrollAreaType? mode) async {
+    try {
+      String? str = mode?.asString;
+      await setString(GlobalStorageKeys.topScrollAreaType, str);
+    } catch (e) {
+      logger.error("error saving scroll top area", error: e);
+    }
+  }
+
+  Future<ScrollAreaType?> getBottomScrollAreaType() async {
+    try {
+      final String? str = await getString(GlobalStorageKeys.bottomScrollAreaType);
+      final ScrollAreaType? mode = str?.asScrollAreaType;
+      return mode;
+    } catch (e) {
+      logger.error("can't parse scroll bottom area", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setBottomScrollAreaType(ScrollAreaType? mode) async {
+    try {
+      String? str = mode?.asString;
+      await setString(GlobalStorageKeys.bottomScrollAreaType, str);
+    } catch (e) {
+      logger.error("error saving scroll bottom area", error: e);
+    }
+  }
+
+  Future<int?> getScrollAreaDivisionThreshold() async {
+    try {
+      final int? threshold = await getInt(GlobalStorageKeys.scrollAreaDivisionThreshold);
+      return threshold;
+    } catch (e) {
+      logger.error("can't parse scroll area threshold", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setScrollAreaDivisionThreshold(int? threshold) async {
+    try {
+      await setInt(GlobalStorageKeys.scrollAreaDivisionThreshold, threshold);
+    } catch (e) {
+      logger.error("error saving scroll area threshold", error: e);
+    }
+  }
+
+  Future<bool?> getScrollAreaHintEnabled() async {
+    try {
+      final bool? enabled = await getBool(GlobalStorageKeys.scrollAreaHintEnabled);
+      return enabled;
+    } catch (e) {
+      logger.error("can't parse scroll area hint enabled", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setScrollAreaHintEnabled(bool value) async {
+    try {
+      await setBool(GlobalStorageKeys.scrollAreaDivisionThreshold, value);
+    } catch (e) {
+      logger.error("error saving scroll area hint enabled", error: e);
+    }
   }
 }

@@ -1,19 +1,17 @@
-//@dart=2.12
 import 'dart:io';
-
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 class LittleLightScrollBehaviour extends ScrollBehavior {
   @override
-  Widget buildViewportChrome(BuildContext context, Widget child, AxisDirection axisDirection) {
+  Widget buildOverscrollIndicator(BuildContext context, Widget child, ScrollableDetails details) {
     if (Platform.isIOS || Platform.isMacOS) {
       return child;
     }
     return GlowingOverscrollIndicator(
-      child: child,
-      axisDirection: axisDirection,
+      axisDirection: details.direction,
       color: Theme.of(context).primaryColor,
+      child: child,
     );
   }
 
@@ -30,5 +28,6 @@ class LittleLightScrollBehaviour extends ScrollBehavior {
         PointerDeviceKind.touch,
         PointerDeviceKind.mouse,
         PointerDeviceKind.unknown,
+        PointerDeviceKind.trackpad,
       };
 }

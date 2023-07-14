@@ -1,16 +1,14 @@
-// @dart=2.9
-
 import 'package:flutter/material.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 
 typedef FreeSlotsChanged = void Function(int freeSlots);
 
 class FreeSlotsSliderWidget extends StatefulWidget {
-  final FreeSlotsChanged onChanged;
+  final FreeSlotsChanged? onChanged;
   final int initialValue;
   final bool suppressLabel;
 
-  const FreeSlotsSliderWidget({Key key, this.onChanged, this.initialValue = 0, this.suppressLabel = false})
+  const FreeSlotsSliderWidget({Key? key, this.onChanged, this.initialValue = 0, this.suppressLabel = false})
       : super(key: key);
 
   @override
@@ -32,10 +30,10 @@ class FreeSlotsSliderWidgetState extends State<FreeSlotsSliderWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         child: Row(
           children: <Widget>[
-            widget.suppressLabel ? Container() : TranslatedTextWidget("Free Slots"),
+            widget.suppressLabel ? Container() : Text("Free Slots".translate(context)),
             Expanded(
                 child: Slider(
               min: 0,
@@ -44,14 +42,12 @@ class FreeSlotsSliderWidgetState extends State<FreeSlotsSliderWidget> {
               onChanged: (double value) {
                 freeSlots = value.round();
                 setState(() {});
-                if (widget.onChanged != null) {
-                  widget.onChanged(freeSlots);
-                }
+                widget.onChanged?.call(freeSlots);
               },
             )),
             Text(
               "$freeSlots",
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             )
           ],
         ));

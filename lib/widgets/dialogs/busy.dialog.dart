@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
@@ -23,14 +21,17 @@ class BusyDialog extends LittleLightBaseDialog {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               LoadingAnimWidget(),
-              if (label != null) Container(child: label, padding: EdgeInsets.only(top: 8)),
+              if (label != null)
+                Container(padding: const EdgeInsets.only(top: 8), child: label),
             ],
           ),
         );
-  factory BusyDialog.await(BuildContext context, {Widget? label, required Future future}) {
+  factory BusyDialog.await(BuildContext context,
+      {Widget? label, required Future future}) {
     future.then((value) => Navigator.of(context).pop(value));
     return BusyDialog(label: label);
   }
 
+  @override
   CrossAxisAlignment get crossAxisAlignment => CrossAxisAlignment.center;
 }

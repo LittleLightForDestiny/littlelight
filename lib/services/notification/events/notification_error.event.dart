@@ -1,6 +1,4 @@
-//@dart=2.12
 import 'package:bungie_api/destiny2.dart';
-
 import 'notification.event.dart';
 
 enum ErrorNotificationType {

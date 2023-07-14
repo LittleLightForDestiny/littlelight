@@ -1,29 +1,25 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
-import 'package:little_light/services/language/language.consumer.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:provider/provider.dart';
 
 class DownloadManifestProgressSubPage extends StatefulWidget {
-  DownloadManifestProgressSubPage();
+  const DownloadManifestProgressSubPage();
 
   @override
   DownloadManifestProgressSubPageState createState() => DownloadManifestProgressSubPageState();
 }
 
-class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadManifestProgressSubPage>
-    with LanguageConsumer {
+class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadManifestProgressSubPage> {
   @override
   void initState() {
     super.initState();
   }
 
   @override
-  Widget buildTitle(BuildContext context) => TranslatedTextWidget(
-        "Download Database",
+  Widget buildTitle(BuildContext context) => Text(
+        "Download Database".translate(context),
       );
 
   bool get downloading => !context.watch<ManifestDownloaderNotifier>().finishedDownloading;
@@ -34,7 +30,7 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
 
   @override
   Widget buildContent(BuildContext context) => Container(
-      constraints: BoxConstraints(maxWidth: 400),
+      constraints: const BoxConstraints(maxWidth: 400),
       child: Column(children: [
         LinearProgressIndicator(
           backgroundColor: Theme.of(context).secondaryHeaderColor,
@@ -44,11 +40,11 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             downloading
-                ? TranslatedTextWidget(
-                    "Downloading",
-                    key: Key("downloading"),
+                ? Text(
+                    "Downloading".translate(context),
+                    key: const Key("downloading"),
                   )
-                : TranslatedTextWidget("Uncompressing", key: Key("unzipping")),
+                : Text("Uncompressing".translate(context), key: const Key("unzipping")),
             Text("$downloadedSize/${totalDownloadSize}KB")
           ],
         )

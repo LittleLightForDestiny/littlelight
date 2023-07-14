@@ -1,11 +1,9 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:little_light/core/routes/login_route.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/pages/initial/login.page_route.dart';
 import 'package:little_light/pages/initial/main.page_route.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import 'route_parser.dart';
 
 class LittleLightRouter {
@@ -21,9 +19,9 @@ class LittleLightRouter {
 
   void _closeWebView() async {
     try {
-      await closeWebView();
+      await closeInAppWebView();
     } catch (e) {
-      print("can't close webview");
+      logger.error("can't close webview");
     }
   }
 }

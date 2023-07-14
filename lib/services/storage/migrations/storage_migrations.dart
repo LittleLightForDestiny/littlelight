@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/storage/migrations/migration_v107090.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:path_provider/path_provider.dart';
@@ -29,9 +29,9 @@ class Version {
   }
 
   operator >(Version version) {
-    if (this.major > version.major) return true;
-    if (this.minor > version.minor) return true;
-    if (this.patch > version.patch) return true;
+    if (major > version.major) return true;
+    if (minor > version.minor) return true;
+    if (patch > version.patch) return true;
     return false;
   }
 
@@ -48,12 +48,13 @@ class Version {
     return this == version || this < version;
   }
 
+  @override
   bool operator ==(dynamic version) {
     if (version is String) {
       version = Version.fromString(version);
     }
     if (version is Version) {
-      return this.major == version.major && this.minor == version.minor && this.patch == version.patch;
+      return major == version.major && minor == version.minor && patch == version.patch;
     }
     return false;
   }
@@ -112,7 +113,7 @@ abstract class StorageMigration {
     try {
       await File(path).delete(recursive: recursive);
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
   }
 
@@ -138,7 +139,7 @@ abstract class StorageMigration {
         prefs.remove(oldKey);
       }
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
   }
 
@@ -151,11 +152,11 @@ abstract class StorageMigration {
         try {
           await File("${subfolder.path}/$oldFileName").rename("${subfolder.path}/$newFileName");
         } catch (e) {
-          print(e);
+          logger.error(e);
         }
       }
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
   }
 
@@ -163,7 +164,7 @@ abstract class StorageMigration {
     try {
       await File(oldFilePath).rename(newFilePath);
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
   }
 }

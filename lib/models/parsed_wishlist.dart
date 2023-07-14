@@ -1,13 +1,23 @@
-//@dart=2.12
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'parsed_wishlist.g.dart';
 
-enum WishlistTag { GodPVE, GodPVP, PVE, PVP, Bungie, Trash, Mouse, Controller, UnknownEnumValue }
+enum WishlistTag {
+  GodPVE,
+  GodPVP,
+  PVE,
+  PVP,
+  Bungie,
+  Trash,
+  Mouse,
+  Controller,
+  UnknownEnumValue
+}
 
 List<Set<int>> _jsonPlugsFromJson(List<dynamic> json) {
-  return json.map((e) => (e as List<dynamic>).map((e) => int.parse(e)).toSet()).toList();
+  return json
+      .map((e) => (e as List<dynamic>).map((e) => int.parse(e)).toSet())
+      .toList();
 }
 
 @JsonSerializable()
@@ -45,8 +55,8 @@ class ParsedWishlistBuild {
     this.name,
     this.description,
     this.originalWishlist,
-  })  : this.plugs = plugs ?? <Set<int>>[],
-        this.tags = tags ?? Set<WishlistTag>();
+  })  : plugs = plugs ?? <Set<int>>[],
+        tags = tags ?? <WishlistTag>{};
 
   factory ParsedWishlistBuild.fromJson(dynamic json) {
     return _$ParsedWishlistBuildFromJson(json);
@@ -67,8 +77,8 @@ class ParsedWishlistItem {
     required this.itemHash,
     List<ParsedWishlistBuild>? builds,
     Map<int, Set<WishlistTag>>? perks,
-  })  : this.builds = builds ?? [],
-        this.perks = perks ?? {};
+  })  : builds = builds ?? [],
+        perks = perks ?? {};
 
   factory ParsedWishlistItem.fromJson(dynamic json) {
     return _$ParsedWishlistItemFromJson(json);

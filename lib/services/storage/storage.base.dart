@@ -1,9 +1,7 @@
-//@dart=2.12
-
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -12,7 +10,7 @@ import 'package:sqflite/sqflite.dart';
 enum StoredFileExtensions { JSON }
 
 extension on StoredFileExtensions {
-  String get extension => this.toString().split(".").last.toLowerCase();
+  String get extension => toString().split(".").last.toLowerCase();
 }
 
 abstract class StorageBase<T> with AnalyticsConsumer {
@@ -107,7 +105,7 @@ extension StorageOperations<T> on StorageBase<T> {
     try {
       return DateTime.parse(dateString);
     } catch (e) {
-      print(e);
+      logger.error(e);
     }
     return null;
   }
@@ -135,7 +133,7 @@ extension StorageOperations<T> on StorageBase<T> {
   }
 
   Future<void> saveFileContents(String filePath, String contents) async {
-    File file = File("$filePath");
+    File file = File(filePath);
     try {
       if (!await file.exists()) {
         file = await file.create(recursive: true);
@@ -156,8 +154,7 @@ extension StorageOperations<T> on StorageBase<T> {
     try {
       return jsonDecode(contents);
     } catch (e) {
-      print("error decoding file:$_path/$key");
-      print(e);
+      logger.error("error decoding file:$_path/$key", error: e);
     }
     return null;
   }
@@ -172,7 +169,7 @@ extension StorageOperations<T> on StorageBase<T> {
   }
 
   Future<void> deleteFile(String filePath) async {
-    File file = File("$filePath");
+    File file = File(filePath);
     bool exists = await file.exists();
     if (exists) {
       await file.delete(recursive: true);
@@ -180,7 +177,7 @@ extension StorageOperations<T> on StorageBase<T> {
   }
 
   Future<void> clearKey(T key) async {
-    await this._prefs.remove(getPath(key));
+    await _prefs.remove(getPath(key));
   }
 
   Future<dynamic> getExpireableJson(T key, Duration expiration) async {
@@ -205,8 +202,7 @@ extension StorageOperations<T> on StorageBase<T> {
       dynamic map = jsonDecode(json);
       return map;
     } catch (e) {
-      print("error decoding file:$_path/$key");
-      print(e);
+      logger.error("error decoding file:$_path/$key", error: e);
       return null;
     }
   }

@@ -1,2 +1,0 @@
-- fixes an issue that would prevent Little Light from loading on some devices
-- fixes an issue when adding tags to weapons won't update those immediately

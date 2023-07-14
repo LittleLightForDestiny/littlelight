@@ -1,16 +1,13 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/item_notes_tag.dart';
-import 'package:little_light/services/language/language.consumer.dart';
-import 'package:little_light/services/littlelight/item_notes.consumer.dart';
+import 'package:little_light/shared/widgets/tags/tag_icon.widget.dart';
 import 'package:little_light/utils/color_utils.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
-import 'package:little_light/widgets/item_tags/item_tag.widget.dart';
+import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 
 class CreateTagFormWidget extends StatefulWidget {
   final ItemNotesTag tag;
-  CreateTagFormWidget(this.tag) : super();
+  const CreateTagFormWidget(this.tag) : super();
   @override
   _CreateTagFormWidgetState createState() => _CreateTagFormWidgetState();
 }
@@ -37,9 +34,8 @@ const _availableColors = [
   Colors.brown,
 ];
 
-class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with LanguageConsumer, ItemNotesConsumer {
+class _CreateTagFormWidgetState extends State<CreateTagFormWidget> {
   List<String>? colors;
-  String tagNameLabel = "";
   TextEditingController? tagNameController;
 
   @override
@@ -51,7 +47,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
 
   initData() async {
     colors = [];
-    _availableColors.forEach((element) {
+    for (var element in _availableColors) {
       colors?.addAll([
         element.shade900,
         element.shade700,
@@ -60,10 +56,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
         element.shade300,
         element.shade100,
       ].map(hexFromColor));
-    });
-
-    tagNameLabel = await languageService.getTranslation("Tag name");
-    setState(() {});
+    }
 
     tagNameController?.addListener(() {
       widget.tag.name = tagNameController?.text ?? "";
@@ -84,19 +77,19 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
           Container(height: 16),
           buildNameField(context),
           Container(height: 16),
-          TranslatedTextWidget("Background color"),
+          Text("Background color".translate(context)),
           buildColors(context, widget.tag.backgroundColorHex, (color) {
             widget.tag.backgroundColorHex = color;
             setState(() {});
           }, ["#00000000", "#FF000000", "#FFFFFFFF"]),
           Container(height: 16),
-          TranslatedTextWidget("Text/icon color"),
+          Text("Text/icon color".translate(context)),
           buildColors(context, widget.tag.foregroundColorHex, (color) {
             widget.tag.foregroundColorHex = color;
             setState(() {});
           }),
           Container(height: 16),
-          TranslatedTextWidget("Tag icon"),
+          Text("Tag icon".translate(context)),
           buildIcons(context, widget.tag.icon, (icon) {
             widget.tag.icon = icon;
             setState(() {});
@@ -108,19 +101,20 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
 
   Widget buildPreview(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8),
         child: Row(mainAxisSize: MainAxisSize.min, children: [
-          ItemTagWidget(widget.tag),
+          TagIconWidget.fromTag(widget.tag),
           Container(
             width: 8,
           ),
-          Flexible(child: ItemTagWidget(widget.tag, includeLabel: true, padding: 4)),
+          Flexible(child: TagPillWidget.fromTag(widget.tag)),
         ]));
   }
 
   Widget buildNameField(BuildContext context) {
     return TextField(
-      decoration: InputDecoration(labelText: tagNameLabel, floatingLabelBehavior: FloatingLabelBehavior.auto),
+      decoration:
+          InputDecoration(labelText: context.translate("Tag name"), floatingLabelBehavior: FloatingLabelBehavior.auto),
       controller: tagNameController,
       maxLength: 20,
     );
@@ -128,7 +122,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
 
   Widget buildColors(BuildContext context, String currentColorHex, Function(String color) onChange,
       [List<String> additionalColors = const []]) {
-    return Container(
+    return SizedBox(
         height: 150,
         child: GridView.count(
             shrinkWrap: false,
@@ -144,7 +138,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
                               width: 2,
                               color:
                                   currentColorHex == c ? Theme.of(context).colorScheme.onSurface : Colors.transparent)),
-                      padding: EdgeInsets.all(3),
+                      padding: const EdgeInsets.all(3),
                       child: Material(
                         borderRadius: BorderRadius.circular(8),
                         color: colorFromHex(c),
@@ -158,7 +152,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
   }
 
   Widget buildIcons(BuildContext context, ItemTagIcon currentIcon, Function(ItemTagIcon icon) onChange) {
-    return Container(
+    return SizedBox(
         height: 150,
         child: GridView.count(
             shrinkWrap: false,
@@ -173,7 +167,7 @@ class _CreateTagFormWidgetState extends State<CreateTagFormWidget> with Language
                           border: Border.all(
                               width: 2,
                               color: currentIcon == i ? Theme.of(context).colorScheme.onSurface : Colors.transparent)),
-                      padding: EdgeInsets.all(3),
+                      padding: const EdgeInsets.all(3),
                       child: Material(
                           borderRadius: BorderRadius.circular(8),
                           color: widget.tag.backgroundColor,

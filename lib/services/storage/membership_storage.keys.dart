@@ -1,5 +1,3 @@
-//@dart=2.12
-
 enum MembershipStorageKeys {
   cachedProfile,
   cachedVendors,
@@ -13,12 +11,13 @@ enum MembershipStorageKeys {
   characterOrdering,
   priorityTags,
   bucketDisplayOptions,
-  detailsSectionDisplayVisibility
+  detailsSectionDisplayVisibility,
+  vendorsOrder,
 }
 
 extension StorageKeyPathsExtension on MembershipStorageKeys {
   String get path {
-    String name = this.toString().split(".")[1];
+    String name = toString().split(".")[1];
     return name;
   }
 }

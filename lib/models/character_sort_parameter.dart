@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:json_annotation/json_annotation.dart';
 
 part 'character_sort_parameter.g.dart';
@@ -15,7 +14,8 @@ class CharacterSortParameter {
   CharacterSortParameterType type;
   List<String>? customOrder;
 
-  CharacterSortParameter({this.type = CharacterSortParameterType.LastPlayed, this.customOrder});
+  CharacterSortParameter(
+      {this.type = CharacterSortParameterType.LastPlayed, this.customOrder});
 
   static CharacterSortParameter fromJson(dynamic json) {
     return _$CharacterSortParameterFromJson(json);

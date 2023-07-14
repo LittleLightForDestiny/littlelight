@@ -1,18 +1,20 @@
-//@dart=2.12
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:little_light/core/blocs/language/language.bloc.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/language_info.dart';
-import 'package:little_light/services/language/language.consumer.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:provider/provider.dart';
 
 class LanguagesPage extends StatefulWidget {
   @override
   _LanguagesPageState createState() => _LanguagesPageState();
 }
 
-class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
+class _LanguagesPageState extends State<LanguagesPage> {
+  LanguageBloc get languageService => context.read<LanguageBloc>();
   List<LanguageInfo>? languages;
   String? currentLanguage;
   String? selectedLanguage;
@@ -33,9 +35,8 @@ class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TranslatedTextWidget(
-          "Change Language",
-          language: selectedLanguage,
+        title: Text(
+          "Change Language".translate(context, languageCode: selectedLanguage),
           key: Key("title_$selectedLanguage"),
         ),
       ),
@@ -51,15 +52,14 @@ class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
     var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
       color: Theme.of(context).colorScheme.secondary,
-      padding: EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
+      padding: const EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
           onPressed: () {
             languageService.selectedLanguage = selectedLanguage;
             Phoenix.rebirth(context);
           },
-          child: TranslatedTextWidget(
-            "Change Language",
-            language: selectedLanguage,
+          child: Text(
+            "Change Language".translate(context, languageCode: selectedLanguage),
             key: Key("button_$selectedLanguage"),
           )),
     );
@@ -69,7 +69,11 @@ class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
     final languages = this.languages;
     if (languages == null) return LoadingAnimWidget();
     return SingleChildScrollView(
-        padding: EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8) +
+            EdgeInsets.only(
+              left: context.mediaQuery.padding.left,
+              right: context.mediaQuery.padding.right,
+            ),
         child: Column(children: languages.map((l) => buildLanguageItem(context, l)).toList()));
   }
 
@@ -82,7 +86,7 @@ class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
       color = Colors.lightBlue.shade500;
     }
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
         child: Material(
           color: color,
           borderRadius: BorderRadius.circular(30),
@@ -93,7 +97,7 @@ class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
                 setState(() {});
               },
               child: Container(
-                  padding: EdgeInsets.all(4),
+                  padding: const EdgeInsets.all(4),
                   child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [buildLanguageInfo(context, language), buildFileInfo(context, language)]))),
@@ -102,11 +106,11 @@ class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
 
   Widget buildLanguageInfo(BuildContext context, LanguageInfo language) {
     return Row(children: [
-      Container(width: 8, height: 40),
+      const SizedBox(width: 8, height: 40),
       Container(width: 4),
       Text(
         language.name,
-        style: TextStyle(fontWeight: FontWeight.bold),
+        style: const TextStyle(fontWeight: FontWeight.bold),
       )
     ]);
   }
@@ -120,7 +124,7 @@ class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
       if (size != null)
         Text(
           "${size.toStringAsFixed(2)} MB",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
       Container(width: size != null ? 8 : 0),
       !canDelete
@@ -135,10 +139,10 @@ class _LanguagesPageState extends State<LanguagesPage> with LanguageConsumer {
                     loadLanguages();
                   },
                   child: Container(
-                      padding: EdgeInsets.all(8),
-                      child: TranslatedTextWidget(
-                        "Delete",
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        "Delete".translate(context),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       )))),
       Container(
         width: !canDelete ? 0 : 4,

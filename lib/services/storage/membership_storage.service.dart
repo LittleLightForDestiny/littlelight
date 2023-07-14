@@ -1,17 +1,13 @@
-//@dart=2.12
-
 import 'package:bungie_api/models/destiny_profile_response.dart';
 import 'package:bungie_api/models/destiny_vendors_response.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/models/item_notes.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/models/item_notes_tag.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/models/tracked_objective.dart';
-
 import 'membership_storage.keys.dart';
 import 'storage.base.dart';
 
@@ -34,8 +30,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
       if (json == null) return null;
       return Map.fromEntries(json.map((n) => ItemNotes.fromJson(n)).map((e) => MapEntry(e.uniqueId, e)));
     } catch (e) {
-      print("can't parse cached item notes");
-      print(e);
+      logger.error("can't parse cached item notes", error: e);
     }
     return null;
   }
@@ -43,9 +38,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
   Future<void> saveCachedNotes(Map<String, ItemNotes> notes) async {
     List<dynamic> json = notes.values
         .where((element) =>
-            (element.notes?.length ?? 0) > 0 ||
-            (element.customName?.length ?? 0) > 0 ||
-            (element.tags?.length ?? 0) > 0)
+            (element.notes?.length ?? 0) > 0 || (element.customName?.length ?? 0) > 0 || (element.tags.length) > 0)
         .map((l) => l.toJson())
         .toList();
     await setJson(MembershipStorageKeys.cachedNotes, json);
@@ -60,8 +53,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
           .where((element) => element.tagId != null)
           .map((e) => MapEntry(e.tagId!, e)));
     } catch (e) {
-      print("can't parse tags");
-      print(e);
+      logger.error("can't parse tags", error: e);
     }
     return null;
   }
@@ -77,8 +69,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
       if (json == null) return null;
       return json.map((n) => Loadout.fromJson(n)).toList();
     } catch (e) {
-      print("can't parse cached loadouts");
-      print(e);
+      logger.error("can't parse cached loadouts", error: e);
     }
     return null;
   }
@@ -94,8 +85,18 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
       if (json == null) return null;
       return json.map((s) => "$s").toList();
     } catch (e) {
-      print("can't parse loadouts order");
-      print(e);
+      logger.error("can't parse loadouts order", error: e);
+    }
+    return null;
+  }
+
+  Future<List<int>?> getVendorsOrder() async {
+    try {
+      final List<dynamic>? json = await getJson(MembershipStorageKeys.vendorsOrder);
+      if (json == null) return null;
+      return json.map((s) => s as int).toList();
+    } catch (e) {
+      logger.error("can't parse vendors order", error: e);
     }
     return null;
   }
@@ -104,31 +105,37 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
     await setJson(MembershipStorageKeys.loadoutsOrder, order);
   }
 
+  Future<void> saveVendorsOrder(List<int> order) async {
+    await setJson(MembershipStorageKeys.vendorsOrder, order);
+  }
+
   Future<DestinyProfileResponse?> getCachedProfile() async {
     try {
       final json = await getJson(MembershipStorageKeys.cachedProfile);
-      return DestinyProfileResponse.fromJson(json);
+      final response = await DestinyProfileResponse.asyncFromJson(json);
+      return response;
     } catch (e) {
-      print("can't parse tracked Objectives");
-      print(e);
+      logger.error("can't parse tracked Objectives", error: e);
     }
     return null;
   }
 
   Future<void> saveCachedProfile(DestinyProfileResponse profile) async {
-    await setJson(MembershipStorageKeys.cachedProfile, profile.toJson());
+    final json = await profile.asyncToJson();
+    await setJson(MembershipStorageKeys.cachedProfile, json);
   }
 
   Future<Map<String, DestinyVendorsResponse>?> getCachedVendors() async {
     try {
-      final Map<String, dynamic> json =
-          await getExpireableJson(MembershipStorageKeys.priorityTags, Duration(hours: 12));
+      final Map<String, dynamic>? json =
+          await getExpireableJson(MembershipStorageKeys.cachedVendors, const Duration(hours: 12));
 
-      return json
-          .map((key, value) => MapEntry<String, DestinyVendorsResponse>(key, DestinyVendorsResponse.fromJson(value)));
+      return json?.map((key, value) => MapEntry<String, DestinyVendorsResponse>(
+            key,
+            DestinyVendorsResponse.fromJson(value),
+          ));
     } catch (e) {
-      print("can't parse cached vendors");
-      print(e);
+      logger.error("can't parse cached vendors", error: e);
     }
     return null;
   }
@@ -144,8 +151,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
       if (json == null) return null;
       return json.map((n) => TrackedObjective.fromJson(n)).where((o) => o.hash != null).toList();
     } catch (e) {
-      print("can't parse tracked Objectives");
-      print(e);
+      logger.error("can't parse tracked Objectives", error: e);
     }
     return null;
   }
@@ -161,8 +167,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
       if (json == null) return null;
       return CharacterSortParameter.fromJson(json);
     } catch (e) {
-      print("can't parse character ordering");
-      print(e);
+      logger.error("can't parse character ordering", error: e);
     }
     return null;
   }
@@ -177,8 +182,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
       if (json == null) return null;
       return json.map((key, value) => MapEntry(key, BucketDisplayOptions.fromJson(value)));
     } catch (e) {
-      print("can't parse bucket display options");
-      print(e);
+      logger.error("can't parse bucket display options", error: e);
     }
     return null;
   }
@@ -194,8 +198,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
       if (json == null) return null;
       return Map<String, bool>.from(json.map((key, value) => MapEntry(key, value)));
     } catch (e) {
-      print("can't parse details section display visibility options");
-      print(e);
+      logger.error("can't parse details section display visibility options", error: e);
     }
     return null;
   }
@@ -210,8 +213,7 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
       if (json == null) return null;
       return Set<String>.from(json);
     } catch (e) {
-      print("can't parse priority tags");
-      print(e);
+      logger.error("can't parse priority tags", error: e);
     }
     return null;
   }

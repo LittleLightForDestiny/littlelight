@@ -1,15 +1,13 @@
-//@dart=2.12
-
 import 'dart:async';
-
 import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:firebase_crashlytics/firebase_crashlytics.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/navigator_key.dart';
-import 'package:little_light/services/auth/auth.consumer.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/widgets/dialogs/bungie_api_exception.dialog.dart';
 import 'package:little_light/widgets/dialogs/report_error.dialog.dart';
 
@@ -33,27 +31,22 @@ class ExceptionHandler with AuthConsumer {
   initCustomErrorMessage() {
     ErrorWidget.builder = (FlutterErrorDetails details) {
       return Container(
-          padding: EdgeInsets.all(8),
+          padding: const EdgeInsets.all(8),
           alignment: Alignment.center,
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            TranslatedTextWidget("Render Error"),
-            ElevatedButton(
-                onPressed: () {
-                  final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
-                  if (context == null) return;
-                  Navigator.of(context).push(ReportErrorDialogRoute(context, error: details));
-                },
-                child: TranslatedTextWidget("Report"))
-          ]));
+          child: Builder(
+              builder: (context) => Column(mainAxisSize: MainAxisSize.min, children: [
+                    Text("Render Error".translate(context)),
+                    ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).push(ReportErrorDialogRoute(context, error: details));
+                        },
+                        child: Text("Report".translate(context)))
+                  ])));
     };
   }
 
   Future<void> handleException(dynamic error, StackTrace? stackTrace) async {
-    final relevantStackTrace = stackTrace?.toString().split('\n').where((s) => s.contains('package:little_light'));
-    print(error);
-    if (relevantStackTrace != null) {
-      print(relevantStackTrace.join('\n'));
-    }
+    logger.error(error, error: error, stack: stackTrace);
 
     if (error is BungieApiException) {
       final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;

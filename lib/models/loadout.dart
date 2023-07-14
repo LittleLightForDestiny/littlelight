@@ -1,6 +1,5 @@
-//@dart=2.12
+import 'package:bungie_api/destiny2.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:uuid/uuid.dart';
 
 part 'loadout.g.dart';
 
@@ -23,20 +22,6 @@ class Loadout {
       this.unequipped = const [],
       this.updatedAt});
 
-  factory Loadout.fromScratch() {
-    return Loadout(assignedId: Uuid().v4(), name: "", equipped: [], unequipped: [], updatedAt: DateTime.now());
-  }
-
-  factory Loadout.copy(Loadout original) {
-    return Loadout(
-        assignedId: original.assignedId,
-        emblemHash: original.emblemHash,
-        name: original.name,
-        equipped: original.equipped.sublist(0),
-        unequipped: original.unequipped.sublist(0),
-        updatedAt: original.updatedAt);
-  }
-
   factory Loadout.fromJson(dynamic json) {
     return _$LoadoutFromJson(json);
   }
@@ -51,7 +36,15 @@ class LoadoutItem {
   String? itemInstanceId;
   int? itemHash;
   Map<int, int>? socketPlugs;
-  LoadoutItem({this.itemInstanceId, this.itemHash, this.socketPlugs});
+  int? bucketHash;
+  DestinyClass? classType;
+  LoadoutItem({
+    this.itemInstanceId,
+    this.itemHash,
+    this.socketPlugs,
+    this.bucketHash,
+    this.classType,
+  });
 
   factory LoadoutItem.fromJson(dynamic json) {
     return _$LoadoutItemFromJson(json);

@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:json_annotation/json_annotation.dart';
 
 part 'littlelight_wishlist.g.dart';
@@ -11,7 +10,8 @@ class LittleLightWishlist {
 
   Map<String, String>? versionRedirects;
 
-  LittleLightWishlist({this.name, this.description, required this.data, this.versionRedirects});
+  LittleLightWishlist(
+      {this.name, this.description, required this.data, this.versionRedirects});
 
   factory LittleLightWishlist.fromJson(dynamic json) {
     return _$LittleLightWishlistFromJson(json);

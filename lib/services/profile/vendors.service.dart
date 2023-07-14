@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
@@ -21,7 +20,7 @@ class VendorsService with StorageConsumer, BungieApiConsumer {
   }
   VendorsService._internal();
 
-  Map<String?, DestinyVendorsResponse?> _vendors = {};
+  final Map<String?, DestinyVendorsResponse?> _vendors = {};
 
   Future<Map<String, DestinyVendorComponent>?> getVendors(String? characterId) async {
     var vendors = await _getVendorsDataForCharacter(characterId);

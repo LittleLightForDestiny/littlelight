@@ -1,5 +1,4 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// @dart=2.12
 
 part of 'item_sort_parameter.dart';
 
@@ -7,16 +6,21 @@ part of 'item_sort_parameter.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ItemSortParameter _$ItemSortParameterFromJson(Map<String, dynamic> json) => ItemSortParameter(
+ItemSortParameter _$ItemSortParameterFromJson(Map<String, dynamic> json) =>
+    ItemSortParameter(
       type: $enumDecodeNullable(_$ItemSortParameterTypeEnumMap, json['type']),
       active: json['active'] as bool? ?? true,
-      direction: json['direction'] as int? ?? 1,
+      direction: $enumDecodeNullable(
+              _$SorterDirectionEnumMap, json['direction'],
+              unknownValue: SorterDirection.None) ??
+          SorterDirection.Ascending,
       customData: json['customData'] as Map<String, dynamic>?,
     );
 
-Map<String, dynamic> _$ItemSortParameterToJson(ItemSortParameter instance) => <String, dynamic>{
+Map<String, dynamic> _$ItemSortParameterToJson(ItemSortParameter instance) =>
+    <String, dynamic>{
       'type': _$ItemSortParameterTypeEnumMap[instance.type],
-      'direction': instance.direction,
+      'direction': _$SorterDirectionEnumMap[instance.direction]!,
       'active': instance.active,
       'customData': instance.customData,
     };
@@ -37,4 +41,10 @@ const _$ItemSortParameterTypeEnumMap = {
   ItemSortParameterType.Stat: 'Stat',
   ItemSortParameterType.MasterworkStatus: 'MasterworkStatus',
   ItemSortParameterType.DamageType: 'DamageType',
+};
+
+const _$SorterDirectionEnumMap = {
+  SorterDirection.Ascending: 1,
+  SorterDirection.Descending: -1,
+  SorterDirection.None: 0,
 };

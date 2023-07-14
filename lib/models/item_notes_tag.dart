@@ -1,11 +1,9 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/utils/color_utils.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:uuid/uuid.dart';
 
@@ -51,6 +49,29 @@ enum ItemTagIcon {
   BlockerMedium,
   BlockerLarge,
   BlockerGiant,
+}
+
+extension ItemTagIconData on ItemTagIcon {
+  IconData? get iconData => tagIconData[this];
+}
+
+extension DefaultTagTypeLabel on DefaultTagType {
+  String getLabel(BuildContext context) {
+    switch (this) {
+      case DefaultTagType.Favorite:
+        return "Favorite".translate(context);
+      case DefaultTagType.Trash:
+        return "Trash".translate(context);
+      case DefaultTagType.Infuse:
+        return "Infuse".translate(context);
+    }
+  }
+}
+
+enum DefaultTagType {
+  Favorite,
+  Trash,
+  Infuse,
 }
 
 const Map<ItemTagIcon, IconData> tagIconData = {
@@ -103,6 +124,10 @@ class ItemNotesTag {
   String backgroundColorHex;
   String foregroundColorHex;
   ItemTagIcon icon;
+  DefaultTagType? defaultTagType;
+
+  @JsonKey(name: 'updated_at')
+  DateTime? updatedAt;
 
   Color? get backgroundColor {
     return colorFromHex(backgroundColorHex);
@@ -116,53 +141,56 @@ class ItemNotesTag {
     return tagIconData[icon];
   }
 
-  ItemNotesTag(
-      {this.custom = false,
-      this.tagId,
-      this.name = "",
-      this.backgroundColorHex = "#00000000",
-      this.foregroundColorHex = "#FFFFFFFF",
-      this.icon = ItemTagIcon.Star});
+  ItemNotesTag({
+    this.custom = false,
+    this.tagId,
+    this.name = "",
+    this.backgroundColorHex = "#00000000",
+    this.foregroundColorHex = "#FFFFFFFF",
+    this.defaultTagType,
+    this.icon = ItemTagIcon.Star,
+    this.updatedAt,
+  });
 
   factory ItemNotesTag.fromJson(dynamic json) {
     return _$ItemNotesTagFromJson(json);
   }
 
   factory ItemNotesTag.favorite() {
-    TranslatedTextWidget("Favorite");
     return ItemNotesTag(
-      tagId: "favorite",
       name: "Favorite",
+      tagId: "favorite",
       icon: ItemTagIcon.Heart,
+      defaultTagType: DefaultTagType.Favorite,
       backgroundColorHex: hexFromColor(Colors.yellow.shade800),
       foregroundColorHex: hexFromColor(LittleLightThemeData().onSurfaceLayers),
     );
   }
 
   factory ItemNotesTag.trash() {
-    TranslatedTextWidget("Trash");
     return ItemNotesTag(
-      tagId: "trash",
       name: "Trash",
+      tagId: "trash",
       icon: ItemTagIcon.Trash,
+      defaultTagType: DefaultTagType.Trash,
       backgroundColorHex: hexFromColor(Colors.red.shade700),
       foregroundColorHex: hexFromColor(LittleLightThemeData().onSurfaceLayers),
     );
   }
 
   factory ItemNotesTag.infuse() {
-    TranslatedTextWidget("Infuse");
     return ItemNotesTag(
-      tagId: "infuse",
       name: "Infuse",
+      tagId: "infuse",
       icon: ItemTagIcon.Infuse,
+      defaultTagType: DefaultTagType.Infuse,
       backgroundColorHex: hexFromColor(Colors.grey.shade900),
       foregroundColorHex: hexFromColor(Colors.amber.shade300),
     );
   }
 
   factory ItemNotesTag.newCustom() {
-    return ItemNotesTag(tagId: Uuid().v4(), custom: true);
+    return ItemNotesTag(tagId: const Uuid().v4(), custom: true);
   }
 
   dynamic toJson() {

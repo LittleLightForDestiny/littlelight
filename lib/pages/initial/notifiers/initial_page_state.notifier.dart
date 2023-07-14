@@ -1,11 +1,13 @@
-//@dart=2.12
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:little_light/core/blocs/language/language.bloc.dart';
+import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
+import 'package:little_light/exceptions/network_error.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
 import 'package:little_light/pages/initial/errors/init_services.error.dart';
@@ -13,16 +15,13 @@ import 'package:little_light/pages/initial/errors/initial_page_base.error.dart';
 import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
 import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
 import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
-// ignore: import_of_legacy_library_into_null_safe
 import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/services/language/language.consumer.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/services/profile/profile.consumer.dart';
 import 'package:little_light/services/setup.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:provider/provider.dart';
@@ -41,14 +40,14 @@ class InitialPageStateNotifier
     with
         ChangeNotifier,
         ManifestConsumer,
-        LanguageConsumer,
         AuthConsumer,
         LittleLightDataConsumer,
         WishlistsConsumer,
-        ProfileConsumer,
         AnalyticsConsumer,
         StorageConsumer,
         BungieApiConsumer {
+  final OfflineModeBloc _offlineModeBloc;
+
   InitialPagePhase _phase = InitialPagePhase.Loading;
   InitialPagePhase get phase => _phase;
 
@@ -62,9 +61,9 @@ class InitialPageStateNotifier
 
   final BuildContext _context;
 
-  InitialPageStateNotifier(this._context) {
+  InitialPageStateNotifier(this._context) : _offlineModeBloc = _context.read<OfflineModeBloc>() {
     SystemChrome.setSystemUIOverlayStyle(
-        SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
+        const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     _initLoading();
   }
 
@@ -76,7 +75,7 @@ class InitialPageStateNotifier
     try {
       await initServices(_context);
     } catch (e, stackTrace) {
-      print("initServicesError: $e");
+      logger.error("initServicesError", error: e, stack: stackTrace);
       analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
@@ -121,7 +120,7 @@ class InitialPageStateNotifier
     _loading = true;
     notifyListeners();
 
-    final hasSelectedLanguage = languageService.selectedLanguage != null;
+    final hasSelectedLanguage = _context.read<LanguageBloc>().selectedLanguage != null;
 
     if (hasSelectedLanguage) {
       languageSelected();
@@ -147,14 +146,23 @@ class InitialPageStateNotifier
     downloader.downloadManifest(true);
   }
 
+  void continueInOfflineMode() async {
+    _offlineModeBloc.acceptOfflineMode();
+    _ensureCache();
+  }
+
   Future<void> _checkManifest() async {
     _loading = true;
     notifyListeners();
 
-    final needsUpdate = await manifest.needsUpdate();
-    if (!needsUpdate) {
-      manifestDownloaded();
-      return;
+    try {
+      final needsUpdate = await manifest.needsUpdate();
+      if (!needsUpdate) {
+        manifestDownloaded();
+        return;
+      }
+    } on NetworkErrorException {
+      _error = ManifestDownloadError();
     }
 
     _phase = InitialPagePhase.ManifestDownload;
@@ -220,8 +228,15 @@ class InitialPageStateNotifier
     notifyListeners();
   }
 
-  void membershipSelected() {
-    _checkWishlist();
+  void membershipSelected() async {
+    final token = await auth.getCurrentToken();
+    if (token != null) {
+      _checkWishlist();
+      return;
+    }
+    _loading = false;
+    _phase = InitialPagePhase.AuthorizationRequest;
+    notifyListeners();
   }
 
   Future<void> _checkWishlist() async {
@@ -251,7 +266,7 @@ class InitialPageStateNotifier
     try {
       await initPostLoadingServices(_context);
     } catch (e, stackTrace) {
-      print("initPostLoadingServicesError: $e");
+      logger.error("initPostLoadingServicesError", error: e, stack: stackTrace);
       analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
@@ -261,11 +276,13 @@ class InitialPageStateNotifier
     try {
       await wishlistsService.checkForUpdates();
     } catch (e, stackTrace) {
-      print("non breaking error: $e");
+      logger.error("non breaking error", error: e, stack: stackTrace);
       analytics.registerNonFatal(e, stackTrace);
     }
 
-    final characters = profile.getCharacters();
+    final profile = _context.read<ProfileBloc>();
+    await profile.refresh();
+    final characters = profile.characters;
     if (characters?.isEmpty ?? true) {
       _error = InvalidMembershipError();
       notifyListeners();
@@ -276,7 +293,8 @@ class InitialPageStateNotifier
   }
 
   Future<void> _startApp() async {
-    Navigator.of(_context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => MainScreen()), (r) => false);
+    Navigator.of(_context)
+        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const MainScreen()), (r) => false);
   }
 
   void clearDataAndRestart() async {

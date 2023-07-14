@@ -1,8 +1,5 @@
-//@dart=2.12
-
 import 'dart:async';
 import 'dart:io';
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
@@ -12,11 +9,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/services/language/language.consumer.dart';
-// ignore: import_of_legacy_library_into_null_safe
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -24,7 +21,7 @@ setupAuthService() async {
   GetIt.I.registerSingleton<AuthService>(AuthService._internal());
 }
 
-class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, BungieApiConsumer {
+class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
   Set<String>? _accountIDs;
   BungieNetToken? _currentToken;
   GroupUserInfoCard? _currentMembership;
@@ -32,12 +29,12 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
   AuthService._internal();
 
   Future<void> setup() async {
-    _accountIDs = await globalStorage.accountIDs ?? Set<String>();
+    _accountIDs = await globalStorage.accountIDs ?? <String>{};
   }
 
   void openBungieLogin(bool forceReauth) async {
     var browser = BungieAuthBrowser();
-    OAuth.openOAuth(browser, appConfig.clientId, languageService.currentLanguage, forceReauth);
+    OAuth.openOAuth(browser, appConfig.clientId, getInjectedLanguageService().currentLanguage, forceReauth);
   }
 
   Future<UserMembershipData> addAccount(String authorizationCode) async {
@@ -45,9 +42,9 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
     final membershipData = await bungieAPI.getMembershipsForToken(token);
 
     final accountID = token.membershipId;
-    this._currentAccountID = accountID;
+    _currentAccountID = accountID;
     final storage = accountStorage(accountID);
-    await this._saveToken(token);
+    await _saveToken(token);
     final memberships = membershipData.destinyMemberships;
     if (memberships == null || memberships.isEmpty) {
       throw InvalidMembershipException("Account doesn't have any memberships");
@@ -60,7 +57,9 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
         if (profile?.characters?.data?.isNotEmpty ?? false) {
           validMemberships.add(membership);
         }
-      } catch (e) {}
+      } catch (e) {
+        logger.error("Error getting membership info", error: e);
+      }
     }
     if (validMemberships.isEmpty) {
       throw InvalidMembershipException("Account doesn't have any valid memberships");
@@ -124,7 +123,7 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
   }
 
   Future<Map<String, UserMembershipData>> fetchMembershipDataForAllAccounts() async {
-    final result = Map<String, UserMembershipData>();
+    final result = <String, UserMembershipData>{};
     if (_accountIDs == null) {
       return result;
     }
@@ -141,8 +140,12 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
   }
 
   Future<BungieNetToken?> _getStoredToken() async {
-    final token = await currentAccountStorage.getLatestToken();
-    return token;
+    try {
+      final token = await currentAccountStorage.getLatestToken();
+      return token;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<BungieNetToken> refreshToken(BungieNetToken token) async {
@@ -156,15 +159,13 @@ class AuthService with StorageConsumer, LanguageConsumer, AppConfigConsumer, Bun
       return;
     }
     await accountStorage(currentAccountID!).saveLatestToken(token);
-    await Future.delayed(Duration(milliseconds: 1));
+    await Future.delayed(const Duration(milliseconds: 1));
     _currentToken = token;
   }
 
   Future<BungieNetToken?> getCurrentToken() async {
     BungieNetToken? token = _currentToken;
-    if (token == null) {
-      token = await _getStoredToken();
-    }
+    token ??= await _getStoredToken();
     if (token == null) {
       return null;
     }

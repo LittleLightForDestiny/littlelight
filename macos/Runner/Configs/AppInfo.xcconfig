@@ -11,4 +11,4 @@ PRODUCT_NAME = littlelight
 PRODUCT_BUNDLE_IDENTIFIER = me.markezine.luzinha
 
 // The copyright displayed in application information
-PRODUCT_COPYRIGHT = Copyright © 2020 me.markezine. All rights reserved.
+PRODUCT_COPYRIGHT = Copyright © 2023 me.markezine. All rights reserved.

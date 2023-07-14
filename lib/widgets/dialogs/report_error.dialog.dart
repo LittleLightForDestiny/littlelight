@@ -1,14 +1,10 @@
-//@dart=2.12
-
 import 'dart:io';
-
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/language/language.consumer.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
 class ReportErrorDialogRoute extends DialogRoute<void> {
@@ -24,12 +20,12 @@ extension on BuildContext {
   FlutterErrorDetails? get errorArgument => ModalRoute.of(this)?.settings.arguments as FlutterErrorDetails;
 }
 
-class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, AnalyticsConsumer, LanguageConsumer {
+class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, AnalyticsConsumer {
   ReportErrorDialog() : super();
 
   @override
   Widget? buildTitle(BuildContext context) {
-    return TranslatedTextWidget("Send error report");
+    return Text("Send error report".translate(context));
   }
 
   @override
@@ -39,12 +35,12 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
     return Container(
         child: SingleChildScrollView(
             child: Column(mainAxisSize: MainAxisSize.min, children: [
-      TranslatedTextWidget("This will be the info that will be sent along with the error report:"),
+      Text("This will be the info that will be sent along with the error report:".translate(context)),
       Container(
         height: 8,
       ),
       FutureBuilder<Map<String, String>?>(
-          future: getData(),
+          future: getData(context),
           builder: (context, data) {
             String text = "";
             final fields = data.data;
@@ -63,10 +59,10 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
             return Container(
               decoration: BoxDecoration(
                   color: LittleLightTheme.of(context).surfaceLayers.layer2, borderRadius: BorderRadius.circular(8)),
-              padding: EdgeInsets.all(8),
+              padding: const EdgeInsets.all(8),
               child: Text(
                 text,
-                style: TextStyle(fontSize: 11),
+                style: const TextStyle(fontSize: 11),
               ),
             );
           })
@@ -80,17 +76,17 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
       mainAxisSize: MainAxisSize.min,
       children: [
         TextButton(
-          child: TranslatedTextWidget("Cancel", uppercase: true),
+          child: Text("Cancel".translate(context).toUpperCase()),
           onPressed: () async {
             Navigator.of(context).pop();
           },
         ),
         TextButton(
-          child: TranslatedTextWidget("Send report", uppercase: true),
+          child: Text("Send report".translate(context).toUpperCase()),
           onPressed: () async {
             final error = context.errorArgument;
             if (error == null) return;
-            final data = await getData();
+            final data = await getData(context);
             analytics.registerUserFeedback(error, data?["playerID"] ?? "", data ?? {});
             Navigator.of(context).pop();
           },
@@ -99,24 +95,24 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
     );
   }
 
-  Future<Map<String, String>?> getData() async {
+  Future<Map<String, String>?> getData(BuildContext context) async {
     final membership = await auth.getMembership();
     final Map<String, String> data = {
       "playerID": membership?.bungieGlobalDisplayName ?? "",
       "accountID": auth.currentAccountID ?? "",
       "membershipID": auth.currentMembershipID ?? "",
-      "currentLanguage": languageService.currentLanguage,
+      "currentLanguage": context.currentLanguage,
     };
     if (Platform.isAndroid) {
       final deviceInfo = await DeviceInfoPlugin().androidInfo;
-      data["manufacturer"] = deviceInfo.manufacturer ?? "";
-      data["model"] = deviceInfo.model ?? "";
-      data["androidVersion"] = deviceInfo.version.codename ?? "";
+      data["manufacturer"] = deviceInfo.manufacturer;
+      data["model"] = deviceInfo.model;
+      data["androidVersion"] = deviceInfo.version.codename;
     }
     if (Platform.isIOS) {
       final deviceInfo = await DeviceInfoPlugin().iosInfo;
-      data["model"] = deviceInfo.model ?? "";
-      data["iosVersion"] = deviceInfo.systemVersion ?? "";
+      data["model"] = deviceInfo.model;
+      data["iosVersion"] = deviceInfo.systemVersion;
     }
     return data;
   }

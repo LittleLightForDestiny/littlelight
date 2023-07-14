@@ -1,6 +1,4 @@
-//@dart=2.12
-
-class InventoryBucket {
+abstract class InventoryBucket {
   static const int kineticWeapons = 1498876634;
   static const int energyWeapons = 2465295065;
   static const int powerWeapons = 953998645;

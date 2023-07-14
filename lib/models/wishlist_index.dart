@@ -1,5 +1,3 @@
-//@dart=2.12
-
 import 'package:json_annotation/json_annotation.dart';
 
 part 'wishlist_index.g.dart';
@@ -12,7 +10,8 @@ class WishlistFile {
 
   WishlistFile({this.name, this.description, this.url});
 
-  factory WishlistFile.fromJson(Map<String, dynamic> json) => _$WishlistFileFromJson(json);
+  factory WishlistFile.fromJson(Map<String, dynamic> json) =>
+      _$WishlistFileFromJson(json);
   Map<String, dynamic> toJson() => _$WishlistFileToJson(this);
 
   WishlistFile copyWith({
@@ -36,6 +35,7 @@ class WishlistFolder {
 
   WishlistFolder({this.name, this.description, this.folders, this.files});
 
-  factory WishlistFolder.fromJson(Map<String, dynamic> json) => _$WishlistFolderFromJson(json);
+  factory WishlistFolder.fromJson(Map<String, dynamic> json) =>
+      _$WishlistFolderFromJson(json);
   Map<String, dynamic> toJson() => _$WishlistFolderToJson(this);
 }

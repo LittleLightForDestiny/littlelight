@@ -1,4 +1,3 @@
-//@dart=2.12
 import 'package:bungie_api/destiny2.dart';
 import 'package:little_light/services/notification/events/notification_type.dart';
 

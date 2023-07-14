@@ -1,9 +1,7 @@
-//@dart=2.12
-
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
-import 'package:little_light/widgets/common/translated_text.widget.dart';
 import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
 class SelectStatDialogRoute extends DialogRoute<int?> {
@@ -13,7 +11,7 @@ class SelectStatDialogRoute extends DialogRoute<int?> {
 }
 
 class SelectStatDialog extends LittleLightBaseDialog {
-  SelectStatDialog() : super(titleBuilder: (context) => TranslatedTextWidget('Select Stat'));
+  SelectStatDialog() : super(titleBuilder: (context) => Text("Select Stat".translate(context)));
 
   @override
   Widget? buildBody(BuildContext context) {
@@ -28,7 +26,7 @@ class SelectStatDialog extends LittleLightBaseDialog {
   }
 
   Widget buildStatItem(BuildContext context, int hash) => Container(
-      padding: EdgeInsets.all(4).copyWith(top: 0),
+      padding: const EdgeInsets.all(4).copyWith(top: 0),
       child: Material(
           color: Colors.blueGrey,
           child: InkWell(
@@ -36,7 +34,7 @@ class SelectStatDialog extends LittleLightBaseDialog {
                 Navigator.of(context).pop(hash);
               },
               child: Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   alignment: Alignment.centerLeft,
                   child: ManifestText<DestinyStatDefinition>(hash)))));
 
@@ -46,7 +44,7 @@ class SelectStatDialog extends LittleLightBaseDialog {
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton(
-          child: TranslatedTextWidget("Cancel", uppercase: true),
+          child: Text("Cancel".translate(context).toUpperCase()),
           onPressed: () async {
             Navigator.of(context).pop(null);
           },

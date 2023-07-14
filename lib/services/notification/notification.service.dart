@@ -1,8 +1,5 @@
-//@dart=2.12
 import 'dart:async';
-
 import 'package:get_it/get_it.dart';
-
 import 'events/notification.event.dart';
 
 setupNotificationService() {
@@ -19,8 +16,8 @@ class NotificationService {
     return _streamController.stream;
   }
 
-  StreamSubscription<NotificationEvent> listen(void onData(NotificationEvent event),
-      {Function? onError, void onDone()?, bool cancelOnError = false}) {
+  StreamSubscription<NotificationEvent> listen(void Function(NotificationEvent event) onData,
+      {Function? onError, void Function()? onDone, bool cancelOnError = false}) {
     return _broadcaster.listen(onData, onError: onError, onDone: onDone, cancelOnError: cancelOnError);
   }
 
