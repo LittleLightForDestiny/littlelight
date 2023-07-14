@@ -94,38 +94,15 @@ jobs:
   publish-google-play:
     uses: ./.github/workflows/publish-google-play.yml
     needs: [version-update]
-    secrets:
-      FLUTTER_DOTENV: ${{ secrets.FLUTTER_DOTENV }}
-      ANDROID_GOOGLE_SERVICES_JSON: ${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}
-      ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-      ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-      ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-      ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
-      SUPPLY_PACKAGE_NAME: ${{ secrets.SUPPLY_PACKAGE_NAME }}
-      SUPPLY_JSON_KEY_DATA: ${{ secrets.SUPPLY_JSON_KEY_DATA }}
+    secrets: inherit
 
   publish-ios:
     uses: ./.github/workflows/publish-ios.yml
     needs: [version-update]
 
-    secrets:
-      APPSTORE_CONNECT_KEY_ID: $ {{secrets.APPSTORE_CONNECT_KEY_ID }}
-      APPSTORE_CONNECT_ISSUER_ID: $ {{secrets.APPSTORE_CONNECT_ISSUER_ID }}
-      APPLE_TEAM_ID: $ {{secrets.APPLE_TEAM_ID }}
-      APPLE_APP_IDENTIFIER: $ {{secrets.APPLE_APP_IDENTIFIER }}
-      FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: $ {{secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
-      MATCH_GIT_URL: $ {{secrets.MATCH_GIT_URL }}
-      MATCH_PASSWORD: $ {{secrets.MATCH_PASSWORD }}
-      APPLE_USERNAME: $ {{secrets.APPLE_USERNAME }}
-      MATCH_KEYCHAIN_NAME: $ {{secrets.MATCH_KEYCHAIN_NAME }}
-      MATCH_KEYCHAIN_PASSWORD: $ {{secrets.MATCH_KEYCHAIN_PASSWORD }}
-      MATCH_GIT_API_AUTH: $ {{secrets.MATCH_GIT_API_AUTH }}
-      FLUTTER_DOTENV: $ {{secrets.FLUTTER_DOTENV }}
-      IOS_GOOGLE_SERVICE_INFO_PLIST: $ {{secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}
-      APPSTORE_CONNECT_KEY_BASE64: $ {{secrets.APPSTORE_CONNECT_KEY_BASE64 }}
+    secrets: inherit
 
   update-translations:
     uses: ./.github/workflows/update-translations.yml
     needs: [version-update]
-    secrets:
-      BOT_PAT: ${{ secrets.BOT_PAT }}
+    secrets: inherit
