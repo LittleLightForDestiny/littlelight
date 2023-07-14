@@ -1,0 +1,86 @@
+name: Publish to macOS App Store
+
+on:
+  workflow_call:
+    secrets:
+      APPSTORE_CONNECT_KEY_ID:
+        required: true
+      APPSTORE_CONNECT_ISSUER_ID:
+        required: true
+      APPLE_TEAM_ID:
+        required: true
+      APPLE_APP_IDENTIFIER:
+        required: true
+      FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD:
+        required: true
+      MATCH_GIT_URL:
+        required: true
+      MATCH_PASSWORD:
+        required: true
+      APPLE_USERNAME:
+        required: true
+      MATCH_KEYCHAIN_NAME:
+        required: true
+      MATCH_KEYCHAIN_PASSWORD:
+        required: true
+      MATCH_GIT_API_AUTH:
+        required: true
+      FLUTTER_DOTENV:
+        required: true
+      IOS_GOOGLE_SERVICE_INFO_PLIST:
+        required: true
+      APPSTORE_CONNECT_KEY_BASE64:
+        required: true
+
+  workflow_dispatch:
+    inputs:
+      track:
+        required: true
+        description: Release track
+        type: choice
+        options:
+          - "production"
+          - "beta"
+        default: "production"
+jobs:
+  macos-app-store:
+    name: Publish to MacOS app store
+    runs-on: macos-latest
+
+    env:
+      APPSTORE_CONNECT_KEY_ID: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}
+      APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
+      APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+      APPLE_APP_IDENTIFIER: ${{ secrets.APPLE_APP_IDENTIFIER }}
+      FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
+      MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
+      MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+      APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
+      MATCH_KEYCHAIN_NAME: ${{ secrets.MATCH_KEYCHAIN_NAME }}
+      MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
+
+    steps:
+      - name: Defines variables according to triggers
+        id: variables
+        run: |
+          if [ "${{ github.event_name }}" == "release" ] 
+          then
+            if [ "${{ github.event.release.prerelease }}" == true ]
+            then
+              echo "::set-output name=track::beta"
+            else
+              echo "::set-output name=track::production"
+            fi
+            echo "::set-output name=head_ref::main"
+          fi
+
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
+          then
+            echo "::set-output name=track::${{ github.event.inputs.track }}"
+            echo "::set-output name=head_ref::${{ github.head_ref }}"
+          fi
+
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ steps.variables.outputs.head_ref }}
