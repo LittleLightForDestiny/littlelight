@@ -37,6 +37,7 @@ class LoadoutItemOptionsView extends StatelessWidget {
           Flexible(
             child: SingleChildScrollView(
                 scrollDirection: Axis.vertical,
+                padding: EdgeInsets.symmetric(horizontal: 8),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [buildLoadoutList(context)],
@@ -61,7 +62,7 @@ class LoadoutItemOptionsView extends StatelessWidget {
 
   Widget buildOptions(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8),
+        padding: EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: context.mediaQuery.padding.bottom, top: 8),
         child: context.mediaQuery.tabletOrBigger
             ? IntrinsicHeight(
                 child: Row(children: [
