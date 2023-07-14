@@ -157,8 +157,8 @@ platform :mac do
 
   desc "Build iOS app for distribution"
   lane :build do
-    setup_api_key
     if is_ci
+      setup_api_key
       create_keychain(
         name: ENV['MATCH_KEYCHAIN_NAME'],
         password: ENV["MATCH_KEYCHAIN_PASSWORD"],
@@ -188,7 +188,7 @@ platform :mac do
       workspace: "macos/Runner.xcworkspace",
       scheme: "Runner",
       output_directory:"build/macos",
-      output_name: "littlelight.ipa",
+      output_name: "littlelight",
       export_method: "app-store",
       export_team_id: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_team-id"]
     )
@@ -198,7 +198,7 @@ platform :mac do
   lane :beta do
       setup_api_key
       upload_to_app_store(
-      ipa: "build/macos/littlelight.ipa",
+      pkg: "build/macos/littlelight.pkg",
       skip_screenshots: true,
       force: true,
       precheck_include_in_app_purchases: false,
@@ -218,7 +218,7 @@ platform :mac do
   lane :deploy do
       setup_api_key
       upload_to_app_store(
-      ipa: "build/macos/LittleLight.ipa",
+      pkg: "build/macos/littlelight.pkg",
       skip_screenshots: true,
       force: true,
       precheck_include_in_app_purchases: false,
