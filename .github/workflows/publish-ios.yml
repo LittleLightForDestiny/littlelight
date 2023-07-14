@@ -17,8 +17,6 @@ on:
         required: true
       MATCH_PASSWORD:
         required: true
-      APPLE_USERNAME:
-        required: true
       MATCH_KEYCHAIN_NAME:
         required: true
       MATCH_KEYCHAIN_PASSWORD:
@@ -55,7 +53,6 @@ jobs:
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
       MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
       MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-      APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
       MATCH_KEYCHAIN_NAME: ${{ secrets.MATCH_KEYCHAIN_NAME }}
       MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
 
