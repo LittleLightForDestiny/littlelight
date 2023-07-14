@@ -115,7 +115,7 @@ jobs:
           bundle install
 
       - name: Test fastlane
-        run: bundle exec fastlane match --readonly
+        run: bundle exec fastlane match
         env:
           APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
 
