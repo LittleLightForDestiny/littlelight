@@ -179,7 +179,7 @@ platform :mac do
     )
     update_project_provisioning(
       xcodeproj: "macos/Runner.xcodeproj",
-      profile: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_profile-path"],
+      profile: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_profile-path"],
       build_configuration: "Release",
       code_signing_identity: "Mac Distribution"
     )
