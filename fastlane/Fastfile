@@ -170,25 +170,27 @@ platform :mac do
     end
     match(
       type: "appstore",
+      additional_cert_types: "mac_installer_distribution",
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
       git_url: ENV["MATCH_GIT_URL"],
     )
     update_project_team(
       path: "macos/Runner.xcodeproj",
-      teamid: ENV["APPLE_TEAM_ID"]
+      teamid: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_team-id"]
     )
     update_project_provisioning(
       xcodeproj: "macos/Runner.xcodeproj",
       profile: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_profile-path"],
       build_configuration: "Release",
-      code_signing_identity: "Mac Distribution"
+      code_signing_identity: "Apple Distribution"
     )
     build_mac_app(
       workspace: "macos/Runner.xcworkspace",
       scheme: "Runner",
       output_directory:"build/macos",
       output_name: "littlelight.ipa",
-      export_method: "app-store"
+      export_method: "app-store",
+      export_team_id: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_team-id"]
     )
   end
 

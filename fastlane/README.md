@@ -71,36 +71,36 @@ Deploy iOS version to app store (automatic release)
 ----
 
 
-## macos
+## Mac
 
-### macos changelogs
+### mac changelogs
 
 ```sh
-[bundle exec] fastlane macos changelogs
+[bundle exec] fastlane mac changelogs
 ```
 
 Prints path and changelog
 
-### macos build
+### mac build
 
 ```sh
-[bundle exec] fastlane macos build
+[bundle exec] fastlane mac build
 ```
 
 Build iOS app for distribution
 
-### macos beta
+### mac beta
 
 ```sh
-[bundle exec] fastlane macos beta
+[bundle exec] fastlane mac beta
 ```
 
 Deploy MacOS version to app store (manual release)
 
-### macos deploy
+### mac deploy
 
 ```sh
-[bundle exec] fastlane macos deploy
+[bundle exec] fastlane mac deploy
 ```
 
 Deploy MacOS version to app store (automatic release)
