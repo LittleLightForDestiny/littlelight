@@ -99,7 +99,6 @@ jobs:
   publish-ios:
     uses: ./.github/workflows/publish-ios.yml
     needs: [version-update]
-
     secrets: inherit
 
   update-translations:
