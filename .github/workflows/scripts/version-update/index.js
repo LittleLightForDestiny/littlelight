@@ -88,6 +88,11 @@ async function updateChangelogs(versionString, versionNumber, changelog) {
     await fs.writeFile(path, changelog);
   }
 
+  for (let language of iosLanguages) {
+    const path = `./fastlane/metadata/macos/${language}/release_notes.txt`;
+    await fs.writeFile(path, changelog);
+  }
+
   let changelogsMD = "";
   try {
     changelogsMD = await fs.readFile('./CHANGELOG.md', 'utf-8');

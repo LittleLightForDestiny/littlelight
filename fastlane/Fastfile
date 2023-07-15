@@ -136,3 +136,101 @@ platform :ios do
     )
   end
 end
+
+platform :mac do
+
+  desc "Setup certificates before doing anything"
+  private_lane :setup_api_key do
+    app_store_connect_api_key(
+      in_house: false,
+      key_id: ENV["APPSTORE_CONNECT_KEY_ID"],
+      issuer_id: ENV["APPSTORE_CONNECT_ISSUER_ID"],
+      key_filepath: ENV["APPSTORE_CONNECT_KEY_FILE"],
+    )
+  end
+
+  desc "Prints path and changelog"
+  lane :changelogs do
+    puts Dir.pwd
+    puts File.read(Dir.pwd + '/metadata/macos/default/release_notes.txt')
+  end
+
+  desc "Build iOS app for distribution"
+  lane :build do
+    if is_ci
+      setup_api_key
+      create_keychain(
+        name: ENV['MATCH_KEYCHAIN_NAME'],
+        password: ENV["MATCH_KEYCHAIN_PASSWORD"],
+        default_keychain: false,
+        unlock: true,
+        timeout: 3600,
+        add_to_search_list: true,
+      )
+    end
+    match(
+      type: "appstore",
+      additional_cert_types: "mac_installer_distribution",
+      app_identifier: ENV["APPLE_APP_IDENTIFIER"],
+      git_url: ENV["MATCH_GIT_URL"],
+    )
+    update_project_team(
+      path: "macos/Runner.xcodeproj",
+      teamid: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_team-id"]
+    )
+    update_project_provisioning(
+      xcodeproj: "macos/Runner.xcodeproj",
+      profile: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_profile-path"],
+      build_configuration: "Release",
+      code_signing_identity: "Apple Distribution"
+    )
+    build_mac_app(
+      workspace: "macos/Runner.xcworkspace",
+      scheme: "Runner",
+      output_directory:"build/macos",
+      output_name: "littlelight",
+      export_method: "app-store",
+      export_team_id: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_team-id"]
+    )
+  end
+
+  desc "Deploy MacOS version to app store (manual release)"
+  lane :beta do
+      setup_api_key
+      upload_to_app_store(
+      pkg: "build/macos/littlelight.pkg",
+      skip_screenshots: true,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      reject_if_possible: true,
+      automatic_release: false,
+      submit_for_review: true,
+      metadata_path: "fastlane/metadata/macos",
+      submission_information:{
+        export_compliance_uses_encryption: false,
+        export_compliance_encryption_updated: false,
+        add_id_info_uses_idfa: false,
+      }
+    )
+  end
+
+  desc "Deploy MacOS version to app store (automatic release)"
+  lane :deploy do
+      setup_api_key
+      upload_to_app_store(
+      pkg: "build/macos/littlelight.pkg",
+      skip_screenshots: true,
+      force: true,
+      precheck_include_in_app_purchases: false,
+      reject_if_possible: true,
+      automatic_release: true,
+      submit_for_review: true,
+      metadata_path: "fastlane/metadata/macos",
+      submission_information:{
+        export_compliance_uses_encryption: false,
+        export_compliance_encryption_updated: false,
+        add_id_info_uses_idfa: false,
+      }
+    )
+  end
+end

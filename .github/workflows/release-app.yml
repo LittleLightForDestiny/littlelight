@@ -101,6 +101,11 @@ jobs:
     needs: [version-update]
     secrets: inherit
 
+  publish-macos:
+    uses: ./.github/workflows/publish-macos.yml
+    needs: [version-update]
+    secrets: inherit
+
   update-translations:
     uses: ./.github/workflows/update-translations.yml
     needs: [version-update]

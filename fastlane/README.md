@@ -21,7 +21,7 @@ For _fastlane_ installation instructions, see [Installing _fastlane_](https://do
 [bundle exec] fastlane android beta
 ```
 
-Submit a new Beta Build to Crashlytics Beta
+Submit a new Beta Build to Google Play Beta
 
 ### android deploy
 
@@ -35,6 +35,14 @@ Deploy a new version to the Google Play
 
 
 ## iOS
+
+### ios changelogs
+
+```sh
+[bundle exec] fastlane ios changelogs
+```
+
+Prints path and changelog
 
 ### ios build
 
@@ -59,6 +67,43 @@ Deploy iOS version to app store (manual release)
 ```
 
 Deploy iOS version to app store (automatic release)
+
+----
+
+
+## Mac
+
+### mac changelogs
+
+```sh
+[bundle exec] fastlane mac changelogs
+```
+
+Prints path and changelog
+
+### mac build
+
+```sh
+[bundle exec] fastlane mac build
+```
+
+Build iOS app for distribution
+
+### mac beta
+
+```sh
+[bundle exec] fastlane mac beta
+```
+
+Deploy MacOS version to app store (manual release)
+
+### mac deploy
+
+```sh
+[bundle exec] fastlane mac deploy
+```
+
+Deploy MacOS version to app store (automatic release)
 
 ----
 
