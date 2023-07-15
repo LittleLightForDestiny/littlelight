@@ -44,7 +44,8 @@ class LoadoutsBloc extends ChangeNotifier with StorageConsumer, ProfileConsumer,
     final notification = notificationsBloc.createNotification(SyncLoadoutsAction());
 
     final remoteLoadouts = await littleLightApi.fetchLoadouts() ?? [];
-    _loadouts = remoteLoadouts;
+    final mergedLoadouts = _mergeLoadouts(_loadouts, remoteLoadouts);
+    _loadouts = mergedLoadouts;
     _sortLoadouts();
     _busy = false;
     notification.dismiss();
