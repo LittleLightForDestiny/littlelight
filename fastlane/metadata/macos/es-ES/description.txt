@@ -1,0 +1,10 @@
+Lucecita es un administrador de equipo para Destiny 2 que hará la vida del guardian mucho más fácil.
+- Transfiere rápido cualquier equipo entre personajes.
+- Transfiere más de un objeto a la vez (manten apretado un objeto para activar la selección múltiple).
+- Crea conjuntos para equiparlos enteros con un solo click.
+- Muestra tus duplicados para transferirlos a cualquier personaje.
+- Muestra todos los modificadores relevantes de tus objets en la lista de equipamiento.
+- Cambio rápido entre plataformas (PS4, XBOX, PC)
+- Muestra todos los detalles de los objetos, incluidas estadisticas ocultas, atributos, beneficios de cada atributo e historia.
+- Comprueba las colecciones de excepcionales, cosmeticos y conjunto de armas y armaduras
+- Haz seguimiento de triunfos, contratos, aventuras y catalizadores.
