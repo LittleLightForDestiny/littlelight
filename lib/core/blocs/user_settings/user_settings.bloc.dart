@@ -172,7 +172,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
     notifyListeners();
   }
 
-  bool get autoOpenKeyboard => globalStorage.autoOpenKeyboard ?? false;
+  bool get autoOpenKeyboard => globalStorage.autoOpenKeyboard ?? true;
   set autoOpenKeyboard(bool value) {
     globalStorage.autoOpenKeyboard = value;
     notifyListeners();
