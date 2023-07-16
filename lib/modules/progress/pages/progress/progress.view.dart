@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/scroll_area_type.dart';
@@ -119,12 +120,18 @@ class ProgressView extends StatelessWidget {
                   child: buildTabHeader(context, characterTabController),
                 ),
                 Positioned(
-                    top: 0 + viewPadding.top,
-                    right: 16,
-                    child: CharacterHeaderTabMenuWidget(
-                      characters,
-                      characterTabController,
-                    )),
+                  top: 0 + viewPadding.top,
+                  right: 16,
+                  child: Row(
+                    children: [
+                      buildSearchButton(context),
+                      CharacterHeaderTabMenuWidget(
+                        characters,
+                        characterTabController,
+                      ),
+                    ],
+                  ),
+                ),
                 Positioned(
                   top: 0 + viewPadding.top,
                   left: 0,
@@ -297,5 +304,23 @@ class ProgressView extends StatelessWidget {
       ScrollAreaType.Characters: characterTabController,
       ScrollAreaType.Sections: typeTabController,
     });
+  }
+
+  Widget buildSearchButton(BuildContext context) {
+    return Stack(children: [
+      Container(
+        width: kToolbarHeight,
+        height: kToolbarHeight,
+        child: Icon(FontAwesomeIcons.magnifyingGlass),
+      ),
+      Positioned.fill(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(onTap: () {
+            bloc.openSearch();
+          }),
+        ),
+      ),
+    ]);
   }
 }

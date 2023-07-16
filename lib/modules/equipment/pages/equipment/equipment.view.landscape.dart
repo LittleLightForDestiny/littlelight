@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_character_bucket_content.dart';
@@ -101,13 +102,19 @@ class EquipmentLandscapeView extends StatelessWidget {
             child: buildTabHeader(context, characterTabController),
           ),
           Positioned(
-              top: 0 + viewPadding.top,
-              right: 16,
-              child: CharacterHeaderTabMenuWidget(
-                characters,
-                characterTabController,
-                vaultItemCount: state.vaultItemCount,
-              )),
+            top: 0 + viewPadding.top,
+            right: 16,
+            child: Row(
+              children: [
+                buildSearchButton(context),
+                CharacterHeaderTabMenuWidget(
+                  characters,
+                  characterTabController,
+                  vaultItemCount: state.vaultItemCount,
+                )
+              ],
+            ),
+          ),
           Positioned(
             top: 0 + viewPadding.top,
             left: 0,
@@ -247,5 +254,25 @@ class EquipmentLandscapeView extends StatelessWidget {
     return CustomTabGestureDetector(
       controller: characterTabController,
     );
+  }
+
+  Widget buildSearchButton(BuildContext context) {
+    return Stack(children: [
+      Container(
+        width: kToolbarHeight,
+        height: kToolbarHeight,
+        child: Icon(FontAwesomeIcons.magnifyingGlass),
+      ),
+      Positioned.fill(
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(onTap: () {
+            final currentBucketGroup = EquipmentBucketGroup.Weapons;
+            final currentClassType = state.characters?[characterTabController.index]?.character.classType;
+            bloc.openSearch(currentBucketGroup, currentClassType);
+          }),
+        ),
+      ),
+    ]);
   }
 }
