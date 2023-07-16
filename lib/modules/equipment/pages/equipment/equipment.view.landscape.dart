@@ -106,6 +106,7 @@ class EquipmentLandscapeView extends StatelessWidget {
               child: CharacterHeaderTabMenuWidget(
                 characters,
                 characterTabController,
+                vaultItemCount: state.vaultItemCount,
               )),
           Positioned(
             top: 0 + viewPadding.top,
@@ -190,6 +191,7 @@ class EquipmentLandscapeView extends StatelessWidget {
         .toList();
     return EquipmentVaultTabContentWidget(
       buckets: buckets,
+      itemsOnVault: state.vaultItemCount,
     );
   }
 

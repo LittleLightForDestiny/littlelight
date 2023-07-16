@@ -9,10 +9,13 @@ import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab_menu.dart
 const iconWidth = 64.0;
 
 class CharacterHeaderTabMenuWidget extends CustomTabMenu {
+  final int? vaultItemCount;
   final List<DestinyCharacterInfo?> characters;
   const CharacterHeaderTabMenuWidget(
-      this.characters, CustomTabController controller)
-      : super(controller);
+    this.characters,
+    CustomTabController controller, {
+    this.vaultItemCount,
+  }) : super(controller);
 
   @override
   double getButtonSize(BuildContext context) => iconWidth;
@@ -37,7 +40,9 @@ class CharacterHeaderTabMenuWidget extends CustomTabMenu {
             ? CharacterIconWidget(
                 character,
               )
-            : const VaultIconWidget(),
+            : VaultIconWidget(
+                itemCount: vaultItemCount,
+              ),
       ),
     );
   }

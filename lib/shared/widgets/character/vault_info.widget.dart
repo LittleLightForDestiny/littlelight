@@ -6,6 +6,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
+import 'package:little_light/shared/utils/helpers/bucket_full_helper.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
@@ -184,13 +185,12 @@ class VaultInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   Widget buildItemCount(BuildContext context) {
     final bucketDef = context.definition<DestinyInventoryBucketDefinition>(InventoryBucket.general);
     final maximum = bucketDef?.itemCount;
-    final count = totalVaultItems;
-    if (count == null || maximum == null) return Container();
-    final limit = maximum * .95;
+    final isAlmostFull = isBucketAlmostFull(this.totalVaultItems, bucketDef);
+    if (maximum == null || totalVaultItems == null) return Container();
     return Text(
       "$totalVaultItems/$maximum",
       style: context.textTheme.largeTitle.copyWith(
-        color: count > limit ? context.theme.highlightedObjectiveLayers : context.theme.onSurfaceLayers,
+        color: isAlmostFull ? context.theme.highlightedObjectiveLayers : context.theme.onSurfaceLayers,
       ),
     );
   }

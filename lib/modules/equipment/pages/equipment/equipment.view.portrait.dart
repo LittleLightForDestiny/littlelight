@@ -109,6 +109,7 @@ class EquipmentPortraitView extends StatelessWidget {
               child: CharacterHeaderTabMenuWidget(
                 characters,
                 characterTabController,
+                vaultItemCount: state.vaultItemCount,
               )),
           Positioned(
             top: 0 + viewPadding.top,
@@ -200,7 +201,7 @@ class EquipmentPortraitView extends StatelessWidget {
     return EquipmentVaultTabContentWidget(
       buckets: buckets,
       currencies: currencies,
-      itemsOnVault: state.itemsOnVault,
+      itemsOnVault: state.vaultItemCount,
     );
   }
 
