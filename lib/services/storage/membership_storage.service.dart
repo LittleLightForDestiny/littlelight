@@ -207,11 +207,11 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
     await setJson(MembershipStorageKeys.detailsSectionDisplayVisibility, sectionVisibility);
   }
 
-  Future<Set<String>?> getPriorityTags() async {
+  Future<List<String>?> getPriorityTags() async {
     try {
       final List<dynamic>? json = await getJson(MembershipStorageKeys.priorityTags);
       if (json == null) return null;
-      return Set<String>.from(json);
+      return List<String>.from(json);
     } catch (e) {
       logger.error("can't parse priority tags", error: e);
     }

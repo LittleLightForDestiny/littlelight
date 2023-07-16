@@ -1,9 +1,11 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/models/item_notes.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
 import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';
@@ -16,6 +18,7 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
   final InventoryBloc _inventoryBloc;
   final SearchFilterBloc _filtersBloc;
   final SearchSorterBloc _sortersBloc;
+  final ItemNotesBloc _itemNotesBloc;
 
   final int? bucketHash;
   final String? characterId;
@@ -32,7 +35,8 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
     this._profileBloc,
     this._inventoryBloc,
     this._filtersBloc,
-    this._sortersBloc, {
+    this._sortersBloc,
+    this._itemNotesBloc, {
     required this.bucketHash,
     required this.characterId,
   }) {
@@ -50,6 +54,7 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
         context.read<InventoryBloc>(),
         context.read<SearchFilterBloc>(),
         context.read<SearchSorterBloc>(),
+        context.read<ItemNotesBloc>(),
         bucketHash: bucketHash,
         characterId: characterId,
       );
@@ -58,6 +63,7 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
     _update();
     _profileBloc.addListener(_update);
     _sortersBloc.addListener(_sort);
+    _itemNotesBloc.addListener(_sort);
     _filtersBloc.addListener(filter);
   }
 
@@ -65,6 +71,7 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
   void dispose() {
     _profileBloc.removeListener(_update);
     _sortersBloc.removeListener(_sort);
+    _itemNotesBloc.removeListener(_sort);
     _filtersBloc.removeListener(filter);
     super.dispose();
   }
