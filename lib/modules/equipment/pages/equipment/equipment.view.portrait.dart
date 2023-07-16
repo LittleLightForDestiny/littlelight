@@ -185,6 +185,7 @@ class EquipmentPortraitView extends StatelessWidget {
 
   Widget buildVaultTabContent(BuildContext context, EquipmentBucketGroup tab) {
     final bucketHashes = tab.bucketHashes;
+    final currencies = state.relevantCurrencies;
     final buckets = bucketHashes
         .map((h) {
           final items = state.getVaultItems(h) ?? [];
@@ -198,6 +199,8 @@ class EquipmentPortraitView extends StatelessWidget {
         .toList();
     return EquipmentVaultTabContentWidget(
       buckets: buckets,
+      currencies: currencies,
+      itemsOnVault: state.itemsOnVault,
     );
   }
 

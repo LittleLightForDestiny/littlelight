@@ -208,4 +208,6 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
       classType,
     ));
   }
+
+  int? get itemsOnVault => _profileBloc.itemsOnVault;
 }

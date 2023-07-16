@@ -26,6 +26,7 @@ class _CachedItemsContainer {
   Map<String, InventoryItemInfo> itemsByInstanceId = <String, InventoryItemInfo>{};
   Map<int, List<InventoryItemInfo>> itemsByHash = <int, List<InventoryItemInfo>>{};
   List<InventoryItemInfo> allItems = <InventoryItemInfo>[];
+  int itemsOnVault = 0;
 
   void add(InventoryItemInfo itemInfo, {bool groupWithSimilarItems = false}) {
     final itemInstanceId = itemInfo.instanceId;
@@ -40,6 +41,7 @@ class _CachedItemsContainer {
     }
 
     allItems.add(itemInfo);
+    if (itemInfo.bucketHash == InventoryBucket.general) itemsOnVault++;
   }
 
   void remove(InventoryItemInfo itemInfo) {
@@ -761,4 +763,6 @@ class ProfileBloc extends ChangeNotifier
     _lastLocalChange = DateTime.now().toUtc();
     notifyListeners();
   }
+
+  int get itemsOnVault => _itemCache.itemsOnVault;
 }
