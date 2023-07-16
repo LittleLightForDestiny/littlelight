@@ -5,6 +5,8 @@ import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/profile/sorters.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/core/blocs/vendors/vendor_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/models/item_notes_tag.dart';
@@ -19,6 +21,8 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/wishlist_helpers.dart';
+import 'package:little_light/shared/utils/sorters/items/multi_sorter.dart';
+import 'package:little_light/shared/utils/sorters/items/priority_tags_sorter.dart';
 import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -28,6 +32,7 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
   final SocketControllerBloc _socketControllerBloc;
   final ManifestService _manifestBloc;
   final WishlistsService _wishlists;
+  final UserSettingsBloc _userSettingsBloc;
 
   @protected
   VendorItemInfo? _item;
@@ -41,6 +46,8 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
   MappedWishlistNotes? _allWishlistNotes;
   MappedWishlistNotes? _matchedWishlistNotes;
 
+  List<InventoryItemInfo>? _duplicates;
+
   @override
   bool get canTrack => false;
 
@@ -51,6 +58,7 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
         _manifestBloc = context.read<ManifestService>(),
         _wishlists = getInjectedWishlistsService(),
         _profileBloc = context.read<ProfileBloc>(),
+        _userSettingsBloc = context.read<UserSettingsBloc>(),
         super(context) {
     _init();
   }
@@ -82,6 +90,7 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
     _matchedWishlistNotes = matchedWishlists.isNotEmpty ? organizeWishlistNotes(matchedWishlists) : null;
 
     _updateKillTracker();
+    _updateDuplicates();
 
     notifyListeners();
   }
@@ -94,6 +103,26 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
     final objective = this.item?.plugObjectives?["${trackerDef?.hash}"]?.firstOrNull;
     _killTracker = objective;
     notifyListeners();
+  }
+
+  void _updateDuplicates() async {
+    final duplicates = this._profileBloc.getItemsByHash(itemHash).toList();
+    _duplicates = duplicates;
+    if (duplicates.isEmpty) return;
+
+    final sorters = _userSettingsBloc.itemOrdering;
+    final priority = _userSettingsBloc.priorityTags;
+    if (sorters == null) return;
+    final defs = await _manifestBloc.getDefinitions<DestinyInventoryItemDefinition>({itemHash});
+    _duplicates = await MultiSorter([
+      if (priority != null && priority.isNotEmpty) PriorityTagsSorter(context, priority),
+      ...getSortersFromStorage(
+        sorters,
+        context,
+        defs,
+        _profileBloc.characters ?? [],
+      )
+    ]).sort(duplicates);
   }
 
   @override
@@ -181,7 +210,7 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
   List<InventoryItemInfo>? get duplicates {
     final def = _manifestBloc.definition<DestinyInventoryItemDefinition>(this.item?.itemHash);
     if ((def?.equippable ?? true) == false) return null;
-    return this._profileBloc.getItemsByHash(this.itemHash);
+    return _duplicates;
   }
 
   @override
