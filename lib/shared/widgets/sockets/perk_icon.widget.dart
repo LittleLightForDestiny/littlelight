@@ -9,7 +9,7 @@ import 'package:little_light/shared/widgets/wishlists/wishlist_badge.widget.dart
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:provider/provider.dart';
 
-const _maxPerkIconSize = 64.0;
+const _maxPerkIconSize = 56.0;
 const _defaultWishlistIconSize = 18.0;
 const _animationDuration = const Duration(milliseconds: 300);
 
