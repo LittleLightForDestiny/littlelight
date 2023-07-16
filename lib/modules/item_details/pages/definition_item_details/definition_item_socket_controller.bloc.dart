@@ -45,6 +45,12 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     final isInventorySourced = sources.contains(SocketPlugSources.InventorySourced);
     final reusablePlugSetHash = socket.reusablePlugSetHash;
 
+    /// Workaround to avoid gigantic plug lists on some weapons
+    final reusable = socket.reusablePlugItems;
+    if (reusable != null && reusable.length > 3) {
+      return [];
+    }
+
     if (isPlugSet && isInventorySourced && reusablePlugSetHash != null) {
       final plugSet = _profileBloc.getProfilePlugSets(reusablePlugSetHash);
       final plugHashes = plugSet?.map((e) => e.plugItemHash);
@@ -117,6 +123,12 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     if (sources == null) return null;
     final isPlugSet = sources.contains(SocketPlugSources.ReusablePlugItems) || sources.value == 0;
     if (!isPlugSet) return null;
+
+    final reusable = socket.reusablePlugItems;
+
+    if (reusable != null && reusable.length > 3) {
+      return reusable.map((e) => e.plugItemHash).whereType<int>().toList();
+    }
 
     final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(socket.randomizedPlugSetHash);
     final plugHashes = plugSetDef?.reusablePlugItems?.map((e) => e.plugItemHash);
