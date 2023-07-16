@@ -4,6 +4,7 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/modules/item_tags/blocs/select_tags.bloc.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/shared/widgets/tags/tag_pill.widget.dart';
 
@@ -15,15 +16,23 @@ class SelectTagsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        buildRemoveTags(context),
-        buildAddTags(context),
-        buildAction(context),
-      ],
-    );
+    return Container(
+        constraints: BoxConstraints(maxHeight: context.mediaQuery.size.height * .8),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Flexible(
+                child: SingleChildScrollView(
+                    child: Column(
+              children: [
+                buildRemoveTags(context),
+                buildAddTags(context),
+              ],
+            ))),
+            buildAction(context),
+          ],
+        ));
   }
 
   Widget buildRemoveTags(BuildContext context) {
