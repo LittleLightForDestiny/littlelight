@@ -22,7 +22,10 @@ class WeaponFrameFilterWidget extends BaseDrawerFilterWidget<WeaponFrameFilterOp
             (type) => SizedBox(
               child: FilterButtonWidget(
                 Column(children: [
-                  Text(type.toUpperCase()),
+                  Text(
+                    type.toUpperCase(),
+                    textAlign: TextAlign.center,
+                  ),
                 ]),
                 selected: values.contains(type),
                 onTap: () => updateOption(context, data, type, false),
