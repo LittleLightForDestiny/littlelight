@@ -19,4 +19,11 @@ class EditPriorityTagsBottomSheet extends BaseBottomSheet<int> {
       ),
     );
   }
+
+  @override
+  Future<int?> show(BuildContext context) async {
+    final result = await showModalBottomSheet(context: context, builder: (context) => this, isScrollControlled: true);
+    if (result is int) return result;
+    return null;
+  }
 }

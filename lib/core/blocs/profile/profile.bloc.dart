@@ -11,6 +11,7 @@ import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
+import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_last_played_sorter.dart';
@@ -77,6 +78,8 @@ class ProfileBloc extends ChangeNotifier
 
   List<DestinyItemComponent>? _currencies;
   List<DestinyItemComponent>? get currencies => _currencies;
+
+  int? _vaultItemCount;
 
   _CachedItemsContainer _itemCache = _CachedItemsContainer();
 
@@ -285,6 +288,7 @@ class ProfileBloc extends ChangeNotifier
       c.artifactPower = artifactPower;
       c.totalPower = totalPower;
     }
+    _vaultItemCount = allItems.where((element) => element.bucketHash == InventoryBucket.general).length;
   }
 
   InventoryItemInfo _createItemInfoFromInventory(
@@ -583,6 +587,7 @@ class ProfileBloc extends ChangeNotifier
     } else {
       await _updateUninstancedItemLocation(itemInfo, transferToVault, stackSize);
     }
+    _updateHelpers();
   }
 
   Future<void> equipItem(InventoryItemInfo itemInfo) async {
@@ -757,8 +762,18 @@ class ProfileBloc extends ChangeNotifier
       if (overrideStyle) {
         item.overrideStyleItemHash = plugHash;
       }
+      if (def?.isSubclass ?? false) {
+        for (int i = 0; i < sockets.length; i++) {
+          final socket = sockets[i];
+          if (socket.plugHash == plugHash && i != socketIndex) {
+            socket.plugHash = def?.sockets?.socketEntries?[i].singleInitialItemHash;
+          }
+        }
+      }
     }
     _lastLocalChange = DateTime.now().toUtc();
     notifyListeners();
   }
+
+  int? get vaultItemCount => _vaultItemCount;
 }

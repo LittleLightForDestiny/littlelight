@@ -20,7 +20,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   List<ItemSortParameter>? _itemOrdering;
   List<ItemSortParameter>? _pursuitOrdering;
   CharacterSortParameter? _characterOrdering;
-  Set<String?>? _priorityTags;
+  List<String>? _priorityTags;
   Map<String, BucketDisplayOptions>? _bucketDisplayOptions;
   Map<String, bool>? _detailsSectionDisplayVisibility;
   ObjectiveViewMode? _objectiveViewMode;
@@ -80,7 +80,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
 
   Future<void> initPriorityTags() async {
     _priorityTags = await currentMembershipStorage.getPriorityTags();
-    _priorityTags ??= {ItemNotesTag.favorite().tagId};
+    _priorityTags ??= [ItemNotesTag.favorite().tagId!];
   }
 
   Future<void> initBucketDisplayOptions() async {
@@ -172,7 +172,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
     notifyListeners();
   }
 
-  bool get autoOpenKeyboard => globalStorage.autoOpenKeyboard ?? false;
+  bool get autoOpenKeyboard => globalStorage.autoOpenKeyboard ?? true;
   set autoOpenKeyboard(bool value) {
     globalStorage.autoOpenKeyboard = value;
     notifyListeners();
@@ -192,17 +192,19 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
     notifyListeners();
   }
 
-  Set<String?>? get priorityTags => _priorityTags;
+  List<String>? get priorityTags => _priorityTags;
 
-  void _setPriorityTags(Set<String?> tags) {
+  void _setPriorityTags(List<String> tags) {
     _priorityTags = tags;
     currentMembershipStorage.savePriorityTags(_priorityTags as Set<String>);
     notifyListeners();
   }
 
   void addPriorityTag(ItemNotesTag tag) {
-    final tags = priorityTags!;
-    tags.add(tag.tagId);
+    final tags = priorityTags;
+    final tagId = tag.tagId;
+    if (tags == null || tagId == null) return;
+    tags.add(tagId);
     _setPriorityTags(tags);
   }
 

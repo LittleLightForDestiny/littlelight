@@ -10,7 +10,7 @@ class TextSearchFilterFieldWidget extends StatefulWidget {
   final OnTextUpdate? onUpdate;
   final Duration debounce;
   const TextSearchFilterFieldWidget(
-      {this.forceAutoFocus = false, this.onUpdate, this.debounce = const Duration(milliseconds: 500)})
+      {this.forceAutoFocus = false, this.onUpdate, this.debounce = const Duration(milliseconds: 300)})
       : super();
 
   @override

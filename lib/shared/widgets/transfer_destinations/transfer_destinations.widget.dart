@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/profile_icon.widget.dart';
 import 'package:little_light/shared/widgets/character/vault_icon.widget.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
+import 'package:provider/provider.dart';
 
 enum TransferActionType {
   Transfer,
@@ -185,9 +187,10 @@ class TransferDestinationsWidget extends StatelessWidget {
 
   Widget? buildCharacterIcon(BuildContext context, TransferDestination destination, TransferActionType action) {
     if (destination.type == TransferDestinationType.vault) {
+      final itemCount = context.watch<ProfileBloc>().vaultItemCount;
       return buildCharacterContainer(
         context,
-        VaultIconWidget(borderWidth: .5),
+        VaultIconWidget(borderWidth: .5, itemCount: itemCount),
         action,
         destination,
       );

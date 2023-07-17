@@ -9,7 +9,7 @@ import 'package:little_light/shared/widgets/wishlists/wishlist_badge.widget.dart
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:provider/provider.dart';
 
-const _maxPerkIconSize = 64.0;
+const _maxPerkIconSize = 56.0;
 const _defaultWishlistIconSize = 18.0;
 const _animationDuration = const Duration(milliseconds: 300);
 
@@ -48,6 +48,7 @@ class PerkIconWidget extends StatelessWidget {
     Color bgColor = Colors.transparent;
     Color borderColor = baseBorderColor(context).withOpacity(.5);
     final isRound = !intrinsic || exotic;
+    final isEnhanced = plugDef?.inventory?.tierType == TierType.Common;
     if (equipped && !intrinsic) {
       bgColor = perkColor(context).withOpacity(.5);
     }
@@ -80,6 +81,21 @@ class PerkIconWidget extends StatelessWidget {
                       border: Border.all(color: borderColor, width: 1.5 * scale),
                     ),
                   ),
+                  if (isEnhanced)
+                    Positioned.fill(
+                        child: Container(
+                      margin: EdgeInsets.all(4 * scale),
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(_maxPerkIconSize),
+                          gradient: LinearGradient(
+                            begin: Alignment.bottomCenter,
+                            end: Alignment.topCenter,
+                            colors: [
+                              context.theme.achievementLayers.layer0,
+                              context.theme.achievementLayers.layer0.withOpacity(0),
+                            ],
+                          )),
+                    )),
                   Padding(
                       padding: EdgeInsets.all(intrinsic ? 0 : 4 * scale),
                       child: ManifestImageWidget<DestinyInventoryItemDefinition>(

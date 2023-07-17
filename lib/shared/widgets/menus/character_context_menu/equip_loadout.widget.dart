@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/shared/blocs/context_menu_options/context_menu_options.bloc.dart';
-import 'package:little_light/shared/widgets/containers/menu_box.dart';
 import 'package:little_light/shared/widgets/containers/menu_box_title.dart';
 import 'package:provider/provider.dart';
 
@@ -20,37 +20,53 @@ class EquipLoadoutWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final classType = character.character.classType;
     if (classType == null) return SizedBox();
-    return MenuBox(
-        child: Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        MenuBoxTitle(
-          "Loadout".translate(context),
+    return Container(
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          color: context.theme.surfaceLayers.layer3,
+          borderRadius: BorderRadius.circular(4),
         ),
-        Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            ElevatedButton(
-              style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-              child: Text("Equip".translate(context).toUpperCase()),
-              onPressed: () async {
-                final bloc = context.read<ContextMenuOptionsBloc>();
-                bloc.openLoadoutTransfer(context, character, true);
-                onClose();
-              },
+            MenuBoxTitle(
+              "Loadout".translate(context),
             ),
-            ElevatedButton(
-              style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-              child: Text("Transfer".translate(context).toUpperCase()),
-              onPressed: () {
-                final bloc = context.read<ContextMenuOptionsBloc>();
-                bloc.openLoadoutTransfer(context, character, false);
-                onClose();
-              },
-            )
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ElevatedButton(
+                  style: ButtonStyle(visualDensity: VisualDensity.standard),
+                  child: Text("Equip".translate(context).toUpperCase()),
+                  onPressed: () async {
+                    final bloc = context.read<ContextMenuOptionsBloc>();
+                    bloc.openLoadoutTransfer(context, character, true);
+                    onClose();
+                  },
+                ),
+                Container(height: 4),
+                ElevatedButton(
+                  style: ButtonStyle(visualDensity: VisualDensity.standard),
+                  child: Text("Transfer".translate(context).toUpperCase()),
+                  onPressed: () {
+                    final bloc = context.read<ContextMenuOptionsBloc>();
+                    bloc.openLoadoutTransfer(context, character, false);
+                    onClose();
+                  },
+                ),
+                Container(height: 4),
+                ElevatedButton(
+                  style: ButtonStyle(visualDensity: VisualDensity.standard),
+                  child: Text("Random".translate(context).toUpperCase()),
+                  onPressed: () {
+                    final bloc = context.read<ContextMenuOptionsBloc>();
+                    bloc.openEquipRandomLoadout(context, character);
+                    onClose();
+                  },
+                ),
+              ],
+            ),
           ],
-        ),
-      ],
-    ));
+        ));
   }
 }

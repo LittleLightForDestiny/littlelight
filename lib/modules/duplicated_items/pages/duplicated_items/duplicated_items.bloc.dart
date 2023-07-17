@@ -1,5 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
@@ -10,6 +11,7 @@ import 'package:little_light/modules/item_details/pages/definition_item_details/
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/search/blocs/filter_options/export.dart';
 import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
+import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:provider/provider.dart';
 
@@ -25,7 +27,13 @@ class DuplicatedItemsBloc extends ChangeNotifier {
   final UserSettingsBloc userSettingsBloc;
 
   @protected
+  final ItemNotesBloc itemNotesBloc;
+
+  @protected
   final SearchFilterBloc filterBloc;
+
+  @protected
+  final SearchSorterBloc sorterBloc;
 
   @protected
   final SelectionBloc selectionBloc;
@@ -47,8 +55,10 @@ class DuplicatedItemsBloc extends ChangeNotifier {
 
   DuplicatedItemsBloc(BuildContext this.context)
       : profileBloc = context.read<ProfileBloc>(),
+        itemNotesBloc = context.read<ItemNotesBloc>(),
         manifest = context.read<ManifestService>(),
         filterBloc = context.read<SearchFilterBloc>(),
+        sorterBloc = context.read<SearchSorterBloc>(),
         selectionBloc = context.read<SelectionBloc>(),
         userSettingsBloc = context.read<UserSettingsBloc>(),
         super() {
@@ -57,6 +67,7 @@ class DuplicatedItemsBloc extends ChangeNotifier {
 
   void _init() {
     this.profileBloc.addListener(_update);
+    this.itemNotesBloc.addListener(_update);
     this.filterBloc.addListener(_filter);
     _loadDefinitions();
     _update();
@@ -77,13 +88,15 @@ class DuplicatedItemsBloc extends ChangeNotifier {
   @override
   void dispose() {
     this.profileBloc.removeListener(_update);
+    this.itemNotesBloc.removeListener(_update);
     this.filterBloc.removeListener(_filter);
     super.dispose();
   }
 
   _update() async {
     final instancedItems = profileBloc.allInstancedItems;
-    final hashes = instancedItems.map((e) => e.itemHash).whereType<int>().toSet();
+    final sortedItems = await sorterBloc.sort(instancedItems);
+    final hashes = sortedItems.map((e) => e.itemHash).whereType<int>().toSet();
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     final map = <int, Map<int, List<DestinyItemInfo>>>{};
     final genericItems = _genericItems ??= {};
@@ -92,7 +105,7 @@ class DuplicatedItemsBloc extends ChangeNotifier {
       final bucketHash = def?.inventory?.bucketTypeHash;
       if (bucketHash == null) continue;
       final bucketHashMap = map[bucketHash] ??= {};
-      final items = profileBloc.getItemsByHash(itemHash);
+      final items = sortedItems.where((i) => i.itemHash == itemHash);
       if (items.length <= 1) continue;
       if (def != null) genericItems[itemHash] ??= DefinitionItemInfo.fromDefinition(def);
       for (final item in items) filterBloc.addValue(item);

@@ -14,6 +14,8 @@ import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
 import 'package:little_light/shared/utils/extensions/element_type_data.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/widgets/character/postmaster_icon.widget.dart';
+import 'package:little_light/shared/widgets/inventory_item/inventory_item_mods.dart';
+import 'package:little_light/shared/widgets/inventory_item/utils/get_mods_socket_category.dart';
 import 'package:little_light/shared/widgets/inventory_item/utils/get_perks_socket_category.dart';
 import 'package:little_light/shared/widgets/tags/tag_icon.widget.dart';
 import 'package:little_light/shared/widgets/ui/center_icon_workaround.dart';
@@ -29,7 +31,7 @@ import 'utils/get_energy_capacity.dart';
 const _expectedItemSize = Size(172.0, 116.0);
 const _padding = 4.0;
 const _emblemIconSize = 40.0;
-const _tagIconSize = 20.0;
+const _tagIconSize = 16.0;
 const _primaryStatIconsSize = 18.0;
 
 class DuplicatedItemWidget extends StatelessWidget {
@@ -83,12 +85,35 @@ class DuplicatedItemWidget extends StatelessWidget {
             children: <Widget>[
           Row(
               children: [
+            buildWishlistTags(context),
             if (definition?.isArmor ?? false) buildTotalStats(context, definition),
             buildCharacterName(context),
           ].whereType<Widget>().toList()),
           if (definition?.isArmor ?? false) buildArmorMainInfo(context, definition),
           if (definition?.isWeapon ?? false) buildWeaponMainInfo(context, definition),
         ]));
+  }
+
+  Widget buildWeaponMods(BuildContext context) {
+    final definition = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
+    final manifest = context.read<ManifestService>();
+    if (definition == null) return Container();
+    if (!definition.isWeapon) return Container();
+    return FutureBuilder<int?>(
+        future: getModsSocketCategory(manifest, definition),
+        builder: (context, snapshot) {
+          final categoryHash = snapshot.data;
+          if (categoryHash == null) return Container();
+          return Container(
+            margin: EdgeInsets.only(top: 4),
+            alignment: Alignment.bottomRight,
+            child: InventoryItemMods(
+              item,
+              categoryHash: categoryHash,
+              plugSize: 24,
+            ),
+          );
+        });
   }
 
   Widget buildWeaponPerks(BuildContext context, DestinyInventoryItemDefinition? definition) {
@@ -291,8 +316,8 @@ class DuplicatedItemWidget extends StatelessWidget {
   Widget buildModsAndTags(BuildContext context) => Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          buildWishlistTags(context),
           buildItemTags(context),
+          buildWeaponMods(context),
         ],
       );
 
@@ -317,18 +342,19 @@ class DuplicatedItemWidget extends StatelessWidget {
     final locked = item.state?.contains(ItemState.Locked) ?? false;
     if (locked == false && wishlistTags.isEmpty) return Container();
     return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
+      Container(
+          margin: EdgeInsets.only(right: 4),
+          width: _tagIconSize,
+          height: _tagIconSize,
+          child: CenterIconWorkaround(
+            FontAwesomeIcons.lock,
+            size: _tagIconSize * .7,
+          )),
       if (wishlistTags.isNotEmpty)
         Container(
           margin: EdgeInsets.only(right: 4),
           child: WishlistBadgesWidget(wishlistTags, size: _tagIconSize),
         ),
-      SizedBox(
-          width: _tagIconSize,
-          height: _tagIconSize,
-          child: CenterIconWorkaround(
-            FontAwesomeIcons.lock,
-            size: _tagIconSize * .6,
-          )),
     ]);
   }
 }

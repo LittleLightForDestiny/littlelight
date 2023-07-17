@@ -6,6 +6,7 @@ import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
+import 'package:little_light/shared/utils/helpers/deepsight_helpers.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:shimmer/shimmer.dart';
@@ -153,19 +154,8 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   }
 
   bool isDeepsight(BuildContext context) {
-    final isDeepsight = itemInfo.state?.contains(ItemState.HighlightedObjective) ?? false;
-    if (isDeepsight) return true;
-
-    /// quick workaround for returning deepsights while api doesn't return state.HighlightObjective correctly
-    return itemInfo.sockets?.any((element) {
-          final isEnabled = element.isEnabled ?? false;
-          if (!isEnabled) return false;
-          final isVisible = element.isVisible ?? false;
-          if (!isVisible) return false;
-          final socketDef = context.definition<DestinyInventoryItemDefinition>(element.plugHash);
-          return socketDef?.plug?.plugCategoryIdentifier?.contains('crafting.plugs.weapons.mods.memories') ?? false;
-        }) ??
-        false;
+    final def = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
+    return isItemDeepsight(this.itemInfo, def);
   }
 
   Widget? buildCraftedWeaponOverlay(BuildContext context) {

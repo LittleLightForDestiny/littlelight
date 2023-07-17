@@ -1,6 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/profile/sorters.dart';
@@ -16,7 +17,7 @@ import 'package:little_light/services/littlelight/littlelight_data.consumer.dart
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
-import 'package:little_light/shared/utils/sorters/items/multi_sorter.dart';
+import 'package:little_light/shared/utils/sorters/items/export.dart';
 import 'package:provider/provider.dart';
 
 typedef CharactersQuests = Map<String, Map<int?, List<DestinyItemInfo>>>;
@@ -72,6 +73,7 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
   final ProfileBloc _profileBloc;
   final SelectionBloc _selectionBloc;
   final UserSettingsBloc _userSettingsBloc;
+  final ItemNotesBloc _itemNotesBloc;
   final PageStorageBucket _pageStorageBucket = PageStorageBucket();
   PageStorageBucket get pageStorageBucket => _pageStorageBucket;
   GameData? _gameData;
@@ -81,13 +83,15 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
   ProgressBloc(this._context)
       : _profileBloc = _context.read<ProfileBloc>(),
         _selectionBloc = _context.read<SelectionBloc>(),
-        _userSettingsBloc = _context.read<UserSettingsBloc>() {
+        _userSettingsBloc = _context.read<UserSettingsBloc>(),
+        _itemNotesBloc = _context.read<ItemNotesBloc>() {
     _init();
   }
   _init() {
     _userSettingsBloc.startingPage = LittleLightPersistentPage.Progress;
     _profileBloc.addListener(_update);
     _userSettingsBloc.addListener(_update);
+    _itemNotesBloc.addListener(_update);
     _update();
     _loadGameData();
   }
@@ -101,11 +105,13 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
   void dispose() {
     _profileBloc.removeListener(_update);
     _userSettingsBloc.removeListener(_update);
+    _itemNotesBloc.removeListener(_update);
     super.dispose();
   }
 
   void _update() async {
     final equipmentState = _ProgressState();
+    final priorityTags = _userSettingsBloc.priorityTags ?? <String>[];
     final parameters = _userSettingsBloc.pursuitOrdering;
     List<DestinyItemInfo> items = _profileBloc.allItems;
     final characters = _profileBloc.characters;
@@ -114,7 +120,10 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
       final hashes = items.map((e) => e.itemHash).whereType<int>();
       final definitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
       final sorters = getSortersFromStorage(parameters, _context, definitions, characters);
-      items = await MultiSorter(sorters).sort(_profileBloc.allItems);
+      items = await MultiSorter([
+        if (priorityTags.isNotEmpty) PriorityTagsSorter(_context, priorityTags),
+        ...sorters,
+      ]).sort(_profileBloc.allItems);
     }
     final pursuits = items.where((i) => i.bucketHash == InventoryBucket.pursuits);
 

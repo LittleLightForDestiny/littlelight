@@ -6,13 +6,12 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 import 'package:little_light/shared/widgets/modals/base_bottom_sheet.base.dart';
 import 'package:provider/provider.dart';
 
-import 'equip_loadout_quickmenu.bloc.dart';
-import 'equip_loadout_quickmenu.view.dart';
+import 'equip_random_loadout.bloc.dart';
+import 'equip_random_loadout.view.dart';
 
-class EquipLoadoutBottomsheet extends BaseBottomSheet<void> {
+class EquipRandomLoadoutBottomsheet extends BaseBottomSheet<void> {
   final DestinyCharacterInfo character;
-  final bool equip;
-  EquipLoadoutBottomsheet(this.character, this.equip);
+  EquipRandomLoadoutBottomsheet(this.character);
 
   @override
   Widget buildContainer(BuildContext context, BuildCallback builder) {
@@ -20,7 +19,7 @@ class EquipLoadoutBottomsheet extends BaseBottomSheet<void> {
       ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
       ChangeNotifierProvider<SocketControllerBloc>(
           create: (context) => LoadoutItemOptionsSocketControllerBloc(context)),
-      ChangeNotifierProvider(create: (context) => EquipLoadoutQuickmenuBloc(context, character, equip)),
+      ChangeNotifierProvider(create: (context) => EquipRandomLoadoutBloc(context, character)),
     ], builder: (context, child) => builder(context));
   }
 
@@ -29,9 +28,9 @@ class EquipLoadoutBottomsheet extends BaseBottomSheet<void> {
 
   @override
   Widget buildContent(BuildContext context) {
-    return EquipLoadoutQuickmenuView(
-      bloc: context.read<EquipLoadoutQuickmenuBloc>(),
-      state: context.watch<EquipLoadoutQuickmenuBloc>(),
+    return LoadoutItemOptionsView(
+      bloc: context.read<EquipRandomLoadoutBloc>(),
+      state: context.watch<EquipRandomLoadoutBloc>(),
     );
   }
 

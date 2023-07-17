@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/armor_stats_filter.widget.dart';
+import 'package:little_light/modules/search/widgets/drawer_filters/crafted_filter.widget.dart';
+import 'package:little_light/modules/search/widgets/drawer_filters/deepsight_filter.widget.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/power_level_filter.widget.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/tier_type_filter.widget.dart';
+import 'package:little_light/modules/search/widgets/drawer_filters/weapon_frame_filter.widget.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/wishlist_tag_filter.widget.dart';
 import 'drawer_filters/ammo_type_filter.widget.dart';
 import 'drawer_filters/class_type_filter.widget.dart';
@@ -36,6 +39,9 @@ class FiltersListWidget extends StatelessWidget {
           /// weapon filter types
           AmmoTypeFilterWidget(),
           DamageTypeFilterWidget(),
+          DeepsightFilterWidget(),
+          CraftedFilterWidget(),
+          WeaponFrameFilterWidget(),
 
           /// armor filter types
           EnergyLevelFilterWidget(),

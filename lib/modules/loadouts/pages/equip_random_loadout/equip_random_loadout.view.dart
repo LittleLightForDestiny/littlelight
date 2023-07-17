@@ -2,24 +2,24 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/loadouts/widgets/loadout_small_list_item.widget.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/blocs/scoped_value_repository/page_storage_helper.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/containers/menu_box.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
+import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
+import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/ui/switch.dart';
-import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
-import 'equip_loadout_quickmenu.bloc.dart';
+import 'equip_random_loadout.bloc.dart';
 
-class EquipLoadoutQuickmenuView extends StatelessWidget {
-  final EquipLoadoutQuickmenuBloc bloc;
-  final EquipLoadoutQuickmenuBloc state;
+class LoadoutItemOptionsView extends StatelessWidget {
+  final EquipRandomLoadoutBloc bloc;
+  final EquipRandomLoadoutBloc state;
 
-  const EquipLoadoutQuickmenuView({
+  const LoadoutItemOptionsView({
     Key? key,
     required this.bloc,
     required this.state,
@@ -27,6 +27,7 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final showItems = context.readValue(RandomLoadoutOptionTypes(RandomLoadoutOptions.ViewItems))?.value ?? false;
     return Container(
       constraints: BoxConstraints(maxHeight: context.mediaQuery.size.height * .8),
       child: Column(
@@ -34,15 +35,7 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           buildHeader(context),
-          Flexible(
-            child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [buildLoadoutList(context)],
-                )),
-          ),
+          if (showItems) Flexible(child: SingleChildScrollView(child: buildLoadout(context))),
           buildOptions(context),
         ],
       ),
@@ -54,59 +47,78 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
       padding: EdgeInsets.all(8),
       child: HeaderWidget(
         child: Text(
-          (state.equip ? "Equip Loadout".translate(context) : "Transfer Loadout".translate(context)).toUpperCase(),
+          "Random Loadout".translate(context).toUpperCase(),
         ),
       ),
+    );
+  }
+
+  Widget buildLoadout(BuildContext context) {
+    return Column(
+      children: state.loadout?.values
+              .map((e) => e != null
+                  ? Container(
+                      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                      child: HighDensityInventoryItem(e),
+                      height: InventoryItemWidgetDensity.High.itemHeight,
+                    )
+                  : Container())
+              .toList() ??
+          [],
     );
   }
 
   Widget buildOptions(BuildContext context) {
     return Container(
         padding: EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: context.mediaQuery.padding.bottom, top: 8),
-        child: context.mediaQuery.tabletOrBigger
-            ? IntrinsicHeight(
-                child: Row(children: [
-                Expanded(child: buildFreeSlotsSlider(context)),
-                SizedBox(width: 8),
-                Expanded(child: buildItemsToInclude(context))
-              ]))
-            : Column(children: [
-                buildFreeSlotsSlider(context),
-                buildItemsToInclude(context),
-              ]));
+        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+          buildRollButton(context),
+          buildItemsToInclude(context),
+        ]));
   }
 
-  Widget buildFreeSlotsSlider(BuildContext context) {
+  Widget buildRollButton(BuildContext context) {
     return MenuBox(
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Container(
-            margin: EdgeInsets.all(2),
-            padding: EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(8),
-              color: context.theme.surfaceLayers.layer1,
+          Row(children: [
+            buildItemTypeSwitch(
+              context,
+              Text("Show items".translate(context)),
+              RandomLoadoutOptions.ViewItems,
+            )
+          ]),
+          Container(height: 4),
+          Row(children: [
+            Expanded(
+                child: ElevatedButton(
+                    onPressed: () => bloc.roll(),
+                    child: Text(
+                      "Randomize".translate(context),
+                      softWrap: false,
+                    ))),
+            Container(
+              width: 4,
             ),
-            child: Row(children: [
-              Expanded(
-                  child: Text(
-                "Free Slots".translate(context),
-                style: context.textTheme.highlight,
-              )),
-              Text(
-                "${state.freeSlots}",
-                style: context.textTheme.highlight,
-              )
-            ]),
-          ),
-          Slider(
-            min: 0,
-            max: 9,
-            value: state.freeSlots.toDouble(),
-            onChanged: (value) => state.freeSlots = value.floor(),
-          ),
+            Expanded(
+                child: ElevatedButton(
+                    onPressed: () => bloc.select(),
+                    child: Text(
+                      "Select".translate(context),
+                      softWrap: false,
+                    ))),
+            Container(
+              width: 4,
+            ),
+            Expanded(
+                child: ElevatedButton(
+                    onPressed: () => bloc.equip(),
+                    child: Text(
+                      "Equip".translate(context),
+                      softWrap: false,
+                    ))),
+          ]),
         ],
       ),
     );
@@ -117,22 +129,22 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
       buildItemTypeSwitch(
         context,
         ManifestText<DestinyItemCategoryDefinition>(DestinyItemCategory.Weapon),
-        LoadoutIncludedItemTypes.Weapon,
+        RandomLoadoutOptions.Weapon,
       ),
       buildItemTypeSwitch(
         context,
         ManifestText<DestinyItemCategoryDefinition>(DestinyItemCategory.Armor),
-        LoadoutIncludedItemTypes.Armor,
+        RandomLoadoutOptions.Armor,
       ),
       buildItemTypeSwitch(
         context,
         ManifestText<DestinyInventoryBucketDefinition>(InventoryBucket.subclass),
-        LoadoutIncludedItemTypes.Subclass,
+        RandomLoadoutOptions.Subclass,
       ),
       buildItemTypeSwitch(
         context,
-        Text("Other".translate(context)),
-        LoadoutIncludedItemTypes.Other,
+        Text("Force exotics".translate(context)),
+        RandomLoadoutOptions.EnsureExotics,
       ),
     ];
     return MenuBox(
@@ -146,7 +158,7 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
     );
   }
 
-  Widget buildItemTypeSwitch(BuildContext context, Widget label, LoadoutIncludedItemTypes key) {
+  Widget buildItemTypeSwitch(BuildContext context, Widget label, RandomLoadoutOptions key) {
     return Expanded(
       child: DefaultTextStyle(
         child: Container(
@@ -162,8 +174,8 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
               SizedBox(
                 width: 4,
               ),
-              LLSwitch.callback(context.readValue(IncludedItemTypes(key))?.value ?? false, (value) {
-                context.storeValue(IncludedItemTypes(key, value));
+              LLSwitch.callback(context.readValue(RandomLoadoutOptionTypes(key))?.value ?? false, (value) {
+                context.storeValue(RandomLoadoutOptionTypes(key, value));
               })
             ],
             mainAxisSize: MainAxisSize.min,
@@ -172,19 +184,5 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
         style: context.textTheme.highlight,
       ),
     );
-  }
-
-  Widget buildLoadoutList(BuildContext context) {
-    final loadouts = state.loadouts;
-    if (loadouts == null) return Container(height: 256, child: LoadingAnimWidget());
-    return Column(
-        children: loadouts
-            .map((e) => LoadoutSmallListItemWidget(
-                  e,
-                  classFilter: state.character.character.classType,
-                  bucketFilter: state.selectedBuckets,
-                  onTap: () => bloc.loadoutSelected(e),
-                ))
-            .toList());
   }
 }

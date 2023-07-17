@@ -7,6 +7,8 @@ import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.d
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
+import 'package:little_light/core/blocs/profile/sorters.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/item_notes_tag.dart';
@@ -25,6 +27,7 @@ import 'package:little_light/shared/utils/helpers/get_transfer_destinations.dart
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:little_light/shared/utils/helpers/wishlist_helpers.dart';
+import 'package:little_light/shared/utils/sorters/items/export.dart';
 import 'package:little_light/shared/widgets/transfer_destinations/transfer_destinations.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -36,6 +39,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   final ManifestService _manifestBloc;
   final WishlistsService _wishlists;
   final LoadoutsBloc _loadoutsBloc;
+  final UserSettingsBloc _userSettingsBloc;
 
   @protected
   InventoryItemInfo? _item;
@@ -55,6 +59,8 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
   bool _lockBusy = false;
 
+  List<InventoryItemInfo>? _duplicates;
+
   InventoryItemDetailsBloc(BuildContext context, {InventoryItemInfo? item})
       : _item = item,
         _profileBloc = context.read<ProfileBloc>(),
@@ -65,6 +71,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
         _littleLightDataBloc = context.read<LittleLightDataBloc>(),
         _wishlists = getInjectedWishlistsService(),
         _loadoutsBloc = context.read<LoadoutsBloc>(),
+        _userSettingsBloc = context.read<UserSettingsBloc>(),
         super(context) {
     _init();
   }
@@ -114,6 +121,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
     _updateKillTracker();
     _updateCraftedProgress();
+    _updateDuplicates();
 
     notifyListeners();
   }
@@ -155,6 +163,26 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     final objectives = this.item?.plugObjectives?["${craftedDef?.hash}"];
     _craftedObjectives = objectives;
     notifyListeners();
+  }
+
+  void _updateDuplicates() async {
+    final duplicates = this.item?.duplicates?.where((element) => element != this.item).toList();
+    _duplicates = duplicates;
+    if (duplicates == null || duplicates.isEmpty) return;
+
+    final sorters = _userSettingsBloc.itemOrdering;
+    final priority = _userSettingsBloc.priorityTags;
+    if (sorters == null) return;
+    final defs = await _manifestBloc.getDefinitions<DestinyInventoryItemDefinition>({itemHash});
+    _duplicates = await MultiSorter([
+      if (priority != null && priority.isNotEmpty) PriorityTagsSorter(context, priority),
+      ...getSortersFromStorage(
+        sorters,
+        context,
+        defs,
+        _profileBloc.characters ?? [],
+      )
+    ]).sort(duplicates);
   }
 
   @override
@@ -259,7 +287,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   List<InventoryItemInfo>? get duplicates {
     final def = _manifestBloc.definition<DestinyInventoryItemDefinition>(this.item?.itemHash);
     if ((def?.equippable ?? true) == false) return null;
-    return this.item?.duplicates?.where((element) => element != this.item).toList();
+    return _duplicates;
   }
 
   @override
