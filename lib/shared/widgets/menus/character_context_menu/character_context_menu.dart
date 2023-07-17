@@ -93,7 +93,15 @@ class CharacterContextMenu extends BaseOverlayWidget {
                       SizedBox(
                         width: 4,
                       ),
-                      Expanded(child: buildCharacterSelect(context)),
+                      Expanded(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            buildSearchButton(context),
+                            buildCharacterSelect(context),
+                          ],
+                        ),
+                      ),
                     ]),
                   ),
                 ].whereType<Widget>().toList(),
@@ -113,22 +121,25 @@ class CharacterContextMenu extends BaseOverlayWidget {
         mainAxisSize: MainAxisSize.max,
         children: [
           buildEquipLoadout(context),
-          ElevatedButton(
-            style: ButtonStyle(visualDensity: VisualDensity.standard),
-            child: Row(children: [
-              Icon(FontAwesomeIcons.magnifyingGlass, size: 16),
-              SizedBox(
-                width: 4,
-              ),
-              Text("Search".translate(context).toUpperCase()),
-            ]),
-            onPressed: () {
-              this.onClose();
-              this.onSearchTap?.call();
-            },
-          )
         ].whereType<Widget>().toList(),
       ),
+    );
+  }
+
+  Widget buildSearchButton(BuildContext context) {
+    return ElevatedButton(
+      style: ButtonStyle(visualDensity: VisualDensity.standard),
+      child: Row(children: [
+        Icon(FontAwesomeIcons.magnifyingGlass, size: 16),
+        SizedBox(
+          width: 4,
+        ),
+        Text("Search".translate(context).toUpperCase()),
+      ]),
+      onPressed: () {
+        this.onClose();
+        this.onSearchTap?.call();
+      },
     );
   }
 

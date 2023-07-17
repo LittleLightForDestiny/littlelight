@@ -15,11 +15,11 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 import 'equip_loadout_quickmenu.bloc.dart';
 
-class LoadoutItemOptionsView extends StatelessWidget {
+class EquipLoadoutQuickmenuView extends StatelessWidget {
   final EquipLoadoutQuickmenuBloc bloc;
   final EquipLoadoutQuickmenuBloc state;
 
-  const LoadoutItemOptionsView({
+  const EquipLoadoutQuickmenuView({
     Key? key,
     required this.bloc,
     required this.state,

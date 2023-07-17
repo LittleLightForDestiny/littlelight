@@ -10,6 +10,7 @@ import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/equip_loadout_quickmenu/equip_loadout_quickmenu.bottomsheet.dart';
+import 'package:little_light/modules/loadouts/pages/equip_random_loadout/equip_random_loadout.bottomsheet.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -301,5 +302,9 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
 
   void openLoadoutTransfer(BuildContext navigatorContext, DestinyCharacterInfo character, bool equip) async {
     EquipLoadoutBottomsheet(character, equip).show(navigatorContext);
+  }
+
+  void openEquipRandomLoadout(BuildContext navigatorContext, DestinyCharacterInfo character) {
+    EquipRandomLoadoutBottomsheet(character).show(navigatorContext);
   }
 }

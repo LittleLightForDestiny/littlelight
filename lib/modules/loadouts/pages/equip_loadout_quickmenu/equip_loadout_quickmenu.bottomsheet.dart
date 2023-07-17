@@ -29,7 +29,7 @@ class EquipLoadoutBottomsheet extends BaseBottomSheet<void> {
 
   @override
   Widget buildContent(BuildContext context) {
-    return LoadoutItemOptionsView(
+    return EquipLoadoutQuickmenuView(
       bloc: context.read<EquipLoadoutQuickmenuBloc>(),
       state: context.watch<EquipLoadoutQuickmenuBloc>(),
     );
