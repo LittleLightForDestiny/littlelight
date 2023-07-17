@@ -1,3 +1,18 @@
+## [2.0.1] - 2023-07-17
+
+- show vault item count
+- make favorite items show first at search
+-  re-add search button on main header
+-  fix some subclass mods not being equippable
+-  re-add mods on duplicate weapons
+-  re-add random loadout option
+-  fix trackers column on collections
+-  makes tags menu scrollable
+-  fixes enhanced perks
+-  adds weapon frames filter
+-  adds crafted weapons filter
+- adds deepsight weapons filter
+
 ## [2.0.0] - 2023-07-14
 
 - transfers and inventory management were almost entirely reworked
