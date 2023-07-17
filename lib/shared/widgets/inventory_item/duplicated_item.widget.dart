@@ -110,6 +110,7 @@ class DuplicatedItemWidget extends StatelessWidget {
             child: InventoryItemMods(
               item,
               categoryHash: categoryHash,
+              plugSize: 24,
             ),
           );
         });
