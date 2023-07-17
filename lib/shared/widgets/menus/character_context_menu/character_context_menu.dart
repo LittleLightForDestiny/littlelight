@@ -98,6 +98,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             buildSearchButton(context),
+                            Container(height: 4),
                             buildCharacterSelect(context),
                           ],
                         ),

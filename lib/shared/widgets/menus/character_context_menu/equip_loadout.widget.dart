@@ -44,6 +44,7 @@ class EquipLoadoutWidget extends StatelessWidget {
                     onClose();
                   },
                 ),
+                Container(height: 4),
                 ElevatedButton(
                   style: ButtonStyle(visualDensity: VisualDensity.standard),
                   child: Text("Transfer".translate(context).toUpperCase()),
@@ -53,6 +54,7 @@ class EquipLoadoutWidget extends StatelessWidget {
                     onClose();
                   },
                 ),
+                Container(height: 4),
                 ElevatedButton(
                   style: ButtonStyle(visualDensity: VisualDensity.standard),
                   child: Text("Random".translate(context).toUpperCase()),
