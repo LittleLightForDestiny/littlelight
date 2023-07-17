@@ -4,6 +4,7 @@ import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
+import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/helpers/plug_helpers.dart';
 import 'package:provider/provider.dart';
 
@@ -94,6 +95,7 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
     final plugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(plugHash);
     final equippedEnergy = currentPlugDef?.plug?.energyCost?.energyCost ?? 0;
     final requiredEnergy = plugDef?.plug?.energyCost?.energyCost ?? 0;
+    if (requiredEnergy == 0) return true;
     if (usedEnergy - equippedEnergy + requiredEnergy > availableEnergy) return false;
     return true;
   }
