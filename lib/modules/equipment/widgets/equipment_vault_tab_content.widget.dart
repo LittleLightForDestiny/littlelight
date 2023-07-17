@@ -32,6 +32,8 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
   final List<DestinyItemComponent>? currencies;
   final int? itemsOnVault;
 
+  final Map<String, DestinyProgression>? progressions;
+
   ItemSectionOptionsBloc bucketOptionsState(BuildContext context) => context.watch<ItemSectionOptionsBloc>();
 
   const EquipmentVaultTabContentWidget({
@@ -39,6 +41,7 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
     required this.buckets,
     this.currencies,
     this.itemsOnVault,
+    this.progressions,
   }) : super(key: key);
 
   Future<Map<int, DestinyInventoryBucketDefinition>> get bucketDefs async {
@@ -65,6 +68,7 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
                 itemBuilder: (context, _) => VaultInfoWidget(
                   currencies: currencies,
                   totalVaultItems: itemsOnVault,
+                  progressions: progressions,
                 ),
               ),
               ...buckets

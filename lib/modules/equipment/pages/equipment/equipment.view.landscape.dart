@@ -199,6 +199,7 @@ class EquipmentLandscapeView extends StatelessWidget {
     return EquipmentVaultTabContentWidget(
       buckets: buckets,
       itemsOnVault: state.vaultItemCount,
+      progressions: state.characters?.firstOrNull?.progression?.progressions,
     );
   }
 

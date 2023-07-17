@@ -206,6 +206,7 @@ class EquipmentPortraitView extends StatelessWidget {
       buckets: buckets,
       currencies: currencies,
       itemsOnVault: state.vaultItemCount,
+      progressions: state.characters?.firstOrNull?.progression?.progressions,
     );
   }
 
