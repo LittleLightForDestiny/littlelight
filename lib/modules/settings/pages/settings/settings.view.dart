@@ -203,6 +203,7 @@ class SettingsView extends StatelessWidget {
     if (itemOrdering == null) return Container();
     return ReorderableList(
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final parameter = itemOrdering[index];
         return ItemOrderParameterWidget(
@@ -223,6 +224,7 @@ class SettingsView extends StatelessWidget {
     if (pursuitOrdering == null) return Container();
     return ReorderableList(
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final parameter = pursuitOrdering[index];
         return ItemOrderParameterWidget(
