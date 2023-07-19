@@ -10,6 +10,7 @@ import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
+import 'package:little_light/modules/equipment/pages/context_menu_overlay/character_context_menu_modal_route.dart';
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/search/pages/item_search/item_search.page_route.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
@@ -19,7 +20,6 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 import 'package:little_light/shared/utils/sorters/items/export.dart';
-import 'package:little_light/modules/equipment/pages/context_menu_overlay/character_context_menu.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:provider/provider.dart';
 
@@ -225,20 +225,15 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
   void openContextMenu(CustomTabController characterTabController, CustomTabController? typeTabController) {
     final characters = this.characters;
     if (characters == null) return;
-    Navigator.of(_context).push(RawDialogRoute(
-        transitionDuration: Duration(milliseconds: 500),
-        barrierColor: Colors.transparent,
-        transitionBuilder: (context, animation, secondaryAnimation, child) => child,
-        pageBuilder: (context, animation, animation2) => CharacterContextMenu(
-              characters,
-              characterTabController,
-              openAnimation: animation,
-              onSearchTap: () {
-                final currentBucketGroup =
-                    typeTabController != null ? EquipmentBucketGroup.values[typeTabController.index] : null;
-                final currentClassType = characters[characterTabController.index]?.character.classType;
-                openSearch(currentBucketGroup, currentClassType);
-              },
-            )));
+    Navigator.of(_context).push(CharacterContextMenuModalRoute(
+      characterTabController,
+      characters: characters,
+      onSearchTap: () {
+        final currentBucketGroup =
+            typeTabController != null ? EquipmentBucketGroup.values[typeTabController.index] : null;
+        final currentClassType = characters[characterTabController.index]?.character.classType;
+        openSearch(currentBucketGroup, currentClassType);
+      },
+    ));
   }
 }

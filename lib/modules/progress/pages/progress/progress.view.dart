@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/scroll_area_type.dart';
+import 'package:little_light/modules/equipment/pages/context_menu_overlay/character_context_menu_view.dart';
 import 'package:little_light/modules/progress/pages/progress/milestones.bloc.dart';
 import 'package:little_light/modules/progress/pages/progress/ranks.bloc.dart';
 import 'package:little_light/modules/progress/widgets/character_milestones_tab_content.widget.dart';
@@ -249,23 +250,12 @@ class ProgressView extends StatelessWidget {
                 characters,
                 characterTabController,
               )),
-          Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: 184.0,
+          Positioned.fill(
+              key: CharacterContextMenu.menuButtonKey,
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(onTap: () {
-                  ///TODO: replace this
-                  // showOverlay(
-                  //     context,
-                  //     ((_, rect) => CharacterContextMenu(
-                  //           characters,
-                  //           characterTabController,
-                  //           sourceRenderBox: rect,
-                  //           onSearchTap: () => bloc.openSearch(),
-                  //         )));
+                  bloc.openContextMenu(characterTabController);
                 }),
               ))
         ],
