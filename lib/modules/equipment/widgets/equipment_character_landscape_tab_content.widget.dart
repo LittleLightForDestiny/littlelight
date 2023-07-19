@@ -8,6 +8,7 @@ import 'package:little_light/modules/progress/widgets/bucket_header_list_item.wi
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
+import 'package:little_light/shared/blocs/bucket_options/global_key_holder.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/character/character_info.widget.dart';
@@ -126,12 +127,14 @@ class EquipmentCharacterLandscapeTabContentWidget extends StatelessWidget {
     final bucketDefCount = (bucketDef?.itemCount ?? 10) - (equipped != null ? 1 : 0);
     final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final unequippedCount = ((useBucketCount ? bucketDefCount : unequipped.length) / idealCount).ceil() * idealCount;
+    final key = "${character.characterId} $bucketHash";
     return [
       FixedHeightScrollSection(
         _bucketHeaderHeight,
         itemCount: 1,
         itemBuilder: (_, __) => BucketHeaderListItemWidget(
           bucketHash,
+          menuGlobalKey: context.getGlobalKeyFor(key),
           canEquip: equipped != null,
           itemCount: bucketContent.unequipped.length + (bucketContent.equipped != null ? 1 : 0),
           defaultType: defaultDisplayType,
@@ -241,11 +244,13 @@ class EquipmentCharacterLandscapeTabContentWidget extends StatelessWidget {
     final bucketDefCount = (bucketDef?.itemCount ?? 10) - (equipped != null ? 1 : 0);
     final idealCount = unequippedDensity?.getIdealCount(columnWidth) ?? 5;
     final unequippedCount = ((bucketDefCount) / idealCount).ceil() * idealCount;
+    final key = "${character.characterId} $bucketHash";
     return Column(children: [
       Container(
         height: _bucketHeaderHeight,
         child: BucketHeaderListItemWidget(
           bucketHash,
+          menuGlobalKey: context.getGlobalKeyFor(key),
           canEquip: equipped != null,
           itemCount: bucketContent.unequipped.length + (bucketContent.equipped != null ? 1 : 0),
           defaultType: defaultDisplayType,

@@ -3,7 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/scroll_area_type.dart';
-import 'package:little_light/modules/equipment/pages/context_menu_overlay/character_context_menu_view.dart';
+import 'package:little_light/shared/modals/context_menu_overlay/character_context_menu_view.dart';
 import 'package:little_light/modules/progress/pages/progress/milestones.bloc.dart';
 import 'package:little_light/modules/progress/pages/progress/ranks.bloc.dart';
 import 'package:little_light/modules/progress/widgets/character_milestones_tab_content.widget.dart';

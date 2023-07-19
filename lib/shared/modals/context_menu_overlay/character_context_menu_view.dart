@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/modules/equipment/pages/context_menu_overlay/character_context_menu.bloc.dart';
+import 'package:little_light/shared/modals/context_menu_overlay/character_context_menu.bloc.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/containers/menu_box.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';

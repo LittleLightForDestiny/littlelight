@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/equipment/pages/context_menu_overlay/character_context_menu.bloc.dart';
+import 'package:little_light/shared/modals/context_menu_overlay/character_context_menu.bloc.dart';
 import 'package:little_light/shared/widgets/containers/menu_box_title.dart';
 import 'package:provider/provider.dart';
 

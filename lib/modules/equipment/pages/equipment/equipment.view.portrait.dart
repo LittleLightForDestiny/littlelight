@@ -8,7 +8,7 @@ import 'package:little_light/modules/equipment/widgets/equipment_character_tab_c
 import 'package:little_light/modules/equipment/widgets/equipment_type_tab_menu.widget.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_vault_tab_content.widget.dart';
 import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
-import 'package:little_light/modules/equipment/pages/context_menu_overlay/character_context_menu_view.dart';
+import 'package:little_light/shared/modals/context_menu_overlay/character_context_menu_view.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';

@@ -3,6 +3,7 @@ import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.bloc.dart';
 import 'package:little_light/modules/equipment/pages/equipment/equipment.view.dart';
 import 'package:little_light/shared/blocs/item_interaction_handler/item_interaction_handler.bloc.dart';
+import 'package:little_light/shared/blocs/scoped_value_repository/scoped_value_repository.bloc.dart';
 import 'package:provider/provider.dart';
 
 class EquipmentPage extends StatelessWidget {
@@ -11,6 +12,7 @@ class EquipmentPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
         ChangeNotifierProvider<EquipmentBloc>(create: (context) => EquipmentBloc(context)),
         Provider<ItemInteractionHandlerBloc>(create: (context) {
           final bloc = context.read<EquipmentBloc>();

@@ -6,17 +6,17 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/headers/bucket_header/item_section_header.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
-const _nonEquippableDisplayOptions = {
+const _nonEquippableDisplayOptions = [
   BucketDisplayType.Hidden,
   BucketDisplayType.Large,
   BucketDisplayType.Medium,
   BucketDisplayType.Small,
-};
+];
 
-const _equippableDisplayOptions = {
+const _equippableDisplayOptions = [
   BucketDisplayType.OnlyEquipped,
   ..._nonEquippableDisplayOptions,
-};
+];
 
 class BucketHeaderListItemWidget extends StatelessWidget {
   final int bucketHash;
@@ -24,6 +24,7 @@ class BucketHeaderListItemWidget extends StatelessWidget {
   final bool isVault;
   final bool canEquip;
   final BucketDisplayType defaultType;
+  final GlobalKey menuGlobalKey;
 
   const BucketHeaderListItemWidget(
     this.bucketHash, {
@@ -31,6 +32,7 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     this.isVault = false,
     this.canEquip = false,
     this.defaultType = BucketDisplayType.Medium,
+    required this.menuGlobalKey,
     Key? key,
   }) : super(key: key);
 
@@ -39,6 +41,7 @@ class BucketHeaderListItemWidget extends StatelessWidget {
     final def = context.definition<DestinyInventoryBucketDefinition>(bucketHash);
     final id = isVault ? 'vault $bucketHash' : '$bucketHash';
     return ItemSectionHeaderWidget(
+      globalKey: menuGlobalKey,
       sectionIdentifier: id,
       availableOptions: canEquip ? _equippableDisplayOptions : _nonEquippableDisplayOptions,
       defaultType: this.defaultType,

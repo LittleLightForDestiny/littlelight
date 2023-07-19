@@ -5,6 +5,7 @@ import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
+import 'package:little_light/shared/blocs/bucket_options/global_key_holder.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/character/character_info.widget.dart';
@@ -17,12 +18,12 @@ import 'package:little_light/shared/widgets/multisection_scrollview/sliver_secti
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
 
-const _pursuitDisplayOptions = {
+const _pursuitDisplayOptions = [
   BucketDisplayType.Hidden,
   BucketDisplayType.Large,
   BucketDisplayType.Medium,
   BucketDisplayType.Small,
-};
+];
 
 class QuestsCharacterContent {
   final int? categoryHash;
@@ -96,11 +97,13 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
     final unequippedDensity = displayType.unequippedDensity;
     final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final unequippedCount = (items.length / idealCount).ceil() * idealCount;
+    final key = "${character.characterId} $sectionId";
     return [
       FixedHeightScrollSection(
         48,
         itemCount: 1,
         itemBuilder: (_, __) => ItemSectionHeaderWidget(
+          globalKey: context.getGlobalKeyFor(key),
           sectionIdentifier: sectionId,
           title: ManifestText<DestinyItemCategoryDefinition>(_bountyCategoryHash),
           defaultType: defaultDisplayType,
@@ -135,11 +138,13 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
     final unequippedDensity = displayType.unequippedDensity;
     final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final unequippedCount = (items.length / idealCount).ceil() * idealCount;
+    final key = "${character.characterId} $sectionId";
     return [
       FixedHeightScrollSection(
         48,
         itemCount: 1,
         itemBuilder: (_, __) => ItemSectionHeaderWidget(
+          globalKey: context.getGlobalKeyFor(key),
           sectionIdentifier: sectionId,
           title: categoryHash != null
               ? ManifestText<DestinyTraitDefinition>(categoryHash)

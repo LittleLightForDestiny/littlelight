@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/modules/equipment/pages/context_menu_overlay/character_context_menu.bloc.dart';
+import 'package:little_light/shared/modals/context_menu_overlay/character_context_menu.bloc.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/widgets/inventory_item/low_density_inventory_item.dart';
