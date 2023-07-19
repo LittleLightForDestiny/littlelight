@@ -18,15 +18,14 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
     Key? key,
     required this.currentValue,
     required RenderBox sourceRenderBox,
+    required GlobalKey buttonKey,
     this.onSelect,
     this.canEquip = false,
-    required void Function() onClose,
     required Set<BucketDisplayType> this.availableOptions,
   }) : super(
           canDismissOnBackground: true,
-          sourceRenderBox: sourceRenderBox,
           key: key,
-          onClose: onClose,
+          buttonKey: buttonKey,
         );
 
   @override
@@ -66,7 +65,6 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
                         option,
                         canEquip: canEquip,
                         onTap: () {
-                          onClose();
                           onSelect?.call(option);
                         },
                         isSelected: option == currentValue,

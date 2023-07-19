@@ -19,6 +19,8 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 import 'package:little_light/shared/utils/sorters/items/export.dart';
+import 'package:little_light/modules/equipment/pages/context_menu_overlay/character_context_menu.dart';
+import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:provider/provider.dart';
 
 class _EquipmentState {
@@ -219,4 +221,24 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
   }
 
   int? get vaultItemCount => _profileBloc.vaultItemCount;
+
+  void openContextMenu(CustomTabController characterTabController, CustomTabController? typeTabController) {
+    final characters = this.characters;
+    if (characters == null) return;
+    Navigator.of(_context).push(RawDialogRoute(
+        transitionDuration: Duration(milliseconds: 500),
+        barrierColor: Colors.transparent,
+        transitionBuilder: (context, animation, secondaryAnimation, child) => child,
+        pageBuilder: (context, animation, animation2) => CharacterContextMenu(
+              characters,
+              characterTabController,
+              openAnimation: animation,
+              onSearchTap: () {
+                final currentBucketGroup =
+                    typeTabController != null ? EquipmentBucketGroup.values[typeTabController.index] : null;
+                final currentClassType = characters[characterTabController.index]?.character.classType;
+                openSearch(currentBucketGroup, currentClassType);
+              },
+            )));
+  }
 }

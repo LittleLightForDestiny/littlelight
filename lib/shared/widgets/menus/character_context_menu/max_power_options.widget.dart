@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/shared/blocs/context_menu_options/context_menu_options.bloc.dart';
+import 'package:little_light/modules/equipment/pages/context_menu_overlay/context_menu_options.bloc.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/widgets/inventory_item/low_density_inventory_item.dart';
@@ -22,12 +22,10 @@ const List<int> _bucketsOrder = [
 
 class MaxPowerOptionsWidget extends StatelessWidget {
   final DestinyCharacterInfo character;
-  final VoidCallback onClose;
 
   const MaxPowerOptionsWidget({
     Key? key,
     required this.character,
-    required this.onClose,
   }) : super(key: key);
 
   @override
@@ -68,7 +66,7 @@ class MaxPowerOptionsWidget extends StatelessWidget {
           child: Text("Select all".translate(context).toUpperCase()),
           onPressed: () {
             context.read<SelectionBloc>().selectItems(items.values.toList());
-            onClose();
+            Navigator.of(context).pop();
           },
         ),
       ]),

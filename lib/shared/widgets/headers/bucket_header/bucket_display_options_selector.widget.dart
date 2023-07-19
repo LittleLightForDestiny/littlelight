@@ -42,16 +42,17 @@ class BucketDisplayOptionsSelector extends StatelessWidget {
       context.read<ItemSectionOptionsBloc>().setDisplayTypeForItemSection(identifier, type);
 
   void openMenu(BuildContext context) {
+    final buttonKey = GlobalKey();
     showOverlay(
       context,
-      (context, rect, onClose) => BucketDisplayOptionsOverlayMenu(
+      (context, rect, animation, secondaryAnimation) => BucketDisplayOptionsOverlayMenu(
         currentValue: getCurrentType(context),
         sourceRenderBox: rect,
         availableOptions: this.availableOptions,
+        buttonKey: buttonKey,
         onSelect: (type) {
           if (type != null) setCurrentType(context, type);
         },
-        onClose: onClose,
       ),
     );
   }

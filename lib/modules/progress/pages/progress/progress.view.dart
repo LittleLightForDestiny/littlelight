@@ -9,11 +9,9 @@ import 'package:little_light/modules/progress/widgets/character_milestones_tab_c
 import 'package:little_light/modules/progress/widgets/progress_type_tab_menu.widget.dart';
 import 'package:little_light/modules/progress/widgets/pursuits_character_tab_content.widget.dart';
 import 'package:little_light/modules/progress/widgets/ranks_character_tab_content.widget.dart';
-import 'package:little_light/shared/widgets/menus/character_context_menu/character_context_menu.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
-import 'package:little_light/shared/widgets/overlay/show_overlay.dart';
 import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:little_light/shared/widgets/tabs/header/character_tab_header.widget.dart';
@@ -23,6 +21,7 @@ import 'package:little_light/shared/widgets/tabs/item_list_swipe_area/swipe_area
 import 'package:little_light/shared/widgets/tabs/menus/character_header_tab_menu.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_indicator.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
+
 import 'progress.bloc.dart';
 
 enum ProgressTab { Milestones, Pursuits, Ranks }
@@ -258,15 +257,15 @@ class ProgressView extends StatelessWidget {
               child: Material(
                 color: Colors.transparent,
                 child: InkWell(onTap: () {
-                  showOverlay(
-                      context,
-                      ((_, rect, onClose) => CharacterContextMenu(
-                            characters,
-                            characterTabController,
-                            sourceRenderBox: rect,
-                            onClose: onClose,
-                            onSearchTap: () => bloc.openSearch(),
-                          )));
+                  ///TODO: replace this
+                  // showOverlay(
+                  //     context,
+                  //     ((_, rect) => CharacterContextMenu(
+                  //           characters,
+                  //           characterTabController,
+                  //           sourceRenderBox: rect,
+                  //           onSearchTap: () => bloc.openSearch(),
+                  //         )));
                 }),
               ))
         ],

@@ -9,7 +9,7 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:provider/provider.dart';
-import '../../shared/blocs/context_menu_options/context_menu_options.bloc.dart';
+import '../../modules/equipment/pages/context_menu_overlay/context_menu_options.bloc.dart';
 import 'app_lifecycle/app_lifecycle.bloc.dart';
 import 'inventory/inventory.bloc.dart';
 import 'language/language.bloc.dart';
