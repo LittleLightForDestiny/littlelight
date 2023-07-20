@@ -1,3 +1,8 @@
+## [2.0.3] - 2023-07-20
+
+- fixes postmaster and engrams not showing in landscape layout
+- fixes layout not extending behind navigation bar on some devices
+
 ## [2.0.2] - 2023-07-20
 
 Fixes:
