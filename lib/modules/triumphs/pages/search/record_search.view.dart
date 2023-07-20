@@ -62,7 +62,7 @@ class RecordsSearchView extends StatelessWidget {
           itemCount: state.filteredItems?.length ?? 0,
         ),
       ],
-      padding: EdgeInsets.all(4) + EdgeInsets.only(bottom: context.mediaQuery.viewPadding.bottom),
+      padding: EdgeInsets.all(4) + context.mediaQuery.padding.copyWith(top: 0),
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
     );

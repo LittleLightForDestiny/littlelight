@@ -1,5 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
@@ -20,6 +21,7 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
   final SearchSorterBloc _sortersBloc;
   final UserSettingsBloc _userSettingsBloc;
   final SelectionBloc _selectionBloc;
+  final ItemNotesBloc _itemNotesBloc;
   Set<EquipmentBucketGroup> bucketGroups;
 
   List<DestinyItemInfo>? _unfilteredItems;
@@ -37,6 +39,7 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
     this._sortersBloc,
     this._userSettingsBloc,
     this._selectionBloc,
+    this._itemNotesBloc,
     Set<EquipmentBucketGroup> this.bucketGroups,
   ) {
     _init();
@@ -49,6 +52,7 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
         context.read<SearchSorterBloc>(),
         context.read<UserSettingsBloc>(),
         context.read<SelectionBloc>(),
+        context.read<ItemNotesBloc>(),
         bucketGroups,
       );
 
@@ -57,6 +61,7 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
     _update();
     _profileBloc.addListener(_update);
     _sortersBloc.addListener(_sort);
+    _itemNotesBloc.addListener(_sort);
     _filtersBloc.addListener(filter);
   }
 
@@ -64,6 +69,7 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
   void dispose() {
     _profileBloc.removeListener(_update);
     _sortersBloc.removeListener(_sort);
+    _itemNotesBloc.removeListener(_sort);
     _filtersBloc.removeListener(filter);
     super.dispose();
   }

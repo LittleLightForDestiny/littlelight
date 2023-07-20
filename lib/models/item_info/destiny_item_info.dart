@@ -39,4 +39,5 @@ abstract class DestinyItemInfo {
   int? get energyCapacity;
   int? get itemLevel;
   int? get quality;
+  List<int>? get tooltipNotificationIndexes;
 }

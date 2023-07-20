@@ -60,17 +60,35 @@ class MilestoneRewardsBottomSheet extends BaseListBottomSheet {
           children: [
             buildRewardIcon(context, itemEntry),
             if (entryName != null && entryName.isNotEmpty)
-              Flexible(
-                child: Text("$entryName - "),
+              Expanded(
+                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+                  Text(entryName),
+                  Row(
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(right: 4),
+                        child: ManifestText<DestinyInventoryItemDefinition>(
+                          itemHash,
+                          style: context.textTheme.body,
+                        ),
+                      ),
+                      if (redeemed)
+                        Flexible(
+                            child: Text(
+                          "(Redeemed)".translate(context),
+                          style: context.textTheme.body,
+                        )),
+                      if (earned && !redeemed)
+                        Flexible(
+                          child: Text(
+                            "(Available)".translate(context),
+                            style: context.textTheme.body,
+                          ),
+                        ),
+                    ],
+                  )
+                ]),
               ),
-            Flexible(
-              child: Container(
-                padding: EdgeInsets.only(right: 4),
-                child: ManifestText<DestinyInventoryItemDefinition>(itemHash),
-              ),
-            ),
-            if (redeemed) Flexible(child: Text("(Redeemed)".translate(context))),
-            if (earned && !redeemed) Flexible(child: Text("(Available)".translate(context))),
           ],
         ),
         if (hasDescription)

@@ -84,11 +84,14 @@ Future<List<int>?> loadAvailableSocketPlugHashesForInventoryItem(
   final randomizedPlugSetHash = socketDef?.randomizedPlugSetHash;
   final hashes = <int>[];
   List<List<DestinyItemPlug>> plugSetList = [];
-  if (plugSources?.contains(SocketPlugSources.ReusablePlugItems) ?? false) {
-    final reusableHashes = item?.reusablePlugs?["$index"]?.map((e) => e.plugItemHash).whereType<int>().toList();
-    if (reusableHashes != null) hashes.addAll(reusableHashes);
-  }
-  if (plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false) {
+
+  final useProfilePlugSets = plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false;
+  final useCharacterPlugSets = plugSources?.contains(SocketPlugSources.CharacterPlugSet) ?? false;
+
+  final reusableHashes = item?.reusablePlugs?["$index"]?.map((e) => e.plugItemHash).whereType<int>().toList();
+  if (reusableHashes != null) hashes.addAll(reusableHashes);
+
+  if (useProfilePlugSets) {
     if (reusablePlugSetHash != null) {
       final plugSet = profile.getProfilePlugSets(reusablePlugSetHash);
       if (plugSet != null) plugSetList.add(plugSet);
@@ -98,7 +101,7 @@ Future<List<int>?> loadAvailableSocketPlugHashesForInventoryItem(
       if (plugSet != null) plugSetList.add(plugSet);
     }
   }
-  if (plugSources?.contains(SocketPlugSources.CharacterPlugSet) ?? false) {
+  if (useCharacterPlugSets) {
     final characterId = item?.characterId;
     if (characterId != null) {
       if (reusablePlugSetHash != null) {

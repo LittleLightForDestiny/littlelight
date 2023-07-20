@@ -81,6 +81,7 @@ class DetailsItemPerksWidget extends StatelessWidget {
           itemHash: itemHash,
           selected: state.isSelected(socketIndex, plugHash),
           equipped: state.isEquipped(socketIndex, plugHash),
+          available: state.isAvailable(socketIndex, plugHash),
           onTap: () => bloc.toggleSelection(socketIndex, plugHash),
         );
       }, expectedItemSize: PerkIconWidget.maxIconSize),
@@ -165,6 +166,7 @@ class DetailsItemPerksWidget extends StatelessWidget {
                     itemHash: itemHash,
                     selected: selected == random && selected != null,
                     equipped: equipped == random && equipped != null,
+                    available: random != null ? state.isAvailable(socket.index, random) : true,
                     onTap: () => bloc.toggleSocketSelection(socket.index),
                   ))
           ],

@@ -34,25 +34,30 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: socket //
           .where((p) => (sockets?[p].isVisible ?? false) && (sockets?[p].isEnabled ?? false))
-          .map((p) => includeUnequipped
-              ? buildSocket(context, reusable?["$p"], definition?.sockets?.socketEntries?[p])
-              : buildPlug(context, sockets?[p].plugHash))
+          .map((p) {
+            return includeUnequipped
+                ? buildSocket(context, reusable?["$p"], sockets?[p], definition?.sockets?.socketEntries?[p])
+                : buildPlug(context, sockets?[p].plugHash);
+          })
           .whereType<Widget>()
           .toList(),
     );
   }
 
-  Widget? buildSocket(
-      BuildContext context, List<DestinyItemPlugBase>? plugs, DestinyItemSocketEntryDefinition? socketDef) {
-    if (plugs == null) {
-      if (socketDef?.plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false)
-        return buildSocketFromPlugSet(context, socketDef);
-      return Container();
+  Widget? buildSocket(BuildContext context, List<DestinyItemPlugBase>? plugs, DestinyItemSocketState? socket,
+      DestinyItemSocketEntryDefinition? socketDef) {
+    if (plugs != null) {
+      return Column(
+        mainAxisSize: MainAxisSize.min,
+        children: plugs.map((e) => buildPlug(context, e.plugItemHash)).whereType<Widget>().toList(),
+      );
     }
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: plugs.map((e) => buildPlug(context, e.plugItemHash)).whereType<Widget>().toList(),
-    );
+    if (socketDef?.plugSources?.contains(SocketPlugSources.ProfilePlugSet) ?? false)
+      return buildSocketFromPlugSet(context, socketDef);
+    if (socket?.plugHash != null) {
+      return buildPlug(context, socket?.plugHash);
+    }
+    return Container();
   }
 
   Widget? buildSocketFromPlugSet(BuildContext context, DestinyItemSocketEntryDefinition? socketDef) {

@@ -6,7 +6,7 @@ class MultiSorter {
   final List<ItemSorter> _sorters;
   MultiSorter(this._sorters);
 
-  Future<List<DestinyItemInfo>> sort(List<DestinyItemInfo> items) async {
+  Future<List<T>> sort<T extends DestinyItemInfo>(List<T> items) async {
     final toSort = items.toList(growable: false);
     if (_sorters.isEmpty) return toSort;
     if (!isPrepared) {

@@ -17,8 +17,6 @@ on:
         required: true
       MATCH_PASSWORD:
         required: true
-      APPLE_USERNAME:
-        required: true
       MATCH_KEYCHAIN_NAME:
         required: true
       MATCH_KEYCHAIN_PASSWORD:
@@ -55,7 +53,6 @@ jobs:
       FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
       MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
       MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-      APPLE_USERNAME: ${{ secrets.APPLE_USERNAME }}
       MATCH_KEYCHAIN_NAME: ${{ secrets.MATCH_KEYCHAIN_NAME }}
       MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
 
@@ -89,10 +86,35 @@ jobs:
         run: |
           git config --global url."https://${{ secrets.MATCH_GIT_API_AUTH }}@github.com/".insteadOf "git@github.com:"
 
+      - name: Download Appstore Connect key
+        id: app_store_connect_key
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: appstore_connect_key.p8
+          encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
+
+      - name: Cache bundle dependencies
+        uses: actions/cache@v2
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+          restore-keys: ${{ runner.os }}-gems-
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+
+      - name: Download bundle dependencies
+        run: |
+          gem install bundler
+          bundle config path vendor/bundle
+          bundle install
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v1
         with:
-          flutter-version: "2.10.0"
+          flutter-version: "3.10.5"
 
       - name: Create assets/_env
         run: |
@@ -118,31 +140,6 @@ jobs:
       - name: Pod repo update
         working-directory: ios
         run: pod install --repo-update
-
-      - name: Download Appstore Connect key
-        id: app_store_connect_key
-        uses: timheuer/base64-to-file@v1.1
-        with:
-          fileName: appstore_connect_key.p8
-          encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
-
-      - name: Cache bundle dependencies
-        uses: actions/cache@v2
-        with:
-          path: vendor/bundle
-          key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-          restore-keys: ${{ runner.os }}-gems-
-
-      - name: Setup Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 2.6
-
-      - name: Download bundle dependencies
-        run: |
-          gem install bundler
-          bundle config path vendor/bundle
-          bundle install
 
       - name: Build iOS via Flutter
         run: flutter build ios --no-codesign --release

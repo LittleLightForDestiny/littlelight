@@ -18,35 +18,35 @@ class DetailsItemDuplicatesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Duplicates".translate(context).toUpperCase()),
-          persistenceID: 'item duplicates',
-          content: buildContent(context),
-        ));
+    return LayoutBuilder(builder: (context, constraints) {
+      return Container(
+          padding: EdgeInsets.all(4),
+          child: PersistentCollapsibleContainer(
+            title: Text("Duplicates".translate(context).toUpperCase()),
+            persistenceID: 'item duplicates',
+            content: buildContent(context, constraints),
+          ));
+    });
   }
 
-  Widget buildContent(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final perRow = (constraints.maxWidth / DuplicatedItemWidget.expectedSize.width).floor();
-      return MultiSectionScrollView(
-        [
-          FixedHeightScrollSection(
-            DuplicatedItemWidget.expectedSize.height,
-            itemsPerRow: perRow,
-            itemCount: items.length,
-            itemBuilder: (_, index) => InteractiveItemWrapper(
-              DuplicatedItemWidget(items[index]),
-              item: items[index],
-              itemMargin: 1,
-            ),
+  Widget buildContent(BuildContext context, BoxConstraints constraints) {
+    final perRow = (constraints.maxWidth / DuplicatedItemWidget.expectedSize.width).floor();
+    return MultiSectionScrollView(
+      [
+        FixedHeightScrollSection(
+          DuplicatedItemWidget.expectedSize.height,
+          itemsPerRow: perRow,
+          itemCount: items.length,
+          itemBuilder: (_, index) => InteractiveItemWrapper(
+            DuplicatedItemWidget(items[index]),
+            item: items[index],
+            itemMargin: 1,
           ),
-        ],
-        shrinkWrap: true,
-        mainAxisSpacing: 1,
-        crossAxisSpacing: 1,
-      );
-    });
+        ),
+      ],
+      shrinkWrap: true,
+      mainAxisSpacing: 1,
+      crossAxisSpacing: 1,
+    );
   }
 }

@@ -74,7 +74,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   Widget _buildChildren(BuildContext context, Widget? child) {
     return Container(
-      color: context.theme.errorLayers,
+      color: context.theme.surfaceLayers,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
@@ -156,7 +156,7 @@ class ProfileInfoState extends State<ProfileInfoWidget>
                   colors: const [Colors.black26, Colors.transparent, Colors.transparent, Colors.black54],
                   stops: const [0, .2, .7, 1])),
         ),
-        Positioned(bottom: 4, left: 88, child: buildActivityInfo(context))
+        Positioned(bottom: 4, left: 88, right: 4, child: buildActivityInfo(context))
       ],
     );
   }

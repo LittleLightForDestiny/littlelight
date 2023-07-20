@@ -7,6 +7,7 @@ import 'package:little_light/modules/item_details/widgets/details_item_mods.widg
 import 'package:little_light/modules/item_details/widgets/details_item_perks.widget.dart';
 import 'package:little_light/modules/loadouts/pages/loadout_item_options/loadout_item_options.bottomsheet.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'loadout_item_options.bloc.dart';
@@ -25,23 +26,26 @@ class LoadoutItemOptionsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Flexible(
-          child: SingleChildScrollView(
-              scrollDirection: Axis.vertical,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  buildItemInfo(context),
-                  buildPlugs(context),
-                ],
-              )),
-        ),
-        buildOptions(context),
-      ],
+    return Container(
+      padding: context.mediaQuery.padding.copyWith(top: 0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    buildItemInfo(context),
+                    buildPlugs(context),
+                  ],
+                )),
+          ),
+          buildOptions(context),
+        ],
+      ),
     );
   }
 

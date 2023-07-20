@@ -77,4 +77,7 @@ class DefinitionItemInfo extends DestinyItemInfo {
 
   @override
   int? get quality => null;
+
+  @override
+  List<int>? get tooltipNotificationIndexes => null;
 }

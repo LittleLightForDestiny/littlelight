@@ -76,7 +76,11 @@ class PresentationNodeListWidget extends StatelessWidget {
             itemBuilder: (context, index) => recordBuilder(context, records[index]),
           )
       ],
-      padding: padding,
+      padding: (padding ?? EdgeInsets.all(0)) +
+          EdgeInsets.only(
+            left: context.mediaQuery.padding.left,
+            right: context.mediaQuery.padding.right,
+          ),
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
     );

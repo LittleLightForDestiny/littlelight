@@ -9,8 +9,8 @@ class ItemSectionHeaderWidget extends StatelessWidget {
   final Widget? trailing;
   final bool canEquip;
   final BucketDisplayType defaultType;
-
-  final Set<BucketDisplayType> availableOptions;
+  final GlobalKey globalKey;
+  final List<BucketDisplayType> availableOptions;
 
   const ItemSectionHeaderWidget({
     required this.title,
@@ -20,6 +20,7 @@ class ItemSectionHeaderWidget extends StatelessWidget {
     this.trailing,
     this.defaultType = BucketDisplayType.Medium,
     required this.availableOptions,
+    required this.globalKey,
   }) : super(key: key);
 
   @override
@@ -43,6 +44,7 @@ class ItemSectionHeaderWidget extends StatelessWidget {
         sectionIdentifier,
         defaultType: this.defaultType,
         availableOptions: this.availableOptions,
+        globalKey: globalKey,
       ),
       if (trailing != null) Container(padding: EdgeInsets.only(left: 8), child: trailing),
     ]);

@@ -1,1 +1,0 @@
-- Added toggleable sections for item details (yeah, wishlists won't take your entire screen anymore)

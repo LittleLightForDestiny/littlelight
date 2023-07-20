@@ -4,6 +4,7 @@ import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/language_info.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -68,7 +69,11 @@ class _LanguagesPageState extends State<LanguagesPage> {
     final languages = this.languages;
     if (languages == null) return LoadingAnimWidget();
     return SingleChildScrollView(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(8) +
+            EdgeInsets.only(
+              left: context.mediaQuery.padding.left,
+              right: context.mediaQuery.padding.right,
+            ),
         child: Column(children: languages.map((l) => buildLanguageItem(context, l)).toList()));
   }
 

@@ -1,5 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
@@ -118,11 +119,13 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
 
   void onTransferAction(TransferActionType actionType, TransferDestination destination, int stackSize);
 
-  void addToLoadout() {}
-
   void viewInCollections() {
     final hash = itemHash;
     if (hash == null) return;
     Navigator.of(context).pushReplacement(DefinitionItemDetailsPageRoute(hash));
   }
+
+  List<LoadoutItemIndex>? get loadouts;
+  void openLoadout(LoadoutItemIndex loadout);
+  void addToLoadout();
 }

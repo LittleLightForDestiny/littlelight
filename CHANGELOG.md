@@ -1,3 +1,29 @@
+## [2.0.1] - 2023-07-17
+
+- show vault item count
+- make favorite items show first at search
+-  re-add search button on main header
+-  fix some subclass mods not being equippable
+-  re-add mods on duplicate weapons
+-  re-add random loadout option
+-  fix trackers column on collections
+-  makes tags menu scrollable
+-  fixes enhanced perks
+-  adds weapon frames filter
+-  adds crafted weapons filter
+- adds deepsight weapons filter
+
+## [2.0.0] - 2023-07-14
+
+- transfers and inventory management were almost entirely reworked
+- loadouts now supports saving mods
+- subclasses can apply aspects and abilities
+- customizable scroll areas
+- auto transfers can be disabled
+- faster item transfers
+- better milestones view
+- and a lot more
+
 ## [1.9.8] - 2023-03-04
 
 - quick fixes for lightfall

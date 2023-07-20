@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/definition_item_info.dart';
 import 'package:little_light/modules/duplicated_items/pages/duplicated_items/duplicated_items.bloc.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/shared/widgets/inventory_item/duplicated_item.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
@@ -46,7 +47,11 @@ class DuplicatedItemListWidget extends StatelessWidget {
         sections(context),
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,
-        padding: padding,
+        padding: (padding ?? EdgeInsets.zero) +
+            EdgeInsets.only(
+              left: context.mediaQuery.padding.left,
+              right: context.mediaQuery.padding.right,
+            ),
       ),
     );
   }

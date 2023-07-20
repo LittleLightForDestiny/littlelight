@@ -158,6 +158,7 @@ class ItemNotesTag {
 
   factory ItemNotesTag.favorite() {
     return ItemNotesTag(
+      name: "Favorite",
       tagId: "favorite",
       icon: ItemTagIcon.Heart,
       defaultTagType: DefaultTagType.Favorite,
@@ -168,6 +169,7 @@ class ItemNotesTag {
 
   factory ItemNotesTag.trash() {
     return ItemNotesTag(
+      name: "Trash",
       tagId: "trash",
       icon: ItemTagIcon.Trash,
       defaultTagType: DefaultTagType.Trash,
@@ -178,6 +180,7 @@ class ItemNotesTag {
 
   factory ItemNotesTag.infuse() {
     return ItemNotesTag(
+      name: "Infuse",
       tagId: "infuse",
       icon: ItemTagIcon.Infuse,
       defaultTagType: DefaultTagType.Infuse,

@@ -19,10 +19,10 @@ class DetailsApplyPlugButtonWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final state = context.watch<SocketControllerBloc>();
     final canApply = state.canApply(socketIndex, plugHash);
-    final isAvaialble = state.isAvailable(socketIndex, plugHash);
+    final isAvailable = state.isAvailable(socketIndex, plugHash);
     if (!canApply) return Container();
     final isPlugBusy = state.isBusy;
-    final disabled = isPlugBusy || !isAvaialble;
+    final disabled = isPlugBusy || !isAvailable;
     final plugDef = context.definition<DestinyInventoryItemDefinition>(plugHash);
     return Opacity(
       opacity: disabled ? .5 : 1,

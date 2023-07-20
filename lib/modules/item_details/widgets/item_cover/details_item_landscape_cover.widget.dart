@@ -24,6 +24,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 import 'details_item_cover_mods.widget.dart';
 
 const _powerStatHash = 1935470627;
@@ -173,17 +174,18 @@ class ItemCoverContentsWidget extends StatelessWidget {
             child: Column(
               children: <Widget>[
                 Container(
-                    height: topPadding * .6,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                      tierColor.withOpacity(.6),
-                      tierColor.withOpacity(.3),
-                      Colors.transparent,
-                    ], stops: const [
-                      0,
-                      .7,
-                      1
-                    ]))),
+                  height: topPadding * .6,
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        tierColor.withOpacity(.6),
+                        tierColor.withOpacity(.3),
+                        Colors.transparent,
+                      ],
+                      stops: const [0, .7, 1],
+                    ),
+                  ),
+                ),
                 Container(
                     height: topPadding * .1,
                     decoration: BoxDecoration(
@@ -343,14 +345,17 @@ class ItemCoverContentsWidget extends StatelessWidget {
   Widget buildBackButton(BuildContext context, double expandRatio) {
     double paddingTop = MediaQuery.of(context).padding.top;
     final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    final isSubclass = definition?.isSubclass ?? false;
+    final openColor = context.theme.onSurfaceLayers.layer0;
+    final closedColor = isSubclass ? openColor : definition?.inventory?.tierType?.getTextColor(context) ?? openColor;
     return Positioned(
         left: 0,
         top: paddingTop,
         width: kToolbarHeight,
         height: kToolbarHeight,
         child: BackButton(
-            color: Color.lerp(definition?.inventory?.tierType?.getTextColor(context), Colors.grey.shade300,
-                expandRatio.clamp(0, 1))));
+          color: closedColor.mix(openColor, (expandRatio * 100).ceil().clamp(0, 100)),
+        ));
   }
 
   Widget buildLeftColumn(BuildContext context, double expandRatio, double pixelSize) {

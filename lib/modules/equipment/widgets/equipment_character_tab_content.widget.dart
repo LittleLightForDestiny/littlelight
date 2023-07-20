@@ -6,6 +6,7 @@ import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dar
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/blocs/bucket_options/global_key_holder.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
 import 'package:little_light/shared/widgets/character/character_info.widget.dart';
 import 'package:little_light/modules/progress/widgets/bucket_header_list_item.widget.dart';
@@ -103,12 +104,14 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
     final bucketDefCount = (bucketDef?.itemCount ?? 10) - (equipped != null ? 1 : 0);
     final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final unequippedCount = ((useBucketCount ? bucketDefCount : unequipped.length) / idealCount).ceil() * idealCount;
+    final key = "${character.characterId} $bucketHash";
     return [
       FixedHeightScrollSection(
         48,
         itemCount: 1,
         itemBuilder: (_, __) => BucketHeaderListItemWidget(
           bucketHash,
+          menuGlobalKey: context.getGlobalKeyFor(key),
           canEquip: equipped != null,
           itemCount: bucketContent.unequipped.length + (bucketContent.equipped != null ? 1 : 0),
           defaultType: defaultDisplayType,

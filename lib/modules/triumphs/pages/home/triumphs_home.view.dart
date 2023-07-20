@@ -67,7 +67,11 @@ class TriumphsHomeView extends BaseTriumphsView {
                       parentHashes: [node.hash].whereType<int>().toList(),
                     ))),
       ],
-      padding: padding,
+      padding: padding +
+          EdgeInsets.only(
+            left: context.mediaQuery.padding.left,
+            right: context.mediaQuery.padding.right,
+          ),
       crossAxisSpacing: 2,
       mainAxisSpacing: 2,
     );

@@ -124,6 +124,7 @@ class DetailsItemCoverPerksWidget extends DetailsItemPerksWidget {
                     itemHash: itemHash,
                     selected: selected == random && selected != null,
                     equipped: equipped == random && equipped != null,
+                    available: random != null ? state.isAvailable(socket.index, random) : true,
                     wishlistIconSize: 28 * pixelSize,
                     onTap: () => bloc.toggleSocketSelection(socket.index),
                   ))
@@ -157,6 +158,7 @@ class DetailsItemCoverPerksWidget extends DetailsItemPerksWidget {
             itemHash: itemHash,
             selected: state.isSelected(socketIndex, plugHash),
             equipped: state.isEquipped(socketIndex, plugHash),
+            available: state.isAvailable(socketIndex, plugHash),
             onTap: () => bloc.toggleSelection(socketIndex, plugHash),
             wishlistIconSize: 28 * pixelSize,
           );

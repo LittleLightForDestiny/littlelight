@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
+import 'package:little_light/modules/search/blocs/filter_options/crafted_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/deepsight_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filter_options/item_bucket_type_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/weapon_frame_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filters/crafted_filter.dart';
+import 'package:little_light/modules/search/blocs/filters/deepsight_filter.dart';
 import 'package:little_light/modules/search/blocs/filters/export.dart';
+import 'package:little_light/modules/search/blocs/filters/weapon_frame_filter.dart';
 import 'filter_options/export.dart';
 import 'filters/item_bucket_type_filter.dart';
 
@@ -18,6 +24,9 @@ _defaultSearchFilters(BuildContext context) => <Type, BaseItemFilter>{
       /// weapon filter types
       AmmoTypeFilterOptions: AmmoTypeFilter(),
       DamageTypeFilterOptions: DamageTypeFilter(),
+      DeepsightFilterOptions: DeepsightFilter(),
+      CraftedFilterOptions: CraftedFilter(),
+      WeaponFrameFilterOptions: WeaponFrameFilter(),
 
       /// armor filter types
       EnergyLevelFilterOptions: EnergyLevelFilter(),

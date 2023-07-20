@@ -58,6 +58,7 @@ class EditItemNotesView extends StatelessWidget {
             initialValue: state.customName,
             onChanged: (value) => bloc.customName = value,
             decoration: InputDecoration(label: Text("Nickname".translate(context))),
+            textInputAction: TextInputAction.next,
           ),
           TextFormField(
             initialValue: state.itemNotes,

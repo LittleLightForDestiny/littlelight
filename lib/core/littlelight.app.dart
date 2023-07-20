@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:little_light/core/blocs/core_blocs_container.dart';
 import 'package:little_light/core/navigator_key.dart';
@@ -23,10 +24,12 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
   @override
   void initState() {
     super.initState();
-    _initServices();
-  }
-
-  void _initServices() {
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+    SystemChrome.setSystemUIOverlayStyle(
+      SystemUiOverlayStyle(
+        systemNavigationBarColor: Colors.black.withOpacity(0.002),
+      ),
+    );
     LittleLightNavigatorKeyContainer.navigatorKey = GlobalKey<NavigatorState>();
     final unilinksHandler = unilinks;
     unilinksHandler.addListener(updateUnilinks);
@@ -51,7 +54,6 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
   Widget build(BuildContext context) {
     return Container(
         child: MaterialApp(
-      restorationScopeId: 'little_light_root',
       debugShowCheckedModeBanner: false,
       title: 'Little Light',
       navigatorKey: LittleLightNavigatorKeyContainer.navigatorKey,

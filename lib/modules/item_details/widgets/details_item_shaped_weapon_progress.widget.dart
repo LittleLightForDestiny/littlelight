@@ -13,8 +13,8 @@ class DetailsItemCraftedProgressWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDeepsight = state.item?.state?.contains(ItemState.Crafted) ?? false;
-    if (!isDeepsight) return Container();
+    final isCrafted = state.item?.state?.contains(ItemState.Crafted) ?? false;
+    if (!isCrafted) return Container();
     return Container(
         padding: EdgeInsets.all(4),
         child: PersistentCollapsibleContainer(

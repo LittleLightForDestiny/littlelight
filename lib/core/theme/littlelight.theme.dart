@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 enum SwatchLayer { Layer0, Layer1, Layer2, Layer3 }
 
@@ -371,8 +372,8 @@ class LittleLightThemeData {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: primaryLayers,
-          disabledForegroundColor: primaryLayers,
-          disabledBackgroundColor: primaryLayers,
+          disabledForegroundColor: onSurfaceLayers.layer1,
+          disabledBackgroundColor: primaryLayers.mix(surfaceLayers.layer0, 20),
         ),
       ),
       toggleButtonsTheme: ToggleButtonsThemeData(

@@ -17,6 +17,7 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
 import 'package:provider/provider.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class DetailsItemCoverWidget extends StatelessWidget {
   final ItemDetailsBloc state;
@@ -92,8 +93,12 @@ class ItemCoverContentsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    Color? backgroundColor = definition?.inventory?.tierType?.getColor(context);
+    if (definition?.isSubclass ?? false) {
+      backgroundColor = definition?.talentGrid?.hudDamageType?.getColorLayer(context);
+    }
     return Container(
-        color: definition?.inventory?.tierType?.getColor(context),
+        color: backgroundColor,
         child: Stack(
           fit: StackFit.expand,
           children: <Widget>[
@@ -167,14 +172,18 @@ class ItemCoverContentsWidget extends StatelessWidget {
   Widget buildBackButton(BuildContext context, double expandRatio) {
     double paddingTop = MediaQuery.of(context).padding.top;
     final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    final isSubclass = definition?.isSubclass ?? false;
+    final openColor = context.theme.onSurfaceLayers.layer0;
+    final closedColor = isSubclass ? openColor : definition?.inventory?.tierType?.getTextColor(context) ?? openColor;
     return Positioned(
-        left: 0,
-        top: paddingTop,
-        width: kToolbarHeight,
-        height: kToolbarHeight,
-        child: BackButton(
-            color: Color.lerp(definition?.inventory?.tierType?.getTextColor(context), Colors.grey.shade300,
-                expandRatio.clamp(0, 1))));
+      left: 0,
+      top: paddingTop,
+      width: kToolbarHeight,
+      height: kToolbarHeight,
+      child: BackButton(
+        color: closedColor.mix(openColor, (expandRatio * 100).ceil().clamp(0, 100)),
+      ),
+    );
   }
 
   Widget buildBackground(BuildContext context, double expandRatio) {
@@ -231,6 +240,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
 
   Widget? buildPrimaryStat(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
+    if (definition?.isSubclass ?? false) return null;
     final item = state.item;
     final statHash = definition?.stats?.primaryBaseStatHash;
     final disableStat = definition?.stats?.disablePrimaryStatDisplay ?? false;

@@ -146,7 +146,7 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
       loadoutItem,
     ).show(context);
     if (option == LoadoutItemOption.Remove) {
-      await _itemIndex?.removeItem(manifest, loadoutItem.inventoryItem, equipped: equipped);
+      await _itemIndex?.removeItem(manifest, loadoutItem.inventoryItem);
       notifyListeners();
       return;
     }

@@ -547,64 +547,72 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
     final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     final ammoType = definition.equippingBlock?.ammoType;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Padding(
-          padding: const EdgeInsets.only(right: 6),
-          child: Icon(
-            ammoType?.icon,
-            color: ammoType?.color,
-            size: textStyle.fontSize,
-          ),
-        ),
-        Text(
-          "$powerLevel",
-          style: textStyle.copyWith(color: damageColor),
-          softWrap: false,
-        ),
-      ],
-    );
+    return Container(
+        height: 20,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Icon(
+                ammoType?.icon,
+                color: ammoType?.color,
+                size: textStyle.fontSize,
+              ),
+            ),
+            Text(
+              "$powerLevel",
+              style: textStyle.copyWith(color: damageColor),
+              softWrap: false,
+            ),
+          ],
+        ));
   }
 
   Widget buildArmorMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
     final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(width: _iconWidth),
-        Expanded(
-          child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-            buildArmorCategory(context, definition),
-            Container(width: 2),
-            Flexible(
-              child: Text(
-                "$powerLevel",
-                style: textStyle,
-                softWrap: false,
-                textAlign: TextAlign.right,
+    return Container(
+      height: 20,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(width: _iconWidth),
+          Expanded(
+            child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+              buildArmorCategory(context, definition),
+              Container(width: 2),
+              Flexible(
+                child: Text(
+                  "$powerLevel",
+                  style: textStyle,
+                  softWrap: false,
+                  textAlign: TextAlign.right,
+                ),
               ),
-            ),
-          ]),
-        ),
-      ].whereType<Widget>().toList(),
+            ]),
+          ),
+        ].whereType<Widget>().toList(),
+      ),
     );
   }
 
   Widget buildGhostMainInfo(BuildContext context, DestinyInventoryItemDefinition definition) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Container(width: _iconWidth),
-        Expanded(
-          child: Container(
-            alignment: Alignment.centerRight,
-            child: buildArmorCategory(context, definition),
+    return Container(
+      height: 20,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(width: _iconWidth),
+          Expanded(
+            child: Container(
+              alignment: Alignment.centerRight,
+              child: buildArmorCategory(context, definition),
+            ),
           ),
-        ),
-      ].whereType<Widget>().toList(),
+        ].whereType<Widget>().toList(),
+      ),
     );
   }
 
@@ -612,11 +620,14 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
     final primaryStatValue = item.primaryStatValue;
     if (primaryStatValue == null) return Container();
     final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
-    return Text(
-      "$primaryStatValue",
-      style: textStyle,
-      softWrap: false,
-      textAlign: TextAlign.right,
+    return Container(
+      height: 20,
+      child: Text(
+        "$primaryStatValue",
+        style: textStyle,
+        softWrap: false,
+        textAlign: TextAlign.right,
+      ),
     );
   }
 

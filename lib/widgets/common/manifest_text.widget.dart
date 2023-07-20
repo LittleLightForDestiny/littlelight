@@ -6,7 +6,7 @@ import 'package:little_light/shared/utils/extensions/string/replace_string_varia
 typedef ExtractTextFromData<T> = String? Function(T definition);
 
 class ManifestText<T> extends StatelessWidget with ManifestConsumer {
-  final int? presentationNodeHash;
+  final int? definitionHash;
   final bool uppercase;
   final ExtractTextFromData<T>? textExtractor;
   final int? maxLines;
@@ -18,7 +18,7 @@ class ManifestText<T> extends StatelessWidget with ManifestConsumer {
   final TextDirection? textDirection;
   final double? textScaleFactor;
 
-  ManifestText(this.presentationNodeHash,
+  ManifestText(this.definitionHash,
       {Key? key,
       this.uppercase = false,
       this.textExtractor,
@@ -49,7 +49,7 @@ class ManifestText<T> extends StatelessWidget with ManifestConsumer {
 
   String desiredText(BuildContext context) {
     String? resultText;
-    final def = context.definition<T>(presentationNodeHash);
+    final def = context.definition<T>(definitionHash);
     try {
       if (def == null) return "";
       final extractor = textExtractor;

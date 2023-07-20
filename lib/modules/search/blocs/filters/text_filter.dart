@@ -12,6 +12,15 @@ import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
 import 'base_item_filter.dart';
 
+extension on List<String> {
+  bool searchMatches(String str) {
+    if (this.length == 1 && this.first.length <= 3) {
+      return str.startsWith(first);
+    }
+    return this.every((w) => str.contains(w));
+  }
+}
+
 class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer, WishlistsConsumer {
   List<Loadout>? loadouts;
   ItemNotesBloc? itemNotesBloc;
@@ -55,48 +64,48 @@ class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer
 
     final plugHashes = Set<int?>.from(socketPlugHashes + reusablePlugHashes);
     final plugDefinitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
+    final plugNames = plugHashes.map((h) {
+      final plugDef = plugDefinitions[h];
+      return removeDiacritics(plugDef?.displayProperties?.name?.toLowerCase().trim() ?? "");
+    });
 
-    final wishlistBuildNotes = wishlistsService.getWishlistBuildNotes(itemHash: hash, reusablePlugs: reusablePlugs);
+    final wishlistBuildNotes = wishlistsService.getWishlistBuildNotes(itemHash: hash, reusablePlugs: reusablePlugs).map(
+          (e) => e.toLowerCase(),
+        );
+
     final wishlistTags = wishlistsService.getWishlistBuildTags(itemHash: hash, reusablePlugs: reusablePlugs);
+    final wishlistTagNames = wishlistTags.map((t) => t.name.toLowerCase());
 
     final loadoutNames = loadouts
         ?.where((l) => instanceId != null ? l.containsItem(instanceId) : false) //
-        .map((l) => l.name);
+        .map((l) => l.name.toLowerCase().replaceDiacritics());
 
     final customName = itemNotesBloc?.customNameFor(hash, instanceId)?.toLowerCase();
 
     return terms.every((t) {
       var words = t.split(" ");
-      final matchesName = words.every((w) => name.contains(w));
+      final matchesName = words.searchMatches(name);
       if (matchesName) return true;
 
-      final matchesCustomName = words.every((w) => customName?.contains(w) ?? false);
+      final matchesCustomName = words.searchMatches(customName ?? "");
       if (matchesCustomName) return true;
 
-      final matchesItemTypes = words.every((w) => itemType.contains(w));
+      final matchesItemTypes = words.searchMatches(itemType);
       if (matchesItemTypes) return true;
 
-      final matchesDamageType = words.every((w) => damageTypeName.contains(w));
+      final matchesDamageType = words.searchMatches(damageTypeName);
       if (matchesDamageType) return true;
 
-      final matchesLoadoutNames = loadoutNames != null
-          ? words.every((w) => loadoutNames.any((l) => removeDiacritics(l.toLowerCase()).contains(w)))
-          : false;
+      final matchesLoadoutNames = loadoutNames?.any((l) => words.searchMatches(l)) ?? false;
       if (matchesLoadoutNames) return true;
 
-      final matchesPlugs = plugHashes.any((h) {
-        final plugDef = plugDefinitions[h];
-        final name = removeDiacritics(plugDef?.displayProperties?.name?.toLowerCase().trim() ?? "");
-        if (words.every((w) => name.contains(w))) return true;
-        return false;
-      });
-
+      final matchesPlugs = plugNames.any((plugName) => words.searchMatches(plugName));
       if (matchesPlugs) return true;
 
-      final matchesWishlistsTags = wishlistTags.any((t) => words.every((w) => t.toString().toLowerCase().contains(w)));
+      final matchesWishlistsTags = wishlistTagNames.any((t) => words.searchMatches(t));
       if (matchesWishlistsTags) return true;
 
-      final matchesWishlistNotes = wishlistBuildNotes.any((n) => words.every((w) => n.toLowerCase().contains(w)));
+      final matchesWishlistNotes = wishlistBuildNotes.any((n) => words.searchMatches(n));
       if (matchesWishlistNotes) return true;
 
       return false;

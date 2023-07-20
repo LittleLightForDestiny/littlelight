@@ -9,6 +9,7 @@ import 'package:little_light/modules/item_details/widgets/details_plug_resource_
 import 'package:little_light/modules/item_details/widgets/details_plug_stats.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_plug_wishlist_info.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -67,7 +68,17 @@ class DetailsPlugInfoWidget extends StatelessWidget {
           SizedBox(
             width: _perkIconSize,
             height: _perkIconSize,
-            child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash),
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+              plugHash,
+              noIconPlaceholder: Container(),
+              placeholder: DefaultLoadingShimmer(
+                  child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(64),
+                  color: Colors.white,
+                ),
+              )),
+            ),
           ),
           SizedBox(width: 8),
           Expanded(

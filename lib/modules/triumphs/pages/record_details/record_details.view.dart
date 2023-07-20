@@ -9,6 +9,7 @@ import 'package:little_light/modules/triumphs/widgets/details_record_objectives.
 import 'package:little_light/modules/triumphs/widgets/details_record_progress.widget.dart';
 import 'package:little_light/modules/triumphs/widgets/details_record_tracking.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
@@ -65,6 +66,18 @@ class RecordDetailsView extends StatelessWidget {
     );
   }
 
+  Widget sectionContainer(BuildContext context, Widget child) {
+    return SliverToBoxAdapter(
+      child: Container(
+        padding: EdgeInsets.only(
+          left: context.mediaQuery.padding.left,
+          right: context.mediaQuery.padding.right,
+        ),
+        child: child,
+      ),
+    );
+  }
+
   Widget buildNotificationWidget(BuildContext context, {required bool hasFooter}) {
     final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
     final useLoadingFooter = bottomPadding > 0 && !hasFooter;
@@ -91,8 +104,9 @@ class RecordDetailsView extends StatelessWidget {
 
   Widget? buildDescription(BuildContext context) {
     final recordHash = state.recordHash;
-    return SliverToBoxAdapter(
-      child: DetailsRecordDescriptionWidget(recordHash),
+    return sectionContainer(
+      context,
+      DetailsRecordDescriptionWidget(recordHash),
     );
   }
 
@@ -102,8 +116,9 @@ class RecordDetailsView extends StatelessWidget {
     final intervalObjectives = definition?.intervalInfo?.intervalObjectives;
     if (intervalObjectives == null || intervalObjectives.isEmpty) return null;
 
-    return SliverToBoxAdapter(
-      child: DetailsRecordProgressWidget(
+    return sectionContainer(
+      context,
+      DetailsRecordProgressWidget(
         recordHash,
         progress: state.progress,
         characters: state.characters,
@@ -116,8 +131,9 @@ class RecordDetailsView extends StatelessWidget {
     final definition = context.definition<DestinyRecordDefinition>(recordHash);
     final objectiveHashes = definition?.objectiveHashes;
     if (objectiveHashes == null || objectiveHashes.isEmpty) return null;
-    return SliverToBoxAdapter(
-      child: DetailsRecordObjectivesWidget(
+    return sectionContainer(
+      context,
+      DetailsRecordObjectivesWidget(
         recordHash,
         progress: state.progress,
         characters: state.characters,
@@ -127,8 +143,9 @@ class RecordDetailsView extends StatelessWidget {
 
   Widget? buildObjectiveTracking(BuildContext context) {
     final recordHash = state.recordHash;
-    return SliverToBoxAdapter(
-      child: DetailsRecordObjectiveTrackingWidget(
+    return sectionContainer(
+      context,
+      DetailsRecordObjectiveTrackingWidget(
         recordHash,
       ),
     );
@@ -136,15 +153,17 @@ class RecordDetailsView extends StatelessWidget {
 
   Widget? buildLore(BuildContext context) {
     final recordHash = state.recordHash;
-    return SliverToBoxAdapter(
-      child: DetailsRecordLoreWidget(recordHash),
+    return sectionContainer(
+      context,
+      DetailsRecordLoreWidget(recordHash),
     );
   }
 
   Widget buildEmptySpace(BuildContext context, {required bool hasFooter}) {
     final bottomPadding = MediaQuery.of(context).viewPadding.bottom;
-    return SliverToBoxAdapter(
-      child: SizedBox(
+    return sectionContainer(
+      context,
+      SizedBox(
         height: 64 + (!hasFooter ? bottomPadding : 0),
       ),
     );
