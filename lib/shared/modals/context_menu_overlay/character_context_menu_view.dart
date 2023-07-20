@@ -54,7 +54,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
           bottom: sourceBottom + viewPadding.bottom,
           child: IgnorePointer(
             child: CurrentCharacterTabIndicator(
-              state.characters,
+              state.characters ?? [],
               charactersTabController,
             ),
           ),
@@ -218,7 +218,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
   }
 
   Widget? buildMaxPowerNonExoticLoadoutItems(BuildContext context) {
-    final currentCharacter = state.characters[charactersTabController.index];
+    final currentCharacter = state.characters?[charactersTabController.index];
     if (currentCharacter == null) return null;
     final helper = context.watch<CharacterContextMenuBloc>();
     final loadout = helper.equippableMaxPower?[currentCharacter.character.classType];
@@ -240,7 +240,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
   }
 
   Widget buildCharacterSelect(BuildContext context) => CharacterVerticalTabMenuWidget(
-        state.characters,
+        state.characters ?? [],
         charactersTabController,
         onSelect: (_) => Navigator.of(context).pop(),
       );

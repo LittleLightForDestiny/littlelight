@@ -13,10 +13,12 @@ abstract class BaseBottomSheet<ReturnType> extends StatelessWidget {
     return buildContainer(context, (context) {
       final header = this.buildHeader(context);
       return Container(
+        constraints: BoxConstraints(maxHeight: context.mediaQuery.size.height * .8),
         color: context.theme.surfaceLayers.layer1,
         padding: EdgeInsets.only(
           left: context.mediaQuery.padding.left,
           right: context.mediaQuery.padding.right,
+          bottom: context.mediaQuery.viewInsets.bottom,
         ),
         child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
           if (header != null)
@@ -41,7 +43,7 @@ abstract class BaseBottomSheet<ReturnType> extends StatelessWidget {
   Widget buildContent(BuildContext context);
 
   Future<ReturnType?> show(BuildContext context) async {
-    final result = await showModalBottomSheet(context: context, builder: (context) => this);
+    final result = await showModalBottomSheet(context: context, builder: (context) => this, isScrollControlled: true);
     if (result is ReturnType) return result;
     return null;
   }

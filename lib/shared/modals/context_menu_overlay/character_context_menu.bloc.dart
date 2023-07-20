@@ -31,7 +31,7 @@ const _equipmentBuckets = {
 class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
   final BuildContext context;
   final ProfileBloc _profileBloc;
-  final List<DestinyCharacterInfo?> characters;
+  final List<DestinyCharacterInfo?>? characters;
   final VoidCallback? onSearchTap;
 
   bool _enableWeaponsInLoadouts = true;
@@ -64,7 +64,7 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
     this.context, {
     VoidCallback? this.onSearchTap,
     this.characterIndex,
-    required List<DestinyCharacterInfo?> this.characters,
+    this.characters,
   }) : _profileBloc = context.read<ProfileBloc>() {
     _init();
   }
@@ -325,6 +325,6 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
     if (characterIndex == null) {
       return null;
     }
-    return characters.elementAtOrNull(characterIndex);
+    return characters?.elementAtOrNull(characterIndex);
   }
 }
