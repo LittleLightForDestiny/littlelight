@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:little_light/services/setup.dart';
 import 'package:uni_links/uni_links.dart';
 
 bool get _enabled => !Platform.isAndroid;

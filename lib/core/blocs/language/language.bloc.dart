@@ -1,14 +1,15 @@
 import 'dart:convert';
 import 'dart:core';
+
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/language_info.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:timeago/timeago.dart' as timeago;
+
 import 'timeago_messages/translated_lookup_messages.dart';
 import 'timeago_messages/translated_short_lookup_messages.dart';
 
@@ -16,12 +17,11 @@ setupLanguageService() {
   GetIt.I.registerSingleton<LanguageBloc>(LanguageBloc._internal());
 }
 
-class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer {
+class LanguageBloc extends ChangeNotifier with StorageConsumer {
   final _fallbackLanguage = "en";
   String? _systemLanguage;
   String? get selectedLanguage => globalStorage.currentLanguage;
   set selectedLanguage(String? value) {
-    manifest.closeDB();
     globalStorage.currentLanguage = value;
     _loadTranslations();
   }

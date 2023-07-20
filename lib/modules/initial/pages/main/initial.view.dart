@@ -1,4 +1,3 @@
-//@dart = 2.12
 import 'package:flutter/material.dart';
 import 'package:little_light/pages/initial/subpages/authorization_request.subpage.dart';
 import 'package:little_light/pages/initial/subpages/download_manifest_progress.subpage.dart';
@@ -9,16 +8,16 @@ import 'package:little_light/pages/initial/subpages/select_wishlists.subpage.dar
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
-import 'notifiers/initial_page_state.notifier.dart';
+import '../../../../pages/initial/notifiers/initial_page_state.notifier.dart';
 
-class InitialPage extends StatefulWidget {
-  const InitialPage() : super();
+class InitialView extends StatefulWidget {
+  const InitialView() : super();
 
   @override
-  InitialPageState createState() => InitialPageState();
+  InitialViewState createState() => InitialViewState();
 }
 
-class InitialPageState extends State<InitialPage> with AuthConsumer {
+class InitialViewState extends State<InitialView> with AuthConsumer {
   @override
   Widget build(BuildContext context) => Scaffold(
       body: Container(

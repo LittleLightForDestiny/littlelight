@@ -1,6 +1,4 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/modules/collections/pages/home/collections_home.page.dart';
