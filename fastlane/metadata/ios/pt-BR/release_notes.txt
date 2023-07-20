@@ -1,12 +1,11 @@
-- show vault item count
-- make favorite items show first at search
--  re-add search button on main header
--  fix some subclass mods not being equippable
--  re-add mods on duplicate weapons
--  re-add random loadout option
--  fix trackers column on collections
--  makes tags menu scrollable
--  fixes enhanced perks
--  adds weapon frames filter
--  adds crafted weapons filter
-- adds deepsight weapons filter
+- Fixes app crashing after returning from background
+- Brings back show details button on selected items
+- Brings back lock/unlock button on selected items
+- Fixes some layout issues with items being hidden behind navigation bar
+- Fixes issue with settings page scrolling
+- Fixes mods not showing up on collection item details
+- Expires in now is more readable
+- Fixes some text-fields being hidden behind the software keyboard
+- Fixes layout issues with duplicated items with more than one tag
+- Show perks that can't roll anymore as darkened in collection item details
+- Fixes back gestures on the new quick menu
