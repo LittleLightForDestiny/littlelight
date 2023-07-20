@@ -23,14 +23,15 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer,
   @override
   void initState() {
     super.initState();
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
-    SystemChrome.setSystemUIOverlayStyle(
-      SystemUiOverlayStyle(
-        systemNavigationBarColor: Colors.black.withOpacity(0.002),
-      ),
-    );
     LittleLightNavigatorKeyContainer.navigatorKey = GlobalKey<NavigatorState>();
     unilinks?.addListener(updateUnilinks);
+    updateSystemOverlay();
+  }
+
+  void updateSystemOverlay() async {
+    await Future.delayed(Duration(milliseconds: 10));
+    SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(systemNavigationBarColor: Colors.transparent));
+    SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   }
 
   @override

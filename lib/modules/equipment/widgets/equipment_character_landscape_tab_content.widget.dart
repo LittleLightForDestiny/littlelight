@@ -62,6 +62,8 @@ class EquipmentCharacterLandscapeTabContentWidget extends StatelessWidget {
                     currencies: currencies,
                   ),
                 ),
+                ...buildSingleColumnSections(context, InventoryBucket.lostItems, constraints, omitEmpty: true),
+                ...buildSingleColumnSections(context, InventoryBucket.engrams, constraints, omitEmpty: true),
                 buildMultiColumnSection(context, [InventoryBucket.subclass, InventoryBucket.helmet], constraints),
                 buildMultiColumnSection(
                     context, [InventoryBucket.kineticWeapons, InventoryBucket.gauntlets], constraints),
@@ -109,12 +111,16 @@ class EquipmentCharacterLandscapeTabContentWidget extends StatelessWidget {
   List<ScrollableSection> buildSingleColumnSections(
     BuildContext context,
     int bucketHash,
-    BoxConstraints constraints,
-  ) {
+    BoxConstraints constraints, {
+    bool omitEmpty = false,
+  }) {
     final bucketContent = buckets[bucketHash];
     if (bucketContent == null) return [];
     final equipped = bucketContent.equipped;
     final unequipped = bucketContent.unequipped;
+    if (omitEmpty && equipped == null && unequipped.isEmpty) {
+      return [];
+    }
     final defaultDisplayType = _defaultDisplayTypes[bucketHash] ?? BucketDisplayType.Medium;
     final displayType = bucketOptionsState(context).getDisplayTypeForItemSection(
       "$bucketHash",
