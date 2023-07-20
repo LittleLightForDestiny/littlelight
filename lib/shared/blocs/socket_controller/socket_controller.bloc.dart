@@ -449,8 +449,10 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     if (socketCount == null) return null;
     final result = <int, Map<int, bool>>{};
     for (int socketIndex = 0; socketIndex < socketCount; socketIndex++) {
-      final plugHashes = availablePlugHashesForSocket(socketIndex);
-      if (plugHashes == null) continue;
+      final available = availablePlugHashesForSocket(socketIndex) ?? [];
+      final random = randomPlugHashesForSocket(socketIndex) ?? [];
+      final plugHashes = [...available, ...random];
+      if (plugHashes.isEmpty) continue;
       final plugs = result[socketIndex] ??= {};
       for (final plugHash in plugHashes) {
         plugs[plugHash] = await calculateIsPlugAvailable(socketIndex, plugHash);
@@ -467,8 +469,10 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     if (socketCount == null) return null;
     final result = <int, Map<int, bool>>{};
     for (int socketIndex = 0; socketIndex < socketCount; socketIndex++) {
-      final plugHashes = availablePlugHashesForSocket(socketIndex);
-      if (plugHashes == null) continue;
+      final available = availablePlugHashesForSocket(socketIndex) ?? [];
+      final random = randomPlugHashesForSocket(socketIndex) ?? [];
+      final plugHashes = [...available, ...random];
+      if (plugHashes.isEmpty) continue;
       final plugs = result[socketIndex] ??= {};
       for (final plugHash in plugHashes) {
         plugs[plugHash] = await loadCanApplyPlug(socketIndex, plugHash);
