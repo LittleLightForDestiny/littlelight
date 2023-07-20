@@ -5,9 +5,9 @@ import 'package:little_light/pages/initial/subpages/error.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_language.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_membership.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_wishlists.subpage.dart';
-import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
+
 import '../../../../pages/initial/notifiers/initial_page_state.notifier.dart';
 
 class InitialView extends StatefulWidget {
@@ -17,7 +17,7 @@ class InitialView extends StatefulWidget {
   InitialViewState createState() => InitialViewState();
 }
 
-class InitialViewState extends State<InitialView> with AuthConsumer {
+class InitialViewState extends State<InitialView> {
   @override
   Widget build(BuildContext context) => Scaffold(
       body: Container(
