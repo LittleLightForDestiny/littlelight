@@ -4,6 +4,7 @@ import 'package:little_light/models/bucket_display_options.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/blocs/bucket_options/global_key_holder.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
 import 'package:little_light/modules/progress/widgets/bucket_header_list_item.widget.dart';
 import 'package:little_light/shared/widgets/character/vault_info.widget.dart';
@@ -99,12 +100,14 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
     final itemDensity = displayType.unequippedDensity;
     final idealCount = itemDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final itemCount = (items.length / idealCount).ceil() * idealCount;
+    final key = "vault $bucketHash";
     return [
       FixedHeightScrollSection(
         48,
         itemCount: 1,
         itemBuilder: (_, __) => BucketHeaderListItemWidget(
           bucketHash,
+          menuGlobalKey: context.getGlobalKeyFor(key),
           itemCount: bucketContent.items.length,
           isVault: true,
           canEquip: false,

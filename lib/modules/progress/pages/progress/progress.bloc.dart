@@ -10,6 +10,7 @@ import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
+import 'package:little_light/shared/modals/context_menu_overlay/character_context_menu.route.dart';
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/search/pages/pursuit_search/pursuit_search.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -18,6 +19,7 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/shared/utils/sorters/items/export.dart';
+import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:provider/provider.dart';
 
 typedef CharactersQuests = Map<String, Map<int?, List<DestinyItemInfo>>>;
@@ -201,5 +203,12 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
 
   List<DestinyItemInfo>? bountiesFor(DestinyCharacterInfo character) {
     return _equipmentState.pursuits[character.characterId]?.bounties;
+  }
+
+  void openContextMenu(CustomTabController characterTabController) {
+    final characters = this.characters;
+    if (characters == null) return;
+    Navigator.of(_context)
+        .push(CharacterContextMenuModalRoute(characterTabController, characters: characters, onSearchTap: openSearch));
   }
 }

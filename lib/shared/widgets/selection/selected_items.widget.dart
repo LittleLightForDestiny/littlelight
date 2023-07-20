@@ -6,6 +6,7 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/shared/widgets/selection/selected_item_instance.widget.dart';
 import 'package:little_light/shared/widgets/selection/selected_item_thumb.widget.dart';
 import 'package:little_light/shared/widgets/transfer_destinations/stack_transfer.widget.dart';
@@ -23,51 +24,22 @@ class SelectedItemsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     if (!selectionState(context).hasSelection) return Container();
     final items = selectionState(context).selectedItems;
-    if (items.length > 1) {
-      return buildMultiItemSelection(context, items);
-    }
-    final item = items.firstOrNull;
-    if (item == null) return Container();
-    if (item.instanceId == null) {
-      return buildStackedItemSelection(context, item);
-    }
-    return buildInstancedItemSelection(context, item);
-  }
-
-  Widget buildMultiItemSelection(BuildContext context, List<DestinyItemInfo> items) {
     return Container(
       color: context.theme.surfaceLayers.layer1,
       child: Column(children: [
-        buildMultiItemSelectionHeader(context, items),
-        buildSelectedItemList(context, items),
-        buildTransferDestinations(context),
+        Container(
+          height: 1,
+          color: context.theme.onSurfaceLayers.layer3,
+        ),
+        buildHeader(context, items),
+        buildSelectedItems(context, items),
+        buildOptions(context),
+        buildTransferDestinations(context, items),
       ]),
     );
   }
 
-  Widget buildInstancedItemSelection(BuildContext context, DestinyItemInfo item) {
-    return Container(
-      color: context.theme.surfaceLayers.layer1,
-      child: Column(children: [
-        buildMultiItemSelectionHeader(context, [item]),
-        buildInstancedItem(context, item),
-        buildTransferDestinations(context),
-      ]),
-    );
-  }
-
-  Widget buildStackedItemSelection(BuildContext context, DestinyItemInfo item) {
-    return Container(
-      color: context.theme.surfaceLayers.layer1,
-      child: Column(children: [
-        buildMultiItemSelectionHeader(context, [item]),
-        buildInstancedItem(context, item),
-        buildStackTransfer(context, item),
-      ]),
-    );
-  }
-
-  Widget buildMultiItemSelectionHeader(BuildContext context, List<DestinyItemInfo> items) {
+  Widget buildHeader(BuildContext context, List<DestinyItemInfo> items) {
     return Container(
         color: context.theme.secondarySurfaceLayers.layer0,
         child: Row(
@@ -93,7 +65,8 @@ class SelectedItemsWidget extends StatelessWidget {
         ));
   }
 
-  Widget buildSelectedItemList(BuildContext context, List<DestinyItemInfo> items) {
+  Widget buildSelectedItems(BuildContext context, List<DestinyItemInfo> items) {
+    if (items.length == 1) return buildSingleItem(context, items.first);
     return SizedBox(
         height: _selectedItemSize + 16,
         child: ListView.separated(
@@ -129,7 +102,7 @@ class SelectedItemsWidget extends StatelessWidget {
     );
   }
 
-  Widget buildInstancedItem(BuildContext context, DestinyItemInfo item) {
+  Widget buildSingleItem(BuildContext context, DestinyItemInfo item) {
     return SizedBox(
       height: _instancedItemHeight,
       child: Stack(children: [
@@ -170,7 +143,8 @@ class SelectedItemsWidget extends StatelessWidget {
     );
   }
 
-  Widget buildTransferDestinations(BuildContext context) {
+  Widget buildTransferDestinations(BuildContext context, List<DestinyItemInfo> items) {
+    if (items.length == 1 && items.first.instanceId == null) return buildStackTransfer(context, items.first);
     return Container(
       child: TransferDestinationsWidget(
         transferDestinations: selectionState(context).transferDestinations,
@@ -215,5 +189,43 @@ class SelectedItemsWidget extends StatelessWidget {
           },
           transferDestinations: selectionState(context).transferDestinations,
         ));
+  }
+
+  Widget buildOptions(BuildContext context) {
+    final state = selectionState(context);
+    final bloc = context.read<SelectionBloc>();
+    return Container(
+        child: Row(children: [
+      if (state.canLock)
+        buildOption(
+          context,
+          "Lock".translate(context),
+          state.lockBusy ? null : () => bloc.lockSelected(true),
+        ),
+      if (state.canUnlock)
+        buildOption(
+          context,
+          "Unlock".translate(context),
+          state.lockBusy ? null : () => bloc.lockSelected(false),
+        ),
+      if (state.selectedItems.length == 1)
+        buildOption(
+          context,
+          "Details".translate(context),
+          () => bloc.viewDetails(),
+        ),
+    ]));
+  }
+
+  Widget buildOption(BuildContext context, String label, VoidCallback? onTap) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+        child: ElevatedButton(
+          onPressed: onTap,
+          child: onTap == null ? DefaultLoadingShimmer(child: Text(label)) : Text(label),
+        ),
+      ),
+    );
   }
 }

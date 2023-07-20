@@ -1,33 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/bucket_display_options.dart';
+import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:little_light/shared/utils/extensions/bucket_display_type_data.dart';
 import 'package:little_light/shared/widgets/overlay/base_overlay_widget.dart';
+import 'package:provider/provider.dart';
 
-typedef OnSelectDisplayOption = void Function(BucketDisplayType? type);
-
-const _options = BucketDisplayType.values;
-
-class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
-  final OnSelectDisplayOption? onSelect;
-  final BucketDisplayType currentValue;
+class BucketDisplayOptionsOverlayMenuView extends BaseOverlayWidget {
   final bool canEquip;
-  final Set<BucketDisplayType> availableOptions;
+  final List<BucketDisplayType> availableOptions;
+  final String identifier;
+  final BucketDisplayType defaultValue;
 
-  const BucketDisplayOptionsOverlayMenu({
+  const BucketDisplayOptionsOverlayMenuView({
     Key? key,
-    required this.currentValue,
-    required RenderBox sourceRenderBox,
-    this.onSelect,
+    required GlobalKey buttonKey,
     this.canEquip = false,
-    required void Function() onClose,
-    required Set<BucketDisplayType> this.availableOptions,
-  }) : super(
-          canDismissOnBackground: true,
-          sourceRenderBox: sourceRenderBox,
-          key: key,
-          onClose: onClose,
-        );
+    required this.availableOptions,
+    required Animation animation,
+    required this.defaultValue,
+    required this.identifier,
+  }) : super(canDismissOnBackground: true, key: key, buttonKey: buttonKey, animation: animation);
 
   @override
   Widget buildOverlay(
@@ -39,9 +32,13 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
     required BoxConstraints constraints,
   }) {
     const itemSize = 52.0;
-    final selectedIndex = _options.indexOf(currentValue).clamp(0, _options.length - 1);
+    final currentValue = context.watch<ItemSectionOptionsBloc>().getDisplayTypeForItemSection(
+          identifier,
+          defaultValue: defaultValue,
+        );
+    final selectedIndex = availableOptions.indexOf(currentValue).clamp(0, availableOptions.length - 1);
     double top = sourceTop - 2 - itemSize * selectedIndex;
-    final height = itemSize * _options.length;
+    final height = itemSize * availableOptions.length;
     if (top + height > constraints.maxHeight) {
       final difference = ((top + height - constraints.maxHeight) / itemSize).ceil();
       top = sourceTop - 2 - itemSize * (selectedIndex + difference);
@@ -57,8 +54,7 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
           top: top,
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.end,
-              children: _options
-                  .where((option) => availableOptions.contains(option))
+              children: availableOptions
                   .map(
                     (option) => SizedBox(
                       height: itemSize,
@@ -66,8 +62,7 @@ class BucketDisplayOptionsOverlayMenu extends BaseOverlayWidget {
                         option,
                         canEquip: canEquip,
                         onTap: () {
-                          onClose();
-                          onSelect?.call(option);
+                          Navigator.of(context).pop(option);
                         },
                         isSelected: option == currentValue,
                       ),

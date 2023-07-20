@@ -9,7 +9,7 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:provider/provider.dart';
-import '../../shared/blocs/context_menu_options/context_menu_options.bloc.dart';
+
 import 'app_lifecycle/app_lifecycle.bloc.dart';
 import 'inventory/inventory.bloc.dart';
 import 'language/language.bloc.dart';
@@ -39,7 +39,6 @@ class CoreBlocsContainer extends MultiProvider {
             ChangeNotifierProvider<VendorsBloc>(create: (context) => VendorsBloc(context)),
             ChangeNotifierProvider<LoadoutsBloc>(create: (context) => LoadoutsBloc(context)),
             ChangeNotifierProvider<SelectionBloc>(create: (context) => SelectionBloc(context)),
-            ChangeNotifierProvider<ContextMenuOptionsBloc>(create: (context) => ContextMenuOptionsBloc(context)),
             ChangeNotifierProvider<ItemSectionOptionsBloc>(create: (context) => ItemSectionOptionsBloc(context)),
             ChangeNotifierProvider<ObjectiveTrackingBloc>(create: (context) => ObjectiveTrackingBloc(context)),
           ],

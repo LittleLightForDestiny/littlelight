@@ -45,17 +45,16 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     final isInventorySourced = sources.contains(SocketPlugSources.InventorySourced);
     final reusablePlugSetHash = socket.reusablePlugSetHash;
 
-    /// Workaround to avoid gigantic plug lists on some weapons
     final reusable = socket.reusablePlugItems;
-    if (reusable != null && reusable.length > 3) {
-      return [];
+    final first = reusable?.firstOrNull;
+    final firstDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(first?.plugItemHash);
+    final isTracker = isTrackerPlug(context, firstDef);
+
+    if (isTracker) {
+      return null;
     }
 
-    if (isPlugSet && isInventorySourced && reusablePlugSetHash != null) {
-      final plugSet = _profileBloc.getProfilePlugSets(reusablePlugSetHash);
-      final plugHashes = plugSet?.map((e) => e.plugItemHash);
-      if (plugHashes != null) available.addAll(plugHashes.whereType<int>());
-    }
+    final initial = socket.singleInitialItemHash;
 
     if (isPlugSet && reusablePlugSetHash != null) {
       final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(reusablePlugSetHash);
@@ -68,10 +67,15 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
       if (plugHashes != null) available.addAll(plugHashes);
     }
 
-    final initial = socket.singleInitialItemHash;
-    final containsInitial = available.contains(initial);
+    if (isPlugSet && isInventorySourced && reusablePlugSetHash != null) {
+      final plugSet = _profileBloc.getProfilePlugSets(reusablePlugSetHash);
+      final plugHashes = plugSet?.map((e) => e.plugItemHash);
+      if (plugHashes != null) available.addAll(plugHashes.whereType<int>());
+    }
+
+    available.remove(initial);
     return [
-      if (!containsInitial && initial != null && initial != 0) initial,
+      if (initial != null && initial != 0) initial,
       ...available,
     ];
   }
@@ -125,9 +129,12 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     if (!isPlugSet) return null;
 
     final reusable = socket.reusablePlugItems;
+    final first = reusable?.firstOrNull;
+    final firstDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(first?.plugItemHash);
+    final isTracker = isTrackerPlug(context, firstDef);
 
-    if (reusable != null && reusable.length > 3) {
-      return reusable.map((e) => e.plugItemHash).whereType<int>().toList();
+    if (isTracker) {
+      return reusable?.map((e) => e.plugItemHash).whereType<int>().toList();
     }
 
     final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(socket.randomizedPlugSetHash);
@@ -137,17 +144,49 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     return plugHashes.whereType<int>().toList();
   }
 
-  Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash) async => true;
+  Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash) async {
+    final socket = itemDefinition?.sockets?.socketEntries?[socketIndex];
+    if (socket == null) return false;
+    final reusable = socket.reusablePlugItems;
+    final reusablePlugSetHash = socket.reusablePlugSetHash ?? 0;
+    final randomPlugSetHash = socket.randomizedPlugSetHash ?? 0;
+
+    if (randomPlugSetHash != 0) {
+      final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(randomPlugSetHash);
+      final contains = plugSetDef?.reusablePlugItems
+          ?.any((element) => element.plugItemHash == plugHash && (element.currentlyCanRoll ?? false));
+      return contains ?? false;
+    }
+
+    if (reusablePlugSetHash != 0) {
+      final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(reusablePlugSetHash);
+      final contains = plugSetDef?.reusablePlugItems
+          ?.any((element) => element.plugItemHash == plugHash && (element.currentlyCanRoll ?? false));
+      return contains ?? false;
+    }
+
+    final containsReusable = reusable?.any((element) => element.plugItemHash == plugHash) ?? false;
+    if (containsReusable) return true;
+
+    return false;
+  }
 
   @override
-  Future<bool> loadCanApplyPlug(int socketIndex, int plugHash) async => true;
+  Future<bool> loadCanApplyPlug(int socketIndex, int plugHash) async {
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(plugHash);
+    if (isTrackerPlug(context, def)) {
+      return false;
+    }
+
+    return true;
+  }
 
   @override
   bool isSelectable(int? index, int plugHash) => true;
 
   @override
-  bool isAvailable(int? index, int plugHash) => true;
-
-  @override
-  bool canApply(int socketIndex, int plugHash) => equippedPlugHashForSocket(socketIndex) != plugHash;
+  bool canApply(int socketIndex, int plugHash) {
+    if (isEquipped(socketIndex, plugHash)) return false;
+    return super.canApply(socketIndex, plugHash);
+  }
 }

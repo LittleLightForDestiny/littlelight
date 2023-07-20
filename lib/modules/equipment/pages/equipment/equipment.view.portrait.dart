@@ -8,11 +8,10 @@ import 'package:little_light/modules/equipment/widgets/equipment_character_tab_c
 import 'package:little_light/modules/equipment/widgets/equipment_type_tab_menu.widget.dart';
 import 'package:little_light/modules/equipment/widgets/equipment_vault_tab_content.widget.dart';
 import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
-import 'package:little_light/shared/widgets/menus/character_context_menu/character_context_menu.dart';
+import 'package:little_light/shared/modals/context_menu_overlay/character_context_menu_view.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_bottom_gradient.widget.dart';
 import 'package:little_light/shared/widgets/notifications/busy_indicator_line.widget.dart';
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
-import 'package:little_light/shared/widgets/overlay/show_overlay.dart';
 import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:little_light/shared/widgets/tabs/header/character_tab_header.widget.dart';
@@ -227,29 +226,14 @@ class EquipmentPortraitView extends StatelessWidget {
                 characters,
                 characterTabController,
               )),
-          Positioned(
-              right: 0,
-              top: 0,
-              bottom: 0,
-              width: 184.0,
+          Positioned.fill(
               child: Material(
-                color: Colors.transparent,
-                child: InkWell(onTap: () {
-                  showOverlay(
-                      context,
-                      ((_, rect, onClose) => CharacterContextMenu(
-                            characters,
-                            characterTabController,
-                            sourceRenderBox: rect,
-                            onClose: onClose,
-                            onSearchTap: () {
-                              final currentBucketGroup = EquipmentBucketGroup.values[typeTabController.index];
-                              final currentClassType = characters[characterTabController.index]?.character.classType;
-                              bloc.openSearch(currentBucketGroup, currentClassType);
-                            },
-                          )));
-                }),
-              ))
+            color: Colors.transparent,
+            key: CharacterContextMenu.menuButtonKey,
+            child: InkWell(onTap: () {
+              bloc.openContextMenu(characterTabController, typeTabController);
+            }),
+          ))
         ],
       ),
     );

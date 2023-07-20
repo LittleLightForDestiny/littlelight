@@ -325,7 +325,7 @@ class DuplicatedItemWidget extends StatelessWidget {
     final notes = context.watch<ItemNotesBloc>();
     final tags = notes.tagsFor(item.itemHash, item.instanceId);
     if (tags == null || tags.isEmpty) return Container();
-    return Column(
+    return Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: tags
             .map((e) => TagIconWidget.fromTag(

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
-import 'package:little_light/shared/blocs/context_menu_options/context_menu_options.bloc.dart';
+import 'package:little_light/shared/modals/context_menu_overlay/character_context_menu.bloc.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/containers/menu_box.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
@@ -18,19 +17,17 @@ import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_ind
 import 'package:provider/provider.dart';
 
 class CharacterContextMenu extends BaseOverlayWidget {
-  final List<DestinyCharacterInfo?> characters;
+  static final menuButtonKey = GlobalKey();
   final CustomTabController charactersTabController;
-  final VoidCallback? onSearchTap;
+  final CharacterContextMenuBloc bloc;
+  final CharacterContextMenuBloc state;
 
-  const CharacterContextMenu(
-    this.characters,
-    this.charactersTabController, {
-    required RenderBox sourceRenderBox,
-    required VoidCallback onClose,
-    this.onSearchTap,
-  }) : super(sourceRenderBox: sourceRenderBox, onClose: onClose);
-
-  DestinyCharacterInfo? get character => characters[charactersTabController.index];
+  CharacterContextMenu(
+    CharacterContextMenuBloc this.bloc,
+    CharacterContextMenuBloc this.state, {
+    required this.charactersTabController,
+    required Animation<double> openAnimation,
+  }) : super(buttonKey: menuButtonKey, animation: openAnimation);
 
   @override
   Widget buildOverlay(
@@ -57,7 +54,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
           bottom: sourceBottom + viewPadding.bottom,
           child: IgnorePointer(
             child: CurrentCharacterTabIndicator(
-              characters,
+              state.characters ?? [],
               charactersTabController,
             ),
           ),
@@ -76,7 +73,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
           children: [
             Positioned.fill(
                 child: GestureDetector(
-              onTap: () => onClose(),
+              onTap: () => Navigator.of(context).pop(),
             )),
             Container(
               constraints: BoxConstraints(maxWidth: 544),
@@ -137,78 +134,72 @@ class CharacterContextMenu extends BaseOverlayWidget {
         ),
         Text("Search".translate(context).toUpperCase()),
       ]),
-      onPressed: () {
-        this.onClose();
-        this.onSearchTap?.call();
-      },
+      onPressed: bloc.onSearchTap,
     );
   }
 
   Widget? buildPostmasterOptions(BuildContext context) {
-    final character = this.character;
+    final character = state.character;
     if (character == null) return null;
     return CharacterPostmasterOptionsWidget(
       character: character,
-      onClose: onClose,
     );
   }
 
   Widget? buildGrindOptimizer(BuildContext context) {
-    final character = this.character;
+    final character = state.character;
     if (character == null) return null;
     return MenuBox(
         child: CharacterGrindOptimizerWidget(
       character: character,
-      onClose: onClose,
+      onClose: () => Navigator.of(context).pop(),
     ));
   }
 
   Widget? buildMaxPower(BuildContext context) {
-    final character = this.character;
+    final character = state.character;
     if (character == null) return null;
     return MaxPowerOptionsWidget(
       character: character,
-      onClose: onClose,
     );
   }
 
   Widget? buildEquipLoadout(BuildContext context) {
-    final character = this.character;
+    final character = state.character;
     if (character == null) return null;
     return EquipLoadoutWidget(
       character: character,
-      onClose: onClose,
     );
   }
 
   Widget? buildCreateLoadout(BuildContext context) {
-    final character = this.character;
+    final character = state.character;
     if (character == null) return null;
     return CreateLoadoutWidget(
       character: character,
-      onClose: onClose,
+      onClose: () => Navigator.of(context).pop(),
     );
   }
 
   Widget? buildCurrentAverage(BuildContext context) {
-    final classType = this.character?.character.classType;
+    final classType = state.character?.character.classType;
     if (classType == null) return null;
 
-    final average = context.watch<ContextMenuOptionsBloc>().getCurrentAverage(classType);
+    final average = context.watch<CharacterContextMenuBloc>().getCurrentAverage(classType);
     return Text("Current Average ${average?.toStringAsFixed(2)}");
   }
 
   Widget? buildAchievableAverage(BuildContext context) {
-    final classType = this.character?.character.classType;
+    final classType = state.character?.character.classType;
     if (classType == null) return null;
-    final average = context.watch<ContextMenuOptionsBloc>().getAchievableAverage(classType);
+    final average = context.watch<CharacterContextMenuBloc>().getAchievableAverage(classType);
     return Text("Achievable Average ${average?.toStringAsFixed(2)}");
   }
 
   Widget? buildMaxPowerLoadoutItems(BuildContext context) {
-    final character = this.character;
+    final character = state.character;
     if (character == null) return null;
-    final helper = context.watch<ContextMenuOptionsBloc>();
+    final helper = context.watch<CharacterContextMenuBloc>();
     final loadout = helper.maxPower?[character.character.classType];
     if (loadout == null) return null;
     return SingleChildScrollView(
@@ -227,9 +218,9 @@ class CharacterContextMenu extends BaseOverlayWidget {
   }
 
   Widget? buildMaxPowerNonExoticLoadoutItems(BuildContext context) {
-    final currentCharacter = characters[charactersTabController.index];
+    final currentCharacter = state.characters?[charactersTabController.index];
     if (currentCharacter == null) return null;
-    final helper = context.watch<ContextMenuOptionsBloc>();
+    final helper = context.watch<CharacterContextMenuBloc>();
     final loadout = helper.equippableMaxPower?[currentCharacter.character.classType];
     if (loadout == null) return null;
     return SingleChildScrollView(
@@ -249,8 +240,8 @@ class CharacterContextMenu extends BaseOverlayWidget {
   }
 
   Widget buildCharacterSelect(BuildContext context) => CharacterVerticalTabMenuWidget(
-        characters,
+        state.characters ?? [],
         charactersTabController,
-        onSelect: (_) => onClose(),
+        onSelect: (_) => Navigator.of(context).pop(),
       );
 }

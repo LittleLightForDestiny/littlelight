@@ -28,11 +28,14 @@ const _equipmentBuckets = {
   InventoryBucket.classArmor,
 };
 
-class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
+class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
   final BuildContext context;
   final ProfileBloc _profileBloc;
+  final List<DestinyCharacterInfo?>? characters;
+  final VoidCallback? onSearchTap;
 
   bool _enableWeaponsInLoadouts = true;
+
   bool get enableWeaponsInLoadouts => _enableWeaponsInLoadouts;
   set enableWeaponsInLoadouts(bool value) {
     _enableWeaponsInLoadouts = value;
@@ -46,6 +49,8 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
     notifyListeners();
   }
 
+  final int? characterIndex;
+
   Map<DestinyClass, Map<int, InventoryItemInfo>>? _maxPowerEquipments;
   Map<DestinyClass, Map<int, InventoryItemInfo>>? _maxEquippable;
   Map<DestinyClass, double>? _currentAverage;
@@ -55,7 +60,12 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
 
   GameData? _gameData;
 
-  ContextMenuOptionsBloc(this.context) : _profileBloc = context.read<ProfileBloc>() {
+  CharacterContextMenuBloc(
+    this.context, {
+    VoidCallback? this.onSearchTap,
+    this.characterIndex,
+    this.characters,
+  }) : _profileBloc = context.read<ProfileBloc>() {
     _init();
   }
 
@@ -301,10 +311,20 @@ class ContextMenuOptionsBloc extends ChangeNotifier with ManifestConsumer, Littl
   }
 
   void openLoadoutTransfer(BuildContext navigatorContext, DestinyCharacterInfo character, bool equip) async {
+    Navigator.of(navigatorContext).pop();
     EquipLoadoutBottomsheet(character, equip).show(navigatorContext);
   }
 
   void openEquipRandomLoadout(BuildContext navigatorContext, DestinyCharacterInfo character) {
+    Navigator.of(navigatorContext).pop();
     EquipRandomLoadoutBottomsheet(character).show(navigatorContext);
+  }
+
+  DestinyCharacterInfo? get character {
+    final characterIndex = this.characterIndex;
+    if (characterIndex == null) {
+      return null;
+    }
+    return characters?.elementAtOrNull(characterIndex);
   }
 }

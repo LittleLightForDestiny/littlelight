@@ -32,11 +32,7 @@ class SettingsView extends StatelessWidget {
         ),
         body: Stack(children: [
           SingleChildScrollView(
-              padding: const EdgeInsets.all(8) +
-                  EdgeInsets.only(
-                    left: context.mediaQuery.padding.left,
-                    right: context.mediaQuery.padding.right,
-                  ),
+              padding: const EdgeInsets.all(8) + context.mediaQuery.padding.copyWith(top: 0),
               child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
                 SwitchOptionWidget(
                   "Tap to select".translate(context).toUpperCase(),
@@ -207,6 +203,7 @@ class SettingsView extends StatelessWidget {
     if (itemOrdering == null) return Container();
     return ReorderableList(
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final parameter = itemOrdering[index];
         return ItemOrderParameterWidget(
@@ -227,6 +224,7 @@ class SettingsView extends StatelessWidget {
     if (pursuitOrdering == null) return Container();
     return ReorderableList(
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {
         final parameter = pursuitOrdering[index];
         return ItemOrderParameterWidget(

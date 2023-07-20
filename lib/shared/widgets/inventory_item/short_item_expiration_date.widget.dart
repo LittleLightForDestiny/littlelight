@@ -45,10 +45,11 @@ class ShortExpiryDateWidget extends StatelessWidget {
   }
 
   Widget buildField(BuildContext context, String text, bool warning) {
-    final warningColor = context.theme.errorLayers.layer1.mix(context.theme.onSurfaceLayers.layer0, 30);
+    final warningColor = context.theme.errorLayers.layer3.mix(context.theme.surfaceLayers, 30);
+    final warningTextColor = context.theme.errorLayers.layer3.mix(context.theme.onSurfaceLayers, 30);
 
     final style = (this.style ?? context.textTheme.caption)
-        .copyWith(color: warning ? context.theme.onSurfaceLayers : warningColor);
+        .copyWith(color: warning ? context.theme.onSurfaceLayers : warningTextColor);
     final bgColor = warning ? warningColor : context.theme.surfaceLayers.layer1;
     final field = Text(
       text,
