@@ -52,7 +52,6 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer,
   Widget build(BuildContext context) {
     return Container(
         child: MaterialApp(
-      restorationScopeId: 'little_light_root',
       debugShowCheckedModeBanner: false,
       title: 'Little Light',
       navigatorKey: LittleLightNavigatorKeyContainer.navigatorKey,
