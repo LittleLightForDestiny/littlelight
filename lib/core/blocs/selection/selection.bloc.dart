@@ -1,7 +1,11 @@
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
+import 'package:little_light/core/navigator_key.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
 import 'package:little_light/shared/utils/helpers/get_transfer_destinations.dart';
@@ -33,13 +37,31 @@ class _SelectedItemIdentifier {
 }
 
 class SelectionBloc extends ChangeNotifier with ManifestConsumer {
+  final InventoryBloc _inventory;
   final ProfileBloc _profile;
   final BuildContext _context;
 
-  factory SelectionBloc(BuildContext context) => SelectionBloc._(context, context.read<ProfileBloc>());
+  factory SelectionBloc(BuildContext context) => SelectionBloc._(
+        context,
+        context.read<ProfileBloc>(),
+        context.read<InventoryBloc>(),
+      );
 
-  SelectionBloc._(this._context, this._profile) {
+  SelectionBloc._(this._context, this._profile, this._inventory) {
     _profile.addListener(_internalUpdate);
+  }
+
+  bool _lockBusy = false;
+  bool get lockBusy => _lockBusy;
+
+  bool get canLock {
+    if (selectedItems.length == 0) return false;
+    return selectedItems.any((element) => !(element.state?.contains(ItemState.Locked) ?? false));
+  }
+
+  bool get canUnlock {
+    if (selectedItems.length == 0) return false;
+    return selectedItems.any((element) => element.state?.contains(ItemState.Locked) ?? false);
   }
 
   @override
@@ -145,4 +167,24 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
   List<InventoryItemInfo> get selectedItems => _selectedItems;
   List<TransferDestination> get transferDestinations => _transferDestinations;
   List<TransferDestination> get equipDestinations => _equipDestinations;
+
+  void lockSelected(bool lock) async {
+    final itemsToLock = selectedItems.where((element) => (element.state?.contains(ItemState.Locked) ?? false) != lock);
+    if (itemsToLock.isEmpty) return;
+    _lockBusy = true;
+    notifyListeners();
+    final futures = itemsToLock.map((e) => _inventory.changeItemLockState(e, lock)).toList();
+    await Future.wait(futures);
+    _lockBusy = false;
+    notifyListeners();
+  }
+
+  void viewDetails() {
+    final item = selectedItems.singleOrNull;
+    if (item == null) return;
+    final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
+    if (context == null) return;
+    clear();
+    Navigator.of(context).push(InventoryItemDetailsPageRoute(item));
+  }
 }
