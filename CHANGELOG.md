@@ -1,3 +1,20 @@
+## [2.0.3] - 2023-07-20
+
+- fixes postmaster and engrams not showing in landscape layout
+- fixes layout not extending behind navigation bar on some devices
+
+## [2.0.2] - 2023-07-20
+
+Fixes:
+- app crashing after returning from background
+- show details button on selected items
+- lock/unlock button on selected items
+- some layout and usability issues
+- Fixes mods not showing up on collection item details
+- Expires in now is more readable
+- Show perks that can't roll anymore as darkened in collection item details
+
+
 ## [2.0.1] - 2023-07-17
 
 - show vault item count

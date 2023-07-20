@@ -8,7 +8,7 @@ import 'package:little_light/pages/initial/subpages/select_wishlists.subpage.dar
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../pages/initial/notifiers/initial_page_state.notifier.dart';
+import 'initial.bloc.dart';
 
 class InitialView extends StatefulWidget {
   const InitialView() : super();

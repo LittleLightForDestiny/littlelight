@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/wishlist_index.dart';
-import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
+import 'package:little_light/modules/initial/pages/main/initial.bloc.dart';
 import 'package:little_light/pages/initial/notifiers/select_wishlists.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:provider/provider.dart';

@@ -1,0 +1,8 @@
+Fixes:
+- app crashing after returning from background
+- show details button on selected items
+- lock/unlock button on selected items
+- some layout and usability issues
+- Fixes mods not showing up on collection item details
+- Expires in now is more readable
+- Show perks that can't roll anymore as darkened in collection item details

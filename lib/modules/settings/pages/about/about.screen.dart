@@ -61,7 +61,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
     final info = await PackageInfo.fromPlatform();
     packageVersion = info.version;
     appName = info.appName;
-    if (Platform.isIOS) {
+    if (Platform.isIOS || Platform.isMacOS) {
       final lastUpdated = globalStorage.lastUpdated;
       final now = DateTime.now();
       if (lastUpdated == null || now.difference(lastUpdated).inDays < 3) {

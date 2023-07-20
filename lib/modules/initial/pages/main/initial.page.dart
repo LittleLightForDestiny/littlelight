@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/modules/initial/pages/main/initial.view.dart';
 import 'package:provider/provider.dart';
-import '../../../../pages/initial/notifiers/initial_page_state.notifier.dart';
+
 import '../../../../pages/initial/notifiers/manifest_downloader.notifier.dart';
 import '../../../../pages/initial/notifiers/select_membership.notifier.dart';
 import '../../../../pages/initial/notifiers/select_wishlists.notifier.dart';
+import 'initial.bloc.dart';
 
 class InitialPageContianer extends StatelessWidget {
   const InitialPageContianer() : super();

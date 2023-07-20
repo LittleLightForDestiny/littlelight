@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/initial/initial.page_container.dart';
+
+import '../pages/main/initial.page.dart';
 
 class LoginPageRoute extends MaterialPageRoute {
   LoginPageRoute(RouteSettings settings)
