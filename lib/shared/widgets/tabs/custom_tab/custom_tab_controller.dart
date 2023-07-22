@@ -1,6 +1,6 @@
 part of 'custom_tab.dart';
 
-const _defaultDuration = Duration(milliseconds: 700);
+const _defaultDuration = Duration(milliseconds: 300);
 const _defaultDragMultiplier = 1.2;
 
 class CustomTabController extends ChangeNotifier {

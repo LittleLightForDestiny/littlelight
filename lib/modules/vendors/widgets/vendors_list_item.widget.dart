@@ -102,7 +102,7 @@ class VendorsListItemWidget extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     definition?.displayProperties?.name?.toUpperCase() ?? "",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: context.textTheme.highlight,
                   ),
                   Container(height: 2),
                   if (destinationHash != null)
