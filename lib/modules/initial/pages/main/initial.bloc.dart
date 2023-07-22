@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
-import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
@@ -77,7 +76,7 @@ class InitialPageStateNotifier
       await initServices(_context);
     } catch (e, stackTrace) {
       logger.error("initServicesError", error: e, stack: stackTrace);
-      analytics?.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
       return;
@@ -104,12 +103,12 @@ class InitialPageStateNotifier
       }
       await auth.addAccount(code);
     } on InvalidMembershipException catch (e, stackTrace) {
-      analytics?.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
       _error = InvalidMembershipError();
       notifyListeners();
       return;
     } catch (e, stackTrace) {
-      analytics?.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
       _error = AuthorizationFailedError();
       notifyListeners();
       return;
@@ -268,7 +267,7 @@ class InitialPageStateNotifier
       await initPostLoadingServices(_context);
     } catch (e, stackTrace) {
       logger.error("initPostLoadingServicesError", error: e, stack: stackTrace);
-      analytics?.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
       return;
@@ -278,7 +277,7 @@ class InitialPageStateNotifier
       await wishlistsService.checkForUpdates();
     } catch (e, stackTrace) {
       logger.error("non breaking error", error: e, stack: stackTrace);
-      analytics?.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
     }
 
     final profile = _context.read<ProfileBloc>();

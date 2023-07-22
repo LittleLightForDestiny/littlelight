@@ -87,7 +87,7 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
             final error = context.errorArgument;
             if (error == null) return;
             final data = await getData(context);
-            analytics?.registerUserFeedback(error, data?["playerID"] ?? "", data ?? {});
+            analytics.registerUserFeedback(error, data?["playerID"] ?? "", data ?? {});
             Navigator.of(context).pop();
           },
         ),

@@ -7,7 +7,7 @@ AnalyticsService getInjectedAnalyticsService() {
 }
 
 extension AnalyticsConumerExtension on AnalyticsConsumer {
-  AnalyticsService? get analytics => getInjectedAnalyticsService();
+  AnalyticsService get analytics => getInjectedAnalyticsService();
 }
 
 mixin AnalyticsConsumer {}

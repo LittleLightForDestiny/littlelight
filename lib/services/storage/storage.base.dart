@@ -57,7 +57,7 @@ abstract class StorageBase<T> with AnalyticsConsumer {
       error = e;
       stack = stackTrace;
     }
-    analytics?.registerNonFatal(error, stack, additionalInfo: {"reason": "Coudn't find file root"});
+    analytics.registerNonFatal(error, stack, additionalInfo: {"reason": "Coudn't find file root"});
     return null;
   }
 }

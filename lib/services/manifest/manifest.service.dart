@@ -137,7 +137,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
       await _db?.close();
       _db = null;
     } catch (e, stackTrace) {
-      analytics?.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
     }
     try {
       DestinyManifest info = await _getManifestInfo();
@@ -192,7 +192,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
       _controller
           .add(DownloadProgress(downloadedBytes: loaded, totalBytes: totalSize, downloaded: true, unzipped: true));
     } catch (e, stackTrace) {
-      analytics?.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
       _controller.add(DownloadError());
       _controller.close();
     }
@@ -230,7 +230,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     try {
       await _db?.close();
     } catch (e, stackTrace) {
-      analytics?.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
     }
     return success;
   }
@@ -343,7 +343,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     try {
       _db?.close();
     } catch (e, stackTrace) {
-      analytics?.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
     }
   }
 

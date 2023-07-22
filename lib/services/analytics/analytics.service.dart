@@ -13,10 +13,8 @@ setupAnalyticsService() async {
     await Firebase.initializeApp();
     FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   }
-  final isRegistered = getItCoreInstance?.isRegistered<AnalyticsService>() ?? false;
-  if (!isRegistered) {
-    getItCoreInstance?.registerSingleton<AnalyticsService>(AnalyticsService._internal());
-  }
+
+  getItCoreInstance.registerSingleton<AnalyticsService>(AnalyticsService._internal());
 }
 
 class AnalyticsService with AuthConsumer {

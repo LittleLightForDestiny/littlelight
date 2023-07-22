@@ -57,7 +57,7 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
       debugShowCheckedModeBanner: false,
       title: 'Little Light',
       navigatorKey: LittleLightNavigatorKeyContainer.navigatorKey,
-      navigatorObservers: analytics?.observers ?? [],
+      navigatorObservers: analytics.observers,
       builder: (context, child) => ScrollConfiguration(
         behavior: LittleLightScrollBehaviour(),
         child: LittleLightTheme(
