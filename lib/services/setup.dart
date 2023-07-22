@@ -25,14 +25,10 @@ import 'https_override/https_overrides.dart';
 import 'littlelight/littlelight_api.service.dart';
 import 'manifest/manifest.service.dart';
 
-GetIt? _getItCoreInstance;
-GetIt? get getItCoreInstance => _getItCoreInstance;
+GetIt getItCoreInstance = GetIt.asNewInstance();
 
 Future<void> resetServices() async {
-  if (getItCoreInstance == null) {
-    _getItCoreInstance = GetIt.asNewInstance();
-  }
-  getItCoreInstance?.reset();
+  getItCoreInstance.reset();
   setupAnalyticsService();
   setupHttpsOverrides();
 }
@@ -74,5 +70,5 @@ initPostLoadingServices(BuildContext context) async {
   final inventory = context.read<InventoryBloc>();
   await inventory.init();
   final analytics = getInjectedAnalyticsService();
-  analytics?.updateCurrentUser();
+  analytics.updateCurrentUser();
 }
