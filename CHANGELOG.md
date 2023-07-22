@@ -1,3 +1,9 @@
+## [2.0.4] - 2023-07-22
+
+- wandering Xur is back (thanks Peter!)
+- faster startup
+- faster item search response
+
 ## [2.0.3] - 2023-07-20
 
 - fixes postmaster and engrams not showing in landscape layout

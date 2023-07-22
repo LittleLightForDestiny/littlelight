@@ -1,2 +1,3 @@
-- fixes postmaster and engrams not showing in landscape layout
-- fixes layout not extending behind navigation bar on some devices
+- wandering Xur is back (thanks Peter!)
+- faster startup
+- faster item search response
