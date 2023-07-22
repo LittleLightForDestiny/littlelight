@@ -26,9 +26,8 @@ class AnalyticsService with AuthConsumer {
       PlatformCapabilities.firebaseAnalyticsAvailable ? [FirebaseAnalyticsObserver(analytics: _analytics)] : [];
 
   registerPageOpen(LittleLightPersistentPage page) {
-    if (PlatformCapabilities.firebaseAnalyticsAvailable) {
-      _analytics.setCurrentScreen(screenName: page.name, screenClassOverride: page.name);
-    }
+    if (!PlatformCapabilities.firebaseAnalyticsAvailable) return;
+    _analytics.setCurrentScreen(screenName: page.name, screenClassOverride: page.name);
   }
 
   void registerNonFatal(e, StackTrace? stackTrace, {Map<String, String>? additionalInfo}) {
@@ -78,5 +77,10 @@ class AnalyticsService with AuthConsumer {
     if (accountUniqueName != null) {
       FirebaseCrashlytics.instance.setCustomKey("accountUniqueName", accountUniqueName);
     }
+  }
+
+  void registerFlutterError(FlutterErrorDetails details) {
+    if (!PlatformCapabilities.firebaseAnalyticsAvailable) return;
+    FirebaseCrashlytics.instance.recordFlutterError(details);
   }
 }

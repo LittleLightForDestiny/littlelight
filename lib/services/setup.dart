@@ -29,7 +29,7 @@ GetIt getItCoreInstance = GetIt.asNewInstance();
 
 Future<void> setupCoreServices() async {
   getItCoreInstance.reset();
-  setupAnalyticsService();
+  await setupAnalyticsService();
   setupHttpsOverrides();
 }
 
