@@ -1,17 +1,17 @@
 import 'dart:async';
-import 'package:bungie_api/enums/bungie_membership_type.dart';
-import 'package:firebase_crashlytics/firebase_crashlytics.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/navigator_key.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
+import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/widgets/dialogs/bungie_api_exception.dialog.dart';
 import 'package:little_light/widgets/dialogs/report_error.dialog.dart';
 
-class ExceptionHandler with AuthConsumer {
+class ExceptionHandler with AuthConsumer, AnalyticsConsumer {
   bool isDialogOpen = false;
   ExceptionHandler() {
     initCustomErrorMessage();
@@ -23,8 +23,7 @@ class ExceptionHandler with AuthConsumer {
       } else if (stack != null) {
         Zone.current.handleUncaughtError(details.exception, stack);
       }
-
-      FirebaseCrashlytics.instance.recordFlutterError(details);
+      analytics.registerFlutterError(details);
     };
   }
 
@@ -55,16 +54,10 @@ class ExceptionHandler with AuthConsumer {
       }
     }
     if (error is FlutterErrorDetails) {
-      FirebaseCrashlytics.instance.recordFlutterError(error);
+      analytics.registerFlutterError(error);
       return;
     }
 
-    FirebaseCrashlytics.instance.recordError(error, stackTrace, printDetails: false);
-  }
-
-  static setReportingUserInfo(String membershipId, String displayName, BungieMembershipType platformId) {
-    FirebaseCrashlytics.instance.setUserIdentifier(membershipId);
-    FirebaseCrashlytics.instance.setCustomKey('User Name', displayName);
-    FirebaseCrashlytics.instance.setCustomKey("platform", platformId.value ?? "not informed");
+    analytics.registerNonFatal(error, stackTrace);
   }
 }

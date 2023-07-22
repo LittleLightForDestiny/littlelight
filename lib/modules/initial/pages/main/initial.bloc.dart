@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
-import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';

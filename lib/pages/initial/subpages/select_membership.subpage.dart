@@ -5,7 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/pages/initial/notifiers/initial_page_state.notifier.dart';
+import 'package:little_light/modules/initial/pages/main/initial.bloc.dart';
 import 'package:little_light/pages/initial/notifiers/select_membership.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';

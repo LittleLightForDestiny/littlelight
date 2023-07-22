@@ -19,8 +19,8 @@ import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.service.dart';
 import 'package:little_light/services/selection/selection.service.dart';
 import 'package:little_light/services/storage/export.dart';
-import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
 import 'package:provider/provider.dart';
+
 import 'https_override/https_overrides.dart';
 import 'littlelight/littlelight_api.service.dart';
 import 'manifest/manifest.service.dart';
@@ -28,10 +28,9 @@ import 'manifest/manifest.service.dart';
 final getItCoreInstance = GetIt.asNewInstance();
 
 Future<void> setupCoreServices() async {
-  getItCoreInstance.reset();
+  await getItCoreInstance.reset();
   await setupAnalyticsService();
-  await setupHttpsOverrides();
-  await setupUnilinksHandler();
+  setupHttpsOverrides();
 }
 
 Future<void> setupServices() async {

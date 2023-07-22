@@ -16,7 +16,9 @@ import 'package:little_light/services/bungie_api/enums/definition_table_names.en
 import 'package:little_light/services/manifest/manifest_download_progress.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite_common_ffi/sqflite_ffi.dart' as sqflite_ffi;
 import 'package:uuid/uuid.dart';
 
 setupManifest() {
@@ -26,7 +28,7 @@ setupManifest() {
 class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiConsumer, AnalyticsConsumer {
   @protected
   BuildContext? context;
-  sqflite.Database? _db;
+  Database? _db;
   DestinyManifest? _manifestInfo;
   final Map<String, dynamic> _cached = {};
   final Map<Type, Set<int>> _queue = {};
@@ -36,6 +38,13 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
   ManifestService initContext(BuildContext context) {
     this.context = context;
     return this;
+  }
+
+  DatabaseFactory get _dbFactory {
+    if (Platform.isWindows) {
+      return sqflite_ffi.databaseFactoryFfi;
+    }
+    return sqflite.databaseFactory;
   }
 
   Future<void> setup() async {
@@ -226,7 +235,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     return success;
   }
 
-  Future<sqflite.Database?> _openDb() async {
+  Future<Database?> _openDb() async {
     if (_db?.isOpen == true) {
       return _db;
     }
@@ -234,7 +243,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     final dbFile = await currentLanguageStorage.getManifestDatabaseFile();
     if (dbFile == null) return null;
     try {
-      sqflite.Database database = await sqflite.openDatabase(dbFile.path, readOnly: true);
+      Database database = await _dbFactory.openDatabase(dbFile.path);
       _db = database;
     } catch (e) {
       logger.error(e);
@@ -257,7 +266,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     final tableName = DefinitionTableNames.fromClass[T];
     identity ??= DefinitionTableNames.identities[T];
     Map<int, T> defs = {};
-    sqflite.Database? db = await _openDb();
+    Database? db = await _openDb();
     String? where;
     if (parameters != null && parameters.isNotEmpty) {
       where = parameters.map((p) {
@@ -305,7 +314,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     List<int> searchHashes = hashesSet.map((hash) => hash > 2147483648 ? hash - 4294967296 : hash).toList();
     String idList = "(${List.filled(hashesSet.length, '?').join(',')})";
 
-    sqflite.Database? db = await _openDb();
+    Database? db = await _openDb();
     if (tableName == null) {
       throw ("no db table found for class $T");
     }
@@ -357,7 +366,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
       throw ("no identity found for class $T");
     }
     int searchHash = hash > 2147483648 ? hash - 4294967296 : hash;
-    sqflite.Database? db = await _openDb();
+    Database? db = await _openDb();
     try {
       List<Map<String, dynamic>>? results =
           await db?.query(tableName, columns: ['json'], where: "id=?", whereArgs: [searchHash]);
@@ -369,7 +378,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
       _cached["${tableName}_$hash"] = def;
       return def;
     } catch (e) {
-      if (e is sqflite.DatabaseException && e.isDatabaseClosedError()) {
+      if (e is DatabaseException && e.isDatabaseClosedError()) {
         _db = null;
         return getDefinition(hash, identity);
       }
