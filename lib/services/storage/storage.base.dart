@@ -126,7 +126,7 @@ extension StorageOperations<T> on StorageBase<T> {
         String contents = await cached.readAsString();
         return contents;
       } catch (e, stackTrace) {
-        analytics?.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't read file"});
+        analytics.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't read file"});
       }
     }
     return null;
@@ -141,7 +141,7 @@ extension StorageOperations<T> on StorageBase<T> {
 
       await file.writeAsString(contents);
     } catch (e, stackTrace) {
-      analytics?.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't write file"});
+      analytics.registerNonFatal(e, stackTrace, additionalInfo: {"reason": "Couldn't write file"});
     }
   }
 
@@ -232,7 +232,7 @@ extension StorageOperations<T> on StorageBase<T> {
       try {
         await dbPath.delete(recursive: true);
       } catch (e, stackTrace) {
-        analytics?.registerNonFatal(e, stackTrace);
+        analytics.registerNonFatal(e, stackTrace);
       }
     }
 
@@ -250,7 +250,7 @@ extension StorageOperations<T> on StorageBase<T> {
       try {
         await filesPath.delete(recursive: true);
       } catch (e, stackTrace) {
-        analytics?.registerNonFatal(e, stackTrace);
+        analytics.registerNonFatal(e, stackTrace);
       }
     }
   }

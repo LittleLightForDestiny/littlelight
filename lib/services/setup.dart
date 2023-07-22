@@ -27,7 +27,7 @@ import 'manifest/manifest.service.dart';
 
 GetIt getItCoreInstance = GetIt.asNewInstance();
 
-Future<void> resetServices() async {
+Future<void> setupCoreServices() async {
   getItCoreInstance.reset();
   setupAnalyticsService();
   setupHttpsOverrides();

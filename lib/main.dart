@@ -14,7 +14,7 @@ void main() async {
     registerProtocol('luzinha');
   }
   WidgetsFlutterBinding.ensureInitialized();
-  resetServices();
+  await setupCoreServices();
   ExceptionHandler();
   runApp(Phoenix(child: const LittleLightApp()));
 }
