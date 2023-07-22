@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
+import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
@@ -281,9 +282,10 @@ class InitialPageStateNotifier
     }
 
     final profile = _context.read<ProfileBloc>();
-    await profile.refresh();
-    final characters = profile.characters;
-    if (characters?.isEmpty ?? true) {
+    if (profile.characters?.isEmpty ?? true) {
+      await profile.refresh();
+    }
+    if (profile.characters?.isEmpty ?? true) {
       _error = InvalidMembershipError();
       notifyListeners();
       return;
