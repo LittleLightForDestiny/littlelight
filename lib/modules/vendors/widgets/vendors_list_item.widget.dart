@@ -74,6 +74,8 @@ class VendorsListItemWidget extends StatelessWidget {
 
   Widget buildHeader(BuildContext context) {
     final definition = context.definition<DestinyVendorDefinition>(data.vendor.vendorHash);
+    final locationIndex = data.vendor.vendorLocationIndex ?? 9999999;
+    final destinationHash = definition?.locations?.elementAtOrNull(locationIndex)?.destinationHash;
     return Container(
       padding: const EdgeInsets.all(8),
       child: Row(
@@ -100,11 +102,14 @@ class VendorsListItemWidget extends StatelessWidget {
                 children: <Widget>[
                   Text(
                     definition?.displayProperties?.name?.toUpperCase() ?? "",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+                    style: context.textTheme.highlight,
                   ),
                   Container(height: 2),
-                  ManifestText<DestinyFactionDefinition>(definition?.factionHash,
-                      style: const TextStyle(fontWeight: FontWeight.w300)),
+                  if (destinationHash != null)
+                    ManifestText<DestinyDestinationDefinition>(
+                      destinationHash,
+                      style: context.textTheme.caption,
+                    ),
                 ],
               ),
             ),
