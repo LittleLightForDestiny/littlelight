@@ -9,12 +9,11 @@ import 'package:little_light/services/user_settings/little_light_persistent_page
 import 'package:little_light/utils/platform_capabilities.dart';
 
 setupAnalyticsService() async {
+  getItCoreInstance.registerSingleton<AnalyticsService>(AnalyticsService._internal());
   if (PlatformCapabilities.firebaseAnalyticsAvailable) {
     await Firebase.initializeApp();
     FirebaseCrashlytics.instance.setCrashlyticsCollectionEnabled(true);
   }
-
-  getItCoreInstance.registerSingleton<AnalyticsService>(AnalyticsService._internal());
 }
 
 class AnalyticsService with AuthConsumer {

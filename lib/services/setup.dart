@@ -25,10 +25,10 @@ import 'https_override/https_overrides.dart';
 import 'littlelight/littlelight_api.service.dart';
 import 'manifest/manifest.service.dart';
 
-GetIt getItCoreInstance = GetIt.asNewInstance();
+final getItCoreInstance = GetIt.asNewInstance();
 
 Future<void> setupCoreServices() async {
-  getItCoreInstance.reset();
+  await getItCoreInstance.reset();
   await setupAnalyticsService();
   setupHttpsOverrides();
 }
