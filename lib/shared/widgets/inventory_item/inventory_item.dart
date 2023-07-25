@@ -12,7 +12,7 @@ extension IdealItemWidth on InventoryItemWidgetDensity {
       case InventoryItemWidgetDensity.Low:
         return 68;
       case InventoryItemWidgetDensity.Medium:
-        return 116;
+        return 104;
       case InventoryItemWidgetDensity.High:
         return 288;
     }

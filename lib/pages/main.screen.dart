@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
+import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/modules/collections/pages/home/collections_home.page.dart';
@@ -34,6 +36,8 @@ class MainScreenState extends State<MainScreen> with AuthConsumer {
     auth.getMembershipData();
     final isOffline = context.read<OfflineModeBloc>().isOffline;
     if (isOffline) return;
+    context.read<LoadoutsBloc>().loadouts;
+    context.read<ItemNotesBloc>().allNotes;
   }
 
   getInitScreen() async {

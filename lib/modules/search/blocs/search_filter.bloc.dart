@@ -34,7 +34,7 @@ _defaultSearchFilters(BuildContext context) => <Type, BaseItemFilter>{
       ArmorStatsFilterOptions: ArmorStatsFilter(),
 
       /// LL specific stuff
-      ItemTagFilterOptions: ItemTagFilter(),
+      ItemTagFilterOptions: ItemTagFilter(context),
       LoadoutFilterOptions: LoadoutFilter(context),
       WishlistTagFilterOptions: WishlistTagFilter()
     };
