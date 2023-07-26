@@ -1,3 +1,4 @@
-- wandering Xur is back (thanks Peter!)
-- faster startup
-- faster item search response
+- minor layout fixes
+- scroll fix on item details
+- added item tags filter
+- added total stats sorter

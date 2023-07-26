@@ -1,3 +1,10 @@
+## [2.0.5] - 2023-07-26
+
+- minor layout fixes
+- scroll fix on item details
+- added item tags filter
+- added total stats sorter
+
 ## [2.0.4] - 2023-07-22
 
 - wandering Xur is back (thanks Peter!)
