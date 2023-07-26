@@ -6,12 +6,13 @@ import 'package:provider/provider.dart';
 import 'base_item_filter.dart';
 
 class ItemTagFilter extends BaseItemFilter<ItemTagFilterOptions> {
-  ItemNotesBloc? itemNotes;
-  ItemTagFilter() : super(ItemTagFilterOptions({}));
+  ItemNotesBloc? _itemNotes;
+  ItemTagFilter(BuildContext context)
+      : this._itemNotes = context.read<ItemNotesBloc>(),
+        super(ItemTagFilterOptions({}));
 
   @override
   Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {
-    itemNotes = context.read<ItemNotesBloc>();
     if (data.value.isEmpty) {
       return items;
     }
@@ -24,7 +25,7 @@ class ItemTagFilter extends BaseItemFilter<ItemTagFilterOptions> {
     final instanceId = item.instanceId;
     if (hash == null) return false;
 
-    final tags = itemNotes?.tagIdsFor(hash, instanceId);
+    final tags = _itemNotes?.tagIdsFor(hash, instanceId);
     if (tags == null || tags.isEmpty) {
       return data.value.contains(null);
     }
@@ -36,8 +37,7 @@ class ItemTagFilter extends BaseItemFilter<ItemTagFilterOptions> {
     final hash = item.itemHash;
     final instanceId = item.instanceId;
     if (hash == null) return;
-
-    final tags = itemNotes?.tagIdsFor(hash, instanceId);
+    final tags = _itemNotes?.tagIdsFor(hash, instanceId);
     if (tags == null || tags.isEmpty) {
       data.availableValues.add(null);
       return;

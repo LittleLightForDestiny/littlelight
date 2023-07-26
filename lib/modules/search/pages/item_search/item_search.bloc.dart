@@ -12,6 +12,7 @@ import 'package:little_light/modules/search/blocs/filter_options/item_bucket_typ
 import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
 import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 import 'package:provider/provider.dart';
 
@@ -80,14 +81,15 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     bool hasArmor = false;
     bool hasWeapon = false;
-    final unfiltered = allItems.where((item) {
+    final unfiltered = <InventoryItemInfo>[];
+    for (final item in allItems) {
       final def = defs[item.itemHash];
-      if (def == null) return false;
-      if (def.itemType == DestinyItemType.Armor) hasArmor = true;
-      if (def.itemType == DestinyItemType.Weapon) hasWeapon = true;
+      if (def == null) continue;
+      hasArmor |= def.isArmor;
+      hasWeapon |= def.isWeapon;
       _filtersBloc.addValue(item);
-      return true;
-    });
+      unfiltered.add(item);
+    }
     final _disabledSorters = <ItemSortParameterType>{
       if (!hasArmor) ItemSortParameterType.StatTotal,
       if (!hasWeapon) ItemSortParameterType.AmmoType,

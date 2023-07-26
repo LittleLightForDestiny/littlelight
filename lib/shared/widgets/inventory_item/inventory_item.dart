@@ -10,9 +10,9 @@ extension IdealItemWidth on InventoryItemWidgetDensity {
   double get idealWidth {
     switch (this) {
       case InventoryItemWidgetDensity.Low:
-        return 68;
+        return 64;
       case InventoryItemWidgetDensity.Medium:
-        return 116;
+        return 108;
       case InventoryItemWidgetDensity.High:
         return 288;
     }
