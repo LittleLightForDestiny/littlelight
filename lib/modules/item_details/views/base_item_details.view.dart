@@ -465,32 +465,31 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final item = state.item;
     if (item == null) return null;
     if ((state.transferDestinations?.isEmpty ?? true) && (state.equipDestinations?.isEmpty ?? true)) return null;
-    return Container(
-      color: context.theme.surfaceLayers.layer1,
-      child: Column(children: [
-        AnimatedBuilder(
-          animation: scrollController,
-          builder: (context, child) {
-            final isLandscape = context.mediaQuery.isLandscape || context.mediaQuery.tabletOrBigger;
-            final isStart = scrollController.position.pixels < 100;
-            return AnimatedAlign(
-                alignment: Alignment.topCenter,
-                duration: _animationDuration,
-                heightFactor: isLandscape && isStart ? 0 : 1,
-                child: child);
-          },
-          child: DetailsTransferBlockWidget(
-            item,
-            transferDestinations: state.transferDestinations,
-            equipDestinations: state.equipDestinations,
-            onAction: bloc.onTransferAction,
-          ),
-        ),
-        SizedBox(
-          height: mqPadding.bottom,
-          child: BusyIndicatorBottomGradientWidget(),
-        ),
-      ]),
-    );
+    return AnimatedBuilder(
+        animation: scrollController,
+        builder: (context, child) {
+          final isLandscape = context.mediaQuery.isLandscape || context.mediaQuery.tabletOrBigger;
+          final isStart = scrollController.position.pixels < 100;
+          return AnimatedAlign(
+              alignment: Alignment.topCenter,
+              duration: _animationDuration,
+              heightFactor: isLandscape && isStart ? 0 : 1,
+              child: child);
+        },
+        child: Container(
+          color: context.theme.surfaceLayers.layer1,
+          child: Column(children: [
+            DetailsTransferBlockWidget(
+              item,
+              transferDestinations: state.transferDestinations,
+              equipDestinations: state.equipDestinations,
+              onAction: bloc.onTransferAction,
+            ),
+            SizedBox(
+              height: mqPadding.bottom,
+              child: BusyIndicatorBottomGradientWidget(),
+            ),
+          ]),
+        ));
   }
 }

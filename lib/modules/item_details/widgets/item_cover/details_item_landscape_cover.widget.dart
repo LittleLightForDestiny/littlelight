@@ -53,9 +53,9 @@ class DetailsItemLandscapeCoverWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final hash = state.itemHash;
     final definition = context.definition<DestinyInventoryItemDefinition>(hash);
-    final width = MediaQuery.of(context).size.width;
+    final width = context.mediaQuery.size.width;
     final paddingTop = MediaQuery.of(context).padding.top;
-    final screenshotHeight = width / (16 / 9);
+    final screenshotHeight = min(width / (16 / 9), context.mediaQuery.size.height);
     final minHeight = paddingTop + kToolbarHeight;
     final hasScreenshot = (definition?.screenshot?.length ?? 0) > 0;
     final maxHeight = hasScreenshot ? screenshotHeight : kToolbarHeight + paddingTop;
