@@ -51,6 +51,7 @@ class QueuedNetworkImage extends StatelessWidget {
       placeholderFadeInDuration: fadeInDuration ?? const Duration(seconds: 2),
       progressIndicatorBuilder: (context, url, downloadProgress) => placeholder ?? SizedBox(),
       errorWidget: (context, url, error) => const Icon(Icons.error),
+      filterQuality: FilterQuality.medium,
       color: color,
     );
   }
