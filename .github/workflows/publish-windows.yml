@@ -77,5 +77,20 @@ jobs:
 
       - name: Download pub dependencies
         run: flutter pub get
+      
+      - name: Build via Flutter
+        run: flutter build windows --release
+
+      - name: Creates zip from Release
+        uses: vimtor/action-zip@v1
+        with:
+          files: build/windows/runner/Release
+          recursive: true
+          dest: windows-standalone.zip
+
+      - uses: actions/upload-artifact@v1
+        with:
+          name: windows-standalone
+          path: ${{ github.workspace }}/windows-standalone.zip
 
       
