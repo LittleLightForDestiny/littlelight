@@ -11,6 +11,8 @@ on:
         required: true
       MS_STORE_SELLER_ID:
         required: true
+      MSIX_CONFIG:
+        required: true
 
   workflow_dispatch:
     inputs:
@@ -53,6 +55,16 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ steps.variables.outputs.head_ref }}
+
+      - name: Download MSIX config
+        id: msix_config
+        uses: timheuer/base64-to-file@v1.1
+        with:
+          fileName: msix.yaml
+          encodedString: ${{ secrets.MSIX_CONFIG }}
+
+      - name: Append MSIX config to pubspec.yaml
+        run: cat ${{ steps.app_store_connect_key.outputs.filePath }} >> {{github.workspace}}/pubspec.yaml
 
       - name: Setup MS Store Developer CLI
         uses: microsoft/setup-msstore-cli@v1
