@@ -30,22 +30,23 @@ jobs:
     steps:
       - name: Defines variables according to triggers
         id: variables
+        shell: bash
         run: |
           if [ "${{ github.event_name }}" == "release" ] 
           then
             if [ "${{ github.event.release.prerelease }}" == true ]
             then
-              echo "::set-output name=track::beta"
+              echo "track=beta" >> $GITHUB_STATE
             else
-              echo "::set-output name=track::production"
+              echo "track=production" >> $GITHUB_STATE
             fi
-            echo "::set-output name=head_ref::main"
+            echo "head_ref=main" >> $GITHUB_STATE"
           fi
 
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
-            echo "::set-output name=track::${{ github.event.inputs.track }}"
-            echo "::set-output name=head_ref::${{ github.head_ref }}"
+            echo "track=${{ github.event.inputs.track }}" >> $GITHUB_STATE
+            echo "head_ref=${{ github.head_ref }}" >> $GITHUB_STATE"
           fi
 
       - name: Checkout
