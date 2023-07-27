@@ -82,16 +82,15 @@ jobs:
       - name: Build via Flutter
         run: flutter build windows --release
 
-      - name: Creates zip from Release
-        uses: vimtor/action-zip@v1
-        with:
-          files: build/windows/runner/Release
-          recursive: true
-          dest: windows-standalone.zip
-
       - uses: actions/upload-artifact@v1
         with:
           name: windows-standalone
-          path: ${{ github.workspace }}/windows-standalone.zip
+          path: ${{ github.workspace }}/build/windows/runner/Release
+
+      - name: Create MSIX package
+        run: msstore package
+
+      - name: Publish MSIX to the Microsoft Store
+        run: msstore publish -v
 
       
