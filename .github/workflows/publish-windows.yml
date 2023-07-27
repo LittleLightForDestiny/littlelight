@@ -65,6 +65,7 @@ jobs:
 
       - name: Append MSIX config to pubspec.yaml
         run: cat ${{ steps.msix_config.outputs.filePath }} >> {{github.workspace}}/pubspec.yaml
+        shell: bash
 
       - name: Setup MS Store Developer CLI
         uses: microsoft/setup-msstore-cli@v1
