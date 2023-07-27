@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
+import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 
 class QueuedNetworkImage extends StatelessWidget {
   final String? imageUrl;
@@ -52,7 +53,7 @@ class QueuedNetworkImage extends StatelessWidget {
       progressIndicatorBuilder: (context, url, downloadProgress) => placeholder ?? SizedBox(),
       errorWidget: (context, url, error) => const Icon(Icons.error),
       color: color,
-      filterQuality: FilterQuality.medium,
+      filterQuality: context.mediaQuery.devicePixelRatio <= 1 ? FilterQuality.medium : FilterQuality.low,
     );
   }
 }
