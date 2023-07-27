@@ -64,8 +64,7 @@ jobs:
           encodedString: ${{ secrets.MSIX_CONFIG }}
 
       - name: Append MSIX config to pubspec.yaml
-        run: cat ${{ steps.msix_config.outputs.filePath }} >> pubspec.yaml
-        shell: bash
+        run: type ${{ steps.msix_config.outputs.filePath }} >> pubspec.yaml
 
       - name: Setup MS Store Developer CLI
         uses: microsoft/setup-msstore-cli@v1
