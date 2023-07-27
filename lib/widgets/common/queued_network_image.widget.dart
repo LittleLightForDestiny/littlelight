@@ -52,6 +52,7 @@ class QueuedNetworkImage extends StatelessWidget {
       progressIndicatorBuilder: (context, url, downloadProgress) => placeholder ?? SizedBox(),
       errorWidget: (context, url, error) => const Icon(Icons.error),
       color: color,
+      filterQuality: FilterQuality.medium,
     );
   }
 }
