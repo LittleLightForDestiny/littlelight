@@ -1,3 +1,8 @@
+## [2.0.6] - 2023-07-28
+
+- fixes image resolutions on some screens
+- makes search filters more relevant to the current item type
+
 ## [2.0.5] - 2023-07-26
 
 - minor layout fixes

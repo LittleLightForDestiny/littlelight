@@ -1,4 +1,2 @@
-- minor layout fixes
-- scroll fix on item details
-- added item tags filter
-- added total stats sorter
+- fixes image resolutions on some screens
+- makes search filters more relevant to the current item type
