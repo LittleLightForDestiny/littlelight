@@ -10,7 +10,7 @@ jobs:
     if: github.event.pull_request.head.repo.fork == false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           token: ${{ secrets.BOT_PAT }}
           ref: ${{ github.head_ref }}
@@ -27,13 +27,13 @@ jobs:
 
       - name: Setup Flutter
         if: steps.changed-lib.outputs.changed == 'true'
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2
         with:
           channel: stable
 
       - name: Cache pub dependencies
         if: steps.changed-lib.outputs.changed == 'true'
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.FLUTTER_HOME }}/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}

@@ -33,7 +33,7 @@ jobs:
       track: ${{ steps.variables.track }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           token: ${{ secrets.BOT_PAT }}
           ref: main
@@ -103,6 +103,11 @@ jobs:
 
   publish-macos:
     uses: ./.github/workflows/publish-macos.yml
+    needs: [version-update]
+    secrets: inherit
+  
+  publish-windows:
+    uses: ./.github/workflows/publish-windows.yml
     needs: [version-update]
     secrets: inherit
 

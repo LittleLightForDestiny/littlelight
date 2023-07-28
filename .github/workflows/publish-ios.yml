@@ -78,7 +78,7 @@ jobs:
           fi
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ steps.variables.outputs.head_ref }}
 
@@ -94,7 +94,7 @@ jobs:
           encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
 
       - name: Cache bundle dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
@@ -112,7 +112,7 @@ jobs:
           bundle install
 
       - name: Setup Flutter
-        uses: subosito/flutter-action@v1
+        uses: subosito/flutter-action@v2
         with:
           flutter-version: "3.10.5"
 
@@ -125,7 +125,7 @@ jobs:
           echo "${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}" > ios/Runner/GoogleService-Info.plist
 
       - name: Cache pub dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ${{ env.FLUTTER_HOME }}/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}

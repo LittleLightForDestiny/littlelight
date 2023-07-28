@@ -2,33 +2,17 @@ name: Publish to Microsoft Store
 
 on:
   workflow_call:
-    # secrets:
-    #   APPSTORE_CONNECT_KEY_ID:
-    #     required: true
-    #   APPSTORE_CONNECT_ISSUER_ID:
-    #     required: true
-    #   APPLE_TEAM_ID:
-    #     required: true
-    #   APPLE_APP_IDENTIFIER:
-    #     required: true
-    #   FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD:
-    #     required: true
-    #   MATCH_GIT_URL:
-    #     required: true
-    #   MATCH_PASSWORD:
-    #     required: true
-    #   MATCH_KEYCHAIN_NAME:
-    #     required: true
-    #   MATCH_KEYCHAIN_PASSWORD:
-    #     required: true
-    #   MATCH_GIT_API_AUTH:
-    #     required: true
-    #   FLUTTER_DOTENV:
-    #     required: true
-    #   IOS_GOOGLE_SERVICE_INFO_PLIST:
-    #     required: true
-    #   APPSTORE_CONNECT_KEY_BASE64:
-    #     required: true
+    secrets:
+      AZURE_AD_TENANT_ID:
+        required: true
+      AZURE_AD_CLIENT_ID:
+        required: true
+      AZURE_AD_CLIENT_SECRET:
+        required: true
+      MS_STORE_SELLER_ID:
+        required: true
+      MSIX_CONFIG:
+        required: true
 
   workflow_dispatch:
     inputs:
@@ -40,123 +24,105 @@ on:
           - "production"
           - "beta"
         default: "production"
+
 jobs:
-  macos-app-store:
+  windows-store:
     name: Publish to Microsoft app store
     runs-on: windows-latest
-    # placeholder steps
-    # env:
-    #   APPSTORE_CONNECT_KEY_ID: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}
-    #   APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
-    #   APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-    #   APPLE_APP_IDENTIFIER: ${{ secrets.APPLE_APP_IDENTIFIER }}
-    #   FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD: ${{ secrets.FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD }}
-    #   MATCH_GIT_URL: ${{ secrets.MATCH_GIT_URL }}
-    #   MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-    #   MATCH_KEYCHAIN_NAME: ${{ secrets.MATCH_KEYCHAIN_NAME }}
-    #   MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
 
     steps:
       - name: Defines variables according to triggers
         id: variables
+        shell: bash
         run: |
           if [ "${{ github.event_name }}" == "release" ] 
           then
             if [ "${{ github.event.release.prerelease }}" == true ]
             then
-              echo "::set-output name=track::beta"
+              echo "track=beta" >> $GITHUB_OUTPUT
             else
-              echo "::set-output name=track::production"
+              echo "track=production" >> $GITHUB_OUTPUT
             fi
-            echo "::set-output name=head_ref::main"
+            echo "head_ref=main" >> $GITHUB_OUTPUT
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
           fi
 
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
-            echo "::set-output name=track::${{ github.event.inputs.track }}"
-            echo "::set-output name=head_ref::${{ github.head_ref }}"
+            echo "track=${{ github.event.inputs.track }}" >> $GITHUB_OUTPUT
+            echo "head_ref=${{ github.head_ref }}" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           ref: ${{ steps.variables.outputs.head_ref }}
 
-      - name: Config GIT API Keys
+      - name: Download MSIX config
+        id: msix_config
+        uses: timheuer/base64-to-file@v1.2
+        with:
+          fileName: msix.yaml
+          encodedString: ${{ secrets.MSIX_CONFIG }}
+
+      - name: Append MSIX config to pubspec.yaml
+        run: type ${{ steps.msix_config.outputs.filePath }} >> pubspec.yaml
+
+      - name: Setup MS Store Developer CLI
+        uses: microsoft/setup-msstore-cli@v1
+      
+      - name: Configure MS Store credentials
+        run: msstore reconfigure --tenantId ${{ secrets.AZURE_AD_TENANT_ID }} --clientId ${{ secrets.AZURE_AD_CLIENT_ID }} --clientSecret ${{ secrets.AZURE_AD_CLIENT_SECRET }} --sellerId ${{ secrets.MS_STORE_SELLER_ID }}
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: "3.10.5"
+
+      - name: Create assets/_env
         run: |
-          git config --global url."https://${{ secrets.MATCH_GIT_API_AUTH }}@github.com/".insteadOf "git@github.com:"
+          echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
-      # - name: Download Appstore Connect key
-      #   id: app_store_connect_key
-      #   uses: timheuer/base64-to-file@v1.1
-      #   with:
-      #     fileName: appstore_connect_key.p8
-      #     encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
+      - name: Cache pub dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.FLUTTER_HOME }}/.pub-cache
+          key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
+          restore-keys: ${{ runner.os }}-pub-
 
-      # - name: Cache bundle dependencies
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: vendor/bundle
-      #     key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
-      #     restore-keys: ${{ runner.os }}-gems-
+      - name: Download pub dependencies
+        run: flutter pub get
+      
+      - name: Build via Flutter
+        run: flutter build windows --release
 
-      # - name: Setup Ruby
-      #   uses: ruby/setup-ruby@v1
-      #   with:
-      #     ruby-version: 3.0
+      - name: Upload build to workflow run
+        uses: actions/upload-artifact@v1
+        with:
+          name: LittleLight-windows
+          path: ${{ github.workspace }}/build/windows/runner/Release
 
-      # - name: Download bundle dependencies
-      #   run: |
-      #     gem install bundler
-      #     bundle config path vendor/bundle
-      #     bundle install
+      - name: Create release zip
+        if: steps.variables.outputs.version != ''
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: 'zip'
+          filename: 'LittleLight-windows-${{ steps.variables.outputs.version }}.zip'
+          path: ${{ github.workspace }}/build/windows/runner/Release
 
-      # - name: Setup Flutter
-      #   uses: subosito/flutter-action@v1
-      #   with:
-      #     flutter-version: "3.10.5"
+      - name: Upload build to Github Release
+        uses: softprops/action-gh-release@v1
+        if: steps.variables.outputs.version != ''
+        with:
+          tag_name: ${{ steps.variable.outputs.version }}
+          files: 'LittleLight-windows-${{ steps.variables.outputs.version }}.zip'
 
-      # - name: Create assets/_env
-      #   run: |
-      #     echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
+      - name: Create MSIX package
+        if: steps.variables.outputs.track == 'production'
+        run: msstore package
 
-      # - name: Create GoogleService-Info.plist
-      #   run: |
-      #     echo "${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}" > macos/Runner/GoogleService-Info.plist
+      - name: Publish MSIX to the Microsoft Store
+        if: steps.variables.outputs.track == 'production'
+        run: msstore publish -v
 
-      # - name: Cache pub dependencies
-      #   uses: actions/cache@v2
-      #   with:
-      #     path: ${{ env.FLUTTER_HOME }}/.pub-cache
-      #     key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
-      #     restore-keys: ${{ runner.os }}-pub-
-
-      # - name: Delete Podfile.lock
-      #   run: rm macos/Podfile.lock
-
-      # - name: Download pub dependencies
-      #   run: flutter pub get
-
-      # - name: Pod repo update
-      #   working-directory: macos
-      #   run: pod install --repo-update
-
-      # - name: Build MacOS via Flutter
-      #   run: flutter build macos --release
-
-      # - name: Build MacOS via Fastlane
-      #   run: bundle exec fastlane mac build
-      #   env:
-      #     APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
-
-      # - name: Upload to App Store (manual release)
-      #   if: steps.variables.outputs.track == 'beta'
-      #   run: bundle exec fastlane mac beta
-      #   env:
-      #     APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
-
-      # - name: Release to App Store (automatic release)
-      #   if: steps.variables.outputs.track == 'production'
-      #   run: bundle exec fastlane mac deploy
-      #   env:
-      #     APPSTORE_CONNECT_KEY_FILE: ${{ steps.app_store_connect_key.outputs.filePath }}
+      
