@@ -33,15 +33,24 @@ class ItemTagFilter extends BaseItemFilter<ItemTagFilterOptions> {
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    final instanceId = item.instanceId;
-    if (hash == null) return;
-    final tags = _itemNotes?.tagIdsFor(hash, instanceId);
-    if (tags == null || tags.isEmpty) {
-      data.availableValues.add(null);
-      return;
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final allTags = <String?>{};
+    for (final item in items) {
+      final hash = item.itemHash;
+      final instanceId = item.instanceId;
+      if (hash == null) continue;
+      final tags = _itemNotes?.tagIdsFor(hash, instanceId);
+      if (tags == null || tags.isEmpty) {
+        allTags.add(null);
+        continue;
+      }
+      allTags.addAll(tags);
     }
-    data.availableValues.addAll(tags.whereType<String>());
+    data.availableValues.addAll(allTags);
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

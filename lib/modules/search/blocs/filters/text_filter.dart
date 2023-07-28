@@ -111,4 +111,10 @@ class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer
       return false;
     });
   }
+
+  @override
+  Future<void> addValues(List<DestinyItemInfo> item) async => null;
+
+  @override
+  void clearAvailable() => null;
 }

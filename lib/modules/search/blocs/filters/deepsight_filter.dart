@@ -27,10 +27,15 @@ class DeepsightFilter extends BaseItemFilter<DeepsightFilterOptions> with Manife
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
-    final isDeepsight = isItemDeepsight(item, def);
-    data.availableValues.add(isDeepsight);
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final hashes = items.map((i) => i.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final isDeepsight = items.map((i) => isItemDeepsight(i, defs[i.itemHash]));
+    data.availableValues.addAll(isDeepsight);
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

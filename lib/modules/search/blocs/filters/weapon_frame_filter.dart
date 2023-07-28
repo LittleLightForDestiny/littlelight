@@ -23,7 +23,8 @@ class WeaponFrameFilter extends BaseItemFilter<WeaponFrameFilterOptions> with Ma
 
   @override
   Future<bool> filterItem(DestinyItemInfo item) async {
-    final plugHashes = await _getIntrinsicPlugHashes(item);
+    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+    final plugHashes = _getIntrinsicPlugHashes(item, def);
     if (plugHashes == null) return false;
     final definitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
     final names = definitions.values.map((e) => e.displayProperties?.name).whereType<String>();
@@ -31,16 +32,20 @@ class WeaponFrameFilter extends BaseItemFilter<WeaponFrameFilterOptions> with Ma
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final plugHashes = await _getIntrinsicPlugHashes(item);
-    if (plugHashes == null) return;
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final hashes = items.map((e) => e.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final plugHashes = <int>{};
+    for (final item in items) {
+      final itemPlugHashes = _getIntrinsicPlugHashes(item, defs[item.itemHash]) ?? [];
+      plugHashes.addAll(itemPlugHashes);
+    }
     final definitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(plugHashes);
     final names = definitions.values.map((e) => e.displayProperties?.name).whereType<String>();
     data.availableValues.addAll(names);
   }
 
-  Future<Iterable<int>?> _getIntrinsicPlugHashes(DestinyItemInfo item) async {
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+  Iterable<int>? _getIntrinsicPlugHashes(DestinyItemInfo item, DestinyInventoryItemDefinition? def) {
     if (def == null) return null;
     if (!def.isWeapon) return null;
     if (def.inventory?.tierType == TierType.Exotic) return null;
@@ -50,5 +55,10 @@ class WeaponFrameFilter extends BaseItemFilter<WeaponFrameFilterOptions> with Ma
     final socketIndexes = category?.socketIndexes;
     final plugs = socketIndexes?.map((e) => item.sockets?[e].plugHash).whereType<int>();
     return plugs;
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

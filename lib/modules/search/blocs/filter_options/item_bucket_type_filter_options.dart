@@ -9,7 +9,7 @@ class ItemBucketTypeFilterOptions extends BaseFilterOptions<Set<EquipmentBucketG
         );
 
   @override
-  bool get available => availableValues.length > 1;
+  bool get available => true;
 
   @override
   set value(Set<EquipmentBucketGroup> value) {

@@ -25,10 +25,15 @@ class AmmoTypeFilter extends BaseItemFilter<AmmoTypeFilterOptions> with Manifest
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
-    final ammoType = def?.equippingBlock?.ammoType ?? DestinyAmmunitionType.Unknown;
-    data.availableValues.add(ammoType);
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final hashes = items.map((i) => i.itemHash).whereType<int>();
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final ammoTypes = defs.values.map((d) => d.equippingBlock?.ammoType ?? DestinyAmmunitionType.Unknown);
+    data.availableValues.addAll(ammoTypes);
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

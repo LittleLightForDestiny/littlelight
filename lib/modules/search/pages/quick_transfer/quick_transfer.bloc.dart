@@ -92,9 +92,9 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
       if (def.inventory?.bucketTypeHash != bucketHash) return false;
       if (!acceptedClasses.contains(def.classType)) return false;
       if (def.itemType == DestinyItemType.Armor) hasArmor = true;
-      _filtersBloc.addValue(item);
       return true;
     });
+    _filtersBloc.addValues(unfiltered.toList());
     final _disabledSorters = <ItemSortParameterType>{
       if (!hasArmor) ItemSortParameterType.StatTotal,
       if (!hasWeapon) ItemSortParameterType.AmmoType,

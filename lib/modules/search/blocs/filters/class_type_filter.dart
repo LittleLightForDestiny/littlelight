@@ -24,10 +24,15 @@ class ClassTypeFilter extends BaseItemFilter<ClassTypeFilterOptions> with Manife
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
-    final classType = def?.classType ?? DestinyClass.Unknown;
-    data.availableValues.add(classType);
+  Future<void> addValues(List<DestinyItemInfo> item) async {
+    final hashes = item.map((i) => i.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final classTypes = defs.values.map((d) => d.classType ?? DestinyClass.Unknown);
+    data.availableValues.addAll(classTypes);
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

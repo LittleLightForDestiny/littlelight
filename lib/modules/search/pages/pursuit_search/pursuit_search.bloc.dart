@@ -83,9 +83,9 @@ class PursuitSearchBloc extends ChangeNotifier with ManifestConsumer {
       final def = defs[item.itemHash];
       if (def == null) return false;
       if (def.inventory?.bucketTypeHash != InventoryBucket.pursuits) return false;
-      _filtersBloc.addValue(item);
       return true;
     });
+    _filtersBloc.addValues(unfiltered.toList());
     final _disabledSorters = <ItemSortParameterType>{
       ItemSortParameterType.BucketHash,
       ItemSortParameterType.Quantity,

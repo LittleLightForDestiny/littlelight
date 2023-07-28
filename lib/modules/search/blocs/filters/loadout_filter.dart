@@ -36,17 +36,26 @@ class LoadoutFilter extends BaseItemFilter<LoadoutFilterOptions> {
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final instanceId = item.instanceId;
-    if (instanceId == null) return;
-    final loadouts = _loadoutsBloc.loadouts?.where((l) {
-      return l.containsItem(instanceId);
-    });
-    if (loadouts == null) return;
-    if (loadouts.isEmpty) data.availableValues.add(null);
-    final ids = loadouts.map((e) => e.assignedId).whereType<String>();
-    data.availableValues.addAll(ids);
-    final itemLoadouts = _loadoutsByItem[instanceId] ??= {};
-    itemLoadouts.addAll(ids);
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final loadoutIds = <String?>{};
+    for (final item in items) {
+      final instanceId = item.instanceId;
+      if (instanceId == null) continue;
+      final loadouts = _loadoutsBloc.loadouts?.where((l) {
+        return l.containsItem(instanceId);
+      });
+      if (loadouts == null) continue;
+      if (loadouts.isEmpty) loadoutIds.add(null);
+      final ids = loadouts.map((e) => e.assignedId).whereType<String>();
+      loadoutIds.addAll(ids);
+      final itemLoadouts = _loadoutsByItem[instanceId] ??= {};
+      itemLoadouts.addAll(ids);
+    }
+    data.availableValues.addAll(loadoutIds);
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

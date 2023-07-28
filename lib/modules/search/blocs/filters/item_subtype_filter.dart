@@ -24,11 +24,10 @@ class ItemSubtypeFilter extends BaseItemFilter<ItemSubtypeFilterOptions> with Ma
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
-    final categoryHashes = def?.itemCategoryHashes;
-    if (categoryHashes == null) return;
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final hashes = items.map((i) => i.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final categoryHashes = defs.values.map((d) => d.itemCategoryHashes).whereType<int>();
     final categoryDefs = await manifest.getDefinitions<DestinyItemCategoryDefinition>(categoryHashes);
     for (final category in categoryDefs.values) {
       final subtype = category.grantDestinySubType ?? DestinyItemSubType.None;
@@ -37,5 +36,10 @@ class ItemSubtypeFilter extends BaseItemFilter<ItemSubtypeFilterOptions> with Ma
       if (hash == null) continue;
       this.data.availableValues.add(hash);
     }
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

@@ -83,9 +83,9 @@ class SelectLoadoutItemBloc extends ChangeNotifier with ManifestConsumer {
       if (idsToAvoid?.contains(item.instanceId) ?? false) return false;
 
       if (def.itemType == DestinyItemType.Armor) hasArmor = true;
-      _filtersBloc.addValue(item);
       return true;
     });
+    _filtersBloc.addValues(unfiltered.toList());
     final _disabledSorters = <ItemSortParameterType>{
       if (!hasArmor) ItemSortParameterType.StatTotal,
       if (!hasWeapon) ItemSortParameterType.AmmoType,

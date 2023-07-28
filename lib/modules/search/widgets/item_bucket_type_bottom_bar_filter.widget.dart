@@ -23,7 +23,7 @@ class ItemBucketTypeBottomBarFilterWidget extends BaseFilterWidget<ItemBucketTyp
   }
 
   @override
-  Widget buildWithData(BuildContext context, ItemBucketTypeFilterOptions? data) {
+  Widget buildWithData(BuildContext context, ItemBucketTypeFilterOptions data) {
     final bottomPadding = context.mediaQuery.viewPadding.bottom;
     return Container(
       height: bottomPadding + kToolbarHeight,
@@ -31,16 +31,15 @@ class ItemBucketTypeBottomBarFilterWidget extends BaseFilterWidget<ItemBucketTyp
           color: context.theme.surfaceLayers,
           border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3))),
       child: Row(
-          children: data?.availableValues //
-                  .map((type) => buildButton(
-                        context,
-                        type: type,
-                        selected: data.value.contains(type),
-                        onTap: () => updateOption(context, data, type, false),
-                        onHold: () => updateOption(context, data, type, true),
-                      ))
-                  .toList() ??
-              []),
+          children: EquipmentBucketGroup.values //
+              .map((type) => buildButton(
+                    context,
+                    type: type,
+                    selected: data.value.contains(type),
+                    onTap: () => updateOption(context, data, type, false),
+                    onHold: () => updateOption(context, data, type, true),
+                  ))
+              .toList()),
     );
   }
 

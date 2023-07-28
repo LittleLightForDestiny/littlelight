@@ -1,4 +1,5 @@
 import 'package:bungie_api/destiny2.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
@@ -79,24 +80,34 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
     final allItems = _profileBloc.allInstancedItems;
     final hashes = allItems.map((e) => e.itemHash).whereType<int>().toSet();
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
-    bool hasArmor = false;
-    bool hasWeapon = false;
     final unfiltered = <InventoryItemInfo>[];
+
+    _filtersBloc.clearValues();
+
+    final includeArmor = bucketGroups.contains(EquipmentBucketGroup.Armor);
+    final includeWeapons = bucketGroups.contains(EquipmentBucketGroup.Weapons);
+    final includeInventory = bucketGroups.contains(EquipmentBucketGroup.Inventory);
+
     for (final item in allItems) {
       final def = defs[item.itemHash];
       if (def == null) continue;
-      hasArmor |= def.isArmor;
-      hasWeapon |= def.isWeapon;
-      _filtersBloc.addValue(item);
+      final filterAsArmor = def.isArmor;
+      final filterAsWeapon = def.isSubclass || def.isWeapon;
+      final filterAsOther = !filterAsArmor && !filterAsWeapon;
+      if (filterAsArmor && !includeArmor) continue;
+      if (filterAsWeapon && !includeWeapons) continue;
+      if (filterAsOther && !includeInventory) continue;
       unfiltered.add(item);
     }
     final _disabledSorters = <ItemSortParameterType>{
-      if (!hasArmor) ItemSortParameterType.StatTotal,
-      if (!hasWeapon) ItemSortParameterType.AmmoType,
-      if (!hasWeapon) ItemSortParameterType.DamageType,
+      if (!includeArmor) ItemSortParameterType.StatTotal,
+      if (!includeWeapons) ItemSortParameterType.AmmoType,
+      if (!includeWeapons) ItemSortParameterType.DamageType,
       ItemSortParameterType.BucketHash,
-      ItemSortParameterType.Quantity,
+      if (!includeInventory) ItemSortParameterType.Quantity,
     };
+
+    _filtersBloc.addValues(unfiltered);
 
     _sortersBloc.disabledSorters = _disabledSorters;
 
@@ -114,6 +125,11 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
 
   void filter() async {
     List<DestinyItemInfo> items = _unfilteredItems?.toList() ?? [];
+    final typeFilter = _filtersBloc.getFilter<ItemBucketTypeFilterOptions>()?.value;
+    if (typeFilter != null && !setEquals(typeFilter, bucketGroups)) {
+      bucketGroups = typeFilter.toSet();
+      return this._update();
+    }
     _items = await _filtersBloc.filter(items);
     notifyListeners();
   }
