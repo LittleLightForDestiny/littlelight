@@ -105,6 +105,11 @@ jobs:
     uses: ./.github/workflows/publish-macos.yml
     needs: [version-update]
     secrets: inherit
+  
+  publish-windows:
+    uses: ./.github/workflows/publish-windows.yml
+    needs: [version-update]
+    secrets: inherit
 
   update-translations:
     uses: ./.github/workflows/update-translations.yml

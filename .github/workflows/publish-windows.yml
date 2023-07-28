@@ -24,6 +24,7 @@ on:
           - "production"
           - "beta"
         default: "production"
+
 jobs:
   macos-app-store:
     name: Publish to Microsoft app store
@@ -38,17 +39,18 @@ jobs:
           then
             if [ "${{ github.event.release.prerelease }}" == true ]
             then
-              echo "track=beta" >> $GITHUB_STATE
+              echo "track=beta" >> $GITHUB_OUTPUT
             else
-              echo "track=production" >> $GITHUB_STATE
+              echo "track=production" >> $GITHUB_OUTPUT
             fi
-            echo "head_ref=main" >> $GITHUB_STATE"
+            echo "head_ref=main" >> $GITHUB_OUTPUT
+            echo "version="${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
           fi
 
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
-            echo "track=${{ github.event.inputs.track }}" >> $GITHUB_STATE
-            echo "head_ref=${{ github.head_ref }}" >> $GITHUB_STATE"
+            echo "track=${{ github.event.inputs.track }}" >> $GITHUB_OUTPUT
+            echo "head_ref=${{ github.head_ref }}" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout
@@ -94,15 +96,34 @@ jobs:
       - name: Build via Flutter
         run: flutter build windows --release
 
-      - uses: actions/upload-artifact@v1
+      - name: Upload build to workflow run
+        uses: actions/upload-artifact@v1
         with:
-          name: windows-standalone
+          name: LittleLight-windows
           path: ${{ github.workspace }}/build/windows/runner/Release
 
+      - name: Create release zip
+      if: steps.variables.outputs.version != ""
+      uses: thedoctor0/zip-release@0.7.1
+      with:
+        type: 'zip'
+        filename: 'LittleLight-windows-${{ steps.variables.outputs.version }}.zip'
+        path: ${{ github.workspace }}/build/windows/runner/Release
+
+      - name: Upload build to Github Release
+        - name: Release
+        uses: softprops/action-gh-release@v1
+        if: steps.variables.outputs.version != ""
+        with:
+          tag_name: ${{ steps.variable.outputs.version }}
+          files: 'LittleLight-windows-${{ steps.variables.outputs.version }}.zip'
+
       - name: Create MSIX package
+        if: steps.variables.outputs.track == 'production'
         run: msstore package
 
       - name: Publish MSIX to the Microsoft Store
+        if: steps.variables.outputs.track == 'production'
         run: msstore publish -v
 
       
