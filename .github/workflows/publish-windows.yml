@@ -103,7 +103,7 @@ jobs:
           path: ${{ github.workspace }}/build/windows/runner/Release
 
       - name: Create release zip
-        if: steps.variables.outputs.version != ""
+        if: steps.variables.outputs.version != ''
         uses: thedoctor0/zip-release@0.7.1
         with:
           type: 'zip'
@@ -112,7 +112,7 @@ jobs:
 
       - name: Upload build to Github Release
         uses: softprops/action-gh-release@v1
-        if: steps.variables.outputs.version != ""
+        if: steps.variables.outputs.version != ''
         with:
           tag_name: ${{ steps.variable.outputs.version }}
           files: 'LittleLight-windows-${{ steps.variables.outputs.version }}.zip'
