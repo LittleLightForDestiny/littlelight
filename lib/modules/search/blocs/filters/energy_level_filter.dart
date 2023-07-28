@@ -18,23 +18,30 @@ class EnergyLevelFilter extends BaseItemFilter<EnergyLevelFilterOptions> with Ma
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    if (hash == null) return;
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
-    if (def?.itemType != DestinyItemType.Armor) return;
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final hashes = items.map((i) => i.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    for (final item in items) {
+      final def = defs[item.itemHash];
+      if (def?.itemType != DestinyItemType.Armor) return;
 
-    final energy = item.energyCapacity;
-    if (energy == null) {
-      data.availableValues.includeEnergylessItems = true;
-      data.value.includeEnergylessItems = true;
-      return;
+      final energy = item.energyCapacity;
+      if (energy == null) {
+        data.availableValues.includeEnergylessItems = true;
+        data.value.includeEnergylessItems = true;
+        return;
+      }
+      final min = math.min(data.availableValues.min, energy);
+      final max = math.max(data.availableValues.max, energy);
+      data.availableValues.min = min;
+      data.availableValues.max = max;
+      data.value.min = min;
+      data.value.max = max;
     }
-    final min = math.min(data.availableValues.min, energy);
-    final max = math.max(data.availableValues.max, energy);
-    data.availableValues.min = min;
-    data.availableValues.max = max;
-    data.value.min = min;
-    data.value.max = max;
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues = EnergyLevelConstraints();
   }
 }

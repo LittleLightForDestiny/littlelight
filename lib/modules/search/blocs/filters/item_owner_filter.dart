@@ -33,17 +33,24 @@ class ItemOwnerFilter extends BaseItemFilter<ItemOwnerFilterOptions> {
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final characterId = item.characterId;
-    if (characterId != null) {
-      data.availableValues.characters.add(characterId);
-      return;
-    }
-    if (item.bucketHash == InventoryBucket.general) {
-      data.availableValues.vault = true;
-      return;
-    }
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    for (final item in items) {
+      final characterId = item.characterId;
+      if (characterId != null) {
+        data.availableValues.characters.add(characterId);
+        continue;
+      }
+      if (item.bucketHash == InventoryBucket.general) {
+        data.availableValues.vault = true;
+        continue;
+      }
 
-    data.availableValues.profile = true;
+      data.availableValues.profile = true;
+    }
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

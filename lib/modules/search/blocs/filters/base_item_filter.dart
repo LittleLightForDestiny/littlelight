@@ -20,7 +20,7 @@ abstract class BaseItemFilter<T extends BaseFilterOptions> {
 
   Future<bool> filterItem(DestinyItemInfo item);
 
-  Future<void> addValue(DestinyItemInfo item) async {}
+  Future<void> addValues(List<DestinyItemInfo> item);
 
   void updateValue(T t) {
     data.value = t.value;
@@ -29,4 +29,6 @@ abstract class BaseItemFilter<T extends BaseFilterOptions> {
   void updateEnabled(bool enabled) {
     data.enabled = enabled;
   }
+
+  void clearAvailable();
 }

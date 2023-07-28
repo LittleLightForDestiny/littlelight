@@ -28,13 +28,21 @@ class ItemBucketTypeFilter extends BaseItemFilter<ItemBucketTypeFilterOptions> w
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
-    final bucketHash = def?.inventory?.bucketTypeHash;
-    final value = EquipmentBucketGroup.values.firstWhereOrNull((element) => element.bucketHashes.contains(bucketHash));
-    if (value != null) {
-      data.availableValues.add(value);
-    }
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final hashes = items.map((i) => i.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final bucketHashes = defs.values.map((d) => d.inventory?.bucketTypeHash);
+    final values = EquipmentBucketGroup.values.where(
+      (element) => element.bucketHashes.any(
+        (h) => bucketHashes.contains(h),
+      ),
+    );
+
+    data.availableValues.addAll(values);
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

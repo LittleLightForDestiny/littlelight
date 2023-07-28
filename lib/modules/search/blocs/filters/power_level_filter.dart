@@ -17,18 +17,25 @@ class PowerLevelFilter extends BaseItemFilter<PowerLevelFilterOptions> with Mani
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final power = item.primaryStatValue;
-    if (power == null) {
-      data.availableValues.includePowerlessItems = true;
-      data.value.includePowerlessItems = true;
-      return;
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    for (final item in items) {
+      final power = item.primaryStatValue;
+      if (power == null) {
+        data.availableValues.includePowerlessItems = true;
+        data.value.includePowerlessItems = true;
+        return;
+      }
+      final min = math.min(data.availableValues.min, power);
+      final max = math.max(data.availableValues.max, power);
+      data.availableValues.min = min;
+      data.availableValues.max = max;
+      data.value.min = min;
+      data.value.max = max;
     }
-    final min = math.min(data.availableValues.min, power);
-    final max = math.max(data.availableValues.max, power);
-    data.availableValues.min = min;
-    data.availableValues.max = max;
-    data.value.min = min;
-    data.value.max = max;
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues = PowerLevelConstraints();
   }
 }

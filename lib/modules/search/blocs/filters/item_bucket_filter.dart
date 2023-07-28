@@ -24,11 +24,15 @@ class ItemBucketFilter extends BaseItemFilter<ItemBucketFilterOptions> with Mani
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
-    final bucketHash = def?.inventory?.bucketTypeHash;
-    if (bucketHash == null) return;
-    data.availableValues.add(bucketHash);
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final hashes = items.map((i) => i.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final bucketHashes = defs.values.map((d) => d.inventory?.bucketTypeHash).whereType<int>();
+    data.availableValues.addAll(bucketHashes);
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

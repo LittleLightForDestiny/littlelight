@@ -24,8 +24,13 @@ class CraftedFilter extends BaseItemFilter<CraftedFilterOptions> with ManifestCo
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final isCrafted = item.state?.contains(ItemState.Crafted) ?? false;
-    data.availableValues.add(isCrafted);
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final isCrafted = items.map((i) => i.state?.contains(ItemState.Crafted) ?? false);
+    data.availableValues.addAll(isCrafted);
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

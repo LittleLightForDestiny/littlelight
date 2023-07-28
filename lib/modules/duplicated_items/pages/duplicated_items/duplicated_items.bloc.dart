@@ -100,6 +100,7 @@ class DuplicatedItemsBloc extends ChangeNotifier {
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     final map = <int, Map<int, List<DestinyItemInfo>>>{};
     final genericItems = _genericItems ??= {};
+    final flatItemList = <DestinyItemInfo>[];
     for (final itemHash in hashes) {
       final def = defs[itemHash];
       final bucketHash = def?.inventory?.bucketTypeHash;
@@ -108,9 +109,10 @@ class DuplicatedItemsBloc extends ChangeNotifier {
       final items = sortedItems.where((i) => i.itemHash == itemHash);
       if (items.length <= 1) continue;
       if (def != null) genericItems[itemHash] ??= DefinitionItemInfo.fromDefinition(def);
-      for (final item in items) filterBloc.addValue(item);
+      flatItemList.addAll(items);
       bucketHashMap[itemHash] = items.toList();
     }
+    filterBloc.addValues(flatItemList);
     _unfilteredItems = map;
     _filter();
   }

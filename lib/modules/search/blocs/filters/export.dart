@@ -10,7 +10,6 @@ export 'item_subtype_filter.dart';
 export 'item_tag_filter.dart';
 export 'loadout_filter.dart';
 export 'power_level_filter.dart';
-export 'season_slot_filter.dart';
 export 'text_filter.dart';
 export 'tier_type_filter.dart';
 export 'wishlist_tag_filter.dart';

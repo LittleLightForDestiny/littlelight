@@ -22,14 +22,21 @@ class TierTypeFilter extends BaseItemFilter<TierTypeFilterOptions> with Manifest
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
-    final tierType = def?.inventory?.tierType;
-    final tierTypeName = def?.inventory?.tierTypeName;
-    if (tierType == null) return;
-    data.availableValues.add(tierType);
-    if (tierTypeName == null) return;
-    data.names[tierType] = tierTypeName;
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final hashes = items.map((i) => i.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final tierType = defs.values.map((d) => d.inventory?.tierType).whereType<TierType>();
+    data.availableValues.addAll(tierType);
+    for (final def in defs.values) {
+      final tierType = def.inventory?.tierType;
+      final tierTypeName = def.inventory?.tierTypeName;
+      if (tierType == null || tierTypeName == null) continue;
+      data.names[tierType] = tierTypeName;
+    }
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }

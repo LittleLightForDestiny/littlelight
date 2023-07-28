@@ -20,20 +20,29 @@ class ArmorStatsFilter extends BaseItemFilter<ArmorStatsFilterOptions> with Mani
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    final instanceId = item.instanceId;
-    if (hash == null) return;
-    if (instanceId == null) return;
-    final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
-    final isArmor = def?.isArmor ?? false;
-    if (!isArmor) return;
-    final total = item.stats?.values.fold<int>(0, (t, v) => t + (v.value ?? 0));
-    if (total == null) return;
-    _itemTotalStatsMap[instanceId] = total;
-    int min = math.min(data.availableValues.min, total);
-    int max = math.max(data.availableValues.max, total);
-    data.value.min = data.availableValues.min = min;
-    data.value.max = data.availableValues.max = max;
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    items = items.where((i) => i.instanceId != null).toList();
+    final hashes = items.map((i) => i.itemHash);
+    final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+
+    for (final item in items) {
+      final instanceId = item.instanceId;
+      if (instanceId == null) continue;
+      final def = defs[item.itemHash];
+      final isArmor = def?.isArmor ?? false;
+      if (!isArmor) continue;
+      final total = item.stats?.values.fold<int>(0, (t, v) => t + (v.value ?? 0));
+      if (total == null) continue;
+      _itemTotalStatsMap[instanceId] = total;
+      int min = math.min(data.availableValues.min, total);
+      int max = math.max(data.availableValues.max, total);
+      data.value.min = data.availableValues.min = min;
+      data.value.max = data.availableValues.max = max;
+    }
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues = ArmorStatsConstraints();
   }
 }

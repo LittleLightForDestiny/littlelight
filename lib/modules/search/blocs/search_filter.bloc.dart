@@ -45,7 +45,7 @@ class SearchFilterBloc extends ChangeNotifier {
 
   SearchFilterBloc(BuildContext this._context, {Map<Type, BaseItemFilter>? filters})
       : _filters = filters ?? _defaultSearchFilters(_context);
-  BaseFilterOptions? getFilter<T extends BaseFilterOptions>() => _filters[T]?.data;
+  T? getFilter<T extends BaseFilterOptions>() => _filters[T]?.data as T?;
 
   void updateValue<T extends BaseFilterOptions>(T value) {
     final filter = this._filters[T];
@@ -80,9 +80,9 @@ class SearchFilterBloc extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addValue(DestinyItemInfo item) async {
+  void addValues(List<DestinyItemInfo> item) async {
     for (final f in _filters.values) {
-      f.addValue(item);
+      f.addValues(item);
     }
   }
 
@@ -91,5 +91,11 @@ class SearchFilterBloc extends ChangeNotifier {
       items = await _filter.filter(_context, items);
     }
     return items;
+  }
+
+  void clearValues() {
+    for (final f in _filters.values) {
+      f.clearAvailable();
+    }
   }
 }

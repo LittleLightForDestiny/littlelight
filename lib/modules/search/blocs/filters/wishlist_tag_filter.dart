@@ -28,19 +28,28 @@ class WishlistTagFilter extends BaseItemFilter<WishlistTagFilterOptions> with Wi
   }
 
   @override
-  Future<void> addValue(DestinyItemInfo item) async {
-    final hash = item.itemHash;
-    final reusablePlugs = item.reusablePlugs;
-    final instanceId = item.instanceId;
-    if (hash == null) return;
-    if (instanceId == null) return;
-    final tags = wishlistsService.getWishlistBuildTags(itemHash: hash, reusablePlugs: reusablePlugs);
-    if (tags.isEmpty) {
-      data.availableValues.add(null);
-      return;
+  Future<void> addValues(List<DestinyItemInfo> items) async {
+    final allTags = <WishlistTag?>{};
+    for (final item in items) {
+      final hash = item.itemHash;
+      final reusablePlugs = item.reusablePlugs;
+      final instanceId = item.instanceId;
+      if (hash == null) continue;
+      if (instanceId == null) continue;
+      final tags = wishlistsService.getWishlistBuildTags(itemHash: hash, reusablePlugs: reusablePlugs);
+      if (tags.isEmpty) {
+        allTags.add(null);
+        continue;
+      }
+      allTags.addAll(tags);
+      final itemTags = _itemTags[instanceId] ??= {};
+      itemTags.addAll(tags);
     }
-    data.availableValues.addAll(tags);
-    final itemTags = _itemTags[instanceId] ??= {};
-    itemTags.addAll(tags);
+    data.availableValues.addAll(allTags);
+  }
+
+  @override
+  void clearAvailable() {
+    data.availableValues.clear();
   }
 }
