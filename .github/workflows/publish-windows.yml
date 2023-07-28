@@ -26,7 +26,7 @@ on:
         default: "production"
 
 jobs:
-  macos-app-store:
+  windows-store:
     name: Publish to Microsoft app store
     runs-on: windows-latest
 
@@ -103,15 +103,14 @@ jobs:
           path: ${{ github.workspace }}/build/windows/runner/Release
 
       - name: Create release zip
-      if: steps.variables.outputs.version != ""
-      uses: thedoctor0/zip-release@0.7.1
-      with:
-        type: 'zip'
-        filename: 'LittleLight-windows-${{ steps.variables.outputs.version }}.zip'
-        path: ${{ github.workspace }}/build/windows/runner/Release
+        if: steps.variables.outputs.version != ""
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: 'zip'
+          filename: 'LittleLight-windows-${{ steps.variables.outputs.version }}.zip'
+          path: ${{ github.workspace }}/build/windows/runner/Release
 
       - name: Upload build to Github Release
-        - name: Release
         uses: softprops/action-gh-release@v1
         if: steps.variables.outputs.version != ""
         with:
