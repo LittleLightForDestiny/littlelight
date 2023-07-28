@@ -95,14 +95,14 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: LittleLight-android-apk
-          path: ${{ github.workspace }}build/app/outputs/flutter-apk/app-release.apk
+          path: ${{ github.workspace }}/build/app/outputs/flutter-apk/app-release.apk
 
       - name: Upload build to Github Release
         uses: softprops/action-gh-release@v1
         if: steps.variables.outputs.version != ''
         with:
           tag_name: ${{ steps.variable.outputs.version }}
-          files: ${{ github.workspace }}build/app/outputs/flutter-apk/app-release.apk
+          files: ${{ github.workspace }}/build/app/outputs/flutter-apk/app-release.apk
 
       - name: Download Android keystore
         id: android_keystore
@@ -144,7 +144,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: LittleLight-android-aab
-          path: ${{ github.workspace }}build/app/outputs/bundle/release/app-release.aab
+          path: ${{ github.workspace }}/build/app/outputs/bundle/release/app-release.aab
 
       - name: Release to Google Play (beta)
         if: steps.variables.outputs.track == 'beta'
