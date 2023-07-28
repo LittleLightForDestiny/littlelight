@@ -29,7 +29,8 @@ on:
         options:
           - "production"
           - "beta"
-        default: "production"
+          - "none"
+        default: "none"
 
 jobs:
   google-play:
