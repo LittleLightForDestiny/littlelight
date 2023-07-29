@@ -168,7 +168,7 @@ abstract class CollectionsBloc extends ChangeNotifier {
 
     if (hash == null) return;
 
-    if (selectionBloc.hasSelection || userSettings.tapToSelect) {
+    if (selectionBloc.hasSelection) {
       final items = profileBloc.getItemsByHash(hash);
       if (items.isEmpty) return;
       final areAllSelected = items.every((element) => selectionBloc.isItemSelected(element));
@@ -186,11 +186,6 @@ abstract class CollectionsBloc extends ChangeNotifier {
   void onCollectibleHold(DestinyItemInfo item) {
     final hash = item.itemHash;
     if (hash == null) return;
-
-    if (userSettings.tapToSelect) {
-      Navigator.of(context).push(DefinitionItemDetailsPageRoute(hash));
-      return;
-    }
 
     final items = profileBloc.getItemsByHash(hash);
     if (items.isEmpty) return;
