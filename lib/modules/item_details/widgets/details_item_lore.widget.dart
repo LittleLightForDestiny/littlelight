@@ -4,6 +4,7 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
+import 'package:little_light/shared/widgets/external_references/the_old_ghost_link.button.dart';
 
 class DetailsItemLoreWidget extends StatelessWidget {
   final int itemHash;
@@ -48,6 +49,46 @@ class DetailsItemLoreWidget extends StatelessWidget {
             style: context.textTheme.body,
             textAlign: TextAlign.left,
           ),
+          buildExternalReferences(context)
         ]));
+  }
+
+  Widget buildExternalReferences(BuildContext context) {
+    final definition = context.definition<DestinyInventoryItemDefinition>(itemHash);
+    final loreHash = definition?.loreHash;
+    if (loreHash == null) return Container();
+    return Container(
+      margin: EdgeInsets.only(top: 16),
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: context.theme.secondarySurfaceLayers.layer1,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+              margin: EdgeInsets.only(bottom: 4),
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: context.theme.secondarySurfaceLayers.layer0,
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                "Read more at".translate(context),
+                style: context.textTheme.button,
+              )),
+          Wrap(
+            children: [
+              TheOldGhostLinkButton(
+                contentType: OldGhostContentType.Item,
+                hash: itemHash,
+                name: definition?.displayProperties?.name,
+              )
+            ],
+          )
+        ],
+      ),
+    );
   }
 }

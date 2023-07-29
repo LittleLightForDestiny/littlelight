@@ -7,6 +7,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 enum OldGhostContentType {
   Chapter,
+  Item,
 }
 
 extension on OldGhostContentType {
@@ -14,6 +15,8 @@ extension on OldGhostContentType {
     switch (this) {
       case OldGhostContentType.Chapter:
         return 'chapter';
+      case OldGhostContentType.Item:
+        return 'item';
     }
   }
 }
