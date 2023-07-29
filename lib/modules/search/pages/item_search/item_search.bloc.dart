@@ -9,7 +9,7 @@ import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
-import 'package:little_light/modules/search/blocs/filter_options/item_bucket_type_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/main_item_type_filter_options.dart';
 import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
 import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -59,7 +59,7 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
       );
 
   void _init() async {
-    _filtersBloc.getFilter<ItemBucketTypeFilterOptions>()?.value = this.bucketGroups;
+    _filtersBloc.getFilter<MainItemTypeFilterOptions>()?.value = this.bucketGroups;
     _update();
     _profileBloc.addListener(_update);
     _sortersBloc.addListener(_sort);
@@ -125,7 +125,7 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
 
   void filter() async {
     List<DestinyItemInfo> items = _unfilteredItems?.toList() ?? [];
-    final typeFilter = _filtersBloc.getFilter<ItemBucketTypeFilterOptions>()?.value;
+    final typeFilter = _filtersBloc.getFilter<MainItemTypeFilterOptions>()?.value;
     if (typeFilter != null && !setEquals(typeFilter, bucketGroups)) {
       bucketGroups = typeFilter.toSet();
       return this._update();

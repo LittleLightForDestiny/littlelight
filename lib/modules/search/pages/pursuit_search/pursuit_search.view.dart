@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/search/widgets/item_bucket_type_bottom_bar_filter.widget.dart';
+import 'package:little_light/modules/search/widgets/main_item_type_bottom_bar_filter.widget.dart';
 import 'package:little_light/modules/search/widgets/item_search_drawer.widget.dart';
 import 'package:little_light/modules/search/widgets/text_search_filter.widget.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
@@ -112,7 +112,7 @@ class PursuitSearchView extends StatelessWidget {
   Widget buildFooter(BuildContext context) {
     final hasSelection = context.watch<SelectionBloc>().hasSelection;
     final bottomPadding = context.mediaQuery.viewPadding.bottom;
-    if (!hasSelection) return ItemBucketTypeBottomBarFilterWidget();
+    if (!hasSelection) return MainItemTypeBottomBarFilterWidget();
     return Column(children: [
       SelectedItemsWidget(),
       if (bottomPadding > 0)
