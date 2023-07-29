@@ -6,6 +6,7 @@ import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/models/item_sort_parameter.dart';
+import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/search/blocs/search_filter.bloc.dart';
 import 'package:little_light/modules/search/blocs/search_sorter.bloc.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -129,5 +130,8 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
     Navigator.of(_context).pop();
   }
 
-  void onItemHold(DestinyItemInfo item) {}
+  void onItemHold(DestinyItemInfo item) {
+    if (!(item is InventoryItemInfo)) return;
+    Navigator.of(_context).push(InventoryItemDetailsPageRoute(item));
+  }
 }
