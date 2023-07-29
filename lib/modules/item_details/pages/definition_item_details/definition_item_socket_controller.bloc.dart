@@ -144,7 +144,8 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     return plugHashes.whereType<int>().toList();
   }
 
-  Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash) async {
+  @override
+  Future<bool> loadCanRollOn(int socketIndex, int plugHash) async {
     final socket = itemDefinition?.sockets?.socketEntries?[socketIndex];
     if (socket == null) return false;
     final reusable = socket.reusablePlugItems;
@@ -170,6 +171,46 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
 
     return false;
   }
+
+  Future<Map<int, Map<int, String>>> loadWeaponLevelRequired() async {
+    final Map<int, Map<int, String>> weaponLevelMap = {};
+    // If there is no recipe item, we are done since all craftable weapons should have one.
+    // We need to get the weapon levels from the recipe item or many would be missing.
+    final recipeItemHash = itemDefinition?.inventory?.recipeItemHash ?? 0;
+    if (recipeItemHash == 0) return weaponLevelMap;
+    final recipeItem = await manifest.getDefinition<DestinyInventoryItemDefinition>(recipeItemHash);
+    final sockets = recipeItem?.sockets?.socketEntries;
+    if (sockets == null) return weaponLevelMap;
+
+    for (int socketIndex = 0; socketIndex < sockets.length; socketIndex++) {
+      final socketDef = sockets[socketIndex];
+      final socketMap = weaponLevelMap[socketIndex] ??= {};
+      [
+        for (final plugSetHash in <int?>{socketDef.reusablePlugSetHash, socketDef.randomizedPlugSetHash})
+          if ((plugSetHash ?? 0) > 0) await manifest.getDefinition<DestinyPlugSetDefinition>(plugSetHash)
+      ]
+          .whereType<DestinyPlugSetDefinition>()
+          .map((plugSet) => plugSet.reusablePlugItems)
+          .whereType<List<DestinyItemSocketEntryPlugItemRandomizedDefinition>>()
+          .expand((plugDef) => (plugDef))
+          .whereType<DestinyItemSocketEntryPlugItemRandomizedDefinition>()
+          .forEach((plugDef) {
+        final plugHash = plugDef.plugItemHash ?? 0;
+        final level = plugDef.craftingRequirements?.requiredLevel ?? 0;
+        if (plugHash > 0 && level > 0) {
+          final unlockRequirements = plugDef.craftingRequirements?.unlockRequirements;
+          if (unlockRequirements?.isNotEmpty ?? false) {
+            final levelText = unlockRequirements?.last.failureDescription;
+            if (levelText != null) socketMap[plugHash] = levelText;
+          }
+        }
+      });
+    }
+    return weaponLevelMap;
+  }
+
+  @override
+  Future<bool> calculateHasEnoughEnergyFor(int socketIndex, int plugHash) async => true;
 
   @override
   Future<bool> loadCanApplyPlug(int socketIndex, int plugHash) async {

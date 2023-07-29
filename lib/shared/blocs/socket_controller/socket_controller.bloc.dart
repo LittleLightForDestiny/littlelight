@@ -40,7 +40,11 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
 
   Map<int, Map<int, bool>>? _canApply;
 
-  Map<int, Map<int, bool>>? _isAvailable;
+  Map<int, Map<int, bool>>? _canRollOn;
+
+  Map<int, Map<int, bool>>? _hasEnoughEnergyFor;
+
+  Map<int, Map<int, String>>? _weaponLevelRequired;
 
   @protected
   final BuildContext context;
@@ -339,15 +343,25 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
 
     _usedEnergyCapacity = await _calculateUsedEnergyCapacity();
     _availableEnergyCapacity = await _calculateAvailableEnergyCapacity();
+    _hasEnoughEnergyFor = await _calculateHasEnoughEnergyFor();
 
-    _isAvailable = await _calculateIsAvailable();
+    _canRollOn = await _loadCanRollOn();
+
+    _weaponLevelRequired = await loadWeaponLevelRequired();
 
     notifyListeners();
   }
 
   bool isSelectable(int socketIndex, int plugHash);
 
-  bool isAvailable(int? socketIndex, int plugHash) => _isAvailable?[socketIndex]?[plugHash] ?? false;
+  bool isAvailable(int? socketIndex, int plugHash) =>
+      canRollOn(socketIndex, plugHash) && hasEnoughEnergyFor(socketIndex, plugHash);
+
+  bool canRollOn(int? socketIndex, int plugHash) => _canRollOn?[socketIndex]?[plugHash] ?? false;
+
+  bool hasEnoughEnergyFor(int? socketIndex, int plugHash) => _hasEnoughEnergyFor?[socketIndex]?[plugHash] ?? false;
+
+  String? weaponLevelRequired(int? socketIndex, int plugHash) => _weaponLevelRequired?[socketIndex]?[plugHash];
 
   bool canApply(int socketIndex, int plugHash) => _canApply?[socketIndex]?[plugHash] ?? false;
 
@@ -444,7 +458,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     return StatValues(9999, rawEquipped: totalEquipped, rawSelected: totalSelected);
   }
 
-  Future<Map<int, Map<int, bool>>?> _calculateIsAvailable() async {
+  Future<Map<int, Map<int, bool>>?> _calculateHasEnoughEnergyFor() async {
     final socketCount = itemDefinition?.sockets?.socketEntries?.length;
     if (socketCount == null) return null;
     final result = <int, Map<int, bool>>{};
@@ -455,13 +469,32 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
       if (plugHashes.isEmpty) continue;
       final plugs = result[socketIndex] ??= {};
       for (final plugHash in plugHashes) {
-        plugs[plugHash] = await calculateIsPlugAvailable(socketIndex, plugHash);
+        plugs[plugHash] = await calculateHasEnoughEnergyFor(socketIndex, plugHash);
       }
     }
     return result;
   }
 
-  Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash);
+  Future<Map<int, Map<int, bool>>?> _loadCanRollOn() async {
+    final socketCount = itemDefinition?.sockets?.socketEntries?.length;
+    if (socketCount == null) return null;
+    final result = <int, Map<int, bool>>{};
+    for (int socketIndex = 0; socketIndex < socketCount; socketIndex++) {
+      final available = availablePlugHashesForSocket(socketIndex) ?? [];
+      final random = randomPlugHashesForSocket(socketIndex) ?? [];
+      final plugHashes = [...available, ...random];
+      if (plugHashes.isEmpty) continue;
+      final plugs = result[socketIndex] ??= {};
+      for (final plugHash in plugHashes) {
+        plugs[plugHash] = await loadCanRollOn(socketIndex, plugHash);
+      }
+    }
+    return result;
+  }
+
+  Future<bool> loadCanRollOn(int socketIndex, int plugHash);
+  Future<bool> calculateHasEnoughEnergyFor(int socketIndex, int plugHash);
+  Future<Map<int, Map<int, String>>>? loadWeaponLevelRequired() => null;
 
   @protected
   Future<Map<int, Map<int, bool>>?> loadCanApply() async {
