@@ -76,7 +76,8 @@ class LoadoutItemSocketControllerBloc extends SocketControllerBloc<LoadoutItemIn
     return true;
   }
 
-  Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash) async {
+  @override
+  Future<bool> calculateHasEnoughEnergyFor(int socketIndex, int plugHash) async {
     final availableEnergy = availableEnergyCapacity?.equipped ?? 0;
     final usedEnergy = usedEnergyCapacity?.selected ?? 0;
     final currentPlugHash = selectedPlugHashForSocket(socketIndex) ?? equippedPlugHashForSocket(socketIndex);
@@ -89,9 +90,14 @@ class LoadoutItemSocketControllerBloc extends SocketControllerBloc<LoadoutItemIn
   }
 
   @override
-  bool isSelectable(int socketIndex, int plugHash) =>
-      isEquipped(socketIndex, plugHash) ||
-      (isAvailable(socketIndex, plugHash) && super.canApply(socketIndex, plugHash));
+  Future<bool> loadCanRollOn(int socketIndex, int plugHash) async => true;
+
+  @override
+  bool isSelectable(int socketIndex, int plugHash) {
+    print("LoadoutItem: $socketIndex, $plugHash");
+    return isEquipped(socketIndex, plugHash) ||
+        (isAvailable(socketIndex, plugHash) && super.canApply(socketIndex, plugHash));
+  }
 
   @override
   bool canApply(int? socketIndex, int plugHash) {

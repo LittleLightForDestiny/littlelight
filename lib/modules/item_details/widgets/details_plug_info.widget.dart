@@ -139,7 +139,9 @@ class DetailsPlugInfoWidget extends StatelessWidget {
         buildStats(context),
         buildObjectives(context, plugHash),
         buildResourceCost(context, plugHash),
+        buildWeaponLevelRequired(context, plugHash),
         buildApplyButton(context, plugHash),
+        buildUnavailable(context, plugHash),
       ]);
 
   Widget buildInfoContainer(BuildContext context, Widget child) => Container(
@@ -299,5 +301,57 @@ class DetailsPlugInfoWidget extends StatelessWidget {
     final socketIndex = state.selectedSocketIndex;
     if (socketIndex == null) return Container();
     return DetailsApplyPlugButtonWidget(socketIndex: socketIndex, plugHash: plugHash);
+  }
+
+  Widget buildWeaponLevelRequired(BuildContext context, int plugHash) {
+    final state = context.watch<SocketControllerBloc>();
+    final socketIndex = state.selectedSocketIndex;
+    if (socketIndex == null) return Container();
+    final weaponLevelRequired = state.weaponLevelRequired(socketIndex, plugHash);
+    if (weaponLevelRequired == null) return Container();
+    return Container(
+      margin: EdgeInsets.only(top: 4),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer1,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(children: [
+        Container(width: 18, height: 18, child: Image.asset("assets/imgs/deepsight.png")),
+        SizedBox(width: 6),
+        Text(weaponLevelRequired, style: context.textTheme.caption),
+      ]),
+    );
+  }
+
+  Widget buildUnavailable(BuildContext context, int plugHash) {
+    final state = context.watch<SocketControllerBloc>();
+    final socketIndex = state.selectedSocketIndex;
+    if (socketIndex == null) return Container();
+    final canRollOn = state.canRollOn(socketIndex, plugHash);
+    final hasEnoughEnergyFor = state.hasEnoughEnergyFor(socketIndex, plugHash);
+    if (canRollOn && hasEnoughEnergyFor) return Container();
+    return Container(
+        margin: EdgeInsets.only(top: 4),
+        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+        decoration: BoxDecoration(
+          color: context.theme.surfaceLayers.layer1,
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Column(children: [
+          if (!canRollOn)
+            Row(children: [
+              Icon(Icons.warning_amber, color: context.theme.achievementLayers.layer1, size: 20),
+              SizedBox(width: 4),
+              Text(context.translate("This perk is currently unavailable on this item."),
+                  style: context.textTheme.caption),
+            ]),
+          if (!hasEnoughEnergyFor)
+            Row(children: [
+              Icon(Icons.warning_amber, color: context.theme.achievementLayers.layer1, size: 20),
+              SizedBox(width: 4),
+              Text(context.translate("There is not enough energy for this perk."), style: context.textTheme.caption),
+            ])
+        ]));
   }
 }

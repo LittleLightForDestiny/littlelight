@@ -92,4 +92,10 @@ class LoadoutItemOptionsSocketControllerBloc extends SocketControllerBloc<Loadou
 
   @override
   bool canApply(int? socketIndex, int plugHash) => false;
+
+  @override
+  Future<bool> loadCanRollOn(int socketIndex, int plugHash) async => true;
+
+  @override
+  Future<bool> calculateHasEnoughEnergyFor(int socketIndex, int plugHash) async => true;
 }

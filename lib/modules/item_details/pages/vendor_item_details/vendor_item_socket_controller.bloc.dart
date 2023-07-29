@@ -91,23 +91,14 @@ class VendorItemSocketControllerBloc extends SocketControllerBloc<VendorItemInfo
   }
 
   @override
-  Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash) async {
-    final availableEnergy = availableEnergyCapacity?.equipped ?? 0;
-    final usedEnergy = usedEnergyCapacity?.equipped ?? 0;
-    final currentPlugHash = equippedPlugHashForSocket(socketIndex);
-    final currentPlugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(currentPlugHash);
-    final plugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(plugHash);
-    final equippedEnergy = currentPlugDef?.plug?.energyCost?.energyCost ?? 0;
-    final requiredEnergy = plugDef?.plug?.energyCost?.energyCost ?? 0;
-    if (usedEnergy - equippedEnergy + requiredEnergy > availableEnergy) return false;
-    return true;
-  }
+  Future<bool> calculateHasEnoughEnergyFor(int socketIndex, int plugHash) async => true;
+
+  @override
+  Future<bool> loadCanRollOn(int socketIndex, int plugHash) async => true;
 
   @override
   bool isSelectable(int? index, int plugHash) => true;
 
   @override
-  bool canApply(int socketIndex, int plugHash) {
-    return super.canApply(socketIndex, plugHash) && !isEquipped(socketIndex, plugHash);
-  }
+  bool canApply(int socketIndex, int plugHash) => false;
 }

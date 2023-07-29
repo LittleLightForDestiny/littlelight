@@ -86,7 +86,7 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
   }
 
   @override
-  Future<bool> calculateIsPlugAvailable(int socketIndex, int plugHash) async {
+  Future<bool> calculateHasEnoughEnergyFor(int socketIndex, int plugHash) async {
     final availableEnergy = availableEnergyCapacity?.equipped ?? 0;
     final usedEnergy = usedEnergyCapacity?.equipped ?? 0;
     final currentPlugHash = equippedPlugHashForSocket(socketIndex);
@@ -98,6 +98,9 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
     if (usedEnergy - equippedEnergy + requiredEnergy > availableEnergy) return false;
     return true;
   }
+
+  @override
+  Future<bool> loadCanRollOn(int socketIndex, int plugHash) async => true;
 
   @override
   bool isSelectable(int? index, int plugHash) => true;
