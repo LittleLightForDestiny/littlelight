@@ -1,3 +1,11 @@
+## [2.0.7] - 2023-07-29
+
+- Adds a message for currently unavailable perks in collections
+- Adds a message when a mod can't be equipped due to insufficient energy
+- Adds level requirement for individual perks on craftable items
+- fixes item type filters
+- fixes some hold actions
+
 ## [2.0.6] - 2023-07-28
 
 - fixes image resolutions on some screens

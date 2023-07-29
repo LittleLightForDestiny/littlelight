@@ -1,2 +1,5 @@
-- fixes image resolutions on some screens
-- makes search filters more relevant to the current item type
+- Adds a message for currently unavailable perks in collections
+- Adds a message when a mod can't be equipped due to insufficient energy
+- Adds level requirement for individual perks on craftable items
+- fixes item type filters
+- fixes some hold actions
