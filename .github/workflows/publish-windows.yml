@@ -44,7 +44,7 @@ jobs:
               echo "track=production" >> $GITHUB_OUTPUT
             fi
             echo "head_ref=main" >> $GITHUB_OUTPUT
-            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "version=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
           fi
 
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
