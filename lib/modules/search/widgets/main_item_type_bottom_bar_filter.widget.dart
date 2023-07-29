@@ -1,7 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/search/blocs/filter_options/item_bucket_type_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/main_item_type_filter_options.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/base_drawer_filter.widget.dart';
 import 'package:little_light/modules/search/widgets/drawer_filters/base_filter.widget.dart';
 import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
@@ -14,8 +14,8 @@ const _otherIconPresentationNodeHash = 3517356538;
 const iconWidth = 92.0;
 const _animationDuration = const Duration(milliseconds: 300);
 
-class ItemBucketTypeBottomBarFilterWidget extends BaseFilterWidget<ItemBucketTypeFilterOptions> {
-  ItemBucketTypeBottomBarFilterWidget({Key? key}) : super();
+class MainItemTypeBottomBarFilterWidget extends BaseFilterWidget<MainItemTypeFilterOptions> {
+  MainItemTypeBottomBarFilterWidget({Key? key}) : super();
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class ItemBucketTypeBottomBarFilterWidget extends BaseFilterWidget<ItemBucketTyp
   }
 
   @override
-  Widget buildWithData(BuildContext context, ItemBucketTypeFilterOptions data) {
+  Widget buildWithData(BuildContext context, MainItemTypeFilterOptions data) {
     final bottomPadding = context.mediaQuery.viewPadding.bottom;
     return Container(
       height: bottomPadding + kToolbarHeight,

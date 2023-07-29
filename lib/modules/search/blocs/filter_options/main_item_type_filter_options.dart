@@ -1,8 +1,8 @@
 import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 import 'base_filter_values_options.dart';
 
-class ItemBucketTypeFilterOptions extends BaseFilterOptions<Set<EquipmentBucketGroup>> {
-  ItemBucketTypeFilterOptions(Set<EquipmentBucketGroup> values)
+class MainItemTypeFilterOptions extends BaseFilterOptions<Set<EquipmentBucketGroup>> {
+  MainItemTypeFilterOptions(Set<EquipmentBucketGroup> values)
       : super(
           values.toSet(),
           availableValues: values,

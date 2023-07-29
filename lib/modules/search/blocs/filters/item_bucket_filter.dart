@@ -28,7 +28,12 @@ class ItemBucketFilter extends BaseItemFilter<ItemBucketFilterOptions> with Mani
     final hashes = items.map((i) => i.itemHash);
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
     final bucketHashes = defs.values.map((d) => d.inventory?.bucketTypeHash).whereType<int>();
-    data.availableValues.addAll(bucketHashes);
+    final bucketDefs = await manifest.getDefinitions<DestinyInventoryBucketDefinition>(bucketHashes);
+    final availableBucketHashes = bucketDefs.values //
+        .where((d) => d.displayProperties?.name?.isNotEmpty ?? false)
+        .map((d) => d.hash)
+        .whereType<int>();
+    data.availableValues.addAll(availableBucketHashes.toSet());
   }
 
   @override

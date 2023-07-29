@@ -5,5 +5,5 @@ class DamageTypeFilterOptions extends BaseFilterOptions<Set<DamageType>> {
   DamageTypeFilterOptions(Set<DamageType> values) : super(values.toSet(), availableValues: values);
 
   @override
-  bool get available => super.available;
+  bool get available => availableValues.length > 1;
 }
