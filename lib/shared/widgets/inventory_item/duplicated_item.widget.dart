@@ -28,7 +28,7 @@ import 'inventory_item_perks.dart';
 import 'inventory_item_stats.dart';
 import 'utils/get_energy_capacity.dart';
 
-const _expectedItemSize = Size(172.0, 116.0);
+const _expectedItemSize = Size(172.0, 120.0);
 const _padding = 4.0;
 const _emblemIconSize = 40.0;
 const _tagIconSize = 16.0;
@@ -84,11 +84,11 @@ class DuplicatedItemWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.start,
             children: <Widget>[
           Row(
-              children: [
-            buildWishlistTags(context),
-            if (definition?.isArmor ?? false) buildTotalStats(context, definition),
-            buildCharacterName(context),
-          ].whereType<Widget>().toList()),
+            children: [
+              if (definition?.isArmor ?? false) buildTotalStats(context, definition),
+              buildCharacterName(context),
+            ].whereType<Widget>().toList(),
+          ),
           if (definition?.isArmor ?? false) buildArmorMainInfo(context, definition),
           if (definition?.isWeapon ?? false) buildWeaponMainInfo(context, definition),
         ]));
@@ -317,6 +317,7 @@ class DuplicatedItemWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           buildItemTags(context),
+          buildWishlistTags(context),
           buildWeaponMods(context),
         ],
       );
@@ -341,20 +342,23 @@ class DuplicatedItemWidget extends StatelessWidget {
     final wishlistTags = wishlists.getWishlistBuildTags(itemHash: item.itemHash, reusablePlugs: reusable);
     final locked = item.state?.contains(ItemState.Locked) ?? false;
     if (locked == false && wishlistTags.isEmpty) return Container();
-    return Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Container(
-          margin: EdgeInsets.only(right: 4),
-          width: _tagIconSize,
-          height: _tagIconSize,
-          child: CenterIconWorkaround(
-            FontAwesomeIcons.lock,
-            size: _tagIconSize * .7,
-          )),
-      if (wishlistTags.isNotEmpty)
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (wishlistTags.isNotEmpty)
+          Container(
+            margin: EdgeInsets.only(right: 4),
+            child: WishlistBadgesWidget(wishlistTags, size: _tagIconSize),
+          ),
         Container(
-          margin: EdgeInsets.only(right: 4),
-          child: WishlistBadgesWidget(wishlistTags, size: _tagIconSize),
-        ),
-    ]);
+            margin: EdgeInsets.only(right: 4),
+            width: _tagIconSize,
+            height: _tagIconSize,
+            child: CenterIconWorkaround(
+              FontAwesomeIcons.lock,
+              size: _tagIconSize * .7,
+            )),
+      ],
+    );
   }
 }
