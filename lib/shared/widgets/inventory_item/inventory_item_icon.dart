@@ -71,10 +71,9 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
       return Container(color: theme.highlightedObjectiveLayers.layer0);
     }
     if (isMasterwork) {
-      final isExotic = definition?.inventory?.tierType == TierType.Exotic;
       final masterworkLayers = LittleLightTheme.of(context).achievementLayers;
       return Shimmer.fromColors(
-        baseColor: isExotic ? theme.achievementLayers.layer1 : theme.achievementLayers.layer2,
+        baseColor: theme.achievementLayers.layer0,
         highlightColor: masterworkLayers.layer3,
         period: const Duration(seconds: 5),
         child: Container(color: Colors.white),
