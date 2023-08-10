@@ -10,23 +10,25 @@ ClarityTableCell _$ClarityTableCellFromJson(Map<String, dynamic> json) =>
     ClarityTableCell(
       text: json['text'] as String?,
       classNames: (json['classNames'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e))
+          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e,
+              unknownValue: ClarityClassNames.Unknown))
           .toList(),
     )
       ..title = (json['title'] as List<dynamic>?)
           ?.map(ClarityDescription.fromJson)
           .toList()
-      ..formula =
-          $enumDecodeNullable(_$ClarityFormulaTypeEnumMap, json['formula']);
+      ..formula = $enumDecodeNullable(
+          _$ClarityFormulaTypeEnumMap, json['formula'],
+          unknownValue: ClarityFormulaType.Unknown);
 
 Map<String, dynamic> _$ClarityTableCellToJson(ClarityTableCell instance) =>
     <String, dynamic>{
       'text': instance.text,
+      'title': instance.title,
+      'formula': _$ClarityFormulaTypeEnumMap[instance.formula],
       'classNames': instance.classNames
           ?.map((e) => _$ClarityClassNamesEnumMap[e]!)
           .toList(),
-      'title': instance.title,
-      'formula': _$ClarityFormulaTypeEnumMap[instance.formula],
     };
 
 const _$ClarityClassNamesEnumMap = {
@@ -58,6 +60,9 @@ const _$ClarityClassNamesEnumMap = {
   ClarityClassNames.Bold: 'bold',
   ClarityClassNames.Blue: 'blue',
   ClarityClassNames.Unstoppable: 'unstoppable',
+  ClarityClassNames.Background: 'background',
+  ClarityClassNames.Center: 'center',
+  ClarityClassNames.Unknown: 'Unknown',
 };
 
 const _$ClarityFormulaTypeEnumMap = {
@@ -66,4 +71,5 @@ const _$ClarityFormulaTypeEnumMap = {
   ClarityFormulaType.Range0: 'range_0',
   ClarityFormulaType.Reload0: 'reload_0',
   ClarityFormulaType.Reload1: 'reload_1',
+  ClarityFormulaType.Unknown: 'Unknown',
 };

@@ -9,7 +9,8 @@ part of 'd2_clarity_table_row.dart';
 ClarityTableRow _$ClarityTableRowFromJson(Map<String, dynamic> json) =>
     ClarityTableRow(
       classNames: (json['classNames'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e))
+          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e,
+              unknownValue: ClarityClassNames.Unknown))
           .toList(),
       rowContent: (json['rowContent'] as List<dynamic>?)
           ?.map((e) => ClarityTableCell.fromJson(e as Map<String, dynamic>))
@@ -18,10 +19,10 @@ ClarityTableRow _$ClarityTableRowFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$ClarityTableRowToJson(ClarityTableRow instance) =>
     <String, dynamic>{
+      'rowContent': instance.rowContent,
       'classNames': instance.classNames
           ?.map((e) => _$ClarityClassNamesEnumMap[e]!)
           .toList(),
-      'rowContent': instance.rowContent,
     };
 
 const _$ClarityClassNamesEnumMap = {
@@ -53,4 +54,7 @@ const _$ClarityClassNamesEnumMap = {
   ClarityClassNames.Bold: 'bold',
   ClarityClassNames.Blue: 'blue',
   ClarityClassNames.Unstoppable: 'unstoppable',
+  ClarityClassNames.Background: 'background',
+  ClarityClassNames.Center: 'center',
+  ClarityClassNames.Unknown: 'Unknown',
 };

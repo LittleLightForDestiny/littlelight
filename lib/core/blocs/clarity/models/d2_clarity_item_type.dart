@@ -21,6 +21,5 @@ enum ClarityItemType {
   WeaponFrame,
   @JsonValue('Weapon Catalyst Exotic')
   WeaponCatalystExotic,
-  @JsonValue('Unknown')
   Unknown,
 }

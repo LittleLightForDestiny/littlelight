@@ -11,4 +11,5 @@ enum ClarityFormulaType {
   Reload0,
   @JsonValue('reload_1')
   Reload1,
+  Unknown,
 }

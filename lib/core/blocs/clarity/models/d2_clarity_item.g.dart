@@ -76,4 +76,5 @@ const _$ClarityStatTypeEnumMap = {
   ClarityStatType.GuardEfficiency: 'Guard Efficiency',
   ClarityStatType.Zoom: 'Zoom',
   ClarityStatType.BlastRadius: 'Blast Radius',
+  ClarityStatType.Unknown: 'Unknown',
 };

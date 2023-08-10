@@ -7,7 +7,10 @@ part 'd2_clarity_stat.g.dart';
 class ClarityStat {
   dynamic active;
   dynamic passive;
+
+  @JsonKey(unknownEnumValue: ClarityWeaponType.Unknown)
   List<ClarityWeaponType>? weaponTypes;
+
   ClarityStat({
     this.active,
     this.passive,

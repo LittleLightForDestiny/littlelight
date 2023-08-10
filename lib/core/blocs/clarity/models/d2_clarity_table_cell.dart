@@ -9,9 +9,13 @@ part 'd2_clarity_table_cell.g.dart';
 @JsonSerializable()
 class ClarityTableCell {
   String? text;
-  List<ClarityClassNames>? classNames;
   List<ClarityDescription>? title;
+
+  @JsonKey(unknownEnumValue: ClarityFormulaType.Unknown)
   ClarityFormulaType? formula;
+
+  @JsonKey(unknownEnumValue: ClarityClassNames.Unknown)
+  List<ClarityClassNames>? classNames;
 
   ClarityTableCell({
     this.text,

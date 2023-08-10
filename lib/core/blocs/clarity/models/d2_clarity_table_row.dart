@@ -6,8 +6,10 @@ part 'd2_clarity_table_row.g.dart';
 
 @JsonSerializable()
 class ClarityTableRow {
-  List<ClarityClassNames>? classNames;
   List<ClarityTableCell>? rowContent;
+
+  @JsonKey(unknownEnumValue: ClarityClassNames.Unknown)
+  List<ClarityClassNames>? classNames;
 
   ClarityTableRow({
     this.classNames,

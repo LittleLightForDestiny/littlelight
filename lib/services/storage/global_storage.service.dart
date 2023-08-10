@@ -364,9 +364,27 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
 
   Future<void> setScrollAreaHintEnabled(bool value) async {
     try {
-      await setBool(GlobalStorageKeys.scrollAreaDivisionThreshold, value);
+      await setBool(GlobalStorageKeys.scrollAreaHintEnabled, value);
     } catch (e) {
       logger.error("error saving scroll area hint enabled", error: e);
+    }
+  }
+
+  Future<bool?> getShowClarityInsights() async {
+    try {
+      final bool? enabled = await getBool(GlobalStorageKeys.showClarityInsights);
+      return enabled;
+    } catch (e) {
+      logger.error("can't parse clarity visibility settings", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setShowClarityInsights(bool value) async {
+    try {
+      await setBool(GlobalStorageKeys.showClarityInsights, value);
+    } catch (e) {
+      logger.error("error saving clarity visibility settings", error: e);
     }
   }
 }

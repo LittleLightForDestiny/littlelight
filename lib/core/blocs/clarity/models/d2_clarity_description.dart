@@ -9,9 +9,13 @@ part 'd2_clarity_description.g.dart';
 @JsonSerializable()
 class ClarityDescription {
   List<ClarityLineContent>? linesContent;
-  List<ClarityClassNames>? classNames;
   List<ClarityTableRow>? table;
   bool? isFormula;
+
+  @JsonKey(unknownEnumValue: ClarityClassNames.Unknown)
+  List<ClarityClassNames>? classNames;
+
+  @JsonKey(unknownEnumValue: ClarityWeaponType.Unknown)
   List<ClarityWeaponType>? weaponTypes;
 
   ClarityDescription({

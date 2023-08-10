@@ -56,5 +56,10 @@ enum ClarityClassNames {
   @JsonValue('blue')
   Blue,
   @JsonValue('unstoppable')
-  Unstoppable
+  Unstoppable,
+  @JsonValue('background')
+  Background,
+  @JsonValue('center')
+  Center,
+  Unknown
 }

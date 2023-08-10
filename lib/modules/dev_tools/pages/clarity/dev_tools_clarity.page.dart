@@ -9,7 +9,7 @@ class DevToolsClarityPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => ClarityDataBloc()),
+        ChangeNotifierProvider(create: (context) => ClarityDataBloc(context)),
         ChangeNotifierProvider(create: (context) => DevToolsClarityBloc(context)),
       ],
       builder: (context, _) => DevToolsClarityView(),

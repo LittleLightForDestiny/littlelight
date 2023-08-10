@@ -10,9 +10,11 @@ part 'd2_clarity_line_content.g.dart';
 class ClarityLineContent {
   List<ClarityDescription>? title;
   String? text;
-  List<ClarityClassNames>? classNames;
   ClarityFormulaType? formula;
   String? link;
+
+  @JsonKey(unknownEnumValue: ClarityClassNames.Unknown)
+  List<ClarityClassNames>? classNames;
 
   ClarityLineContent({
     this.title,

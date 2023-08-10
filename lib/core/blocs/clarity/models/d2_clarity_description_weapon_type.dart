@@ -42,7 +42,6 @@ enum ClarityWeaponType {
   @JsonValue('Melee')
   Melee,
   @JsonValue('Super')
-  ClassSuper,
-  @JsonValue('Unknown')
+  Super,
   Unknown,
 }

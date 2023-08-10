@@ -41,4 +41,5 @@ enum ClarityStatType {
   Zoom,
   @JsonValue('Blast Radius')
   BlastRadius,
+  Unknown,
 }

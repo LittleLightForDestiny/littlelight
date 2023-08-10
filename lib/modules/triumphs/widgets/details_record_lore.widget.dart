@@ -4,7 +4,7 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
-import 'package:little_light/shared/widgets/external_references/the_old_ghost_link.button.dart';
+import 'package:little_light/shared/widgets/integrations/the_old_ghost/the_old_ghost_link.button.dart';
 
 class DetailsRecordLoreWidget extends StatelessWidget {
   final int recordHash;

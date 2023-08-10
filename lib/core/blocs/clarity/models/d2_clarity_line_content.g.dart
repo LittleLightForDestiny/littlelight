@@ -13,7 +13,8 @@ ClarityLineContent _$ClarityLineContentFromJson(Map<String, dynamic> json) =>
           .toList(),
       text: json['text'] as String?,
       classNames: (json['classNames'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e))
+          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e,
+              unknownValue: ClarityClassNames.Unknown))
           .toList(),
       formula:
           $enumDecodeNullable(_$ClarityFormulaTypeEnumMap, json['formula']),
@@ -24,11 +25,11 @@ Map<String, dynamic> _$ClarityLineContentToJson(ClarityLineContent instance) =>
     <String, dynamic>{
       'title': instance.title,
       'text': instance.text,
+      'formula': _$ClarityFormulaTypeEnumMap[instance.formula],
+      'link': instance.link,
       'classNames': instance.classNames
           ?.map((e) => _$ClarityClassNamesEnumMap[e]!)
           .toList(),
-      'formula': _$ClarityFormulaTypeEnumMap[instance.formula],
-      'link': instance.link,
     };
 
 const _$ClarityClassNamesEnumMap = {
@@ -60,6 +61,9 @@ const _$ClarityClassNamesEnumMap = {
   ClarityClassNames.Bold: 'bold',
   ClarityClassNames.Blue: 'blue',
   ClarityClassNames.Unstoppable: 'unstoppable',
+  ClarityClassNames.Background: 'background',
+  ClarityClassNames.Center: 'center',
+  ClarityClassNames.Unknown: 'Unknown',
 };
 
 const _$ClarityFormulaTypeEnumMap = {
@@ -68,4 +72,5 @@ const _$ClarityFormulaTypeEnumMap = {
   ClarityFormulaType.Range0: 'range_0',
   ClarityFormulaType.Reload0: 'reload_0',
   ClarityFormulaType.Reload1: 'reload_1',
+  ClarityFormulaType.Unknown: 'Unknown',
 };

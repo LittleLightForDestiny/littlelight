@@ -12,25 +12,27 @@ ClarityDescription _$ClarityDescriptionFromJson(Map<String, dynamic> json) =>
           ?.map((e) => ClarityLineContent.fromJson(e as Map<String, dynamic>))
           .toList(),
       classNames: (json['classNames'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e))
+          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e,
+              unknownValue: ClarityClassNames.Unknown))
           .toList(),
       table: (json['table'] as List<dynamic>?)
           ?.map((e) => ClarityTableRow.fromJson(e as Map<String, dynamic>))
           .toList(),
       isFormula: json['isFormula'] as bool?,
       weaponTypes: (json['weaponTypes'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityWeaponTypeEnumMap, e))
+          ?.map((e) => $enumDecode(_$ClarityWeaponTypeEnumMap, e,
+              unknownValue: ClarityWeaponType.Unknown))
           .toList(),
     );
 
 Map<String, dynamic> _$ClarityDescriptionToJson(ClarityDescription instance) =>
     <String, dynamic>{
       'linesContent': instance.linesContent,
+      'table': instance.table,
+      'isFormula': instance.isFormula,
       'classNames': instance.classNames
           ?.map((e) => _$ClarityClassNamesEnumMap[e]!)
           .toList(),
-      'table': instance.table,
-      'isFormula': instance.isFormula,
       'weaponTypes': instance.weaponTypes
           ?.map((e) => _$ClarityWeaponTypeEnumMap[e]!)
           .toList(),
@@ -65,6 +67,9 @@ const _$ClarityClassNamesEnumMap = {
   ClarityClassNames.Bold: 'bold',
   ClarityClassNames.Blue: 'blue',
   ClarityClassNames.Unstoppable: 'unstoppable',
+  ClarityClassNames.Background: 'background',
+  ClarityClassNames.Center: 'center',
+  ClarityClassNames.Unknown: 'Unknown',
 };
 
 const _$ClarityWeaponTypeEnumMap = {
@@ -88,6 +93,6 @@ const _$ClarityWeaponTypeEnumMap = {
   ClarityWeaponType.Sword: 'Sword',
   ClarityWeaponType.Grenade: 'Grenade',
   ClarityWeaponType.Melee: 'Melee',
-  ClarityWeaponType.ClassSuper: 'Super',
+  ClarityWeaponType.Super: 'Super',
   ClarityWeaponType.Unknown: 'Unknown',
 };

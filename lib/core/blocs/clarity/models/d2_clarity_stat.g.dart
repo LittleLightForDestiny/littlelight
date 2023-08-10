@@ -10,7 +10,8 @@ ClarityStat _$ClarityStatFromJson(Map<String, dynamic> json) => ClarityStat(
       active: json['active'],
       passive: json['passive'],
       weaponTypes: (json['weaponTypes'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityWeaponTypeEnumMap, e))
+          ?.map((e) => $enumDecode(_$ClarityWeaponTypeEnumMap, e,
+              unknownValue: ClarityWeaponType.Unknown))
           .toList(),
     );
 
@@ -44,6 +45,6 @@ const _$ClarityWeaponTypeEnumMap = {
   ClarityWeaponType.Sword: 'Sword',
   ClarityWeaponType.Grenade: 'Grenade',
   ClarityWeaponType.Melee: 'Melee',
-  ClarityWeaponType.ClassSuper: 'Super',
+  ClarityWeaponType.Super: 'Super',
   ClarityWeaponType.Unknown: 'Unknown',
 };
