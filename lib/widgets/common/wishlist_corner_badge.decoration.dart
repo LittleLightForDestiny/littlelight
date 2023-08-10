@@ -73,6 +73,7 @@ class WishlistBadgePainter extends CornerBadgePainter {
     var points = getPoints(size);
     canvas.drawPath(buildBadgePath(points), getBadgePaint(points, borderColors));
     canvas.restore();
+    canvas.save();
     canvas.translate(offset.dx + configWidth - size * .8, offset.dy);
     var internalPoints = getPoints(size * .8);
     canvas.drawPath(buildBadgePath(internalPoints), getBadgePaint(internalPoints, badgeColors));

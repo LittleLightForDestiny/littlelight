@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/pattern_progress_helper.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
@@ -18,6 +19,7 @@ import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 import 'package:little_light/utils/stats_total.dart';
 import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:little_light/widgets/common/wishlist_corner_badge.decoration.dart';
 import 'package:provider/provider.dart';
 import 'inventory_item_icon.dart';
 import 'utils/get_energy_capacity.dart';
@@ -39,20 +41,20 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   Widget build(BuildContext context) {
     final itemHash = item.itemHash;
     if (itemHash == null) return emptyItem(context);
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-      itemHash,
-      (def) => buildWithDefinition(context, def),
-    );
+    final definition = context.definition<DestinyInventoryItemDefinition>(itemHash);
+    return buildWithDefinition(context, definition);
   }
 
   Widget emptyItem(BuildContext context) => Container();
 
   Widget buildWithDefinition(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    final badges = buildWishlistCornerBadges(context, definition);
     return ClipRRect(
         child: Stack(
       fit: StackFit.expand,
       children: [
         Positioned.fill(child: buildItemIcon(context, definition)),
+        if (badges != null) Positioned.fill(child: badges),
         Positioned(left: 2, bottom: 2, right: 2, top: 2, child: buildItemInfo(context, definition)),
       ],
     ));
@@ -106,10 +108,8 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisSize: MainAxisSize.min,
       children: [
-        buildHeaderInfo(context, definition),
         Expanded(child: Container()),
-        buildWishlistIcons(context, definition),
-        if (definition?.isArmor ?? false) buildTotalStats(context, definition),
+        buildSecondaryInfo(context, definition),
         buildItemPrimaryinfo(context, definition),
       ].whereType<Widget>().toList(),
     );
@@ -262,14 +262,16 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
     );
   }
 
-  Widget buildHeaderInfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
+  Widget buildSecondaryInfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
     if (definition?.isQuestStep ?? false) {
       return buildExpiryDate(context, definition);
     }
     return buildInfoContainer(
       context,
       [
-        buildHeaderTagIcons(context, definition),
+        buildTagIcons(context, definition),
+        buildPatternProgress(context, definition),
+        if (definition?.isArmor ?? false) buildTotalStats(context, definition),
         buildLockedIcon(context, definition),
       ].whereType<Widget>().toList(),
     );
@@ -289,37 +291,43 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
     );
   }
 
-  Widget? buildWishlistIcons(BuildContext context, DestinyInventoryItemDefinition? definition) {
+  Widget? buildPatternProgress(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    final recipeHash = definition?.inventory?.recipeItemHash;
+    final itemHash = definition?.hash;
+    if (itemHash == null) return null;
+    if (recipeHash == null || recipeHash == 0) return null;
+    final patternProgress =
+        context.select<PatternProgressHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
+    if (patternProgress == null) return null;
+    final progress = patternProgress.objectives?.firstOrNull?.progress;
+    final total = patternProgress.objectives?.firstOrNull?.completionValue;
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+        decoration: BoxDecoration(
+          color: context.theme.surfaceLayers.layer1,
+          border: Border.all(color: context.theme.highlightedObjectiveLayers),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 1),
+        child: Text(
+          "$progress/$total",
+          style: context.textTheme.itemPrimaryStatLowDensity.copyWith(
+            color: context.theme.highlightedObjectiveLayers.layer1,
+            height: 1,
+          ),
+        ));
+  }
+
+  Widget? buildWishlistCornerBadges(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final itemHash = item.itemHash;
     final reusablePlugs = item.reusablePlugs;
     if (itemHash == null || reusablePlugs == null) return null;
     final tags = wishlistsService.getWishlistBuildTags(itemHash: itemHash, reusablePlugs: reusablePlugs);
     if (tags.isEmpty) return null;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: tags
-          .map((tag) {
-            final color = tag.getColor(context);
-            final borderColor = tag.getBorderColor(context);
-            final icon = tag.getIcon(context);
-            return Container(
-              margin: const EdgeInsets.only(left: 2, bottom: 2),
-              width: _tagIconSize,
-              height: _tagIconSize,
-              decoration: BoxDecoration(
-                color: color,
-                borderRadius: BorderRadius.circular(4),
-                border: Border.all(width: 1, color: borderColor),
-              ),
-              child: Icon(icon, size: _tagIconSize - 2),
-            );
-          })
-          .whereType<Widget>()
-          .toList(),
-    );
+    return Container(margin: EdgeInsets.all(1), decoration: WishlistCornerBadgeDecoration(tags, badgeSize: 20));
   }
 
-  Widget? buildHeaderTagIcons(BuildContext context, DestinyInventoryItemDefinition? definition) {
+  Widget? buildTagIcons(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final itemHash = item.itemHash;
     final itemInstanceId = item.instanceId;
     if (itemHash == null) return null;

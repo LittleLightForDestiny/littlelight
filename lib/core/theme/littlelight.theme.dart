@@ -261,6 +261,8 @@ class LittleLightThemeData {
 
   final highlightedObjectiveLayers = LayeredSwatch({
     SwatchLayer.Layer0: const Color(0xFFD95738),
+    SwatchLayer.Layer1: const Color(0xFFE07F67),
+    SwatchLayer.Layer2: const Color(0xFFE6A795),
   });
 
   // final secondaryLayers = LayeredSwatch(

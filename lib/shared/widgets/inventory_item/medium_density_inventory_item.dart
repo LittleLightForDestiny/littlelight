@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/pattern_progress_helper.bloc.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
@@ -47,10 +48,8 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
   Widget build(BuildContext context) {
     final itemHash = item.itemHash;
     if (itemHash == null) return emptyItem(context);
-    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-      itemHash,
-      (def) => buildWithDefinition(context, def),
-    );
+    final definition = context.definition<DestinyInventoryItemDefinition>(itemHash);
+    return buildWithDefinition(context, definition);
   }
 
   Widget emptyItem(BuildContext context) => Container();
@@ -267,6 +266,7 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
         children: [
           Expanded(child: buildItemName(context, definition)),
           if (definition?.isArmor ?? false) buildTotalStats(context, definition),
+          buildPatternProgress(context, definition),
           buildHeaderWishlistIcons(context, definition),
           buildHeaderTagIcons(context, definition),
           buildLockedIcon(context, definition),
@@ -691,6 +691,33 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
         ),
       ),
     );
+  }
+
+  Widget? buildPatternProgress(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    final recipeHash = definition?.inventory?.recipeItemHash;
+    final itemHash = definition?.hash;
+    if (itemHash == null) return null;
+    if (recipeHash == null || recipeHash == 0) return null;
+    final patternProgress =
+        context.select<PatternProgressHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
+    if (patternProgress == null) return null;
+    final progress = patternProgress.objectives?.firstOrNull?.progress;
+    final total = patternProgress.objectives?.firstOrNull?.completionValue;
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+        decoration: BoxDecoration(
+          color: context.theme.surfaceLayers.layer1,
+          border: Border.all(color: context.theme.highlightedObjectiveLayers),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        margin: EdgeInsets.only(right: 4),
+        child: Text(
+          "$progress / $total",
+          style: context.textTheme.caption.copyWith(
+            color: context.theme.highlightedObjectiveLayers.layer1,
+            height: 1,
+          ),
+        ));
   }
 
   Widget buildArmorCategory(BuildContext context, DestinyInventoryItemDefinition definition) {

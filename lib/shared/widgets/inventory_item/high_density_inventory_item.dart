@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/pattern_progress_helper.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
@@ -281,6 +282,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(child: buildItemName(context, definition)),
+          buildPatternProgress(context, definition),
           buildHeaderWishlistIcons(context, definition),
           buildHeaderTagIcons(context, definition),
           buildLockedIcon(context, definition),
@@ -334,6 +336,38 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         overflow: TextOverflow.fade,
         softWrap: false,
       ),
+    );
+  }
+
+  Widget? buildPatternProgress(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    final recipeHash = definition?.inventory?.recipeItemHash;
+    final itemHash = definition?.hash;
+    if (itemHash == null) return null;
+    if (recipeHash == null || recipeHash == 0) return null;
+    final patternProgress =
+        context.select<PatternProgressHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
+    if (patternProgress == null) return null;
+    final progress = patternProgress.objectives?.firstOrNull?.progress;
+    final total = patternProgress.objectives?.firstOrNull?.completionValue;
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer1,
+        border: Border.all(color: context.theme.highlightedObjectiveLayers),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      margin: EdgeInsets.only(right: 4),
+      child: Row(children: [
+        Container(margin: EdgeInsets.only(right: 4), width: 10, child: Image.asset("assets/imgs/deepsight.png")),
+        Text(
+          "$progress / $total",
+          style: context.textTheme.caption.copyWith(
+            color: context.theme.highlightedObjectiveLayers.layer1,
+            height: 1,
+            fontWeight: FontWeight.bold,
+          ),
+        )
+      ]),
     );
   }
 
