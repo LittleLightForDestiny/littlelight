@@ -11,8 +11,6 @@ on:
         required: true
       MS_STORE_SELLER_ID:
         required: true
-      MSIX_CONFIG:
-        required: true
 
   workflow_dispatch:
     inputs:
