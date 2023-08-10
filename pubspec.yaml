@@ -61,7 +61,7 @@ dev_dependencies:
   sqflite_common_ffi:
   flutter_test:
     sdk: flutter
-  msix: ^3.16.0
+  msix: ^3.16.1
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
@@ -112,18 +112,11 @@ flutter:
 
 msix_config:
   display_name: Little Light
-  publisher: CN=D41F7C98-9BEA-49A9-95B5-EF33973EF3D4
   publisher_display_name: João Paulo Marquesini
-  identity_name:  30473JooPauloMarquesini.LittleLightforDestiny2
+  publisher: CN=D41F7C98-9BEA-49A9-95B5-EF33973EF3D4
+  identity_name: 30473JooPauloMarquesini.LittleLightforDestiny2
   logo_path: ./windows/runner/resources/app-icon.png
   protocol_activation: luzinha
   capabilities: internetClient,runFullTrust
   msstore_appId: 9PMG9ZQ41K95
-  store: true
-  app_installer:
-    publish_folder_path: ./msix
-    hours_between_update_checks: 0
-    automatic_background_task: false
-    update_blocks_activation: false
-    show_prompt: true
-    force_update_from_any_version: false
+  msix_version: 2.0.8.1
