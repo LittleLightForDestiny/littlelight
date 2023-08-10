@@ -33,7 +33,7 @@ class PursuitSearchView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: TextSearchFilterWidget(hintText: "scout,dragonfly,solar,etc...".translate(context)),
+        title: TextSearchFilterWidget(),
         actions: [
           Builder(
               builder: (context) => IconButton(
