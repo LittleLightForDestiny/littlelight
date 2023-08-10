@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.bloc.dart';
 import 'package:little_light/modules/search/widgets/item_search_drawer.widget.dart';
 import 'package:little_light/modules/search/widgets/text_search_filter.widget.dart';
@@ -26,7 +27,9 @@ class QuickTransferView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: TextSearchFilterWidget(),
+        title: TextSearchFilterWidget(
+          hintText: "scout,dragonfly,solar,etc...".translate(context),
+        ),
         actions: [
           Builder(
               builder: (context) => IconButton(

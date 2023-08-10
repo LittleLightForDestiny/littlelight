@@ -6,7 +6,8 @@ import 'package:little_light/modules/search/widgets/text_search_filter_field.wid
 import 'package:provider/provider.dart';
 
 class TextSearchFilterWidget extends BaseFilterWidget<TextFilterOptions> {
-  TextSearchFilterWidget({Key? key}) : super();
+  final String? hintText;
+  TextSearchFilterWidget({Key? key, this.hintText}) : super();
 
   @override
   Widget buildWithData(BuildContext context, TextFilterOptions? data) {
@@ -15,6 +16,7 @@ class TextSearchFilterWidget extends BaseFilterWidget<TextFilterOptions> {
         this.update(context, TextFilterOptions(text));
       },
       forceAutoFocus: context.read<UserSettingsBloc>().autoOpenKeyboard,
+      hintText: hintText,
     );
   }
 }

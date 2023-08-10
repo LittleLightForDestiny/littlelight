@@ -1,5 +1,6 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/modules/search/widgets/item_search_drawer.widget.dart';
 import 'package:little_light/modules/search/widgets/text_search_filter.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
@@ -28,7 +29,9 @@ class SelectLoadoutItemView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: TextSearchFilterWidget(),
+        title: TextSearchFilterWidget(
+          hintText: "scout,dragonfly,solar,etc...".translate(context),
+        ),
         flexibleSpace: state.emblemHash != null
             ? Container(
                 height: kToolbarHeight,

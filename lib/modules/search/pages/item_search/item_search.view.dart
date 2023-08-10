@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/search/pages/item_search/item_search.bloc.dart';
@@ -32,7 +33,9 @@ class ItemSearchView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: const BackButton(),
-        title: TextSearchFilterWidget(),
+        title: TextSearchFilterWidget(
+          hintText: "scout,dragonfly,solar,etc...".translate(context),
+        ),
         actions: [
           Builder(
               builder: (context) => IconButton(

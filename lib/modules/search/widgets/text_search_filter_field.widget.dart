@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -9,9 +10,13 @@ class TextSearchFilterFieldWidget extends StatefulWidget {
   final bool forceAutoFocus;
   final OnTextUpdate? onUpdate;
   final Duration debounce;
-  const TextSearchFilterFieldWidget(
-      {this.forceAutoFocus = false, this.onUpdate, this.debounce = const Duration(milliseconds: 200)})
-      : super();
+  final String? hintText;
+  const TextSearchFilterFieldWidget({
+    this.forceAutoFocus = false,
+    this.onUpdate,
+    this.debounce = const Duration(milliseconds: 200),
+    this.hintText,
+  }) : super();
 
   @override
   _TextSearchFilterFieldWidgetState createState() => _TextSearchFilterFieldWidgetState();
@@ -33,6 +38,7 @@ class _TextSearchFilterFieldWidgetState extends State<TextSearchFilterFieldWidge
     return TextField(
       autofocus: userSettings.autoOpenKeyboard || widget.forceAutoFocus,
       onChanged: (text) => updateText(text),
+      decoration: InputDecoration(hintText: widget.hintText),
     );
   }
 }
