@@ -3,7 +3,7 @@ description: A new Flutter project.
 publish_to: none
 
 # application version
-version: 2.0.8+2000008
+version: 2.0.9+2000009
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -119,4 +119,3 @@ msix_config:
   protocol_activation: luzinha
   capabilities: internetClient,runFullTrust
   msstore_appId: 9PMG9ZQ41K95
-  msix_version: 2.0.8.1
