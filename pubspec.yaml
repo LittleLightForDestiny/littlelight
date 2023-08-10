@@ -118,6 +118,7 @@ msix_config:
   logo_path: ./windows/runner/resources/app-icon.png
   protocol_activation: luzinha
   capabilities: internetClient,runFullTrust
+  msstore_appId: 9PMG9ZQ41K95
   store: true
   app_installer:
     publish_folder_path: ./msix
