@@ -4,9 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/profile/pattern_progress_helper.bloc.dart';
-import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -20,11 +20,11 @@ import 'package:little_light/shared/widgets/objectives/multi_objective_progress.
 import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/utils/stats_total.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
+
 import 'inventory_item_icon.dart';
 import 'inventory_item_mods.dart';
 import 'utils/get_energy_capacity.dart';
