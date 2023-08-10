@@ -109,3 +109,20 @@ flutter:
           weight: 700
         - asset: fonts/NeueHaasDisplay-Bold.ttf
           weight: 900
+
+msix_config:
+  display_name: Little Light
+  publisher: CN=D41F7C98-9BEA-49A9-95B5-EF33973EF3D4
+  publisher_display_name: João Paulo Marquesini
+  identity_name:  30473JooPauloMarquesini.LittleLightforDestiny2
+  logo_path: ./windows/runner/resources/app-icon.png
+  protocol_activation: luzinha
+  capabilities: internetClient,runFullTrust
+  store: true
+  app_installer:
+    publish_folder_path: ./msix
+    hours_between_update_checks: 0
+    automatic_background_task: false
+    update_blocks_activation: false
+    show_prompt: true
+    force_update_from_any_version: false
