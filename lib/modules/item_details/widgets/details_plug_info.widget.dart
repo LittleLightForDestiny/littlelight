@@ -3,12 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/modules/item_details/widgets/details_apply_plug_button.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_plug_resource_cost.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_plug_stats.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_plug_wishlist_info.widget.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
+import 'package:little_light/shared/widgets/integrations/clarity/clarity_plug_info.widget.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
@@ -138,6 +139,7 @@ class DetailsPlugInfoWidget extends StatelessWidget {
         buildSandBoxPerks(context, plugHash),
         buildStats(context),
         buildObjectives(context, plugHash),
+        buildCommunityInsights(context, plugHash),
         buildResourceCost(context, plugHash),
         buildWeaponLevelRequired(context, plugHash),
         buildApplyButton(context, plugHash),
@@ -353,5 +355,9 @@ class DetailsPlugInfoWidget extends StatelessWidget {
               Text(context.translate("There is not enough energy for this perk."), style: context.textTheme.caption),
             ])
         ]));
+  }
+
+  Widget buildCommunityInsights(BuildContext context, int plugHash) {
+    return ClarityPlugInfoWidget(plugHash);
   }
 }

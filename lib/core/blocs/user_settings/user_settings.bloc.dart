@@ -14,6 +14,7 @@ const _defaultTopScrolAreaType = ScrollAreaType.Characters;
 const _defaultBottomScrolAreaType = ScrollAreaType.Sections;
 const _defaultScrollAreaDividerThreshold = 70;
 const _defaultScrollAreaHintEnabled = true;
+const _defaultShowClarityInsights = true;
 
 class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer {
   final BuildContext context;
@@ -28,6 +29,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   ScrollAreaType? _bottomScrollAreaType;
   int? _scrollAreaDividerThreshold;
   bool? _scrollAreaHintEnabled;
+  bool? _showClarityInsights;
 
   UserSettingsBloc(this.context);
 
@@ -41,6 +43,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
       initDetailsSectionDisplayOptions(),
       initObjectiveViewMode(),
       initScrollAreaOptions(),
+      initShowClarityInsights(),
     ]);
     notifyListeners();
   }
@@ -110,6 +113,10 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
 
     _scrollAreaHintEnabled = await globalStorage.getScrollAreaHintEnabled();
     _scrollAreaHintEnabled ?? _defaultScrollAreaHintEnabled;
+  }
+
+  Future<void> initShowClarityInsights() async {
+    _showClarityInsights = await globalStorage.getShowClarityInsights();
   }
 
   BucketDisplayOptions? getDisplayOptionsForItemSection(String? id) {
@@ -292,6 +299,13 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   set scrollAreasHintEnabled(bool value) {
     this._scrollAreaHintEnabled = value;
     globalStorage.setScrollAreaHintEnabled(value);
+    notifyListeners();
+  }
+
+  bool get showClarityInsights => _showClarityInsights ?? _defaultShowClarityInsights;
+  set showClarityInsights(bool value) {
+    this._showClarityInsights = value;
+    globalStorage.setShowClarityInsights(value);
     notifyListeners();
   }
 }
