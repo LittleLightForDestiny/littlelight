@@ -61,6 +61,13 @@ class SettingsView extends StatelessWidget {
                   value: _state.enabledAutoTransfers,
                   onChanged: (value) => _bloc.enabledAutoTransfers = value,
                 ),
+                SwitchOptionWidget(
+                  "Enable Clarity insights".translate(context).toUpperCase(),
+                  "If enabled, Little Light will show information from Clarity - Destiny Research Database on perks and mods."
+                      .translate(context),
+                  value: _state.enabledClarityInsights,
+                  onChanged: (value) => _bloc.enabledClarityInsights = value,
+                ),
                 SettingsOptionWidget(
                   "Default free slots".translate(context).toUpperCase(),
                   Column(children: [

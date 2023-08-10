@@ -85,6 +85,13 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
     notifyListeners();
   }
 
+  bool get enabledClarityInsights => _userSetttingsBloc.showClarityInsights;
+
+  set enabledClarityInsights(bool value) {
+    _userSetttingsBloc.showClarityInsights = value;
+    notifyListeners();
+  }
+
   int? _defaultFreeSlots;
   int get defaultFreeSlots => _defaultFreeSlots ?? _userSetttingsBloc.defaultFreeSlots;
   set defaultFreeSlots(int value) {

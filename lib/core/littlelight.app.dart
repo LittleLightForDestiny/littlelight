@@ -7,6 +7,7 @@ import 'package:little_light/core/router/littlelight_router.dart';
 import 'package:little_light/core/theme/littlelight.scroll_behavior.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
+import 'package:little_light/services/analytics/analytics.service.dart';
 import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -63,6 +64,7 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
         child: LittleLightTheme(
           MultiProvider(
             providers: [
+              Provider<AnalyticsService>(create: (context) => analytics),
               CoreBlocsContainer(),
             ],
             child: child ?? Container(),

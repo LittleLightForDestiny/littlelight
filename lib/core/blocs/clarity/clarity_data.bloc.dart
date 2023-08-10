@@ -5,10 +5,11 @@ import 'package:http/http.dart' as http;
 import 'package:little_light/core/blocs/clarity/models/d2_clarity_description.dart';
 import 'package:little_light/core/blocs/clarity/models/d2_clarity_item.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
 import 'package:provider/provider.dart';
 
-const _baseUrl = 'https://raw.githubusercontent.com/Database-Clarity/Live-Clarity-Database/live/';
+const _baseUrl = 'https://cdn.jsdelivr.net/gh/Database-Clarity/Live-Clarity-Database@live/';
 const _liveDataPath = 'descriptions/clarity.json';
 
 class ClarityDataBloc extends ChangeNotifier {
@@ -18,9 +19,13 @@ class ClarityDataBloc extends ChangeNotifier {
   @protected
   final AnalyticsService analytics;
 
+  @protected
+  final UserSettingsBloc userSettings;
+
   ClarityDataBloc(BuildContext context)
       : languageBloc = context.read<LanguageBloc>(),
-        analytics = context.read<AnalyticsService>();
+        analytics = context.read<AnalyticsService>(),
+        userSettings = context.read<UserSettingsBloc>();
 
   bool isLoading = false;
   Map<int, ClarityItem>? _liveData;
@@ -28,6 +33,7 @@ class ClarityDataBloc extends ChangeNotifier {
   Map<int, ClarityItem>? get liveData {
     if (_liveData != null) return _liveData;
     if (isLoading) return null;
+    if (!userSettings.showClarityInsights) return null;
     _loadLiveData();
     return null;
   }
@@ -57,6 +63,7 @@ class ClarityDataBloc extends ChangeNotifier {
   }
 
   List<ClarityDescription>? getPerkDescriptions(int? plugHash) {
+    if (!userSettings.showClarityInsights) return null;
     final item = liveData?[plugHash];
     if (item == null) return null;
     final descriptions = item.descriptions;

@@ -43,6 +43,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
       initDetailsSectionDisplayOptions(),
       initObjectiveViewMode(),
       initScrollAreaOptions(),
+      initShowClarityInsights(),
     ]);
     notifyListeners();
   }
