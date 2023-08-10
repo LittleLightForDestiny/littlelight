@@ -17,6 +17,7 @@ class ProfileComponentGroups {
     DestinyComponentType.ItemReusablePlugs,
     DestinyComponentType.StringVariables,
     DestinyComponentType.ProfileProgression,
+    DestinyComponentType.Records,
   ];
 
   static const List<DestinyComponentType> collections = [
@@ -25,7 +26,6 @@ class ProfileComponentGroups {
   ];
 
   static const List<DestinyComponentType> triumphs = [
-    DestinyComponentType.Records,
     DestinyComponentType.Metrics,
     DestinyComponentType.PresentationNodes,
   ];

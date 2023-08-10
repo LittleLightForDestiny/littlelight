@@ -2,6 +2,7 @@ import 'package:little_light/core/blocs/clarity/clarity_data.bloc.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
+import 'package:little_light/core/blocs/profile/pattern_progress_helper.bloc.dart';
 import 'package:little_light/core/blocs/vendors/vendors.bloc.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
@@ -43,6 +44,7 @@ class CoreBlocsContainer extends MultiProvider {
             ChangeNotifierProvider<ItemSectionOptionsBloc>(create: (context) => ItemSectionOptionsBloc(context)),
             ChangeNotifierProvider<ObjectiveTrackingBloc>(create: (context) => ObjectiveTrackingBloc(context)),
             ChangeNotifierProvider<ClarityDataBloc>(create: (context) => ClarityDataBloc(context)),
+            ChangeNotifierProvider<PatternProgressHelperBloc>(create: (context) => PatternProgressHelperBloc(context)),
           ],
         );
 }

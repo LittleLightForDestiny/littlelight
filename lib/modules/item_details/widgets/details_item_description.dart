@@ -1,11 +1,14 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/profile/pattern_progress_helper.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/widgets/inventory_item/item_expiration_date.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
+import 'package:provider/provider.dart';
 
 class DetailsItemDescriptionWidget extends StatelessWidget {
   final int itemHash;
@@ -55,8 +58,46 @@ class DetailsItemDescriptionWidget extends StatelessWidget {
               color: context.theme.onSurfaceLayers,
               height: .5,
             ),
-          ],
+            buildPatternProgress(context)
+          ].whereType<Widget>().toList(),
         ));
+  }
+
+  Widget? buildPatternProgress(BuildContext context) {
+    final definition = context.definition<DestinyInventoryItemDefinition>(itemHash);
+    final recipeHash = definition?.inventory?.recipeItemHash;
+    if (recipeHash == null || recipeHash == 0) return null;
+    final patternProgress =
+        context.select<PatternProgressHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
+    if (patternProgress == null) return null;
+    final progress = patternProgress.objectives?.firstOrNull?.progress;
+    final total = patternProgress.objectives?.firstOrNull?.completionValue;
+    return Container(
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer1,
+        border: Border.all(color: context.theme.highlightedObjectiveLayers),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(children: [
+        Container(margin: EdgeInsets.only(right: 8), width: 16, child: Image.asset("assets/imgs/deepsight.png")),
+        Expanded(
+            child: Text(
+          "Pattern progress".translate(context),
+          style: context.textTheme.highlight.copyWith(
+            color: context.theme.highlightedObjectiveLayers.layer2,
+            height: 1,
+          ),
+        )),
+        Text(
+          "$progress / $total",
+          style: context.textTheme.highlight.copyWith(
+            color: context.theme.highlightedObjectiveLayers.layer2,
+            height: 1,
+          ),
+        )
+      ]),
+    );
   }
 
   Widget buildEmblemPreviews(BuildContext context) {
