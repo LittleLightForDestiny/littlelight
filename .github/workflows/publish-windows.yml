@@ -58,16 +58,6 @@ jobs:
         with:
           ref: ${{ steps.variables.outputs.head_ref }}
 
-      - name: Download MSIX config
-        id: msix_config
-        uses: timheuer/base64-to-file@v1.2
-        with:
-          fileName: msix.yaml
-          encodedString: ${{ secrets.MSIX_CONFIG }}
-
-      - name: Append MSIX config to pubspec.yaml
-        run: type ${{ steps.msix_config.outputs.filePath }} >> pubspec.yaml
-
       - name: Setup MS Store Developer CLI
         uses: microsoft/setup-msstore-cli@v1
       
