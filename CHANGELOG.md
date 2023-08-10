@@ -1,3 +1,10 @@
+## [2.0.8] - 2023-08-10
+
+* fixes masterwork color on legendary item icons
+* implements Clarity community insights
+* Adds pattern progress on craftable weapons
+* fixes some vendors item masterworks not showing up
+
 ## [2.0.7] - 2023-07-29
 
 - Adds a message for currently unavailable perks in collections

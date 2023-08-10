@@ -1,5 +1,4 @@
-- Adds a message for currently unavailable perks in collections
-- Adds a message when a mod can't be equipped due to insufficient energy
-- Adds level requirement for individual perks on craftable items
-- fixes item type filters
-- fixes some hold actions
+* fixes masterwork color on legendary item icons
+* implements Clarity community insights
+* Adds pattern progress on craftable weapons
+* fixes some vendors item masterworks not showing up
