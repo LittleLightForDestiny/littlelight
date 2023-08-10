@@ -35,29 +35,12 @@ class VendorItemSocketControllerBloc extends SocketControllerBloc<VendorItemInfo
 
   @protected
   Future<List<int>?> loadAvailablePlugHashesForSocket(int index) async {
-    final socket = this.item?.sockets?[index];
-    if (!(socket?.isVisible ?? false)) return null;
-    final socketDef = itemDefinition?.sockets?.socketEntries?[index];
-    final plugSources = socketDef?.plugSources;
-    if (plugSources?.contains(SocketPlugSources.InventorySourced) ?? false) {
-      return loadAvailableInventorySourcePlugHashesForSocket(
-        index,
-        itemDefinition: itemDefinition,
-        manifest: manifest,
-        profile: profileBloc,
-        characterId: item?.characterId,
-      );
-    }
-    final reusable = this
-        .item
-        ?.reusablePlugs?["$index"] //
-        ?.map((e) => e.plugItemHash)
-        .whereType<int>()
-        .toList();
-    if (reusable != null) return reusable;
-    final equipped = this.item?.sockets?[index].plugHash;
-    if (equipped != null) return [equipped];
-    return null;
+    return loadAvailableSocketPlugHashesForInventoryItem(
+      index,
+      item: item,
+      manifest: manifest,
+      profile: profileBloc,
+    );
   }
 
   @override

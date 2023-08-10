@@ -12,15 +12,14 @@ import 'package:little_light/shared/utils/extensions/ammo_type_data.dart';
 import 'package:little_light/shared/utils/extensions/element_type_data.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
-import 'package:little_light/shared/utils/extensions/wishlist_tag_data.dart';
 import 'package:little_light/shared/widgets/inventory_item/short_item_expiration_date.widget.dart';
 import 'package:little_light/shared/widgets/objectives/multi_objective_progress.widget.dart';
 import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 import 'package:little_light/utils/stats_total.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/widgets/common/wishlist_corner_badge.decoration.dart';
 import 'package:provider/provider.dart';
+
 import 'inventory_item_icon.dart';
 import 'utils/get_energy_capacity.dart';
 import 'utils/get_subclass_super_plug_item.dart';
