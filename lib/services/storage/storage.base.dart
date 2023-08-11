@@ -43,6 +43,22 @@ abstract class StorageBase<T> with AnalyticsConsumer {
   Future<String?> _getFileRoot() async {
     dynamic error;
     StackTrace? stack;
+    if (Platform.isWindows) {
+      try {
+        final directory = await getApplicationSupportDirectory();
+        return directory.path;
+      } catch (e, stackTrace) {
+        error = e;
+        stack = stackTrace;
+      }
+      try {
+        final directory = await getApplicationDocumentsDirectory();
+        return directory.path + '/littlelight/';
+      } catch (e, stackTrace) {
+        error = e;
+        stack = stackTrace;
+      }
+    }
     try {
       final directory = await getApplicationDocumentsDirectory();
       return directory.path;
