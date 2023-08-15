@@ -1,4 +1,1 @@
-* fixes masterwork color on legendary item icons
-* implements Clarity community insights
-* Adds pattern progress on craftable weapons
-* fixes some vendors item masterworks not showing up
+- fixes some authentication issues

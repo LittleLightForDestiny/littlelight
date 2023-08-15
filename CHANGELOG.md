@@ -1,3 +1,7 @@
+## [2.0.9] - 2023-08-15
+
+- fixes some authentication issues
+
 ## [2.0.8] - 2023-08-10
 
 * fixes masterwork color on legendary item icons
