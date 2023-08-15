@@ -1,3 +1,4 @@
+import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
@@ -229,7 +230,12 @@ class InitialPageStateNotifier
   }
 
   void membershipSelected() async {
-    final token = await auth.getCurrentToken();
+    BungieNetToken? token;
+    try {
+      token = await auth.getCurrentToken();
+    } catch (e, stackTrace) {
+      analytics.registerNonFatal(e, stackTrace);
+    }
     if (token != null) {
       _checkWishlist();
       return;
