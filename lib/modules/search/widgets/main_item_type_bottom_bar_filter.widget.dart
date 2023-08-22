@@ -8,7 +8,7 @@ import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
-const _weaponIconPresentationNodeHash = 1627803277;
+const _weaponIconPresentationNodeHash = 2214408526;
 const _armorIconPresentationNodeHash = 615947643;
 const _otherIconPresentationNodeHash = 3517356538;
 const iconWidth = 92.0;

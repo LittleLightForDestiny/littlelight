@@ -5,7 +5,7 @@ import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab_menu.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
-const _weaponIconPresentationNodeHash = 1627803277;
+const _weaponIconPresentationNodeHash = 2214408526;
 const _armorIconPresentationNodeHash = 615947643;
 const _inventoryIconPresentationNodeHash = 3517356538;
 
