@@ -33,6 +33,11 @@ enum GlobalStorageKeys {
   scrollAreaDivisionThreshold,
   scrollAreaHintEnabled,
   showClarityInsights,
+  randomLoadoutShowItems,
+  randomLoadoutEquipWeapons,
+  randomLoadoutEquipArmor,
+  randomLoadoutEquipSubclass,
+  randomLoadoutForceExotics,
 }
 
 extension StorageKeysExtension on GlobalStorageKeys {

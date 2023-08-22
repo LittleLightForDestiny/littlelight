@@ -387,4 +387,94 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
       logger.error("error saving clarity visibility settings", error: e);
     }
   }
+
+  Future<bool?> getRandomLoadoutShowItems() async {
+    try {
+      final value = await getBool(GlobalStorageKeys.randomLoadoutShowItems);
+      return value;
+    } catch (e) {
+      logger.error("Error getting randomLoadoutShowItems setting");
+    }
+    return null;
+  }
+
+  Future<void> setRandomLoadoutShowItems(bool value) async {
+    try {
+      await setBool(GlobalStorageKeys.randomLoadoutShowItems, value);
+    } catch (e) {
+      logger.error("Error setting randomLoadoutShowItems setting");
+    }
+  }
+
+  Future<bool?> getRandomLoadoutEquipWeapons() async {
+    try {
+      final value = await getBool(GlobalStorageKeys.randomLoadoutEquipWeapons);
+      return value;
+    } catch (e) {
+      logger.error("Error getting randomLoadoutEquipWeapons setting");
+    }
+    return null;
+  }
+
+  Future<void> setRandomLoadoutEquipWeapons(bool value) async {
+    try {
+      await setBool(GlobalStorageKeys.randomLoadoutEquipWeapons, value);
+    } catch (e) {
+      logger.error("Error setting randomLoadoutEquipWeapons setting");
+    }
+  }
+
+  Future<bool?> getRandomLoadoutEquipArmor() async {
+    try {
+      final value = await getBool(GlobalStorageKeys.randomLoadoutEquipArmor);
+      return value;
+    } catch (e) {
+      logger.error("Error getting randomLoadoutEquipArmor setting");
+    }
+    return null;
+  }
+
+  Future<void> setRandomLoadoutEquipArmor(bool value) async {
+    try {
+      await setBool(GlobalStorageKeys.randomLoadoutEquipArmor, value);
+    } catch (e) {
+      logger.error("Error setting randomLoadoutEquipArmor setting");
+    }
+  }
+
+  Future<bool?> getRandomLoadoutEquipSubclass() async {
+    try {
+      final value = await getBool(GlobalStorageKeys.randomLoadoutEquipSubclass);
+      return value;
+    } catch (e) {
+      logger.error("Error getting randomLoadoutEquipSubclass setting");
+    }
+    return null;
+  }
+
+  Future<void> setRandomLoadoutEquipSubclass(bool value) async {
+    try {
+      await setBool(GlobalStorageKeys.randomLoadoutEquipSubclass, value);
+    } catch (e) {
+      logger.error("Error setting randomLoadoutEquipSubclass setting");
+    }
+  }
+
+  Future<bool?> getRandomLoadoutForceExotics() async {
+    try {
+      final value = await getBool(GlobalStorageKeys.randomLoadoutForceExotics);
+      return value;
+    } catch (e) {
+      logger.error("Error getting randomLoadoutForceExotics setting");
+    }
+    return null;
+  }
+
+  Future<void> setRandomLoadoutForceExotics(bool value) async {
+    try {
+      await setBool(GlobalStorageKeys.randomLoadoutForceExotics, value);
+    } catch (e) {
+      logger.error("Error setting randomLoadoutForceExotics setting");
+    }
+  }
 }

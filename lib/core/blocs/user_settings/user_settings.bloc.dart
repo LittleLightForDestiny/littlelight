@@ -16,6 +16,12 @@ const _defaultScrollAreaDividerThreshold = 70;
 const _defaultScrollAreaHintEnabled = true;
 const _defaultShowClarityInsights = true;
 
+const _defaultRandomLoadoutShowItems = false;
+const _defaultRandomLoadoutEquipWeapons = true;
+const _defaultRandomLoadoutEquipArmor = true;
+const _defaultRandomLoadoutEquipSubclass = true;
+const _defaultRandomLoadoutForceExotics = false;
+
 class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer {
   final BuildContext context;
   List<ItemSortParameter>? _itemOrdering;
@@ -30,6 +36,12 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   int? _scrollAreaDividerThreshold;
   bool? _scrollAreaHintEnabled;
   bool? _showClarityInsights;
+
+  bool? _randomLoadoutShowItems;
+  bool? _randomLoadoutEquipWeapons;
+  bool? _randomLoadoutEquipArmor;
+  bool? _randomLoadoutEquipSubclass;
+  bool? _randomLoadoutForceExotics;
 
   UserSettingsBloc(this.context);
 
@@ -89,6 +101,14 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   Future<void> initBucketDisplayOptions() async {
     _bucketDisplayOptions = await currentMembershipStorage.getBucketDisplayOptions();
     _bucketDisplayOptions ??= <String, BucketDisplayOptions>{};
+  }
+
+  Future<void> initRandomLoadoutOptions() async {
+    _randomLoadoutShowItems = await globalStorage.getRandomLoadoutShowItems();
+    _randomLoadoutEquipWeapons = await globalStorage.getRandomLoadoutEquipWeapons();
+    _randomLoadoutEquipArmor = await globalStorage.getRandomLoadoutEquipArmor();
+    _randomLoadoutEquipSubclass = await globalStorage.getRandomLoadoutEquipSubclass();
+    _randomLoadoutForceExotics = await globalStorage.getRandomLoadoutForceExotics();
   }
 
   Future<void> initDetailsSectionDisplayOptions() async {
@@ -306,6 +326,41 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   set showClarityInsights(bool value) {
     this._showClarityInsights = value;
     globalStorage.setShowClarityInsights(value);
+    notifyListeners();
+  }
+
+  bool get randomLoadoutShowItems => _randomLoadoutShowItems ?? _defaultRandomLoadoutShowItems;
+  set randomLoadoutShowItems(value) {
+    this._randomLoadoutShowItems = value;
+    globalStorage.setRandomLoadoutShowItems(value);
+    notifyListeners();
+  }
+
+  bool get randomLoadoutEquipWeapons => _randomLoadoutEquipWeapons ?? _defaultRandomLoadoutEquipWeapons;
+  set randomLoadoutEquipWeapons(value) {
+    this._randomLoadoutEquipWeapons = value;
+    globalStorage.setRandomLoadoutEquipWeapons(value);
+    notifyListeners();
+  }
+
+  bool get randomLoadoutEquipArmor => _randomLoadoutEquipArmor ?? _defaultRandomLoadoutEquipArmor;
+  set randomLoadoutEquipArmor(value) {
+    this._randomLoadoutEquipArmor = value;
+    globalStorage.setRandomLoadoutEquipArmor(value);
+    notifyListeners();
+  }
+
+  bool get randomLoadoutEquipSubclass => _randomLoadoutEquipSubclass ?? _defaultRandomLoadoutEquipSubclass;
+  set randomLoadoutEquipSubclass(value) {
+    this._randomLoadoutEquipSubclass = value;
+    globalStorage.setRandomLoadoutEquipSubclass(value);
+    notifyListeners();
+  }
+
+  bool get randomLoadoutForceExotics => _randomLoadoutForceExotics ?? _defaultRandomLoadoutForceExotics;
+  set randomLoadoutForceExotics(value) {
+    this._randomLoadoutForceExotics = value;
+    globalStorage.setRandomLoadoutForceExotics(value);
     notifyListeners();
   }
 }
