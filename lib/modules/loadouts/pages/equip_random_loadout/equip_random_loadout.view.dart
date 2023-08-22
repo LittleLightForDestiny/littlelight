@@ -4,7 +4,6 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/shared/blocs/scoped_value_repository/page_storage_helper.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/containers/menu_box.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
@@ -14,6 +13,8 @@ import 'package:little_light/shared/widgets/ui/switch.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
 import 'equip_random_loadout.bloc.dart';
+
+typedef _SetBoolCallback = void Function(bool);
 
 class LoadoutItemOptionsView extends StatelessWidget {
   final EquipRandomLoadoutBloc bloc;
@@ -27,7 +28,7 @@ class LoadoutItemOptionsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final showItems = context.readValue(RandomLoadoutOptionTypes(RandomLoadoutOptions.ViewItems))?.value ?? false;
+    final showItems = state.showItems;
     return Container(
       constraints: BoxConstraints(maxHeight: context.mediaQuery.size.height * .8),
       child: Column(
@@ -86,7 +87,8 @@ class LoadoutItemOptionsView extends StatelessWidget {
             buildItemTypeSwitch(
               context,
               Text("Show items".translate(context)),
-              RandomLoadoutOptions.ViewItems,
+              state.showItems,
+              (value) => bloc.showItems = value,
             )
           ]),
           Container(height: 4),
@@ -129,22 +131,26 @@ class LoadoutItemOptionsView extends StatelessWidget {
       buildItemTypeSwitch(
         context,
         ManifestText<DestinyItemCategoryDefinition>(DestinyItemCategory.Weapon),
-        RandomLoadoutOptions.Weapon,
+        state.equipWeapons,
+        (value) => bloc.equipWeapons = value,
       ),
       buildItemTypeSwitch(
         context,
         ManifestText<DestinyItemCategoryDefinition>(DestinyItemCategory.Armor),
-        RandomLoadoutOptions.Armor,
+        state.equipArmor,
+        (value) => bloc.equipArmor = value,
       ),
       buildItemTypeSwitch(
         context,
         ManifestText<DestinyInventoryBucketDefinition>(InventoryBucket.subclass),
-        RandomLoadoutOptions.Subclass,
+        state.equipSubclass,
+        (value) => bloc.equipSubclass = value,
       ),
       buildItemTypeSwitch(
         context,
         Text("Force exotics".translate(context)),
-        RandomLoadoutOptions.EnsureExotics,
+        state.forceExotics,
+        (value) => bloc.forceExotics = value,
       ),
     ];
     return MenuBox(
@@ -158,7 +164,7 @@ class LoadoutItemOptionsView extends StatelessWidget {
     );
   }
 
-  Widget buildItemTypeSwitch(BuildContext context, Widget label, RandomLoadoutOptions key) {
+  Widget buildItemTypeSwitch(BuildContext context, Widget label, bool value, _SetBoolCallback setValue) {
     return Expanded(
       child: DefaultTextStyle(
         child: Container(
@@ -174,9 +180,7 @@ class LoadoutItemOptionsView extends StatelessWidget {
               SizedBox(
                 width: 4,
               ),
-              LLSwitch.callback(context.readValue(RandomLoadoutOptionTypes(key))?.value ?? false, (value) {
-                context.storeValue(RandomLoadoutOptionTypes(key, value));
-              })
+              LLSwitch.callback(value, setValue)
             ],
             mainAxisSize: MainAxisSize.min,
           ),

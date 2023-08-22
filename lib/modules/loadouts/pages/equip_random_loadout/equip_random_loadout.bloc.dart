@@ -8,6 +8,7 @@ import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
@@ -23,16 +24,15 @@ enum RandomLoadoutOptions {
   ViewItems,
 }
 
-class RandomLoadoutOptionTypes extends StorableValue<bool> {
-  RandomLoadoutOptionTypes(RandomLoadoutOptions super.key, [super.value]);
-}
-
 class EquipRandomLoadoutBloc extends ChangeNotifier {
   @protected
   final ProfileBloc profileBloc;
 
   @protected
   final ManifestService manifest;
+
+  @protected
+  final UserSettingsBloc settings;
 
   @protected
   final ScopedValueRepositoryBloc valueStore;
@@ -56,14 +56,43 @@ class EquipRandomLoadoutBloc extends ChangeNotifier {
         valueStore = _context.read<ScopedValueRepositoryBloc>(),
         inventory = _context.read<InventoryBloc>(),
         selectionBloc = _context.read<SelectionBloc>(),
+        settings = _context.read<UserSettingsBloc>(),
         super() {
     _init();
   }
 
+  bool get forceExotics => settings.randomLoadoutForceExotics;
+  bool get equipSubclass => settings.randomLoadoutEquipSubclass;
+  bool get equipWeapons => settings.randomLoadoutEquipWeapons;
+  bool get equipArmor => settings.randomLoadoutEquipArmor;
+  bool get showItems => settings.randomLoadoutShowItems;
+
+  set forceExotics(bool value) {
+    settings.randomLoadoutForceExotics = value;
+    notifyListeners();
+  }
+
+  set equipSubclass(bool value) {
+    settings.randomLoadoutEquipSubclass = value;
+    notifyListeners();
+  }
+
+  set equipWeapons(bool value) {
+    settings.randomLoadoutEquipWeapons = value;
+    notifyListeners();
+  }
+
+  set equipArmor(bool value) {
+    settings.randomLoadoutEquipArmor = value;
+    notifyListeners();
+  }
+
+  set showItems(bool value) {
+    settings.randomLoadoutShowItems = value;
+    notifyListeners();
+  }
+
   _init() {
-    valueStore.storeValue(RandomLoadoutOptionTypes(RandomLoadoutOptions.Armor, true));
-    valueStore.storeValue(RandomLoadoutOptionTypes(RandomLoadoutOptions.Weapon, true));
-    valueStore.storeValue(RandomLoadoutOptionTypes(RandomLoadoutOptions.Subclass, true));
     roll();
   }
 
@@ -145,17 +174,16 @@ class EquipRandomLoadoutBloc extends ChangeNotifier {
 
   Map<int, InventoryItemInfo?>? get loadout {
     final loadout = Map<int, InventoryItemInfo?>.from(_mixedLoadout ?? <int, InventoryItemInfo>{});
-    final ensureExotics =
-        valueStore.getValue(RandomLoadoutOptionTypes(RandomLoadoutOptions.EnsureExotics))?.value ?? false;
+    final ensureExotics = settings.randomLoadoutForceExotics;
     final exoticSlots = _exoticSlots;
     if (ensureExotics && exoticSlots != null) {
       for (final s in exoticSlots) {
         loadout[s] = _exoticLoadout?[s];
       }
     }
-    final subclass = valueStore.getValue(RandomLoadoutOptionTypes(RandomLoadoutOptions.Subclass))?.value ?? false;
-    final weapons = valueStore.getValue(RandomLoadoutOptionTypes(RandomLoadoutOptions.Weapon))?.value ?? false;
-    final armor = valueStore.getValue(RandomLoadoutOptionTypes(RandomLoadoutOptions.Armor))?.value ?? false;
+    final subclass = settings.randomLoadoutEquipSubclass;
+    final weapons = settings.randomLoadoutEquipWeapons;
+    final armor = settings.randomLoadoutEquipArmor;
     if (!subclass) {
       loadout[InventoryBucket.subclass] = null;
     }
