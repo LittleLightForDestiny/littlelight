@@ -1,3 +1,9 @@
+## [2.0.10] - 2023-08-23
+
+* makes random loadout options persistent
+* fixes weapon icon
+* added crafted levels on crafted weapons
+
 ## [2.0.9] - 2023-08-15
 
 - fixes some authentication issues

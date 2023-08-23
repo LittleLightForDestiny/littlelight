@@ -1,1 +1,3 @@
-- fixes some authentication issues
+* makes random loadout options persistent
+* fixes weapon icon
+* added crafted levels on crafted weapons
