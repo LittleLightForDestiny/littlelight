@@ -1,7 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/profile/pattern_progress_helper.bloc.dart';
+import 'package:little_light/core/blocs/profile/craftables_helper.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -68,7 +68,7 @@ class DetailsItemDescriptionWidget extends StatelessWidget {
     final recipeHash = definition?.inventory?.recipeItemHash;
     if (recipeHash == null || recipeHash == 0) return null;
     final patternProgress =
-        context.select<PatternProgressHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
+        context.select<CraftablesHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
     if (patternProgress == null) return null;
     final progress = patternProgress.objectives?.firstOrNull?.progress;
     final total = patternProgress.objectives?.firstOrNull?.completionValue;

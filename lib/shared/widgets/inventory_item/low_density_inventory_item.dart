@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/profile/pattern_progress_helper.bloc.dart';
+import 'package:little_light/core/blocs/profile/craftables_helper.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
@@ -269,7 +269,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
       context,
       [
         buildTagIcons(context, definition),
-        buildPatternProgress(context, definition),
+        buildCraftableInfo(context, definition),
         if (definition?.isArmor ?? false) buildTotalStats(context, definition),
         buildLockedIcon(context, definition),
       ].whereType<Widget>().toList(),
@@ -290,16 +290,46 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
     );
   }
 
+  Widget? buildCraftableInfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    if (item.state?.contains(ItemState.Crafted) ?? false) {
+      return buildCraftedLevel(context, definition);
+    }
+    return buildPatternProgress(context, definition);
+  }
+
+  Widget? buildCraftedLevel(BuildContext context, DestinyInventoryItemDefinition? definition) {
+    final craftableObjectives =
+        context.select<CraftablesHelperBloc, List<DestinyObjectiveProgress>?>((p) => p.getItemCraftedObjectives(item));
+    final level = craftableObjectives?.elementAtOrNull(1)?.progress;
+    if (level == null) return null;
+    return Container(
+        padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+        decoration: BoxDecoration(
+          color: context.theme.surfaceLayers.layer1,
+          border: Border.all(color: context.theme.highlightedObjectiveLayers),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        margin: EdgeInsets.symmetric(horizontal: 1),
+        child: Text(
+          "Lv{level}".translate(context, replace: {"level": " $level"}),
+          style: context.textTheme.itemPrimaryStatLowDensity.copyWith(
+            color: context.theme.highlightedObjectiveLayers.layer1,
+            height: 1,
+          ),
+        ));
+  }
+
   Widget? buildPatternProgress(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final recipeHash = definition?.inventory?.recipeItemHash;
     final itemHash = definition?.hash;
     if (itemHash == null) return null;
     if (recipeHash == null || recipeHash == 0) return null;
     final patternProgress =
-        context.select<PatternProgressHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
+        context.select<CraftablesHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
     if (patternProgress == null) return null;
     final progress = patternProgress.objectives?.firstOrNull?.progress;
     final total = patternProgress.objectives?.firstOrNull?.completionValue;
+    if (total == null || progress == null) return null;
     return Container(
         padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
         decoration: BoxDecoration(
