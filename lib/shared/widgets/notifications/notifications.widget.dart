@@ -59,7 +59,7 @@ class NotificationsWidget extends StatelessWidget {
 
   Widget? buildMainMessage(BuildContext context) {
     return DefaultLoadingShimmer(
-      enabled: !_state(context).actionIs<BaseErrorNotification>(),
+      enabled: !_state(context).actionIs<BaseErrorNotification>() && _state(context).actionIs<BaseNotification>(),
       child: DefaultTextStyle(
         style: context.textTheme.notification,
         child: Stack(

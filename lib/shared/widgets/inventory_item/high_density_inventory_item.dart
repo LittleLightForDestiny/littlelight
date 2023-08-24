@@ -270,7 +270,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     return Container(
       padding: const EdgeInsets.all(4),
       width: _iconWidth,
-      child: InventoryItemIcon(item),
+      child: RepaintBoundary(child: InventoryItemIcon(item)),
     );
   }
 
