@@ -23,14 +23,15 @@ class NotificationsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return RepaintBoundary(
+        child: Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         buildSubjects(context),
         buildMainContainer(context),
         buildPersistentNotifications(context),
       ].whereType<Widget>().toList(),
-    );
+    ));
   }
 
   Widget buildMainContainer(BuildContext context) {

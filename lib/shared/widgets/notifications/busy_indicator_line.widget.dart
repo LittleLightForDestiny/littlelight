@@ -18,7 +18,8 @@ class BusyIndicatorLineWidget extends StatelessWidget {
     final isBusy = _state(context).busy;
     final isError = _state(context).actionIs<BaseErrorNotification>();
     final visible = isBusy || isError;
-    return IgnorePointer(
+    return RepaintBoundary(
+        child: IgnorePointer(
       child: AnimatedOpacity(
         opacity: visible ? 1 : 0,
         duration: _animationDuration,
@@ -29,6 +30,6 @@ class BusyIndicatorLineWidget extends StatelessWidget {
           child: DefaultLoadingShimmer(),
         ),
       ),
-    );
+    ));
   }
 }
