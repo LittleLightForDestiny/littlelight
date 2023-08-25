@@ -1,3 +1,12 @@
+## [2.0.11] - 2023-08-25
+
+## What's Changed
+* Improved repaint boundaries by @joaopmarquesini in https://github.com/LittleLightForDestiny/littlelight/pull/306
+* adds let's encrypt overrides to windows by @joaopmarquesini in https://github.com/LittleLightForDestiny/littlelight/pull/307
+
+
+**Full Changelog**: https://github.com/LittleLightForDestiny/littlelight/compare/v2.0.10...v2.0.11
+
 ## [2.0.10] - 2023-08-23
 
 * makes random loadout options persistent

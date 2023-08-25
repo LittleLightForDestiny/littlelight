@@ -1,3 +1,6 @@
-* makes random loadout options persistent
-* fixes weapon icon
-* added crafted levels on crafted weapons
+## What's Changed
+* Improved repaint boundaries by @joaopmarquesini in https://github.com/LittleLightForDestiny/littlelight/pull/306
+* adds let's encrypt overrides to windows by @joaopmarquesini in https://github.com/LittleLightForDestiny/littlelight/pull/307
+
+
+**Full Changelog**: https://github.com/LittleLightForDestiny/littlelight/compare/v2.0.10...v2.0.11
