@@ -3,7 +3,7 @@ import 'dart:io';
 
 // Workaround to make Let's encrypt certificates work on android pre-7.1.1
 setupHttpsOverrides() {
-  if (Platform.isAndroid) {
+  if (Platform.isAndroid || Platform.isWindows) {
     HttpOverrides.global = _LEHttpOverrides();
   }
 }
