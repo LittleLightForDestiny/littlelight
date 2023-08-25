@@ -252,7 +252,7 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
     return Container(
       padding: const EdgeInsets.all(2),
       width: _iconWidth,
-      child: InventoryItemIcon(item, borderSize: 1.5),
+      child: RepaintBoundary(child: InventoryItemIcon(item, borderSize: 1.5)),
     );
   }
 

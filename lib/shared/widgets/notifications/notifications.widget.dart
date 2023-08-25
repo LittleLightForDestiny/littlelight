@@ -23,14 +23,15 @@ class NotificationsWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return RepaintBoundary(
+        child: Column(
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
         buildSubjects(context),
         buildMainContainer(context),
         buildPersistentNotifications(context),
       ].whereType<Widget>().toList(),
-    );
+    ));
   }
 
   Widget buildMainContainer(BuildContext context) {
@@ -59,7 +60,7 @@ class NotificationsWidget extends StatelessWidget {
 
   Widget? buildMainMessage(BuildContext context) {
     return DefaultLoadingShimmer(
-      enabled: !_state(context).actionIs<BaseErrorNotification>(),
+      enabled: !_state(context).actionIs<BaseErrorNotification>() && _state(context).actionIs<BaseNotification>(),
       child: DefaultTextStyle(
         style: context.textTheme.notification,
         child: Stack(

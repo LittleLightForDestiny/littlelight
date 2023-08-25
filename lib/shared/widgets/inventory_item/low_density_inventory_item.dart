@@ -48,15 +48,16 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
 
   Widget buildWithDefinition(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final badges = buildWishlistCornerBadges(context, definition);
-    return ClipRRect(
-        child: Stack(
+    return RepaintBoundary(
+        child: ClipRRect(
+            child: Stack(
       fit: StackFit.expand,
       children: [
         Positioned.fill(child: buildItemIcon(context, definition)),
         if (badges != null) Positioned.fill(child: badges),
         Positioned(left: 2, bottom: 2, right: 2, top: 2, child: buildItemInfo(context, definition)),
       ],
-    ));
+    )));
   }
 
   Widget buildItemIcon(BuildContext context, DestinyInventoryItemDefinition? definition) {

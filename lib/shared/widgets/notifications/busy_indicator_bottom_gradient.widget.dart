@@ -20,32 +20,34 @@ class BusyIndicatorBottomGradientWidget extends StatelessWidget {
     final isError = _state(context).actionIs<BaseErrorNotification>();
     final visible = isBusy || isError;
     final color = isError ? context.theme.errorLayers.layer0 : context.theme.onSurfaceLayers.layer3;
-    return IgnorePointer(
-      child: AnimatedOpacity(
-        opacity: visible ? 1 : 0,
-        duration: _animationDuration,
-        child: AnimatedContainer(
+    return RepaintBoundary(
+      child: IgnorePointer(
+        child: AnimatedOpacity(
+          opacity: visible ? 1 : 0,
           duration: _animationDuration,
-          height: height,
-          child: Shimmer(
-            gradient: LinearGradient(
-              begin: Alignment(-.3, 0),
-              end: Alignment(.3, 0),
-              colors: [
-                color.withOpacity(0),
-                color,
-                color.withOpacity(0),
-              ],
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    color,
-                    color.withOpacity(0),
-                  ],
+          child: AnimatedContainer(
+            duration: _animationDuration,
+            height: height,
+            child: Shimmer(
+              gradient: LinearGradient(
+                begin: Alignment(-.3, 0),
+                end: Alignment(.3, 0),
+                colors: [
+                  color.withOpacity(0),
+                  color,
+                  color.withOpacity(0),
+                ],
+              ),
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [
+                      color,
+                      color.withOpacity(0),
+                    ],
+                  ),
                 ),
               ),
             ),

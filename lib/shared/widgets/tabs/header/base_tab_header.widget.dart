@@ -4,18 +4,20 @@ abstract class BaseTabHeaderWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final paddingTop = MediaQuery.of(context).viewPadding.top;
-    return Stack(
-      clipBehavior: Clip.none,
-      children: [
-        _buildBackgroundContainer(context),
-        Positioned(
-          left: kToolbarHeight,
-          top: paddingTop + kToolbarHeight * .3,
-          width: 64,
-          height: 64,
-          child: buildIcon(context),
-        ),
-      ],
+    return RepaintBoundary(
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          _buildBackgroundContainer(context),
+          Positioned(
+            left: kToolbarHeight,
+            top: paddingTop + kToolbarHeight * .3,
+            width: 64,
+            height: 64,
+            child: buildIcon(context),
+          ),
+        ],
+      ),
     );
   }
 
@@ -28,7 +30,7 @@ abstract class BaseTabHeaderWidget extends StatelessWidget {
       ),
       SizedBox(
         height: 2,
-        child: buildProgressBar(context),
+        child: RepaintBoundary(child: buildProgressBar(context)),
       )
     ]);
   }
