@@ -342,8 +342,8 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
     if (!showCharacterIcon) return null;
     final characterId = item.characterId;
     if (characterId != null) {
-      final character = context.watch<ProfileBloc>().getCharacter(characterId);
-      final emblemHash = character?.emblemHash;
+      final character = context.watch<ProfileBloc>().getCharacterById(characterId);
+      final emblemHash = character?.character.emblemHash;
       if (emblemHash == null) return null;
       return Container(
         margin: const EdgeInsets.only(right: 2),
