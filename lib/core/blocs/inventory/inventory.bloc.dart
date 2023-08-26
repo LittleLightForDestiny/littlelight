@@ -454,6 +454,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
         return;
       }
       notification?.setPlugStatus(socketIndex, PlugStatus.Fail);
+      rethrow;
     } catch (_) {
       notification?.setPlugStatus(socketIndex, PlugStatus.Fail);
       rethrow;
