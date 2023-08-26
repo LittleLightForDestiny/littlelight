@@ -1,6 +1,7 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -9,6 +10,7 @@ import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/shared/utils/helpers/deepsight_helpers.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
 
 class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
@@ -70,9 +72,11 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
     if (isDeepSight) {
       return Container(color: theme.highlightedObjectiveLayers.layer0);
     }
+    final enableEyeCandy = context.select<UserSettingsBloc, bool>((value) => value.enableEyeCandy);
     if (isMasterwork) {
       final masterworkLayers = LittleLightTheme.of(context).achievementLayers;
       return Shimmer.fromColors(
+        enabled: enableEyeCandy,
         baseColor: theme.achievementLayers.layer0,
         highlightColor: masterworkLayers.layer3,
         period: const Duration(seconds: 5),
@@ -114,6 +118,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
     final isExotic = tierType == TierType.Exotic;
     final imgPath = isExotic ? "assets/imgs/masterwork-outline-exotic.png" : "assets/imgs/masterwork-outline.png";
     final masterworkLayers = LittleLightTheme.of(context).achievementLayers;
+    final enableEyeCandy = context.select<UserSettingsBloc, bool>((value) => value.enableEyeCandy);
     return Stack(
       fit: StackFit.expand,
       children: [
@@ -122,6 +127,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
           fit: BoxFit.cover,
         ),
         Shimmer.fromColors(
+          enabled: enableEyeCandy,
           baseColor: masterworkLayers.withOpacity(.2),
           highlightColor: masterworkLayers.layer3,
           period: const Duration(seconds: 5),
@@ -168,6 +174,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
 
   Widget buildEngram(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
+    final enableEyeCandy = context.select<UserSettingsBloc, bool>((value) => value.enableEyeCandy);
     return AspectRatio(
       aspectRatio: 1,
       child: Stack(
@@ -185,6 +192,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
             child: Padding(
               padding: EdgeInsets.all(borderSize),
               child: Shimmer.fromColors(
+                  enabled: enableEyeCandy,
                   baseColor: context.theme.onSurfaceLayers.layer0.withOpacity(0),
                   highlightColor: context.theme.onSurfaceLayers.layer0.withOpacity(1),
                   child: Image.asset("assets/imgs/engram-placeholder.png")),

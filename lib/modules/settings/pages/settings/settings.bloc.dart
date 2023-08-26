@@ -92,6 +92,13 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
     notifyListeners();
   }
 
+  bool get enableEyeCandy => _userSetttingsBloc.enableEyeCandy;
+
+  set enableEyeCandy(bool value) {
+    _userSetttingsBloc.enableEyeCandy = value;
+    notifyListeners();
+  }
+
   int? _defaultFreeSlots;
   int get defaultFreeSlots => _defaultFreeSlots ?? _userSetttingsBloc.defaultFreeSlots;
   set defaultFreeSlots(int value) {

@@ -68,6 +68,13 @@ class SettingsView extends StatelessWidget {
                   value: _state.enabledClarityInsights,
                   onChanged: (value) => _bloc.enabledClarityInsights = value,
                 ),
+                SwitchOptionWidget(
+                  "Enable eye candy".translate(context).toUpperCase(),
+                  "Enables glow animations on masterworks, engrams and other animations. Disabling it might save battery life."
+                      .translate(context),
+                  value: _state.enableEyeCandy,
+                  onChanged: (value) => _bloc.enableEyeCandy = value,
+                ),
                 SettingsOptionWidget(
                   "Default free slots".translate(context).toUpperCase(),
                   Column(children: [

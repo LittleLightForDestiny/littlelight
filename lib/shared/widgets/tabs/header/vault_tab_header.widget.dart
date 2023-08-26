@@ -1,6 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:provider/provider.dart';
@@ -35,12 +36,14 @@ class VaultTabHeaderWidget extends BaseTabHeaderWidget with DestinySettingsConsu
     final bg = Color.lerp(context.theme.upgradeLayers.layer0, Colors.black, .6);
     final currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
     double completed = (currentProg?.progressToNextLevel ?? 0) / (currentProg?.nextLevelAt ?? 1);
+    final enableEyeCandy = context.select<UserSettingsBloc, bool>((value) => value.enableEyeCandy);
     return Container(
       color: bg,
       alignment: Alignment.centerLeft,
       child: FractionallySizedBox(
         widthFactor: completed,
         child: Shimmer.fromColors(
+            enabled: enableEyeCandy,
             baseColor: fg,
             period: const Duration(seconds: 2),
             highlightColor: context.theme.onSurfaceLayers,
