@@ -146,7 +146,7 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
     Map<String, String> translation;
     try {
       var url =
-          "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/LittleLightTranslations/languages/$languageCode.json";
+          "https://fastly.jsdelivr.net/gh/LittleLightForDestiny/LittleLightTranslations/languages/$languageCode.json";
       var req = await http.get(Uri.parse(url));
       var raw = req.body;
       translation = Map<String, String>.from(jsonDecode(raw));

@@ -16,10 +16,10 @@ setupLittleLightDataService() {
 
 class LittleLightDataBloc extends ChangeNotifier with StorageConsumer {
   final _featuredWishlistsURL =
-      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littlelight_wishlists@HEAD/deliverables/index.json";
+      "https://fastly.jsdelivr.net/gh/LittleLightForDestiny/littlelight_wishlists@HEAD/deliverables/index.json";
   final _collaboratorsDataURL =
-      "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/collaborators.json";
-  final _gameDataURL = "https://cdn.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/game_data.json";
+      "https://fastly.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/collaborators.json";
+  final _gameDataURL = "https://fastly.jsdelivr.net/gh/LittleLightForDestiny/littleLightData@HEAD/game_data.json";
 
   bool loadingGameData = false;
   GameData? _gameData;
