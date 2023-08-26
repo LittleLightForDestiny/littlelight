@@ -27,7 +27,8 @@ import 'package:little_light/shared/utils/sorters/items/item_sorter.dart';
 import 'package:little_light/shared/utils/sorters/items/tier_type_sorter.dart';
 import 'package:provider/provider.dart';
 
-const _refreshDelay = Duration(seconds: 30);
+const _playingRefreshDelay = Duration(seconds: 30);
+const _idleRefreshDelay = Duration(minutes: 5);
 const _maxConcurrentTransfers = 5;
 
 class _PutBackTransfer {
@@ -96,8 +97,11 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     if (lastUpdated == null) return;
     if (_offlineModeBloc.isOffline) return;
     final elapsedTime = DateTime.now().difference(lastUpdated);
-    if (elapsedTime > _refreshDelay) {
-      logger.info("last refresh was on $lastUpdated, auto-refreshing");
+    final isPlaying = _profileBloc.isPlaying;
+    final delay = isPlaying ? _playingRefreshDelay : _idleRefreshDelay;
+    if (elapsedTime > delay) {
+      logger.info(
+          "last refresh was on $lastUpdated, auto-refreshing after $delay because player is ${isPlaying ? 'playing' : 'idle'}");
       updateInventory();
     }
   }
@@ -761,7 +765,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
         !instanceIdsToAvoid.contains(item.instanceId) &&
         item.characterId == characterId &&
         !(item.instanceInfo?.isEquipped ?? false));
-    final character = _profileBloc.getCharacter(characterId);
+    final character = _profileBloc.getCharacterById(characterId);
     final itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
     final itemTierType = itemDef?.inventory?.tierType;
 
@@ -769,7 +773,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(c.itemHash);
       final tierType = def?.inventory?.tierType;
       final classType = def?.classType;
-      final acceptableClasses = [character?.classType, DestinyClass.Unknown];
+      final acceptableClasses = [character?.character.classType, DestinyClass.Unknown];
       if (!acceptableClasses.contains(classType)) continue;
       if (tierType == TierType.Exotic && forceNonExotic) continue;
       if (tierType != TierType.Exotic || tierType == itemTierType) return c;

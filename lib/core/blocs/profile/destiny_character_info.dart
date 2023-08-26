@@ -7,12 +7,14 @@ class DestinyCharacterInfo {
   int? armorPower;
   int? artifactPower;
   int? totalPower;
+  DestinyCharacterActivitiesComponent? activities;
 
   String? get characterId => character.characterId;
 
   DestinyCharacterInfo(
     this.character, {
     this.progression,
+    this.activities,
   });
 
   Map<String, DestinyStat>? get stats {

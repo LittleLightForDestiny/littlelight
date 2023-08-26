@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ import 'package:little_light/shared/utils/helpers/stat_helpers.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_last_played_sorter.dart';
 import 'package:little_light/shared/utils/sorters/characters/character_sorter.dart';
 import 'package:provider/provider.dart';
+
 import '../../../models/item_info/inventory_item_info.dart';
 import '../user_settings/user_settings.bloc.dart';
 import 'destiny_character_info.dart';
@@ -84,6 +86,16 @@ class ProfileBloc extends ChangeNotifier
   _CachedItemsContainer _itemCache = _CachedItemsContainer();
 
   DateTime? get lastUpdate => _lastLocalChange;
+
+  DateTime? get lastPlayedTime {
+    final lastPlayed = DateTime.tryParse(_lastPlayedCharacter?.character.dateLastPlayed ?? "");
+    return lastPlayed;
+  }
+
+  bool get isPlaying {
+    final isInActivity = _cachedProfileResponse?.profileTransitoryData?.data?.currentActivity != null;
+    return isInActivity;
+  }
 
   ProfileBloc(this.context) : this.userSettingsBloc = context.read<UserSettingsBloc>() {
     init();
@@ -317,32 +329,11 @@ class ProfileBloc extends ChangeNotifier
     DestinyCharacterComponent character,
     DestinyProfileResponse profile,
   ) =>
-      DestinyCharacterInfo(character, progression: profile.characterProgressions?.data?[character.characterId]);
-
-  bool isPlaying() {
-    final characters = this.characters;
-    if (characters == null) return false;
-    for (final characterInfo in characters) {
-      final character = characterInfo.character;
-      final lastPlayedStr = character.dateLastPlayed;
-      if (lastPlayedStr == null) continue;
-      final lastPlayed = DateTime.tryParse(lastPlayedStr);
-      if (lastPlayed == null) continue;
-      final currentSessionMinutes = int.tryParse(character.minutesPlayedThisSession ?? "0") ?? 0;
-      final currentSession = lastPlayed.add(Duration(minutes: currentSessionMinutes)).toUtc();
-      final isPlaying = currentSession.isBefore(DateTime.now().toUtc());
-      if (isPlaying) return true;
-    }
-    return false;
-  }
-
-  DestinyItemInstanceComponent? getInstanceInfo(String? instanceId) {
-    return _itemCache.itemsByInstanceId[instanceId]?.instanceInfo;
-  }
-
-  List<DestinyItemSocketState>? getItemSockets(String instanceId) {
-    return _itemCache.itemsByInstanceId[instanceId]?.sockets;
-  }
+      DestinyCharacterInfo(
+        character,
+        progression: profile.characterProgressions?.data?[character.characterId],
+        activities: profile.characterActivities?.data?[character.characterId],
+      );
 
   int? stringVariable(String? hash, {String? characterId}) {
     if (characterId != null) {
@@ -351,31 +342,6 @@ class ProfileBloc extends ChangeNotifier
     }
     final value = _cachedProfileResponse?.profileStringVariables?.data?.integerValuesByHash?[hash];
     return value;
-  }
-
-  Map<String, List<DestinyItemPlugBase>>? getItemReusablePlugs(String instanceId) {
-    return _itemCache.itemsByInstanceId[instanceId]?.reusablePlugs;
-  }
-
-  Map<String, List<DestinyObjectiveProgress>>? getPlugObjectives(String? itemInstanceId) {
-    return _itemCache.itemsByInstanceId[itemInstanceId]?.plugObjectives;
-  }
-
-  Map<String, DestinyStat>? getPrecalculatedStats(String itemInstanceId) {
-    return _itemCache.itemsByInstanceId[itemInstanceId]?.stats;
-  }
-
-  List<DestinyObjectiveProgress>? getItemObjectives(String? itemInstanceId, String? characterId, int? hash) {
-    try {
-      var objectives = _cachedProfileResponse?.itemComponents?.objectives?.data?[itemInstanceId]?.objectives;
-      if (objectives != null) return objectives;
-    } catch (e) {}
-    try {
-      var objectives =
-          _cachedProfileResponse?.characterProgressions?.data?[characterId]?.uninstancedItemObjectives?["$hash"];
-      return objectives;
-    } catch (e) {}
-    return null;
   }
 
   DestinyPresentationNodeComponent? getProfilePresentationNode(int? presentationNodeHash) {
@@ -402,11 +368,6 @@ class ProfileBloc extends ChangeNotifier
     return _cachedProfileResponse?.characterRecords?.data?[characterId]?.records?["$recordHash"];
   }
 
-  @deprecated
-  Map<String, DestinyPresentationNodeComponent>? getProfilePresentationNodes() {
-    return _cachedProfileResponse?.profilePresentationNodes?.data?.nodes;
-  }
-
   List<DestinyItemPlug>? getCharacterPlugSets(String characterId, int plugSetHash) {
     var plugs = _cachedProfileResponse?.characterPlugSets?.data?[characterId]?.plugs;
     if (plugs?.containsKey("$plugSetHash") ?? false) return plugs?["$plugSetHash"];
@@ -426,53 +387,8 @@ class ProfileBloc extends ChangeNotifier
     return plugs;
   }
 
-  @deprecated
-  Map<String, DestinyPresentationNodeComponent>? getCharacterPresentationNodes(String characterId) {
-    if (_cachedProfileResponse?.characterPresentationNodes?.data == null) return null;
-    return _cachedProfileResponse?.characterPresentationNodes?.data?[characterId]?.nodes;
-  }
-
-  DestinyCharacterComponent? getCharacter(String characterId) {
-    return characters?.firstWhereOrNull((c) => c.character.characterId == characterId)?.character;
-  }
-
   DestinyCharacterInfo? getCharacterById(String? id) =>
       _characters?.firstWhereOrNull((element) => element.characterId == id);
-
-  DestinyCharacterActivitiesComponent? getCharacterActivities(String characterId) {
-    return _cachedProfileResponse?.characterActivities?.data?[characterId];
-  }
-
-  List<DestinyItemComponent> getCharacterEquipment(String characterId) {
-    if (_cachedProfileResponse?.characterEquipment?.data == null) return [];
-    return _cachedProfileResponse?.characterEquipment?.data?[characterId]?.items ?? [];
-  }
-
-  List<DestinyItemComponent> getCharacterInventory(String characterId) {
-    if (_cachedProfileResponse?.characterInventories?.data == null) return [];
-    return _cachedProfileResponse?.characterInventories?.data?[characterId]?.items ?? [];
-  }
-
-  List<DestinyItemComponent> getProfileInventory() {
-    return _cachedProfileResponse?.profileInventory?.data?.items ?? [];
-  }
-
-  List<DestinyItemComponent>? getProfileCurrencies() {
-    return _cachedProfileResponse?.profileCurrencies?.data?.items;
-  }
-
-  DestinyCharacterProgressionComponent? getCharacterProgression(String characterId) {
-    return _cachedProfileResponse?.characterProgressions?.data?[characterId];
-  }
-
-  @deprecated
-  Map<String, DestinyCollectibleComponent>? getProfileCollectibles() {
-    return _cachedProfileResponse?.profileCollectibles?.data?.collectibles;
-  }
-
-  Map<String, DestinyCollectibleComponent>? getCharacterCollectibles(String characterId) {
-    return _cachedProfileResponse?.characterCollectibles?.data?[characterId]?.collectibles;
-  }
 
   bool isCollectibleUnlocked(int hash, DestinyScope scope) {
     String hashStr = "$hash";
@@ -497,55 +413,9 @@ class ProfileBloc extends ChangeNotifier
         false;
   }
 
-  DestinyRecordComponent? getRecord(int hash, DestinyScope scope) {
-    String hashStr = "$hash";
-    if (scope == DestinyScope.Profile) {
-      if (_cachedProfileResponse?.profileRecords?.data == null) {
-        return null;
-      }
-      return _cachedProfileResponse?.profileRecords?.data?.records?[hashStr];
-    }
-    var charRecords = _cachedProfileResponse?.characterRecords?.data;
-    if (charRecords == null) {
-      return null;
-    }
-    for (var char in charRecords.values) {
-      if (char.records?.containsKey(hashStr) ?? false) {
-        return char.records?[hashStr];
-      }
-    }
-    return null;
-  }
-
-  DestinyMetricComponent? getMetric(int hash) {
-    String hashStr = "$hash";
-    if (_cachedProfileResponse?.metrics?.data?.metrics?.containsKey(hashStr) != true) {
-      return null;
-    }
-    return _cachedProfileResponse?.metrics?.data?.metrics?[hashStr];
-  }
-
   InventoryItemInfo? getItemByInstanceId(String? instanceId) => _itemCache.itemsByInstanceId[instanceId];
 
   List<InventoryItemInfo> getItemsByHash(int? hash) => _itemCache.itemsByHash[hash] ?? [];
-
-  String? getItemOwner(String itemInstanceId) {
-    String? owner;
-    _cachedProfileResponse?.characterEquipment?.data?.forEach((charId, inventory) {
-      bool has = inventory.items?.any((item) => item.itemInstanceId == itemInstanceId) ?? false;
-      if (has) {
-        owner = charId;
-      }
-    });
-    if (owner != null) return owner;
-    _cachedProfileResponse?.characterInventories?.data?.forEach((charId, inventory) {
-      bool has = inventory.items?.any((item) => item.itemInstanceId == itemInstanceId) ?? false;
-      if (has) {
-        owner = charId;
-      }
-    });
-    return owner;
-  }
 
   DestinyArtifactProfileScoped? getArtifactProgression() {
     return _cachedProfileResponse?.profileProgression?.data?.seasonalArtifact;

@@ -2,8 +2,10 @@ import 'package:bungie_api/enums/destiny_component_type.dart';
 
 class ProfileComponentGroups {
   static const List<DestinyComponentType> basicProfile = [
+    DestinyComponentType.Transitory,
     DestinyComponentType.Characters,
     DestinyComponentType.CharacterProgressions,
+    DestinyComponentType.CharacterActivities,
     DestinyComponentType.CharacterEquipment,
     DestinyComponentType.CharacterInventories,
     DestinyComponentType.ProfileInventories,

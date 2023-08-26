@@ -162,23 +162,20 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   }
 
   Widget buildActivityInfo(BuildContext context) {
-    final lastCharacter = context.watch<ProfileBloc>().characters?.first;
-    final lastCharacterID = lastCharacter?.characterId;
-    if (lastCharacter == null || lastCharacterID == null) {
-      return Container();
-    }
-    final lastPlayed = DateTime.tryParse(lastCharacter.character.dateLastPlayed ?? "");
-    final currentSession = int.tryParse(lastCharacter.character.minutesPlayedThisSession ?? "");
-    final time = lastPlayed != null ? timeago.format(lastPlayed, allowFromNow: true) : "";
-    if (lastPlayed != null &&
-        currentSession != null &&
-        lastPlayed.add(Duration(minutes: currentSession + 10)).isBefore(DateTime.now().toUtc())) {
+    final profile = context.watch<ProfileBloc>();
+    final isPlaying = profile.isPlaying;
+    if (!isPlaying) {
+      final lastPlayed = profile.lastPlayedTime;
+      if (lastPlayed == null) return Container();
+      final lastPlayedTimeAgo = timeago.format(lastPlayed, allowFromNow: true);
       return Text(
-        "Last played {timeago}".translate(context, replace: {'timeago': time.toLowerCase()}),
-        style: TextStyle(fontSize: 12, color: Colors.grey.shade100),
+        "Last played {timeago}".translate(context, replace: {'timeago': lastPlayedTimeAgo.toLowerCase()}),
+        style: context.textTheme.caption,
       );
     }
-    final activities = context.watch<ProfileBloc>().getCharacterActivities(lastCharacterID);
+    final lastPlayedCharacter = profile.lastPlayedCharacter;
+    if (lastPlayedCharacter == null) return Container();
+    final activities = lastPlayedCharacter.activities;
     if (activities?.currentActivityHash == 82913930) {
       return ManifestText<DestinyPlaceDefinition>(2961497387,
           textExtractor: (def) => "${def.displayProperties?.description}",
@@ -188,12 +185,13 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     final activityHash = activities?.currentActivityHash;
     return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
       activityModeHash != null
-          ? ManifestText<DestinyActivityModeDefinition>(activityModeHash,
-              style: TextStyle(fontSize: 10, color: Colors.grey.shade100))
+          ? ManifestText<DestinyActivityModeDefinition>(activityModeHash, style: context.textTheme.caption)
           : Container(),
       activityHash != null
-          ? ManifestText<DestinyActivityDefinition>(activityHash,
-              style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold))
+          ? ManifestText<DestinyActivityDefinition>(
+              activityHash,
+              style: context.textTheme.highlight,
+            )
           : Container(),
     ]);
   }
