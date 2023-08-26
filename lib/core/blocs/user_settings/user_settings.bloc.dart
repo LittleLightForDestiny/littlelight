@@ -223,7 +223,9 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
 
   void _setPriorityTags(List<String> tags) {
     _priorityTags = tags;
-    currentMembershipStorage.savePriorityTags(_priorityTags as Set<String>);
+    final tagsSet = _priorityTags?.toSet();
+    if (tagsSet == null) return;
+    currentMembershipStorage.savePriorityTags(tagsSet);
     notifyListeners();
   }
 
