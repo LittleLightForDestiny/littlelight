@@ -1,6 +1,6 @@
-## What's Changed
-* Improved repaint boundaries by @joaopmarquesini in https://github.com/LittleLightForDestiny/littlelight/pull/306
-* adds let's encrypt overrides to windows by @joaopmarquesini in https://github.com/LittleLightForDestiny/littlelight/pull/307
-
-
-**Full Changelog**: https://github.com/LittleLightForDestiny/littlelight/compare/v2.0.10...v2.0.11
+* fixes priority tags not being saved
+* fixes some issues with Little Light not loading up in Egypt and China
+* Add a setting to disable animations for better performance and battery comsumption
+* implements dynamic update timers (Little light will update less frequently when you're not playing)
+* added details button on loadout item options
+* fixes apply mod error messages

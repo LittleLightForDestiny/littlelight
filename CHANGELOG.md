@@ -1,3 +1,12 @@
+## [2.0.12] - 2023-08-26
+
+* fixes priority tags not being saved
+* fixes some issues with Little Light not loading up in Egypt and China
+* Add a setting to disable animations for better performance and battery comsumption
+* implements dynamic update timers (Little light will update less frequently when you're not playing)
+* added details button on loadout item options
+* fixes apply mod error messages
+
 ## [2.0.11] - 2023-08-25
 
 ## What's Changed
