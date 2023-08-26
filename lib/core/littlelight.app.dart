@@ -8,6 +8,7 @@ import 'package:little_light/core/theme/littlelight.scroll_behavior.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
+import 'package:little_light/services/https_override/https_overrides.dart';
 import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
 import 'package:provider/provider.dart';
 
@@ -25,6 +26,7 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
   @override
   void initState() {
     super.initState();
+    setupHttpsOverrides();
     LittleLightNavigatorKeyContainer.navigatorKey = GlobalKey<NavigatorState>();
     unilinks.addListener(updateUnilinks);
     updateSystemOverlay();
