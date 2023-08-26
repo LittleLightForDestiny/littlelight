@@ -96,54 +96,48 @@ class LoadoutItemOptionsView extends StatelessWidget {
   }
 
   Widget buildOptions(BuildContext context) {
-    return Column(
-      children: [
-        buildOption(
-          context,
-          text: "Remove item".translate(context),
-          icon: FontAwesomeIcons.circleXmark,
-          option: LoadoutItemOption.Remove,
-        ),
-        buildOption(
-          context,
-          text: "Edit mods".translate(context),
-          icon: FontAwesomeIcons.gears,
-          option: LoadoutItemOption.EditMods,
-        ),
-      ],
+    return Container(
+      padding: EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          buildOption(
+            context,
+            text: "Details".translate(context),
+            option: LoadoutItemOption.ViewDetails,
+          ),
+          Container(
+            height: 4,
+          ),
+          buildOption(
+            context,
+            text: "Mods".translate(context),
+            option: LoadoutItemOption.EditMods,
+          ),
+          Container(
+            height: 4,
+          ),
+          buildOption(
+            context,
+            text: "Remove".translate(context),
+            option: LoadoutItemOption.Remove,
+            color: context.theme.errorLayers,
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildOption(
     BuildContext context, {
     required String text,
-    required IconData icon,
     required LoadoutItemOption option,
+    Color? color,
   }) {
-    return Container(
-      margin: EdgeInsets.all(8).copyWith(top: 0),
-      child: Stack(children: [
-        Container(
-          height: kToolbarHeight,
-          child: Row(children: [
-            AspectRatio(aspectRatio: 1, child: Icon(icon)),
-            Expanded(
-              child: Text(
-                text,
-                style: context.textTheme.button,
-              ),
-            )
-          ]),
-        ),
-        Positioned.fill(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              onTap: () => bloc.selectOption(option),
-            ),
-          ),
-        ),
-      ]),
+    return ElevatedButton(
+      onPressed: () => bloc.selectOption(option),
+      child: Text(text),
+      style: ElevatedButton.styleFrom(backgroundColor: color),
     );
   }
 }

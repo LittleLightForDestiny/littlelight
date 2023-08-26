@@ -11,6 +11,7 @@ import 'loadout_item_options.view.dart';
 enum LoadoutItemOption {
   Remove,
   EditMods,
+  ViewDetails,
 }
 
 class LoadoutItemOptionsBottomSheet extends BaseBottomSheet<LoadoutItemOption> {
