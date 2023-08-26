@@ -45,7 +45,7 @@ class _LEHttpOverrides extends HttpOverrides {
   static bool? _initRootCert;
 
   static bool _addRootCert() {
-    if (Platform.isAndroid) {
+    if (Platform.isAndroid || Platform.isWindows) {
       final List<int> _cert = ascii.encode(_kIsrgRootX1);
       SecurityContext.defaultContext.setTrustedCertificatesBytes(_cert);
     }
@@ -60,7 +60,8 @@ class _LEHttpOverrides extends HttpOverrides {
 
   @override
   HttpClient createHttpClient(SecurityContext? context) {
-    final HttpClient client = super.createHttpClient(context);
+    final HttpClient client = super.createHttpClient(context)
+      ..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
     return client;
   }
 }
