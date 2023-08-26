@@ -27,7 +27,7 @@ class BusyIndicatorLineWidget extends StatelessWidget {
           duration: _animationDuration,
           height: height,
           color: isError ? context.theme.errorLayers.layer0 : context.theme.surfaceLayers.layer2,
-          child: DefaultLoadingShimmer(),
+          child: DefaultLoadingShimmer(enabled: visible),
         ),
       ),
     ));

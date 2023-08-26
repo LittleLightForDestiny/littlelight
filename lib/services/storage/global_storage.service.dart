@@ -388,6 +388,24 @@ class GlobalStorage extends StorageBase<GlobalStorageKeys> {
     }
   }
 
+  Future<bool?> getEnableEyeCandy() async {
+    try {
+      final bool? enabled = await getBool(GlobalStorageKeys.enableEyeCandy);
+      return enabled;
+    } catch (e) {
+      logger.error("can't parse eye candy visibility options", error: e);
+    }
+    return null;
+  }
+
+  Future<void> setEnableEyeCandy(bool value) async {
+    try {
+      await setBool(GlobalStorageKeys.enableEyeCandy, value);
+    } catch (e) {
+      logger.error("error saving eye candy visibility options", error: e);
+    }
+  }
+
   Future<bool?> getRandomLoadoutShowItems() async {
     try {
       final value = await getBool(GlobalStorageKeys.randomLoadoutShowItems);

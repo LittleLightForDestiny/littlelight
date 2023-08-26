@@ -29,6 +29,7 @@ class BusyIndicatorBottomGradientWidget extends StatelessWidget {
             duration: _animationDuration,
             height: height,
             child: Shimmer(
+              enabled: visible,
               gradient: LinearGradient(
                 begin: Alignment(-.3, 0),
                 end: Alignment(.3, 0),

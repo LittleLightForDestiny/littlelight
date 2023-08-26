@@ -38,6 +38,7 @@ enum GlobalStorageKeys {
   randomLoadoutEquipArmor,
   randomLoadoutEquipSubclass,
   randomLoadoutForceExotics,
+  enableEyeCandy,
 }
 
 extension StorageKeysExtension on GlobalStorageKeys {

@@ -4,6 +4,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/vendors/pages/home/vendor_data.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -186,7 +187,7 @@ class VendorsListItemWidget extends StatelessWidget {
             item?.itemHash,
             key: Key("item_${item?.itemHash}"),
             fit: BoxFit.cover,
-            placeholder: Container(width: 32, child: LoadingAnimWidget()),
+            placeholder: Container(width: 32, child: DefaultLoadingShimmer()),
           ),
         ),
         if (sale.saleStatus != VendorItemStatus.Success)

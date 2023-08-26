@@ -22,6 +22,8 @@ const _defaultRandomLoadoutEquipArmor = true;
 const _defaultRandomLoadoutEquipSubclass = true;
 const _defaultRandomLoadoutForceExotics = false;
 
+const _defaultEnableEyeCandy = false;
+
 class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer {
   final BuildContext context;
   List<ItemSortParameter>? _itemOrdering;
@@ -43,6 +45,8 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   bool? _randomLoadoutEquipSubclass;
   bool? _randomLoadoutForceExotics;
 
+  bool? _enableEyeCandy;
+
   UserSettingsBloc(this.context);
 
   init() async {
@@ -56,6 +60,7 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
       initObjectiveViewMode(),
       initScrollAreaOptions(),
       initShowClarityInsights(),
+      initEnableEyeCandy(),
     ]);
     notifyListeners();
   }
@@ -137,6 +142,10 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
 
   Future<void> initShowClarityInsights() async {
     _showClarityInsights = await globalStorage.getShowClarityInsights();
+  }
+
+  Future<void> initEnableEyeCandy() async {
+    _enableEyeCandy = await globalStorage.getEnableEyeCandy();
   }
 
   BucketDisplayOptions? getDisplayOptionsForItemSection(String? id) {
@@ -363,6 +372,14 @@ class UserSettingsBloc extends ChangeNotifier with StorageConsumer, AuthConsumer
   set randomLoadoutForceExotics(value) {
     this._randomLoadoutForceExotics = value;
     globalStorage.setRandomLoadoutForceExotics(value);
+    notifyListeners();
+  }
+
+  bool get enableEyeCandy => _enableEyeCandy ?? _defaultEnableEyeCandy;
+
+  set enableEyeCandy(bool value) {
+    this._enableEyeCandy = value;
+    globalStorage.setEnableEyeCandy(value);
     notifyListeners();
   }
 }
