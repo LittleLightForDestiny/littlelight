@@ -7,6 +7,7 @@ import 'package:little_light/core/blocs/notifications/loadout_change_result_noti
 import 'package:little_light/core/blocs/notifications/notifications.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/loadout.dart';
+import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/edit_loadout_item_mods/loadout_item_details.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/loadout_item_options/loadout_item_options.bottomsheet.dart';
 import 'package:little_light/modules/loadouts/pages/select_background/select_loadout_background.page_route.dart';
@@ -145,6 +146,12 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
     final option = await LoadoutItemOptionsBottomSheet(
       loadoutItem,
     ).show(context);
+    if (option == LoadoutItemOption.ViewDetails) {
+      final item = loadoutItem.inventoryItem;
+      if (item == null) return;
+      await Navigator.of(context).push(InventoryItemDetailsPageRoute(item));
+      return;
+    }
     if (option == LoadoutItemOption.Remove) {
       await _itemIndex?.removeItem(manifest, loadoutItem.inventoryItem);
       notifyListeners();
