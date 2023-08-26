@@ -9,7 +9,7 @@ import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
 import 'package:provider/provider.dart';
 
-const _baseUrl = 'https://cdn.jsdelivr.net/gh/Database-Clarity/Live-Clarity-Database@live/';
+const _baseUrl = 'https://fastly.jsdelivr.net/gh/Database-Clarity/Live-Clarity-Database@live/';
 const _liveDataPath = 'descriptions/clarity.json';
 
 class ClarityDataBloc extends ChangeNotifier {
