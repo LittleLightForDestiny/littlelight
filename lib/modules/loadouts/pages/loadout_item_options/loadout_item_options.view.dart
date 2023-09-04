@@ -1,6 +1,5 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_mods.widget.dart';
@@ -10,6 +9,7 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/inventory_item/high_density_inventory_item.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
+
 import 'loadout_item_options.bloc.dart';
 
 class LoadoutItemOptionsView extends StatelessWidget {

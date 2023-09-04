@@ -11,7 +11,7 @@ class LogEntry {
   LogEntry(this.level, this.message, this.error, this.stackTrace);
 }
 
-const _maxMessages = 50;
+// const _maxMessages = 50;
 
 class LoggerBloc extends ChangeNotifier {
   List<LogEntry> _messages = [];
@@ -26,7 +26,7 @@ class LoggerBloc extends ChangeNotifier {
 
   void debug(dynamic message) {
     _logger.d(message);
-    _pushMessage(message, Level.debug);
+    // _pushMessage(message, Level.debug);
   }
 
   void error(dynamic message, {dynamic error, StackTrace? stack, bool keepExternalStackTraces = false}) {
@@ -35,19 +35,19 @@ class LoggerBloc extends ChangeNotifier {
       stack = StackTrace.fromString(relevantStackTraceMessages.join('\n'));
     }
     _logger.e(message, error, stack);
-    _pushMessage(message, Level.error, error, stack);
+    // _pushMessage(message, Level.error, error, stack);
   }
 
   void info(dynamic message) {
     _logger.i(message);
-    _pushMessage(message, Level.info);
+    // _pushMessage(message, Level.info);
   }
 
-  _pushMessage(dynamic message, Level level, [dynamic error, StackTrace? stackTrace]) {
-    _messages.add(LogEntry(level, message, error, stackTrace));
-    if (_messages.length > _maxMessages) _messages.removeRange(0, _messages.length - _maxMessages);
-    notifyListeners();
-  }
+  // _pushMessage(dynamic message, Level level, [dynamic error, StackTrace? stackTrace]) {
+  //   _messages.add(LogEntry(level, message, error, stackTrace));
+  //   if (_messages.length > _maxMessages) _messages.removeRange(0, _messages.length - _maxMessages);
+  //   notifyListeners();
+  // }
 
   List<LogEntry> get messages {
     return _messages;

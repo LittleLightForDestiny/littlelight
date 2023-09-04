@@ -5,7 +5,6 @@ import 'package:little_light/pages/initial/subpages/error.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_language.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_membership.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_wishlists.subpage.dart';
-import 'package:little_light/shared/widgets/log/log_viewer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
 
