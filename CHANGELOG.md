@@ -1,3 +1,7 @@
+## [2.0.13] - 2023-09-04
+
+- Fixes some login issues
+
 ## [2.0.12] - 2023-08-26
 
 * fixes priority tags not being saved
