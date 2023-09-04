@@ -269,9 +269,6 @@ class InitialPageStateNotifier
     _loading = true;
     notifyListeners();
     try {
-      if (1 == 1) {
-        throw ("test");
-      }
       await initPostLoadingServices(_context);
     } catch (e, stackTrace) {
       logger.error("initPostLoadingServicesError", error: e, stack: stackTrace);
