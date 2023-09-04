@@ -98,7 +98,6 @@ class InitialPageStateNotifier
       final routeSettings = ModalRoute.of(_context)?.settings;
       final loginRoute = routeSettings as LittleLightLoginRoute;
       final code = loginRoute.loginArguments.code;
-
       if (code == null) {
         throw NotAuthorizedException("No Authorization code");
       }

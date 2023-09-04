@@ -20,14 +20,15 @@ class InitialView extends StatefulWidget {
 class InitialViewState extends State<InitialView> {
   @override
   Widget build(BuildContext context) => Scaffold(
-      body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/imgs/background.jpg"),
-              fit: BoxFit.cover,
+        body: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage("assets/imgs/background.jpg"),
+                fit: BoxFit.cover,
+              ),
             ),
-          ),
-          child: Center(child: buildContent(context))));
+            child: Center(child: buildContent(context))),
+      );
 
   Widget buildContent(BuildContext context) {
     final controller = Provider.of<InitialPageStateNotifier>(context);
