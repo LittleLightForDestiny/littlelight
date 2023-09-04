@@ -5,6 +5,7 @@ import 'package:little_light/pages/initial/subpages/error.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_language.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_membership.subpage.dart';
 import 'package:little_light/pages/initial/subpages/select_wishlists.subpage.dart';
+import 'package:little_light/shared/widgets/log/log_viewer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -20,14 +21,18 @@ class InitialView extends StatefulWidget {
 class InitialViewState extends State<InitialView> {
   @override
   Widget build(BuildContext context) => Scaffold(
-      body: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/imgs/background.jpg"),
-              fit: BoxFit.cover,
-            ),
-          ),
-          child: Center(child: buildContent(context))));
+          body: Stack(children: [
+        Positioned.fill(
+            child: Container(
+                decoration: const BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("assets/imgs/background.jpg"),
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                child: Center(child: buildContent(context)))),
+        Positioned(bottom: 0, left: 0, right: 0, height: 500, child: LogViewer()),
+      ]));
 
   Widget buildContent(BuildContext context) {
     final controller = Provider.of<InitialPageStateNotifier>(context);

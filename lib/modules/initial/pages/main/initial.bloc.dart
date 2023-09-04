@@ -98,7 +98,6 @@ class InitialPageStateNotifier
       final routeSettings = ModalRoute.of(_context)?.settings;
       final loginRoute = routeSettings as LittleLightLoginRoute;
       final code = loginRoute.loginArguments.code;
-
       if (code == null) {
         throw NotAuthorizedException("No Authorization code");
       }
@@ -270,6 +269,9 @@ class InitialPageStateNotifier
     _loading = true;
     notifyListeners();
     try {
+      if (1 == 1) {
+        throw ("test");
+      }
       await initPostLoadingServices(_context);
     } catch (e, stackTrace) {
       logger.error("initPostLoadingServicesError", error: e, stack: stackTrace);
