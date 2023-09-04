@@ -68,6 +68,7 @@ jobs:
           flutter-version: "3.13.0"
 
       - name: Create assets/_env
+        shell: bash
         run: |
           echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
