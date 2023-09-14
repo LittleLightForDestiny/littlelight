@@ -35,6 +35,7 @@ class LoadoutsHomeBloc extends ChangeNotifier {
   bool _searchOpen = false;
   bool get searchOpen => _searchOpen;
 
+  bool get isLoading => _unfilteredLoadouts == null;
   bool get isEmpty => _unfilteredLoadouts?.isEmpty ?? false;
   List<LoadoutItemIndex>? _unfilteredLoadouts;
   List<LoadoutItemIndex>? _filteredLoadouts;

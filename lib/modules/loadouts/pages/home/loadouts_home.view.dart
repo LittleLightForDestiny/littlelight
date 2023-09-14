@@ -1,10 +1,12 @@
 import 'dart:math';
+import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/models/destiny_inventory_item_definition.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_list_item.widget.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
@@ -13,6 +15,7 @@ import 'package:little_light/shared/widgets/notifications/busy_indicator_line.wi
 import 'package:little_light/shared/widgets/notifications/notifications.widget.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
+import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'loadouts_home.bloc.dart';
 
 class LoadoutsHomeView extends StatelessWidget {
@@ -26,34 +29,39 @@ class LoadoutsHomeView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(context),
-      body: Column(
-        children: [
-          Expanded(
-            child: Stack(
-              children: [
-                state.reordering ? buildReorderingBody(context) : buildBody(context),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  left: 0,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        child: NotificationsWidget(),
+    return DefaultTabController(
+      length: 2,
+      child: Builder(
+        builder: (context) => Scaffold(
+          appBar: buildAppBar(context),
+          body: Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    buildTabs(context),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            child: NotificationsWidget(),
+                          ),
+                          BusyIndicatorLineWidget(),
+                        ],
                       ),
-                      BusyIndicatorLineWidget(),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
+              ),
+              buildFooter(context),
+            ].whereType<Widget>().toList(),
           ),
-          buildFooter(context),
-        ].whereType<Widget>().toList(),
+        ),
       ),
     );
   }
@@ -74,7 +82,35 @@ class LoadoutsHomeView extends StatelessWidget {
             onPressed: () => bloc.reloadLoadouts(),
           )
         ],
+        bottom: buildTabBar(context),
         title: buildTitle(context));
+  }
+
+  PreferredSizeWidget buildTabBar(BuildContext context) {
+    final tabbar = TabBar(
+      tabs: [
+        Container(
+          alignment: Alignment.center,
+          child: Text("Little Light".translate(context)),
+        ),
+        Container(
+          alignment: Alignment.center,
+          child: Text("Destiny".translate(context)),
+        ),
+      ],
+    );
+    return PreferredSize(
+      preferredSize: tabbar.preferredSize,
+      child: Material(
+        color: context.theme.secondarySurfaceLayers.layer1,
+        elevation: 2,
+        child: LayoutBuilder(
+            builder: (context, constraints) => Container(
+                constraints: BoxConstraints(minWidth: constraints.maxWidth),
+                height: tabbar.preferredSize.height,
+                child: tabbar)),
+      ),
+    );
   }
 
   Widget buildTitle(BuildContext context) {
@@ -186,9 +222,40 @@ class LoadoutsHomeView extends StatelessWidget {
         ));
   }
 
-  Widget buildBody(BuildContext context) {
+  Widget buildTabs(BuildContext context) {
+    return TabBarView(children: [
+      buildLittleLightLoadouts(context),
+      buildDestinyLoadouts(context),
+    ]);
+  }
+
+  Widget buildLittleLightLoadouts(BuildContext context) {
+    if (state.reordering) {
+      return buildReorderingBody(context);
+    }
+    return buildLittleLightBody(context);
+  }
+
+  Widget buildDestinyLoadouts(BuildContext context) {
+    final loadouts = state.profileBloc.characters?.first.loadouts;
+    if (loadouts == null) return Container();
+    return Column(children: loadouts.map((l) => buildDestinyLoadout(context, l)).toList());
+  }
+
+  Widget buildDestinyLoadout(BuildContext context, DestinyLoadoutComponent loadout) {
+    final iconDef = context.definition<DestinyLoadoutIconDefinition>(loadout.iconHash);
+    final colorDef = context.definition<DestinyLoadoutColorDefinition>(loadout.colorHash);
+    return Container(
+        height: 64,
+        child: Stack(children: [
+          Positioned.fill(child: QueuedNetworkImage.fromBungie(colorDef?.colorImagePath)),
+          QueuedNetworkImage.fromBungie(iconDef?.iconImagePath)
+        ]));
+  }
+
+  Widget buildLittleLightBody(BuildContext context) {
     final loadouts = state.loadouts;
-    if (loadouts == null) {
+    if (state.isLoading || loadouts == null) {
       return LoadingAnimWidget();
     }
     if (state.isEmpty) {

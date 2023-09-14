@@ -8,6 +8,7 @@ class ProfileComponentGroups {
     DestinyComponentType.CharacterActivities,
     DestinyComponentType.CharacterEquipment,
     DestinyComponentType.CharacterInventories,
+    DestinyComponentType.CharacterLoadouts,
     DestinyComponentType.ProfileInventories,
     DestinyComponentType.ProfileCurrencies,
     DestinyComponentType.ItemInstances,

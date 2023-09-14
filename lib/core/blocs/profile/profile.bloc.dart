@@ -333,6 +333,7 @@ class ProfileBloc extends ChangeNotifier
         character,
         progression: profile.characterProgressions?.data?[character.characterId],
         activities: profile.characterActivities?.data?[character.characterId],
+        loadouts: profile.characterLoadouts?.data?[character.characterId]?.loadouts,
       );
 
   int? stringVariable(String? hash, {String? characterId}) {
