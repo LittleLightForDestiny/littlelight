@@ -1,1 +1,1 @@
-- Fixes some login issues
+- D2Clarity info fixes

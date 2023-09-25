@@ -1,3 +1,7 @@
+## [2.0.14] - 2023-09-25
+
+- D2Clarity info fixes
+
 ## [2.0.13] - 2023-09-04
 
 - Fixes some login issues
