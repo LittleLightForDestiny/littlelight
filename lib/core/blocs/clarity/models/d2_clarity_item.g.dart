@@ -12,7 +12,8 @@ ClarityItem _$ClarityItemFromJson(Map<String, dynamic> json) => ClarityItem(
       name: json['name'] as String?,
       itemName: json['itemName'] as String?,
       lastUpload: _dateFromJson(json['lastUpload'] as int),
-      type: $enumDecodeNullable(_$ClarityItemTypeEnumMap, json['type']),
+      type: $enumDecodeNullable(_$ClarityItemTypeEnumMap, json['type'],
+          unknownValue: ClarityItemType.Unknown),
       uploadedBy: json['uploadedBy'] as String?,
       descriptions: (json['descriptions'] as Map<String, dynamic>?)?.map(
         (k, e) => MapEntry(

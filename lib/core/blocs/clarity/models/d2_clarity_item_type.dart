@@ -3,6 +3,8 @@ import 'package:json_annotation/json_annotation.dart';
 enum ClarityItemType {
   @JsonValue('Armor Mod General')
   ArmorModGeneral,
+  @JsonValue('Armor Mod Seasonal')
+  ArmorModSeasonal,
   @JsonValue('Armor Trait Exotic')
   ArmorTraitExotic,
   @JsonValue('Weapon Trait')
