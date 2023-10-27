@@ -12,6 +12,7 @@ import 'package:little_light/shared/widgets/notifications/notifications.widget.d
 import 'package:little_light/shared/widgets/selection/selected_items.widget.dart';
 import 'package:provider/provider.dart';
 import 'collectibles_search.bloc.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 
 class CollectiblesSearchView extends StatelessWidget {
   final CollectiblesSearchBloc bloc;
@@ -24,6 +25,7 @@ class CollectiblesSearchView extends StatelessWidget {
       appBar: AppBar(
         leading: const BackButton(),
         title: TextSearchFilterFieldWidget(
+          hintText: "name or source".translate(context),
           onUpdate: (query) => bloc.textSearch = query,
         ),
       ),

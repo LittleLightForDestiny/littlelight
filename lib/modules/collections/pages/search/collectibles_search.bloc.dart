@@ -99,6 +99,7 @@ class CollectiblesSearchBloc extends ChangeNotifier {
         if (isInvisible) continue;
       }
       final name = removeDiacritics(collectible.displayProperties?.name?.toLowerCase().trim() ?? "");
+      final sourceString = removeDiacritics(collectible.sourceString?.toLowerCase().trim() ?? "");
       if (search.isEmpty) {
         filteredItems.add(collectibleHash);
         continue;
@@ -107,7 +108,7 @@ class CollectiblesSearchBloc extends ChangeNotifier {
         filteredItems.add(collectibleHash);
         continue;
       }
-      if (search.length > 3 && name.contains(search)) {
+      if (search.length > 3 && name.contains(search) || sourceString.contains(search)) {
         filteredItems.add(collectibleHash);
         continue;
       }
