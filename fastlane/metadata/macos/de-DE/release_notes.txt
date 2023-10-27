@@ -1,1 +1,1 @@
-- D2Clarity info fixes
+- improvements in collections view and search

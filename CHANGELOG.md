@@ -1,3 +1,7 @@
+## [2.0.15] - 2023-10-27
+
+- improvements in collections view and search
+
 ## [2.0.14] - 2023-09-25
 
 - D2Clarity info fixes
