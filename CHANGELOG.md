@@ -1,3 +1,7 @@
+## [2.0.16] - 2023-11-16
+
+- Fixes stack transfers with more than 1 item
+
 ## [2.0.15] - 2023-10-27
 
 - improvements in collections view and search

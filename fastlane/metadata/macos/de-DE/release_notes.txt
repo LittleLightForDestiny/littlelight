@@ -1,1 +1,1 @@
-- improvements in collections view and search
+- Fixes stack transfers with more than 1 item
