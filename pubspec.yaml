@@ -14,40 +14,40 @@ dependencies:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  tinycolor2: ^2.0.0
-  shared_preferences: 2.0.6
-  archive: ^3.1.6
+  tinycolor2: ^3.0.1
+  shared_preferences: ^2.2.2
+  archive: ^3.4.9
   sqflite: ^2.2.6
-  http: ^0.13.0
+  http: ^1.1.2
   path_provider: ^2.0.2
   font_awesome_flutter: ^10.4.0
   bungie_api: 13.18.0
-  shimmer: ^2.0.0
+  shimmer: ^3.0.0
   timeago: ^3.0.1
-  firebase_crashlytics: ^3.0.5
-  firebase_analytics: ^10.0.5
+  firebase_crashlytics: ^3.4.8
+  firebase_analytics: ^10.7.4
   flutter_dotenv: ^5.0.2
   url_launcher: ^6.0.2
   wakelock_plus: ^1.0.0+3
   flutter_advanced_switch: ^3.0.1
-  logger: ^1.3.0
+  logger: ^2.0.2+1
 
-  package_info_plus: ^4.0.2
+  package_info_plus: ^5.0.1
 
-  device_info_plus: ^9.0.2
-  uuid: ^3.0.5
+  device_info_plus: ^9.1.1
+  uuid: ^4.2.2
 
-  cached_network_image: ^3.2.3
+  cached_network_image: ^3.3.0
   launch_review: ^3.0.1
 
-  flutter_linkify: ^5.0.0
+  flutter_linkify: ^6.0.0
   intl: any
 
   bubble: 1.2.1
 
   get_it: ^7.6.0
   provider: ^6.0.1
-  flutter_phoenix: 1.0.0
+  flutter_phoenix: ^1.1.1
   collection: ^1.15.0-nullsafety.4
   json_annotation: ^4.8.1
 

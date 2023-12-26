@@ -26,7 +26,6 @@ class LoggerBloc extends ChangeNotifier {
 
   void debug(dynamic message) {
     _logger.d(message);
-    // _pushMessage(message, Level.debug);
   }
 
   void error(dynamic message, {dynamic error, StackTrace? stack, bool keepExternalStackTraces = false}) {
@@ -34,20 +33,12 @@ class LoggerBloc extends ChangeNotifier {
     if (relevantStackTraceMessages != null && !keepExternalStackTraces) {
       stack = StackTrace.fromString(relevantStackTraceMessages.join('\n'));
     }
-    _logger.e(message, error, stack);
-    // _pushMessage(message, Level.error, error, stack);
+    _logger.e(message, error: error, stackTrace: stack);
   }
 
   void info(dynamic message) {
     _logger.i(message);
-    // _pushMessage(message, Level.info);
   }
-
-  // _pushMessage(dynamic message, Level level, [dynamic error, StackTrace? stackTrace]) {
-  //   _messages.add(LogEntry(level, message, error, stackTrace));
-  //   if (_messages.length > _maxMessages) _messages.removeRange(0, _messages.length - _maxMessages);
-  //   notifyListeners();
-  // }
 
   List<LogEntry> get messages {
     return _messages;

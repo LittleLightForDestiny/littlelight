@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
@@ -9,11 +9,11 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
+import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -206,10 +206,7 @@ class BungieAuthBrowser implements OAuthBrowser {
 
   @override
   dynamic open(String url) async {
-    if (Platform.isIOS) {
-      await launch(url, forceSafariVC: true, statusBarBrightness: Brightness.light);
-    } else {
-      await launch(url, forceSafariVC: true);
-    }
+    final uri = Uri.dataFromString(url);
+    await launchUrl(uri, mode: LaunchMode.platformDefault);
   }
 }
