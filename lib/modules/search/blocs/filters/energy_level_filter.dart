@@ -35,9 +35,9 @@ class EnergyLevelFilter extends BaseItemFilter<EnergyLevelFilterOptions> with Ma
       final max = math.max(data.availableValues.max, energy);
       data.availableValues.min = min;
       data.availableValues.max = max;
-      data.value.min = min;
-      data.value.max = max;
     }
+    data.value.min = data.value.min.clamp(data.availableValues.min, data.availableValues.max);
+    data.value.max = data.value.max.clamp(data.availableValues.min, data.availableValues.max);
   }
 
   @override

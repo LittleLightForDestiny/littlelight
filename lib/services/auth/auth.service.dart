@@ -206,7 +206,7 @@ class BungieAuthBrowser implements OAuthBrowser {
 
   @override
   dynamic open(String url) async {
-    final uri = Uri.dataFromString(url);
+    final uri = Uri.parse(url);
     await launchUrl(uri, mode: LaunchMode.platformDefault);
   }
 }

@@ -30,9 +30,10 @@ class PowerLevelFilter extends BaseItemFilter<PowerLevelFilterOptions> with Mani
       final max = math.max(data.availableValues.max, power);
       data.availableValues.min = min;
       data.availableValues.max = max;
-      data.value.min = min;
-      data.value.max = max;
     }
+    data.value.min = data.value.min.clamp(data.availableValues.min, data.availableValues.max);
+    data.value.max = data.value.max.clamp(data.availableValues.min, data.availableValues.max);
+    ;
   }
 
   @override
