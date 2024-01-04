@@ -47,6 +47,12 @@ class _BusySlot {
   });
 }
 
+const DefaultLoadoutInventoryBuckets = [
+  ...InventoryBucket.armorBucketHashes,
+  ...InventoryBucket.weaponBucketHashes,
+  ...InventoryBucket.flairBucketHashes
+];
+
 class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   final BuildContext _context;
   final NotificationsBloc _notificationsBloc;
@@ -824,6 +830,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     LoadoutItemIndex loadout,
     String? characterId, {
     int? freeSlots,
+    List<int>? buckets,
   }) async {
     final character = _profileBloc.getCharacterById(characterId);
     final classType = character?.character.classType;
@@ -848,6 +855,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       toEquip: [],
       toTransfer: toEquip + toTransfer,
       freeSlots: freeSlots,
+      buckets: buckets ?? DefaultLoadoutInventoryBuckets,
     );
   }
 
@@ -855,6 +863,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     LoadoutItemIndex loadout,
     String? characterId, {
     int? freeSlots,
+    List<int>? buckets,
   }) async {
     if (characterId == null) return;
     final character = _profileBloc.getCharacterById(characterId);
@@ -880,6 +889,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       toEquip: toEquip,
       toTransfer: toTransfer,
       freeSlots: freeSlots,
+      buckets: buckets ?? DefaultLoadoutInventoryBuckets,
     );
   }
 
@@ -889,6 +899,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     int? freeSlots,
     required List<LoadoutItemInfo> toEquip,
     required List<LoadoutItemInfo> toTransfer,
+    List<int> buckets = DefaultLoadoutInventoryBuckets,
   }) async {
     final actions = <QueuedAction>[];
     final equipMods = toEquip.where((element) => element.itemPlugs.isNotEmpty);
@@ -922,5 +933,43 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     }
     _startActionQueue();
     await Future.wait(actions.map((e) => e.future.future));
+
+    final isVault = destination.characterId == null;
+    if (freeSlots == null || freeSlots == 0 || isVault) {
+      return;
+    }
+    final transferredIds = [...toTransfer, ...toEquip].map((i) => i.inventoryItem?.instanceId).whereType<String>();
+
+    final transferrableItems = _profileBloc.allInstancedItems
+        .where((item) {
+          final isOnTargetCharacter = item.characterId == destination.characterId;
+          final wasTransferred = transferredIds.contains(item.instanceId);
+          final isEquipped = item.isEquipped ?? false;
+          return isOnTargetCharacter && !wasTransferred && !isEquipped;
+        })
+        .toList()
+        .reversed;
+
+    final clearActions = <QueuedAction>[];
+
+    for (final bucketHash in buckets) {
+      final bucketDef = await manifest.getDefinition<DestinyInventoryBucketDefinition>(bucketHash);
+      final isEquippable = bucketDef?.category == BucketCategory.Equippable;
+      final bucketSize = (bucketDef?.itemCount ?? 10) - (isEquippable ? 1 : 0);
+      final itemsInBucket = transferrableItems.where((item) => item.bucketHash == bucketHash);
+      final itemsInBucketCount = itemsInBucket.length;
+      final itemsToTransferCount = (freeSlots - (bucketSize - itemsInBucketCount)).clamp(0, bucketSize);
+      final itemsToTransfer = itemsInBucket.take(itemsToTransferCount);
+      for (final item in itemsToTransfer) {
+        final action = await _addTransferToQueue(
+          item,
+          TransferDestination(TransferDestinationType.vault),
+          equip: false,
+        );
+        if (action != null) clearActions.add(action);
+      }
+    }
+    _startActionQueue();
+    await Future.wait(clearActions.map((e) => e.future.future));
   }
 }

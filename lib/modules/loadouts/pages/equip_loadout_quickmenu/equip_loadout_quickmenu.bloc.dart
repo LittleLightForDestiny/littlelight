@@ -159,9 +159,9 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
     );
 
     if (equip) {
-      inventory.equipLoadout(newLoadout, character.characterId, freeSlots: this.freeSlots);
+      inventory.equipLoadout(newLoadout, character.characterId, freeSlots: this.freeSlots, buckets: selectedBuckets);
     } else {
-      inventory.transferLoadout(newLoadout, character.characterId, freeSlots: this.freeSlots);
+      inventory.transferLoadout(newLoadout, character.characterId, freeSlots: this.freeSlots, buckets: selectedBuckets);
     }
     Navigator.of(_context).pop();
   }
