@@ -1,1 +1,2 @@
-- Fixes stack transfers with more than 1 item
+- fix some search filters being reset on inventory refresh
+- fixes free slots feature on loadouts

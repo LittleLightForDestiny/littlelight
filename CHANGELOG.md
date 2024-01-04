@@ -1,3 +1,8 @@
+## [2.0.17] - 2024-01-04
+
+- fix some search filters being reset on inventory refresh
+- fixes free slots feature on loadouts
+
 ## [2.0.16] - 2023-11-16
 
 - Fixes stack transfers with more than 1 item
