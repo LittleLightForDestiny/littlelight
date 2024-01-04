@@ -13,7 +13,7 @@ class PowerLevelConstraints {
 
 class PowerLevelFilterOptions extends BaseFilterOptions<PowerLevelConstraints> {
   PowerLevelFilterOptions([PowerLevelConstraints? value])
-      : super(value ?? PowerLevelConstraints(), availableValues: PowerLevelConstraints());
+      : super(value ?? PowerLevelConstraints(min: -9999, max: 9999), availableValues: PowerLevelConstraints());
 
   @override
   bool get available => availableValues.max > availableValues.min;

@@ -3,8 +3,8 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  app_links
   firebase_core
-  uni_links_desktop
   url_launcher_windows
 )
 

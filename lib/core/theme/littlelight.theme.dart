@@ -362,7 +362,7 @@ class LittleLightThemeData {
         return textTheme.caption.copyWith(fontSize: 16);
       });
 
-  ThemeData get materialTheme => ThemeData.from(colorScheme: colorScheme).copyWith(
+  ThemeData get materialTheme => ThemeData.from(colorScheme: colorScheme, useMaterial3: false).copyWith(
       primaryColor: primaryLayers,
       appBarTheme: _appBarTheme,
       cardColor: _cardTheme.color,

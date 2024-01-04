@@ -6,19 +6,19 @@ import 'package:provider/provider.dart';
 extension on Level {
   Color get color {
     switch (this) {
-      case Level.verbose:
-        return Colors.white;
       case Level.debug:
         return Colors.amber;
       case Level.info:
+      case Level.trace:
         return Colors.blue;
       case Level.warning:
         return Colors.orange;
       case Level.error:
+      case Level.fatal:
         return Colors.red;
-      case Level.wtf:
-        return Colors.purple;
-      case Level.nothing:
+
+      case Level.all:
+      default:
         return Colors.white;
     }
   }

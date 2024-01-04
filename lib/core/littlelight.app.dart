@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -9,7 +11,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
 import 'package:little_light/services/https_override/https_overrides.dart';
-import 'package:little_light/services/unilinks_handler/unilinks_handler.dart';
+import 'package:little_light/services/deeplinks_handler/deeplinks_handler.dart';
 import 'package:provider/provider.dart';
 
 const _router = LittleLightRouter();
@@ -22,13 +24,13 @@ class LittleLightApp extends StatefulWidget {
 }
 
 class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer {
-  UnilinksHandler unilinks = UnilinksHandler();
+  final deeplinks = DeeplinksHandler();
   @override
   void initState() {
     super.initState();
     setupHttpsOverrides();
     LittleLightNavigatorKeyContainer.navigatorKey = GlobalKey<NavigatorState>();
-    unilinks.addListener(updateUnilinks);
+    deeplinks.addListener(updateDeepLinks);
     updateSystemOverlay();
   }
 
@@ -40,23 +42,23 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
 
   @override
   void dispose() {
-    unilinks.removeListener(updateUnilinks);
+    deeplinks.removeListener(updateDeepLinks);
+    deeplinks.dispose();
     super.dispose();
   }
 
-  void updateUnilinks() {
+  void updateDeepLinks() {
     final context = LittleLightNavigatorKeyContainer.navigatorKey?.currentContext;
     if (context == null) return;
-    final currentLink = unilinks.currentLink;
+    final currentLink = deeplinks.currentLink?.toString();
     if (currentLink == null) return;
-    final unilinksRoute = RouteSettings(name: currentLink.toString());
-    Navigator.of(context).pushAndRemoveUntil(_router.getPage(unilinksRoute), (r) => false);
+    final route = RouteSettings(name: currentLink);
+    Navigator.of(context).pushAndRemoveUntil(_router.getPage(route), (r) => false);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        child: MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Little Light',
       navigatorKey: LittleLightNavigatorKeyContainer.navigatorKey,
@@ -74,7 +76,7 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
         ),
       ),
       onGenerateRoute: (route) {
-        final currentLink = unilinks.currentLink;
+        final currentLink = deeplinks.currentLink;
         if (currentLink != null) {
           final unilinksRoute = RouteSettings(name: currentLink.toString());
           return _router.getPage(unilinksRoute);
@@ -97,6 +99,6 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
         Locale('zh', 'CHT'), // Chinese
         Locale('zh', 'CHS'), // Chinese
       ],
-    ));
+    );
   }
 }

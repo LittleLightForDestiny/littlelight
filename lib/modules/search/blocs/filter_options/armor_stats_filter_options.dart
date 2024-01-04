@@ -8,7 +8,7 @@ class ArmorStatsConstraints {
 
 class ArmorStatsFilterOptions extends BaseFilterOptions<ArmorStatsConstraints> {
   ArmorStatsFilterOptions([ArmorStatsConstraints? value])
-      : super(value ?? ArmorStatsConstraints(), availableValues: ArmorStatsConstraints());
+      : super(value ?? ArmorStatsConstraints(min: -9999, max: 9999), availableValues: ArmorStatsConstraints());
 
   @override
   bool get available => availableValues.max > availableValues.min;
