@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
@@ -207,6 +208,10 @@ class BungieAuthBrowser implements OAuthBrowser {
   @override
   dynamic open(String url) async {
     final uri = Uri.parse(url);
-    await launchUrl(uri, mode: LaunchMode.platformDefault);
+    LaunchMode launchMode = LaunchMode.platformDefault;
+    if (Platform.isAndroid) {
+      launchMode = LaunchMode.externalApplication;
+    }
+    await launchUrl(uri, mode: launchMode);
   }
 }

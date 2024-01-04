@@ -16,7 +16,10 @@
          FlutterApplication and put your custom class here. -->
     <application
         android:label="@string/app_name"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:name="${applicationName}"
+        android:enableOnBackInvokedCallback="true"
+        >
         <activity
             android:theme="@style/LaunchTheme"
             android:name="io.flutter.embedding.android.FlutterActivity"
@@ -42,7 +45,9 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data
-                android:scheme="luzinha"/>
+                    android:scheme="luzinha"
+                    android:host="littlelight.club"
+                />
             </intent-filter>
         </activity>
     </application>

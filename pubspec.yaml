@@ -45,7 +45,7 @@ dependencies:
 
   bubble: 1.2.1
 
-  get_it: ^7.6.0
+  get_it: ^7.6.4
   provider: ^6.0.1
   flutter_phoenix: ^1.1.1
   collection: ^1.15.0-nullsafety.4
