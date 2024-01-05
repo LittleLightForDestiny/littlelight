@@ -19,20 +19,7 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
   }
 
   Future<String> _getManifestDBPath() async {
-    if (Platform.isWindows) {
-      try {
-        final directory = await getApplicationDocumentsDirectory();
-        final dbRoot = directory.path;
-        return "$dbRoot/$basePath/manifest.db";
-      } catch (e) {}
-      try {
-        final directory = await getApplicationSupportDirectory();
-        final dbRoot = directory.path;
-        return "$dbRoot/$basePath/manifest.db";
-      } catch (e) {}
-      return "";
-    }
-    String dbRoot = await getDatabasesPath();
+    final dbRoot = await getManifestDatabaseRootPath();
     return "$dbRoot/$basePath/manifest.db";
   }
 

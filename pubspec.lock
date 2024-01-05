@@ -773,6 +773,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.5.1"
+  protocol_registry:
+    dependency: "direct main"
+    description:
+      name: protocol_registry
+      sha256: "8bc3bc5d2700dfbba65fa6ca4b6a91754ed8c851c8ed3673db71a1b1dfb03749"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.5"
   provider:
     dependency: "direct main"
     description:
