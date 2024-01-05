@@ -38,18 +38,12 @@ abstract class StorageBase<T> with AnalyticsConsumer {
 
   setup() async {
     _fileRoot ??= await _getFileRoot();
+    print("fileRoot:$_fileRoot");
   }
 
   Future<String?> _getFileRoot() async {
     dynamic error;
     StackTrace? stack;
-    try {
-      final directory = await getApplicationDocumentsDirectory();
-      return directory.path;
-    } catch (e, stackTrace) {
-      error = e;
-      stack = stackTrace;
-    }
     try {
       final directory = await getApplicationSupportDirectory();
       return directory.path;
@@ -57,8 +51,24 @@ abstract class StorageBase<T> with AnalyticsConsumer {
       error = e;
       stack = stackTrace;
     }
+    try {
+      final directory = await getApplicationDocumentsDirectory();
+      return directory.path;
+    } catch (e, stackTrace) {
+      error = e;
+      stack = stackTrace;
+    }
     analytics.registerNonFatal(error, stack, additionalInfo: {"reason": "Coudn't find file root"});
     return null;
+  }
+
+  Future<String> getManifestDatabaseRootPath() async {
+    if (Platform.isWindows) {
+      final fileRoot = await _getFileRoot();
+      if (fileRoot != null) return fileRoot;
+    }
+    String dbRoot = await getDatabasesPath();
+    return "$dbRoot/$basePath/manifest.db";
   }
 }
 
@@ -220,7 +230,7 @@ extension StorageOperations<T> on StorageBase<T> {
       }
     }
 
-    final _dbRoot = await getDatabasesPath();
+    final _dbRoot = await getManifestDatabaseRootPath();
     if (path.isEmpty) {
       final dbDir = Directory(_dbRoot);
       final dbFiles = dbDir.listSync();

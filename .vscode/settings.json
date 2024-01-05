@@ -1,4 +1,7 @@
 {
     "dart.lineLength": 120,
     "editor.formatOnSave": true,
+    "files.associations": {
+        "iosfwd": "cpp"
+    },
 }
