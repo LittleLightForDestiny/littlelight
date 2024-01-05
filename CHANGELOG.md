@@ -1,4 +1,4 @@
-## [2.0.17] - 2024-01-04
+## [2.0.17] - 2024-01-05
 
 - fix some search filters being reset on inventory refresh
 - fixes free slots feature on loadouts
