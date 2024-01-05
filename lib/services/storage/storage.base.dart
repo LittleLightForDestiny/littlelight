@@ -68,7 +68,7 @@ abstract class StorageBase<T> with AnalyticsConsumer {
       if (fileRoot != null) return fileRoot;
     }
     String dbRoot = await getDatabasesPath();
-    return "$dbRoot/$basePath/manifest.db";
+    return dbRoot;
   }
 }
 
