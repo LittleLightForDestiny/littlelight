@@ -68,7 +68,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.13.0"
+          flutter-version: "3.16.5"
 
       - name: Create assets/_env
         run: |
@@ -132,7 +132,7 @@ jobs:
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: 2.6
+          ruby-version: 3.0
 
       - name: Download bundle dependencies
         run: |

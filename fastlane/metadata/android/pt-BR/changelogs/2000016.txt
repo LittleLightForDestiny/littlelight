@@ -1,0 +1,1 @@
+- Fixes stack transfers with more than 1 item

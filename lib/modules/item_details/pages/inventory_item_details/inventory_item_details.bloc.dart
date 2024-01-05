@@ -309,7 +309,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     final item = this.item;
     if (item == null) return;
     if (actionType == TransferActionType.Transfer) {
-      _inventoryBloc.transfer(item, destination);
+      _inventoryBloc.transfer(item, destination, stackSize: stackSize);
     } else {
       _inventoryBloc.equip(item, destination);
     }

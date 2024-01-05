@@ -79,8 +79,8 @@ class MainScreenState extends State<MainScreen> with AuthConsumer {
   @override
   Widget build(BuildContext context) {
     if (currentScreen == null) return Container();
-    return WillPopScope(
-        onWillPop: () => _exitApp(context),
+    return PopScope(
+        onPopInvoked: (_) => _exitApp(context),
         child: Scaffold(
           drawer: Container(
             child: SideMenuWidget(

@@ -339,9 +339,9 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     return defs.cast<int, T>();
   }
 
-  void closeDB() {
+  Future<void> closeDB() async {
     try {
-      _db?.close();
+      await _db?.close();
     } catch (e, stackTrace) {
       analytics.registerNonFatal(e, stackTrace);
     }

@@ -1,3 +1,20 @@
+## [2.0.17] - 2024-01-05
+
+- fix some search filters being reset on inventory refresh
+- fixes free slots feature on loadouts
+
+## [2.0.16] - 2023-11-16
+
+- Fixes stack transfers with more than 1 item
+
+## [2.0.15] - 2023-10-27
+
+- improvements in collections view and search
+
+## [2.0.14] - 2023-09-25
+
+- D2Clarity info fixes
+
 ## [2.0.13] - 2023-09-04
 
 - Fixes some login issues

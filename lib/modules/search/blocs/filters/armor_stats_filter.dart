@@ -36,9 +36,11 @@ class ArmorStatsFilter extends BaseItemFilter<ArmorStatsFilterOptions> with Mani
       _itemTotalStatsMap[instanceId] = total;
       int min = math.min(data.availableValues.min, total);
       int max = math.max(data.availableValues.max, total);
-      data.value.min = data.availableValues.min = min;
-      data.value.max = data.availableValues.max = max;
+      data.availableValues.min = min;
+      data.availableValues.max = max;
     }
+    data.value.min = data.value.min.clamp(data.availableValues.min, data.availableValues.max);
+    data.value.max = data.value.max.clamp(data.availableValues.min, data.availableValues.max);
   }
 
   @override

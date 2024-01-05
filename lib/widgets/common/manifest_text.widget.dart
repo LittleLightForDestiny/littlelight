@@ -16,20 +16,20 @@ class ManifestText<T> extends StatelessWidget with ManifestConsumer {
   final TextStyle? style;
   final TextAlign? textAlign;
   final TextDirection? textDirection;
-  final double? textScaleFactor;
 
-  ManifestText(this.definitionHash,
-      {Key? key,
-      this.uppercase = false,
-      this.textExtractor,
-      this.maxLines,
-      this.overflow,
-      this.semanticsLabel,
-      this.softWrap,
-      this.style,
-      this.textAlign,
-      this.textDirection,
-      this.textScaleFactor});
+  ManifestText(
+    this.definitionHash, {
+    Key? key,
+    this.uppercase = false,
+    this.textExtractor,
+    this.maxLines,
+    this.overflow,
+    this.semanticsLabel,
+    this.softWrap,
+    this.style,
+    this.textAlign,
+    this.textDirection,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,6 @@ class ManifestText<T> extends StatelessWidget with ManifestConsumer {
       style: style,
       textAlign: textAlign,
       textDirection: textDirection,
-      textScaleFactor: textScaleFactor,
     );
   }
 

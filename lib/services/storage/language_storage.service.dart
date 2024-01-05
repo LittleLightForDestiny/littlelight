@@ -1,8 +1,8 @@
 import 'dart:io';
+
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:sqflite/sqflite.dart';
+
 import 'language_storage.keys.dart';
 import 'storage.base.dart';
 
@@ -19,20 +19,7 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
   }
 
   Future<String> _getManifestDBPath() async {
-    if (Platform.isWindows) {
-      try {
-        final directory = await getApplicationDocumentsDirectory();
-        final dbRoot = directory.path;
-        return "$dbRoot/$basePath/manifest.db";
-      } catch (e) {}
-      try {
-        final directory = await getApplicationSupportDirectory();
-        final dbRoot = directory.path;
-        return "$dbRoot/$basePath/manifest.db";
-      } catch (e) {}
-      return "";
-    }
-    String dbRoot = await getDatabasesPath();
+    final dbRoot = await getManifestDatabaseRootPath();
     return "$dbRoot/$basePath/manifest.db";
   }
 

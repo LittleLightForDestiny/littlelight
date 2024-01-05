@@ -17,6 +17,7 @@ class ClarityItem {
   String? name;
   String? itemName;
 
+  @JsonKey(unknownEnumValue: ClarityItemType.Unknown)
   ClarityItemType? type;
   @JsonKey(fromJson: _dateFromJson, toJson: _dateToJson)
   DateTime? lastUpload;
