@@ -13,7 +13,7 @@ import 'package:little_light/shared/utils/extensions/string/remove_diacritics.da
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
 
-class LoadoutsHomeBloc extends ChangeNotifier {
+class LittleLightLoadoutsBloc extends ChangeNotifier {
   @protected
   final BuildContext context;
 
@@ -46,7 +46,7 @@ class LoadoutsHomeBloc extends ChangeNotifier {
   DateTime? _lastUpdated;
   String get lastUpdated => _lastUpdated?.toIso8601String() ?? "";
 
-  LoadoutsHomeBloc(this.context)
+  LittleLightLoadoutsBloc(this.context)
       : loadoutsBloc = context.read<LoadoutsBloc>(),
         profileBloc = context.read<ProfileBloc>(),
         manifest = context.read<ManifestService>(),

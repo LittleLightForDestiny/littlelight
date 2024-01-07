@@ -9,4 +9,8 @@ extension DestinyCharacterInfoData on DestinyCharacterInfo {
         classDef?.displayProperties?.name ??
         "";
   }
+
+  String getGenderedRaceName(DestinyRaceDefinition? raceDef) {
+    return raceDef?.genderedRaceNamesByGenderHash?[this.character.genderHash] ?? raceDef?.displayProperties?.name ?? "";
+  }
 }
