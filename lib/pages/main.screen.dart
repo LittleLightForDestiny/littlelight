@@ -16,6 +16,8 @@ import 'package:little_light/widgets/side_menu/side_menu.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 
+final MainScreenScaffoldGlobalKey = GlobalKey<ScaffoldState>();
+
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
   @override
@@ -82,6 +84,7 @@ class MainScreenState extends State<MainScreen> with AuthConsumer {
     return PopScope(
         onPopInvoked: (_) => _exitApp(context),
         child: Scaffold(
+          key: MainScreenScaffoldGlobalKey,
           drawer: Container(
             child: SideMenuWidget(
               onPageChange: (page) {
