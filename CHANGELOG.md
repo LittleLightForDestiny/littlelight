@@ -1,3 +1,8 @@
+## [2.0.18] - 2024-01-08
+
+- Fixes some issues on the side menu prompting to exit the app
+- Fixes loadouts moving less items than it was supposed to when using free slots
+
 ## [2.0.17] - 2024-01-05
 
 - fix some search filters being reset on inventory refresh

@@ -943,9 +943,8 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final transferrableItems = _profileBloc.allInstancedItems
         .where((item) {
           final isOnTargetCharacter = item.characterId == destination.characterId;
-          final wasTransferred = transferredIds.contains(item.instanceId);
           final isEquipped = item.isEquipped ?? false;
-          return isOnTargetCharacter && !wasTransferred && !isEquipped;
+          return isOnTargetCharacter && !isEquipped;
         })
         .toList()
         .reversed;
@@ -959,7 +958,11 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       final itemsInBucket = transferrableItems.where((item) => item.bucketHash == bucketHash);
       final itemsInBucketCount = itemsInBucket.length;
       final itemsToTransferCount = (freeSlots - (bucketSize - itemsInBucketCount)).clamp(0, bucketSize);
-      final itemsToTransfer = itemsInBucket.take(itemsToTransferCount);
+      final itemsToTransfer = itemsInBucket
+          .where(
+            (i) => !transferredIds.contains(i.instanceId),
+          )
+          .take(itemsToTransferCount);
       for (final item in itemsToTransfer) {
         final action = await _addTransferToQueue(
           item,

@@ -1,2 +1,2 @@
-- fix some search filters being reset on inventory refresh
-- fixes free slots feature on loadouts
+- Fixes some issues on the side menu prompting to exit the app
+- Fixes loadouts moving less items than it was supposed to when using free slots
