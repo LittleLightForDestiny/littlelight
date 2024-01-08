@@ -963,11 +963,6 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
             (i) => !transferredIds.contains(i.instanceId),
           )
           .take(itemsToTransferCount);
-      print("${bucketDef?.displayProperties?.name}");
-      print("items in bucket: ${itemsInBucketCount}");
-      print("free slots: ${freeSlots}");
-      print("bucket Size: ${bucketSize}");
-      print("items to transfer: ${itemsToTransferCount}");
       for (final item in itemsToTransfer) {
         final action = await _addTransferToQueue(
           item,
