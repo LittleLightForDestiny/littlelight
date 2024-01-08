@@ -112,6 +112,6 @@ jobs:
 
       - name: Publish MSIX to the Microsoft Store
         if: steps.variables.outputs.track == 'production'
-        run: msstore publish -v -i /build/windows/x64/runner/Release
+        run: msstore publish -v -i ./build/windows/x64/runner/Release
 
       
