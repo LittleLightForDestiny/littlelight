@@ -18,6 +18,7 @@ import 'package:little_light/modules/triumphs/pages/home/triumphs_home.page.dart
 import 'package:little_light/modules/duplicated_items/pages/duplicated_items/duplicated_items.page.dart';
 import 'package:little_light/pages/languages/languages.page_route.dart';
 import 'package:little_light/modules/vendors/pages/home/vendors_home.page.dart';
+import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/utils/platform_data.dart';
 import 'package:little_light/widgets/side_menu/profile_info.widget.dart';
@@ -148,25 +149,21 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
                 child: label)));
   }
 
-  open(BuildContext context, Widget screen) {
-    Navigator.of(context).pop();
+  void open(BuildContext context, Widget screen) {
+    MainScreenScaffoldGlobalKey.currentState?.closeDrawer();
     widget.onPageChange?.call(screen);
   }
 
-  pushRoute(BuildContext context, MaterialPageRoute route) {
-    Navigator.of(context).pop();
+  void pushRoute(BuildContext context, MaterialPageRoute route) {
+    MainScreenScaffoldGlobalKey.currentState?.closeDrawer();
     Navigator.of(context).push(route);
   }
 
-  addAccount(BuildContext context) async {
+  void addAccount(BuildContext context) async {
     auth.openBungieLogin(true);
   }
 
-  changeLanguage(BuildContext context) {
+  void changeLanguage(BuildContext context) {
     pushRoute(context, LanguagesPageRoute());
-  }
-
-  manageAccounts(BuildContext context) {
-    // open(context, AccountsScreen());
   }
 }
