@@ -37,7 +37,14 @@ class DestinyLoadoutsView extends StatelessWidget {
     if (loadouts.isEmpty) return [];
     return [
       IntrinsicHeightScrollSection(
-        itemBuilder: (context, index) => DestinyLoadoutListItemWidget(loadouts[index], character: character),
+        itemBuilder: (context, index) {
+          final loadout = loadouts[index];
+          return DestinyLoadoutListItemWidget(
+            loadouts[index],
+            character: character,
+            onTap: () => bloc.openLoadout(loadout),
+          );
+        },
         itemsPerRow: MediaQueryHelper(context).responsiveValue<int>(1, tablet: 2, desktop: 3),
         itemCount: loadouts.length,
       ),

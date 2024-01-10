@@ -2,23 +2,11 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
+import 'package:little_light/models/destiny_loadout.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
+import 'package:little_light/modules/loadouts/pages/destiny_loadout_details/destiny_loadout_details.page_route.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:provider/provider.dart';
-
-class DestinyLoadoutInfo {
-  final String characterId;
-  final int index;
-  final DestinyLoadoutComponent loadout;
-  final Map<int, InventoryItemInfo> items;
-
-  DestinyLoadoutInfo({
-    required this.characterId,
-    required this.index,
-    required this.loadout,
-    required this.items,
-  });
-}
 
 class DestinyLoadoutsBloc extends ChangeNotifier {
   final BuildContext context;
@@ -68,28 +56,30 @@ class DestinyLoadoutsBloc extends ChangeNotifier {
     final loadouts = <DestinyLoadoutInfo>[];
     for (int i = 0; i < characterLoadouts.length; i++) {
       final characterLoadout = characterLoadouts[i];
-      final items = await _mapLoadoutItems(characterLoadout);
       final characterId = character.characterId;
+      if (characterId == null) continue;
+      final loadout = await DestinyLoadoutInfo.fromInventory(
+        profileBloc,
+        manifest,
+        characterLoadout,
+        characterId,
+        i,
+      );
+      final items = loadout.items;
       if (items == null) continue;
       if (items.isEmpty) continue;
-      if (characterId == null) continue;
-      final loadout = DestinyLoadoutInfo(
-        items: items,
-        index: i,
-        loadout: characterLoadout,
-        characterId: characterId,
-      );
+
       loadouts.add(loadout);
     }
     if (loadouts.isEmpty) return null;
     return loadouts;
   }
 
-  Future<Map<int, InventoryItemInfo>?> _mapLoadoutItems(DestinyLoadoutComponent loadout) async {
+  Future<Map<int, DestinyLoadoutItemInfo>?> _mapLoadoutItems(DestinyLoadoutComponent loadout) async {
     final loadoutItems = loadout.items;
     if (loadoutItems == null) return null;
     if (loadoutItems.isEmpty) return null;
-    final Map<int, InventoryItemInfo> items = {};
+    final Map<int, DestinyLoadoutItemInfo> items = {};
     for (final loadoutItem in loadoutItems) {
       final instanceId = loadoutItem.itemInstanceId;
       if (instanceId == null) continue;
@@ -98,7 +88,7 @@ class DestinyLoadoutsBloc extends ChangeNotifier {
       final definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       final bucketHash = definition?.inventory?.bucketTypeHash;
       if (bucketHash == null) continue;
-      items[bucketHash] = item;
+      items[bucketHash] = await DestinyLoadoutItemInfo.fromInventoryItem(manifest, item, loadoutItem);
     }
     return items;
   }
@@ -108,5 +98,10 @@ class DestinyLoadoutsBloc extends ChangeNotifier {
   List<DestinyLoadoutInfo>? getLoadoutsFromCharacter(DestinyCharacterInfo character) {
     final loadouts = _loadouts[character.characterId];
     return loadouts;
+  }
+
+  void openLoadout(DestinyLoadoutInfo loadout) {
+    Navigator.of(context)
+        .push(DestinyLoadoutDetailsPageRoute(characterId: loadout.characterId, loadoutIndex: loadout.index));
   }
 }

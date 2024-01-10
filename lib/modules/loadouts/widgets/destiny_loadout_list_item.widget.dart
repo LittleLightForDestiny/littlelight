@@ -2,7 +2,7 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/loadouts/pages/home/destiny_loadouts.bloc.dart';
+import 'package:little_light/models/destiny_loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/character_data.dart';
@@ -14,67 +14,51 @@ import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 class DestinyLoadoutListItemWidget extends StatelessWidget {
   final DestinyLoadoutInfo loadout;
   final DestinyCharacterInfo character;
+  final VoidCallback? onTap;
   const DestinyLoadoutListItemWidget(
     this.loadout, {
     super.key,
     required this.character,
+    this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     final colorDef = context.definition<DestinyLoadoutColorDefinition>(loadout.loadout.colorHash);
-    return Container(
-      child: Stack(children: [
-        Positioned.fill(child: QueuedNetworkImage.fromBungie(colorDef?.colorImagePath, fit: BoxFit.cover)),
-        Container(
-          padding: EdgeInsets.all(4),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              buildLoadoutTitle(context),
-              buildItems(context),
-            ],
-          ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(4),
+      child: Container(
+        child: Stack(
+          children: [
+            Positioned.fill(child: QueuedNetworkImage.fromBungie(colorDef?.colorImagePath, fit: BoxFit.cover)),
+            Container(
+              padding: EdgeInsets.all(4),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  buildLoadoutTitle(context),
+                  Container(height: 4),
+                  buildItems(context),
+                ],
+              ),
+            ),
+            Positioned.fill(
+                child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(4),
+                onTap: onTap,
+                child: Container(),
+              ),
+            )),
+          ],
         ),
-      ]),
+      ),
     );
   }
 
-  Widget buildHeader(BuildContext context) {
-    return IntrinsicHeight(
-        child: Row(
-      children: [
-        buildLoadoutIcon(context),
-        Container(
-          width: 4,
-        ),
-        Expanded(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              buildLoadoutTitle(context),
-              buildItems(context),
-            ],
-          ),
-        )
-      ],
-    ));
-  }
-
-  Widget buildLoadoutIcon(BuildContext context) {
-    final iconDef = context.definition<DestinyLoadoutIconDefinition>(loadout.loadout.iconHash);
-    final colorDef = context.definition<DestinyLoadoutColorDefinition>(loadout.loadout.colorHash);
-    return Container(
-        margin: EdgeInsets.all(4),
-        decoration: BoxDecoration(border: Border.all(width: 2, color: context.theme.onSurfaceLayers.layer1)),
-        child: Stack(children: [
-          Positioned.fill(child: QueuedNetworkImage.fromBungie(colorDef?.colorImagePath)),
-          QueuedNetworkImage.fromBungie(iconDef?.iconImagePath)
-        ]));
-  }
-
   Widget buildLoadoutTitle(BuildContext context) {
+    final iconDef = context.definition<DestinyLoadoutIconDefinition>(loadout.loadout.iconHash);
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(4),
@@ -86,10 +70,22 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: ManifestText<DestinyLoadoutNameDefinition>(
-        loadout.loadout.nameHash,
-        textExtractor: (def) => def.name?.toUpperCase(),
-        style: context.textTheme.itemNameHighDensity,
+      child: Row(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            child: QueuedNetworkImage.fromBungie(iconDef?.iconImagePath),
+          ),
+          Container(
+            width: 4,
+          ),
+          ManifestText<DestinyLoadoutNameDefinition>(
+            loadout.loadout.nameHash,
+            textExtractor: (def) => def.name?.toUpperCase(),
+            style: context.textTheme.itemNameHighDensity,
+          ),
+        ],
       ),
     );
   }
@@ -138,20 +134,16 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
 
   Widget buildItems(BuildContext context) {
     final items = loadout.items;
+    if (items == null) return Container();
     if (items.isEmpty) return Container();
     return Column(
       children: [
         Row(
           children: [
-            Expanded(child: buildLoadoutIcon(context)),
             Expanded(child: buildItem(context, InventoryBucket.subclass)),
             Expanded(child: buildItem(context, InventoryBucket.kineticWeapons)),
             Expanded(child: buildItem(context, InventoryBucket.energyWeapons)),
             Expanded(child: buildItem(context, InventoryBucket.powerWeapons)),
-          ],
-        ),
-        Row(
-          children: [
             Expanded(child: buildItem(context, InventoryBucket.helmet)),
             Expanded(child: buildItem(context, InventoryBucket.gauntlets)),
             Expanded(child: buildItem(context, InventoryBucket.chestArmor)),
@@ -164,8 +156,13 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
   }
 
   Widget buildItem(BuildContext context, int bucketHash) {
-    final item = loadout.items[bucketHash];
+    final item = loadout.items?[bucketHash];
     if (item == null) return Container();
-    return Container(padding: EdgeInsets.all(4), child: InventoryItemIcon(item));
+    return Container(
+        padding: EdgeInsets.all(1),
+        child: InventoryItemIcon(
+          item,
+          borderSize: 1,
+        ));
   }
 }
