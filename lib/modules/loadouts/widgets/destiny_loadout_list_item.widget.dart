@@ -8,8 +8,11 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/character_data.dart';
 import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
+
+const _notFoundIconHash = 29505215;
 
 class DestinyLoadoutListItemWidget extends StatelessWidget {
   final DestinyLoadoutInfo loadout;
@@ -157,12 +160,27 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
 
   Widget buildItem(BuildContext context, int bucketHash) {
     final item = loadout.items?[bucketHash];
-    if (item == null) return Container();
+    if (item == null) return buildItemNotFound(context);
     return Container(
         padding: EdgeInsets.all(1),
         child: InventoryItemIcon(
           item,
           borderSize: 1,
+        ));
+  }
+
+  Widget buildItemNotFound(BuildContext context) {
+    return AspectRatio(
+        aspectRatio: 1,
+        child: Container(
+          width: 72,
+          height: 72,
+          padding: EdgeInsets.all(16),
+          decoration: BoxDecoration(border: Border.all(color: context.theme.onSurfaceLayers.layer3, width: 2)),
+          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+            _notFoundIconHash,
+            color: context.theme.errorLayers.layer3,
+          ),
         ));
   }
 }

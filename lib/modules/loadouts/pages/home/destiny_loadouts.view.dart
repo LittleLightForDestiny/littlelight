@@ -1,11 +1,17 @@
+import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/modules/loadouts/pages/home/destiny_loadouts.bloc.dart';
 import 'package:little_light/modules/loadouts/widgets/destiny_loadout_list_item.widget.dart';
+import 'package:little_light/modules/loadouts/widgets/loadouts_character_header.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/shared/utils/extensions/character_data.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sections/base_scrollable_section.dart';
+import 'package:little_light/shared/widgets/multisection_scrollview/sections/fixed_height_scrollable_section.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/sections/intrinsic_height_scrollable_section.dart';
+import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 class DestinyLoadoutsView extends StatelessWidget {
   final DestinyLoadoutsBloc bloc;
@@ -36,6 +42,7 @@ class DestinyLoadoutsView extends StatelessWidget {
     if (loadouts == null) return [];
     if (loadouts.isEmpty) return [];
     return [
+      FixedHeightScrollSection(64, itemBuilder: (context, index) => LoadoutCharacterHeaderWidget(character)),
       IntrinsicHeightScrollSection(
         itemBuilder: (context, index) {
           final loadout = loadouts[index];
@@ -48,6 +55,7 @@ class DestinyLoadoutsView extends StatelessWidget {
         itemsPerRow: MediaQueryHelper(context).responsiveValue<int>(1, tablet: 2, desktop: 3),
         itemCount: loadouts.length,
       ),
+      FixedHeightScrollSection(32, itemBuilder: (_, _2) => Container()),
     ];
   }
 }

@@ -16,7 +16,8 @@ class DestinyLoadoutItemWidget extends StatelessWidget {
         padding: EdgeInsets.all(8),
         child: Row(children: [
           buildItemIcon(context),
-          buildItemMods(context),
+          Container(width: 8),
+          Expanded(child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: buildItemMods(context))),
         ]));
   }
 
@@ -37,9 +38,9 @@ class DestinyLoadoutItemWidget extends StatelessWidget {
       return buildModIcons(context, ["shader", "intrinsics", "skins"]);
     }
     if (def?.isSubclass ?? false) {
-      return Column(children: [
-        buildModIcons(context, ["movement", "class_abilities", "supers", "fragments"]),
-        buildModIcons(context, ["movement", "class_abilities", "supers", "aspects", "melee", "grenade"])
+      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        buildModIcons(context, ["supers", "fragments", "trinkets"]),
+        buildModIcons(context, ["movement", "class_abilities", "supers", "aspects", "melee", "grenade", "totems"])
       ]);
     }
     return Container();
