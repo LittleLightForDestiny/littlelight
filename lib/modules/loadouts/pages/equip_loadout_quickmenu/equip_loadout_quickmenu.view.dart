@@ -2,6 +2,8 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/models/destiny_loadout.dart';
+import 'package:little_light/modules/loadouts/widgets/destiny_loadout_list_item.widget.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_small_list_item.widget.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -176,15 +178,24 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
 
   Widget buildLoadoutList(BuildContext context) {
     final loadouts = state.loadouts;
+    final destinyLoadouts = state.destinyLoadouts ?? <DestinyLoadoutInfo>[];
     if (loadouts == null) return Container(height: 256, child: LoadingAnimWidget());
-    return Column(
-        children: loadouts
-            .map((e) => LoadoutSmallListItemWidget(
-                  e,
-                  classFilter: state.character.character.classType,
-                  bucketFilter: state.selectedBuckets,
-                  onTap: () => bloc.loadoutSelected(e),
-                ))
-            .toList());
+    return Column(children: [
+      ...loadouts
+          .map((e) => LoadoutSmallListItemWidget(
+                e,
+                classFilter: state.character.character.classType,
+                bucketFilter: state.selectedBuckets,
+                onTap: () => bloc.loadoutSelected(e),
+              ))
+          .toList(),
+      ...destinyLoadouts.map((loadout) => Container(
+            padding: EdgeInsets.all(4),
+            child: DestinyLoadoutListItemWidget(
+              loadout,
+              onTap: () => bloc.destinyLoadoutSelected(loadout),
+            ),
+          ))
+    ]);
   }
 }

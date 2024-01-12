@@ -15,6 +15,7 @@ import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/bungie_api.exception.dart';
+import 'package:little_light/models/destiny_loadout.dart';
 import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_info.dart';
@@ -891,6 +892,10 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
       freeSlots: freeSlots,
       buckets: buckets ?? DefaultLoadoutInventoryBuckets,
     );
+  }
+
+  Future<void> equipDestinyLoadout(DestinyLoadoutInfo loadout) async {
+    await _profileBloc.equipLoadout(loadout);
   }
 
   Future<void> _transferLoadout(

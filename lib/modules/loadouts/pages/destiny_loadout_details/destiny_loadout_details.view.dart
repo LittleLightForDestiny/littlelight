@@ -30,9 +30,13 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
           Container(
             color: context.theme.surfaceLayers.layer1,
             padding: EdgeInsets.only(top: viewPadding.top + kToolbarHeight),
-            child: SingleChildScrollView(
-              child: buildItems(context),
-            ),
+            child: Column(children: [
+              Expanded(
+                  child: SingleChildScrollView(
+                child: buildItems(context),
+              )),
+              buildFooter(context)
+            ]),
           ),
           Positioned(
             top: 0,
@@ -153,5 +157,36 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
             Text("Item not found".translate(context)),
           ],
         ));
+  }
+
+  Widget buildFooter(BuildContext context) {
+    final viewPadding = context.mediaQuery.viewPadding;
+    return Stack(
+      children: [
+        Positioned.fill(
+            child: ManifestImageWidget<DestinyLoadoutColorDefinition>(
+          state.loadout?.loadout.colorHash,
+          urlExtractor: (def) => def.colorImagePath,
+          fit: BoxFit.cover,
+        )),
+        Container(
+          padding: EdgeInsets.all(8) + EdgeInsets.only(bottom: viewPadding.bottom),
+          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+            ElevatedButton(
+              onPressed: () => bloc.importToLittleLight(),
+              child: Text(
+                "Import to Little Light".translate(context),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () => bloc.equipLoadout(),
+              child: Text(
+                "Equip Loadout".translate(context),
+              ),
+            )
+          ]),
+        ),
+      ],
+    );
   }
 }

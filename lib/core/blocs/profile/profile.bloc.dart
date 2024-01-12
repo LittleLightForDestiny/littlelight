@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
+import 'package:little_light/models/destiny_loadout.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -482,6 +483,51 @@ class ProfileBloc extends ChangeNotifier
     allItems.insert(newlyEquippedIndex + 1, currentlyEquipped ?? itemInfo);
     allItems.removeAt(newlyEquippedIndex);
     _updateHelpers();
+    notifyListeners();
+    _lastLocalChange = DateTime.now().toUtc();
+  }
+
+  Future<void> equipLoadout(DestinyLoadoutInfo loadoutInfo) async {
+    final itemInstanceId = loadoutInfo.index;
+    final characterId = loadoutInfo.characterId;
+    await bungieAPI.equipLoadout(itemInstanceId, characterId);
+    final items = loadoutInfo.items ?? <int, DestinyLoadoutItemInfo>{};
+    for (final item in items.values) {
+      final instanceId = item.instanceId;
+      if (instanceId == null) continue;
+      final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
+      final itemInfo = allInstancedItems.firstWhereOrNull((i) => i.instanceId == instanceId);
+      final bucketHash = def?.inventory?.bucketTypeHash;
+      final currentlyEquipped = allItems.firstWhereOrNull((i) =>
+          i.bucketHash == bucketHash && //
+          i.characterId == characterId &&
+          (i.instanceInfo?.isEquipped ?? false));
+      if (itemInfo == null) continue;
+      if (instanceId != currentlyEquipped?.instanceId) {
+        currentlyEquipped?.instanceInfo?.isEquipped = false;
+        itemInfo.instanceInfo?.isEquipped = true;
+        itemInfo.characterId = characterId;
+        itemInfo.bucketHash = bucketHash;
+        final currentlyEquippedIndex = allItems.indexOf(currentlyEquipped ?? itemInfo);
+        final newlyEquippedIndex = allItems.indexOf(itemInfo);
+        allItems.insert(currentlyEquippedIndex + 1, itemInfo);
+        allItems.removeAt(currentlyEquippedIndex);
+        allItems.insert(newlyEquippedIndex + 1, currentlyEquipped ?? itemInfo);
+        allItems.removeAt(newlyEquippedIndex);
+      }
+
+      final plugHashes = item.sockets?.map((e) => e.plugHash).toList();
+      if (plugHashes == null) continue;
+      for (int socketIndex = 0; socketIndex < plugHashes.length; socketIndex++) {
+        final plugHash = plugHashes[socketIndex];
+        if (plugHash == null) continue;
+        final canApply = await isPlugAvailableToApplyForFreeViaApi(context, item, socketIndex, plugHash);
+        if (!canApply) continue;
+        final socket = itemInfo.sockets?.elementAtOrNull(socketIndex);
+        if (socket == null) continue;
+        socket.plugHash = plugHash;
+      }
+    }
     notifyListeners();
     _lastLocalChange = DateTime.now().toUtc();
   }

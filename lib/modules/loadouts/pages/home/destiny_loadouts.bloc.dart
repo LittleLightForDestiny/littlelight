@@ -1,9 +1,7 @@
-import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/models/destiny_loadout.dart';
-import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/modules/loadouts/pages/destiny_loadout_details/destiny_loadout_details.page_route.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:provider/provider.dart';
@@ -73,24 +71,6 @@ class DestinyLoadoutsBloc extends ChangeNotifier {
     }
     if (loadouts.isEmpty) return null;
     return loadouts;
-  }
-
-  Future<Map<int, DestinyLoadoutItemInfo>?> _mapLoadoutItems(DestinyLoadoutComponent loadout) async {
-    final loadoutItems = loadout.items;
-    if (loadoutItems == null) return null;
-    if (loadoutItems.isEmpty) return null;
-    final Map<int, DestinyLoadoutItemInfo> items = {};
-    for (final loadoutItem in loadoutItems) {
-      final instanceId = loadoutItem.itemInstanceId;
-      if (instanceId == null) continue;
-      final item = profileBloc.getItemByInstanceId(instanceId);
-      if (item == null) continue;
-      final definition = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      final bucketHash = definition?.inventory?.bucketTypeHash;
-      if (bucketHash == null) continue;
-      items[bucketHash] = await DestinyLoadoutItemInfo.fromInventoryItem(manifest, item, loadoutItem);
-    }
-    return items;
   }
 
   List<DestinyCharacterInfo>? get characters => profileBloc.characters;

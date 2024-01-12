@@ -58,7 +58,7 @@ class LoadoutsHomeView extends StatelessWidget {
                   ],
                 ),
               ),
-              buildFooter(context),
+              renderOnlyOnLittleLightLoadouts(context, buildFooter(context)),
             ].whereType<Widget>().toList(),
           ),
         ),
@@ -74,14 +74,16 @@ class LoadoutsHomeView extends StatelessWidget {
             Scaffold.of(context).openDrawer();
           },
         ),
-        actions: <Widget>[
-          buildReorderButton(context),
-          buildSearchButton(context),
-          IconButton(
-            icon: const Icon(FontAwesomeIcons.download),
-            onPressed: () => littleLightLoadoutsBloc.reloadLoadouts(),
-          )
-        ],
+        actions: [
+          renderOnlyOnLittleLightLoadouts(context, buildReorderButton(context)),
+          renderOnlyOnLittleLightLoadouts(context, buildSearchButton(context)),
+          renderOnlyOnLittleLightLoadouts(
+              context,
+              IconButton(
+                icon: const Icon(FontAwesomeIcons.download),
+                onPressed: () => littleLightLoadoutsBloc.reloadLoadouts(),
+              )),
+        ].whereType<Widget>().toList(),
         bottom: buildTabBar(context),
         title: buildTitle(context));
   }
@@ -149,6 +151,23 @@ class LoadoutsHomeView extends StatelessWidget {
             ? const Icon(FontAwesomeIcons.check)
             : Transform.rotate(angle: pi / 2, child: const Icon(FontAwesomeIcons.rightLeft)),
         onPressed: () => littleLightLoadoutsBloc.toggleReordering());
+  }
+
+  Widget? renderOnlyOnLittleLightLoadouts(BuildContext context, Widget? widget) {
+    final tab = DefaultTabController.maybeOf(context);
+    if (tab == null) return null;
+
+    final tabAnimation = tab.animation;
+    if (tabAnimation == null) return null;
+
+    if (widget == null) return null;
+
+    return AnimatedBuilder(
+        animation: tabAnimation,
+        builder: (context, _) {
+          if (tab.index > 0) return Container();
+          return widget;
+        });
   }
 
   Widget? buildFooter(BuildContext context) {

@@ -6,6 +6,7 @@ import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
+import 'package:little_light/models/destiny_loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/blocs/scoped_value_repository/scoped_value_repository.bloc.dart';
@@ -49,6 +50,9 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
   List<LoadoutItemIndex>? _loadouts;
   List<LoadoutItemIndex>? get loadouts => _loadouts;
 
+  List<DestinyLoadoutInfo>? _destinyLoadouts;
+  List<DestinyLoadoutInfo>? get destinyLoadouts => _destinyLoadouts;
+
   List<int>? _selectedBuckets;
   List<int>? get selectedBuckets => _selectedBuckets;
 
@@ -77,14 +81,41 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
     valueStore.storeValue(IncludedItemTypes(LoadoutIncludedItemTypes.Subclass, true));
     loadoutsBloc.addListener(_filter);
     valueStore.addListener(_filter);
+    profileBloc.addListener(_updateDestinyLoadouts);
     _filter();
+    _updateDestinyLoadouts();
   }
 
   @override
   void dispose() {
     loadoutsBloc.removeListener(_filter);
     valueStore.removeListener(_filter);
+    profileBloc.removeListener(_updateDestinyLoadouts);
     super.dispose();
+  }
+
+  void _updateDestinyLoadouts() async {
+    this._destinyLoadouts = await _getDestinyLoadouts();
+    notifyListeners();
+  }
+
+  Future<List<DestinyLoadoutInfo>?> _getDestinyLoadouts() async {
+    final characterId = character.characterId;
+    if (!equip) return null;
+    if (characterId == null) return null;
+    final loadouts = profileBloc.getCharacterById(characterId)?.loadouts;
+    if (loadouts == null) {
+      return null;
+    }
+    final mappedLoadouts = <DestinyLoadoutInfo>[];
+    for (final (i, l) in loadouts.indexed) {
+      final loadout = await DestinyLoadoutInfo.fromInventory(profileBloc, manifest, l, characterId, i);
+      final items = loadout.items;
+      if (items == null) continue;
+      if (items.isEmpty) continue;
+      mappedLoadouts.add(loadout);
+    }
+    return mappedLoadouts;
   }
 
   void _filter() async {
@@ -163,6 +194,11 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
     } else {
       inventory.transferLoadout(newLoadout, character.characterId, freeSlots: this.freeSlots, buckets: selectedBuckets);
     }
+    Navigator.of(_context).pop();
+  }
+
+  void destinyLoadoutSelected(DestinyLoadoutInfo loadout) async {
+    inventory.equipDestinyLoadout(loadout);
     Navigator.of(_context).pop();
   }
 

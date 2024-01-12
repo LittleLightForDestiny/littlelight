@@ -152,6 +152,23 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return response.response;
   }
 
+  Future<int?> equipLoadout(int loadoutIndex, String characterId) async {
+    BungieNetToken? token = await auth.getCurrentToken();
+    GroupUserInfoCard? membership = await auth.getMembership();
+    final membershipType = membership?.membershipType;
+    if (token == null || membershipType == null) {
+      throw NotAuthorizedException(_credentialsMissingException);
+    }
+    Int32Response response = await Destiny2.equipLoadout(
+      Client(token: token),
+      DestinyLoadoutActionRequest()
+        ..loadoutIndex = loadoutIndex
+        ..characterId = characterId
+        ..membershipType = membershipType,
+    );
+    return response.response;
+  }
+
   Future<int?> changeLockState(String itemId, String characterId, bool locked) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();

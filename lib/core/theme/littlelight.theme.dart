@@ -367,6 +367,7 @@ class LittleLightThemeData {
       appBarTheme: _appBarTheme,
       cardColor: _cardTheme.color,
       cardTheme: _cardTheme,
+      materialTapTargetSize: MaterialTapTargetSize.padded,
       textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
         foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3),

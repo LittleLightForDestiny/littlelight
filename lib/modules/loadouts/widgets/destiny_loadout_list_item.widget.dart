@@ -1,12 +1,9 @@
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
-import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/destiny_loadout.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
-import 'package:little_light/shared/utils/extensions/character_data.dart';
-import 'package:little_light/shared/widgets/character/character_icon.widget.dart';
 import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
@@ -16,12 +13,11 @@ const _notFoundIconHash = 29505215;
 
 class DestinyLoadoutListItemWidget extends StatelessWidget {
   final DestinyLoadoutInfo loadout;
-  final DestinyCharacterInfo character;
+
   final VoidCallback? onTap;
   const DestinyLoadoutListItemWidget(
     this.loadout, {
     super.key,
-    required this.character,
     this.onTap,
   });
 
@@ -93,48 +89,6 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
     );
   }
 
-  Widget buildCharacterIcon(BuildContext context) {
-    return Container(
-      width: 36,
-      height: 36,
-      child: CharacterIconWidget(
-        character,
-        hideClassIcon: true,
-        borderWidth: 1,
-      ),
-    );
-  }
-
-  Widget buildCharacterInfo(BuildContext context) {
-    final classDef = context.definition<DestinyClassDefinition>(character.character.classHash);
-    final raceDef = context.definition<DestinyRaceDefinition>(character.character.raceHash);
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        gradient: LinearGradient(
-          colors: [
-            context.theme.surfaceLayers.layer0.withOpacity(.7),
-            context.theme.surfaceLayers.layer0.withOpacity(0)
-          ],
-        ),
-      ),
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            character.getGenderedClassName(classDef),
-            style: context.textTheme.itemNameMediumDensity,
-          ),
-          Text(
-            character.getGenderedRaceName(raceDef),
-            style: context.textTheme.itemNameMediumDensity,
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget buildItems(BuildContext context) {
     final items = loadout.items;
     if (items == null) return Container();
@@ -173,10 +127,11 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
     return AspectRatio(
         aspectRatio: 1,
         child: Container(
-          width: 72,
-          height: 72,
-          padding: EdgeInsets.all(16),
-          decoration: BoxDecoration(border: Border.all(color: context.theme.onSurfaceLayers.layer3, width: 2)),
+          padding: EdgeInsets.all(8),
+          decoration: BoxDecoration(
+            color: context.theme.surfaceLayers.layer1,
+            border: Border.all(color: context.theme.onSurfaceLayers.layer3, width: 2),
+          ),
           child: ManifestImageWidget<DestinyInventoryItemDefinition>(
             _notFoundIconHash,
             color: context.theme.errorLayers.layer3,
