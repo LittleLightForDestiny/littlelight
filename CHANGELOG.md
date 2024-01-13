@@ -1,3 +1,7 @@
+## [2.0.19] - 2024-01-13
+
+- fixes some layout issues on progress
+
 ## [2.0.18] - 2024-01-08
 
 - Fixes some issues on the side menu prompting to exit the app
