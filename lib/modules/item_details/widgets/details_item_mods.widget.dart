@@ -5,7 +5,7 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 import 'package:little_light/modules/item_details/widgets/details_plug_info.widget.dart';
 import 'package:little_light/shared/widgets/containers/persistent_collapsible_container.dart';
 import 'package:little_light/shared/widgets/sockets/mod_icon.widget.dart';
-import 'package:little_light/shared/widgets/sockets/paginated_plug_grid_view.dart';
+import 'package:little_light/shared/widgets/scrollable_grid_view/paginated_plug_grid_view.dart';
 import 'package:little_light/shared/widgets/sockets/perk_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
@@ -79,7 +79,7 @@ class DetailsItemModsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(4).copyWith(topLeft: Radius.zero),
       ),
       padding: EdgeInsets.all(8),
-      child: PaginatedPlugGridView.withExpectedItemSize(
+      child: PaginatedScrollableGridView.withExpectedItemSize(
         plugHashes,
         itemBuilder: (plugHash) {
           if (plugHash == null) return Container();
@@ -93,7 +93,7 @@ class DetailsItemModsWidget extends StatelessWidget {
             onTap: () => bloc.toggleSelection(socketIndex, plugHash),
           );
         },
-        expectedItemSize: PerkIconWidget.maxIconSize,
+        expectedCrossAxisSize: PerkIconWidget.maxIconSize,
         initialFocus: initialFocus,
       ),
     );

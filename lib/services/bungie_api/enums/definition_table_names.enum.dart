@@ -55,6 +55,7 @@ class DefinitionTableNames {
     DestinyLoadoutIconDefinition: (json) => DestinyLoadoutIconDefinition.fromJson(json),
     DestinyLoadoutColorDefinition: (json) => DestinyLoadoutColorDefinition.fromJson(json),
     DestinyLoadoutNameDefinition: (json) => DestinyLoadoutNameDefinition.fromJson(json),
+    DestinyLoadoutConstantsDefinition: (json) => DestinyLoadoutConstantsDefinition.fromJson(json),
   };
 
   static Map<Type, String> fromClass = {
@@ -109,5 +110,6 @@ class DefinitionTableNames {
     DestinyLoadoutIconDefinition: "DestinyLoadoutIconDefinition",
     DestinyLoadoutColorDefinition: "DestinyLoadoutColorDefinition",
     DestinyLoadoutNameDefinition: "DestinyLoadoutNameDefinition",
+    DestinyLoadoutConstantsDefinition: "DestinyLoadoutConstantsDefinition",
   };
 }

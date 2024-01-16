@@ -175,10 +175,7 @@ class CharacterContextMenu extends BaseOverlayWidget {
   Widget? buildCreateLoadout(BuildContext context) {
     final character = state.character;
     if (character == null) return null;
-    return CreateLoadoutWidget(
-      character: character,
-      onClose: () => Navigator.of(context).pop(),
-    );
+    return CreateLoadoutWidget(character: character);
   }
 
   Widget? buildCurrentAverage(BuildContext context) {

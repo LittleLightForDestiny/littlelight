@@ -1,39 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/shared/widgets/sockets/plug_grid_view.dart';
+import 'package:little_light/shared/widgets/scrollable_grid_view/scrollable_grid_view.base.dart';
 
-class PaginatedPlugGridView extends PlugGridView {
-  final int? initialFocus;
+class PaginatedScrollableGridView<T> extends ScrollableGridViewBase<T> {
+  final int initialFocus;
 
-  const PaginatedPlugGridView.withItemsPerRow(
-    List<int> plugHashes, {
-    required ItemBuilder itemBuilder,
+  const PaginatedScrollableGridView.withExpectedItemSize(
+    List<T> records, {
+    Key? super.key,
+    super.maxRows = 3,
+    super.gridSpacing = 8,
+    required super.itemBuilder,
+    required super.expectedCrossAxisSize,
+    this.initialFocus = 0,
+    double? super.itemMainAxisExtent,
+  }) : super.withExpectedItemSize(records);
+
+  const PaginatedScrollableGridView.withItemsPerRow(
+    List<T> records, {
+    Key? key,
+    int maxRows = 3,
+    required ScrollableGridViewItemBuilder<T> itemBuilder,
     required int itemsPerRow,
     double gridSpacing = 8,
-    int maxRows = 3,
-    this.initialFocus,
+    double? itemMainAxisExtent,
+    this.initialFocus = 0,
   }) : super.withItemsPerRow(
-          plugHashes,
+          records,
+          key: key,
           itemBuilder: itemBuilder,
           itemsPerRow: itemsPerRow,
           gridSpacing: gridSpacing,
           maxRows: maxRows,
-        );
-
-  const PaginatedPlugGridView.withExpectedItemSize(
-    List<int?> plugHashes, {
-    required ItemBuilder itemBuilder,
-    required double expectedItemSize,
-    double gridSpacing = 8,
-    int maxRows = 3,
-    this.initialFocus,
-  }) : super.withExpectedItemSize(
-          plugHashes,
-          itemBuilder: itemBuilder,
-          expectedItemSize: expectedItemSize,
-          gridSpacing: gridSpacing,
-          maxRows: maxRows,
+          itemMainAxisExtent: itemMainAxisExtent,
         );
 
   @override
@@ -44,14 +44,10 @@ class PaginatedPlugGridView extends PlugGridView {
         return buildScrollableGrid(context, specs);
       }
       specs = getSpecs(constraints.maxWidth - 32);
-      int? initialIndex;
-      final initialFocus = this.initialFocus;
-      if (initialFocus != null) {
-        initialIndex = (initialFocus / specs.itemsPerPage).floor();
-      }
+      final initialIndex = (initialFocus / specs.itemsPerPage).floor();
       return DefaultTabController(
           length: specs.pageCount,
-          initialIndex: initialIndex?.clamp(0, specs.pageCount) ?? 0,
+          initialIndex: initialIndex.clamp(0, specs.pageCount),
           child: SizedBox(
             height: specs.tabHeight,
             child: Row(children: [

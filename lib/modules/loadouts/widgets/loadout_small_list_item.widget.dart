@@ -119,7 +119,7 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
     return Container(
         width: 32,
         height: 32,
-        margin: EdgeInsets.only(right: 2),
+        margin: EdgeInsets.only(right: 1),
         child: InventoryItemIcon(
           item,
           borderSize: .5,

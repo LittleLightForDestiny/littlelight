@@ -10,12 +10,10 @@ import 'package:provider/provider.dart';
 
 class CreateLoadoutWidget extends StatelessWidget {
   final DestinyCharacterInfo character;
-  final VoidCallback onClose;
 
   const CreateLoadoutWidget({
     Key? key,
     required this.character,
-    required this.onClose,
   }) : super(key: key);
 
   @override
@@ -62,7 +60,6 @@ class CreateLoadoutWidget extends StatelessWidget {
             onPressed: () async {
               final bloc = context.read<CharacterContextMenuBloc>();
               bloc.openLoadoutCreation(context, character, true);
-              onClose();
             },
           )),
           SizedBox(width: 4),
@@ -73,7 +70,16 @@ class CreateLoadoutWidget extends StatelessWidget {
             onPressed: () {
               final bloc = context.read<CharacterContextMenuBloc>();
               bloc.openLoadoutCreation(context, character, false);
-              onClose();
+            },
+          )),
+          SizedBox(width: 4),
+          Expanded(
+              child: ElevatedButton(
+            style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+            child: Text("Destiny".translate(context).toUpperCase()),
+            onPressed: () {
+              final bloc = context.read<CharacterContextMenuBloc>();
+              bloc.saveDestinyLoadout(context, character);
             },
           ))
         ]),

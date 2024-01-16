@@ -488,9 +488,9 @@ class ProfileBloc extends ChangeNotifier
   }
 
   Future<void> equipLoadout(DestinyLoadoutInfo loadoutInfo) async {
-    final itemInstanceId = loadoutInfo.index;
+    final loadoutIndex = loadoutInfo.index;
     final characterId = loadoutInfo.characterId;
-    await bungieAPI.equipLoadout(itemInstanceId, characterId);
+    await bungieAPI.equipLoadout(loadoutIndex, characterId);
     final items = loadoutInfo.items ?? <int, DestinyLoadoutItemInfo>{};
     for (final item in items.values) {
       final instanceId = item.instanceId;
@@ -528,6 +528,26 @@ class ProfileBloc extends ChangeNotifier
         socket.plugHash = plugHash;
       }
     }
+    notifyListeners();
+    _lastLocalChange = DateTime.now().toUtc();
+  }
+
+  Future<void> deleteLoadout(DestinyLoadoutInfo loadout) async {
+    final loadoutIndex = loadout.index;
+    final characterId = loadout.characterId;
+    await bungieAPI.deleteLoadout(loadoutIndex, characterId);
+    final character = getCharacterById(characterId);
+    character?.loadouts?[loadoutIndex] = DestinyLoadoutComponent();
+    notifyListeners();
+    _lastLocalChange = DateTime.now().toUtc();
+  }
+
+  Future<void> snapshotLoadout(DestinyLoadoutInfo loadout) async {
+    final loadoutIndex = loadout.index;
+    final characterId = loadout.characterId;
+    await bungieAPI.snapshotLoadout(loadoutIndex, characterId, loadout.loadout);
+    final character = getCharacterById(characterId);
+    character?.loadouts?[loadoutIndex] = loadout.loadout;
     notifyListeners();
     _lastLocalChange = DateTime.now().toUtc();
   }

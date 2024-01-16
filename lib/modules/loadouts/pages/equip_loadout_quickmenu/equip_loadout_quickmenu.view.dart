@@ -186,14 +186,15 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
                 e,
                 classFilter: state.character.character.classType,
                 bucketFilter: state.selectedBuckets,
-                onTap: () => bloc.loadoutSelected(e),
+                onTap: () => bloc.equipLittleLightLoadout(e),
               ))
           .toList(),
       ...destinyLoadouts.map((loadout) => Container(
             padding: EdgeInsets.all(4),
             child: DestinyLoadoutListItemWidget(
               loadout,
-              onTap: () => bloc.destinyLoadoutSelected(loadout),
+              onTap: () => bloc.equipDestinyLoadout(loadout),
+              onLongPress: () => bloc.editDestinyLoadout(loadout),
             ),
           ))
     ]);

@@ -169,6 +169,43 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return response.response;
   }
 
+  Future<int?> deleteLoadout(int loadoutIndex, String characterId) async {
+    BungieNetToken? token = await auth.getCurrentToken();
+    GroupUserInfoCard? membership = await auth.getMembership();
+    final membershipType = membership?.membershipType;
+    if (token == null || membershipType == null) {
+      throw NotAuthorizedException(_credentialsMissingException);
+    }
+    Int32Response response = await Destiny2.clearLoadout(
+      Client(token: token),
+      DestinyLoadoutActionRequest()
+        ..loadoutIndex = loadoutIndex
+        ..characterId = characterId
+        ..membershipType = membershipType,
+    );
+    return response.response;
+  }
+
+  Future<int?> snapshotLoadout(int loadoutIndex, String characterId, DestinyLoadoutComponent loadout) async {
+    BungieNetToken? token = await auth.getCurrentToken();
+    GroupUserInfoCard? membership = await auth.getMembership();
+    final membershipType = membership?.membershipType;
+    if (token == null || membershipType == null) {
+      throw NotAuthorizedException(_credentialsMissingException);
+    }
+    Int32Response response = await Destiny2.snapshotLoadout(
+      Client(token: token),
+      DestinyLoadoutUpdateActionRequest()
+        ..loadoutIndex = loadoutIndex
+        ..characterId = characterId
+        ..membershipType = membershipType
+        ..colorHash = loadout.colorHash
+        ..iconHash = loadout.iconHash
+        ..nameHash = loadout.nameHash,
+    );
+    return response.response;
+  }
+
   Future<int?> changeLockState(String itemId, String characterId, bool locked) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();

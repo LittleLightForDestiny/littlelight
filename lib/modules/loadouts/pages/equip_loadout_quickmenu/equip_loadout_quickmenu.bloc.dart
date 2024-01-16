@@ -7,6 +7,7 @@ import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/models/destiny_loadout.dart';
+import 'package:little_light/modules/loadouts/pages/destiny_loadout_details/destiny_loadout_details.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/shared/blocs/scoped_value_repository/scoped_value_repository.bloc.dart';
@@ -182,7 +183,7 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
     return validSlots;
   }
 
-  void loadoutSelected(LoadoutItemIndex loadout) async {
+  void equipLittleLightLoadout(LoadoutItemIndex loadout) async {
     final newLoadout = await loadout.duplicateWithFilters(
       manifest,
       classFilter: character.character.classType,
@@ -197,9 +198,16 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
     Navigator.of(_context).pop();
   }
 
-  void destinyLoadoutSelected(DestinyLoadoutInfo loadout) async {
+  void equipDestinyLoadout(DestinyLoadoutInfo loadout) async {
     inventory.equipDestinyLoadout(loadout);
     Navigator.of(_context).pop();
+  }
+
+  void editDestinyLoadout(DestinyLoadoutInfo loadout) async {
+    Navigator.of(_context).pushReplacement(DestinyLoadoutDetailsPageRoute(
+      loadoutIndex: loadout.index,
+      characterId: loadout.characterId,
+    ));
   }
 
   void cancel() {

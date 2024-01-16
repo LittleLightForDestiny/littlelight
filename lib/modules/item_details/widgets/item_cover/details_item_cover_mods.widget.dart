@@ -5,7 +5,7 @@ import 'package:little_light/modules/item_details/widgets/details_item_mods.widg
 import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_persistent_collapsible_container.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/widgets/sockets/mod_icon.widget.dart';
-import 'package:little_light/shared/widgets/sockets/paginated_plug_grid_view.dart';
+import 'package:little_light/shared/widgets/scrollable_grid_view/paginated_plug_grid_view.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -124,7 +124,7 @@ class DetailsItemCoverModsWidget extends DetailsItemModsWidget {
         borderRadius: BorderRadius.circular(4).copyWith(topLeft: Radius.zero),
       ),
       padding: EdgeInsets.all(8 * pixelSize),
-      child: PaginatedPlugGridView.withExpectedItemSize(
+      child: PaginatedScrollableGridView.withExpectedItemSize(
         plugHashes,
         itemBuilder: (plugHash) {
           if (plugHash == null) return Container();
@@ -138,7 +138,7 @@ class DetailsItemCoverModsWidget extends DetailsItemModsWidget {
             onTap: () => bloc.toggleSelection(socketIndex, plugHash),
           );
         },
-        expectedItemSize: 96 * pixelSize,
+        expectedCrossAxisSize: 96 * pixelSize,
         gridSpacing: 4 * pixelSize,
         initialFocus: initialFocus,
       ),

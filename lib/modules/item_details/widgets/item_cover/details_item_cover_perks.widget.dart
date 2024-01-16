@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_perks.widget.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
-import 'package:little_light/shared/widgets/sockets/paginated_plug_grid_view.dart';
+import 'package:little_light/shared/widgets/scrollable_grid_view/paginated_plug_grid_view.dart';
 import 'package:little_light/shared/widgets/sockets/perk_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
@@ -148,7 +148,7 @@ class DetailsItemCoverPerksWidget extends DetailsItemPerksWidget {
       duration: _animationDuration,
       key: Key("perk options $socketIndex"),
       padding: EdgeInsets.all(8 * pixelSize),
-      child: PaginatedPlugGridView.withExpectedItemSize(
+      child: PaginatedScrollableGridView.withExpectedItemSize(
         plugHashes,
         itemBuilder: (plugHash) {
           if (plugHash == null) return Container();
@@ -163,7 +163,7 @@ class DetailsItemCoverPerksWidget extends DetailsItemPerksWidget {
             wishlistIconSize: 28 * pixelSize,
           );
         },
-        expectedItemSize: 80 * pixelSize,
+        expectedCrossAxisSize: 80 * pixelSize,
         maxRows: 1,
       ),
     );
