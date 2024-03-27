@@ -151,26 +151,27 @@ class CoreActivityRankItemWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
             ),
             margin: EdgeInsets.only(bottom: 2),
-            padding: EdgeInsets.all(4),
+            padding: EdgeInsets.all(2),
             child: Row(children: [
               Expanded(
                   child: Text(
                 (step?.stepName ?? "").toUpperCase(),
-                style: context.textTheme.itemNameHighDensity,
+                style: context.textTheme.itemNameMediumDensity,
                 overflow: TextOverflow.fade,
                 softWrap: false,
               )),
               Text("  ${currentLevel + 1}" + (levelCap > 0 ? "/$totalSteps" : ""),
-                  style: context.textTheme.itemNameHighDensity)
+                  style: context.textTheme.itemNameMediumDensity)
             ])),
-        Container(
+        Expanded(
+            child: Container(
+          alignment: Alignment.centerLeft,
           padding: EdgeInsets.symmetric(horizontal: 4),
           child: Text(
             definition?.displayProperties?.name ?? "",
             style: context.textTheme.caption,
           ),
-        ),
-        Expanded(child: Container()),
+        )),
         buildProgressBar(
           context,
           label: "Total progress".translate(
@@ -220,7 +221,7 @@ class CoreActivityRankItemWidget extends StatelessWidget {
         ]),
         Container(
           margin: EdgeInsets.only(top: 2),
-          height: 6,
+          height: 5,
           color: context.theme.surfaceLayers.layer2,
           alignment: Alignment.centerLeft,
           child: FractionallySizedBox(
