@@ -1,3 +1,7 @@
+## [2.0.20] - 2024-03-27
+
+- Fixes a visual bug on ranks
+
 ## [2.0.19] - 2024-01-13
 
 - fixes some layout issues on progress

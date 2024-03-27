@@ -1,1 +1,1 @@
-- fixes some layout issues on progress
+- Fixes a visual bug on ranks
