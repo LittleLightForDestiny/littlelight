@@ -8,6 +8,7 @@ import 'package:little_light/shared/widgets/containers/persistent_collapsible_co
 import 'package:little_light/shared/widgets/sockets/perk_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
+import 'package:little_light/shared/widgets/integrations/clarity/clarity_plug_info.widget.dart';
 
 class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
   final DestinyItemSocketCategoryDefinition category;
@@ -50,38 +51,42 @@ class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
     final itemHash = state.itemHash;
     if (itemHash == null) return Container();
     if (state.isEquipped(socketIndex, plugHash) == false) return Container();
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        SizedBox(
-            width: 64,
-            child: PerkIconWidget(
-              plugItemHash: plugHash,
-              itemHash: itemHash,
-              selected: state.isSelected(socketIndex, plugHash),
-              equipped: state.isEquipped(socketIndex, plugHash),
-              onTap: () => bloc.toggleSelection(socketIndex, plugHash),
-            )),
-        SizedBox(width: 16),
-        Expanded(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            ManifestText<DestinyInventoryItemDefinition>(
-              plugHash,
-              uppercase: true,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            Container(height: 4),
-            ManifestText<DestinyInventoryItemDefinition>(
-              plugHash,
-              textExtractor: (def) => def.displayProperties?.description,
-              softWrap: true,
-              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
-            ),
-          ],
-        ))
-      ],
-    );
+    return Column(children: <Widget>[
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+              width: 64,
+              child: PerkIconWidget(
+                plugItemHash: plugHash,
+                itemHash: itemHash,
+                selected: state.isSelected(socketIndex, plugHash),
+                equipped: state.isEquipped(socketIndex, plugHash),
+                onTap: () => bloc.toggleSelection(socketIndex, plugHash),
+              )),
+          SizedBox(width: 16),
+          Expanded(
+              child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              ManifestText<DestinyInventoryItemDefinition>(
+                plugHash,
+                uppercase: true,
+                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              Container(height: 4),
+              ManifestText<DestinyInventoryItemDefinition>(
+                plugHash,
+                textExtractor: (def) => def.displayProperties?.description,
+                softWrap: true,
+                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+              ),
+            ],
+          ))
+        ],
+      ),
+      Container(height: 4),
+      ClarityPlugInfoWidget(plugHash),
+    ]);
   }
 }
