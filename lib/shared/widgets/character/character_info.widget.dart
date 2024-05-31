@@ -253,8 +253,7 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
               artifactPower == 0
                   ? Container()
                   : Text(" +$artifactPower",
-                      style:
-                          context.textTheme.subtitle.copyWith(color: LittleLightTheme.of(context).upgradeLayers.layer1))
+                      style: context.textTheme.subtitle.copyWith(color: context.theme.upgradeLayers.layer1))
             ],
           )
         ]);

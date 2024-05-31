@@ -1,4 +1,3 @@
-
 import 'package:bungie_api/models/destiny_presentation_node_definition.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +20,7 @@ class CategoryBreadcrumbWidget extends StatelessWidget implements PreferredSizeW
     return Container(
         constraints: const BoxConstraints.expand(height: 32),
         child: Material(
-            color: LittleLightTheme.of(context).secondarySurfaceLayers.layer2,
+            color: context.theme.secondarySurfaceLayers.layer2,
             elevation: 0,
             child: SingleChildScrollView(
                 scrollDirection: Axis.horizontal,

@@ -12,9 +12,8 @@ class WishlistsData {
       case WishlistTag.GodPVE:
       case WishlistTag.GodPVP:
         return BoxDecoration(
-            border: Border.all(color: LittleLightTheme.of(context).achievementLayers, width: 1),
-            gradient: RadialGradient(
-                radius: 1, colors: [getBgColor(context, tag), LittleLightTheme.of(context).achievementLayers]));
+            border: Border.all(color: context.theme.achievementLayers, width: 1),
+            gradient: RadialGradient(radius: 1, colors: [getBgColor(context, tag), context.theme.achievementLayers]));
 
       case WishlistTag.Controller:
         return BoxDecoration(

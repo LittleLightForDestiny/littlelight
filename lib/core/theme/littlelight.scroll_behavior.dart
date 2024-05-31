@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 
 class LittleLightScrollBehaviour extends ScrollBehavior {
   @override
@@ -10,7 +11,7 @@ class LittleLightScrollBehaviour extends ScrollBehavior {
     }
     return GlowingOverscrollIndicator(
       axisDirection: details.direction,
-      color: Theme.of(context).primaryColor,
+      color: context.theme.primaryLayers.layer0,
       child: child,
     );
   }

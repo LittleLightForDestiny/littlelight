@@ -16,7 +16,7 @@ class LoadoutBackgroundItemWidget extends StatelessWidget {
       child: buildEmblemBackground(context),
       decoration: BoxDecoration(
           border: Border.all(
-        color: LittleLightTheme.of(context).onSurfaceLayers.layer2,
+        color: context.theme.onSurfaceLayers.layer2,
         width: 1,
       )),
     );

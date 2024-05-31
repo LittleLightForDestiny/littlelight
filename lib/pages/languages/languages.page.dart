@@ -130,7 +130,7 @@ class _LanguagesPageState extends State<LanguagesPage> {
       !canDelete
           ? Container()
           : Material(
-              color: LittleLightTheme.of(context).colorScheme.error,
+              color: context.theme.colorScheme.error,
               borderRadius: BorderRadius.circular(30),
               child: InkWell(
                   borderRadius: BorderRadius.circular(30),

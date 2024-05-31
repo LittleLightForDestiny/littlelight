@@ -202,7 +202,7 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos
 
 SPEC CHECKSUMS:
-  app_links: 4481ed4d71f384b0c3ae5016f4633aa73d32ff67
+  app_links: 10e0a0ab602ffaf34d142cd4862f29d34b303b2a
   device_info_plus: 5401765fde0b8d062a2f8eb65510fb17e77cf07f
   Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
   firebase_analytics: 687a47ef9af9c5a8a9fc612c100987f843d0a281

@@ -126,7 +126,7 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
             Row(children: [
               Expanded(child: Text("Artifact bonus power:".translate(context))),
               Text("+${(bonusPower + bonusPowerProgress).toStringAsFixed(2)}",
-                  style: context.textTheme.subtitle.copyWith(color: LittleLightTheme.of(context).upgradeLayers.layer1)),
+                  style: context.textTheme.subtitle.copyWith(color: context.theme.upgradeLayers.layer1)),
             ]),
             SizedBox(height: 5),
             _buildBonusPowerProgressBar(context, bonusPower, bonusPowerProgress)
