@@ -270,7 +270,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     String? where;
     if (parameters != null && parameters.isNotEmpty) {
       where = parameters.map((p) {
-        return "UPPER(json) LIKE \"%${p.toUpperCase()}%\"";
+        return "UPPER(json) LIKE UPPER(\"%$p%\")";
       }).join(" AND ");
     }
     if (tableName == null) {
