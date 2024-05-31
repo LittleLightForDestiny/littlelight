@@ -69,7 +69,6 @@ class InitialPageStateNotifier
   }
 
   Future<void> _initLoading() async {
-    print('_initLoading');
     _loading = true;
     notifyListeners();
     await setupServices();
