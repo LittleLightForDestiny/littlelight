@@ -12,14 +12,14 @@ import 'package:little_light/shared/widgets/scrollable_grid_view/paginated_plug_
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 
-import 'destiny_loadout_details.bloc.dart';
+import 'create_destiny_loadout_from_equipped.bloc.dart';
 
 const _notFoundIconHash = 29505215;
 
-class DestinyLoadoutDetailsView extends StatelessWidget {
-  final DestinyLoadoutDetailsBloc bloc;
-  final DestinyLoadoutDetailsBloc state;
-  const DestinyLoadoutDetailsView({
+class CreateDestinyLoadoutFromEquippedView extends StatelessWidget {
+  final CreateDestinyLoadoutFromEquippedBloc bloc;
+  final CreateDestinyLoadoutFromEquippedBloc state;
+  const CreateDestinyLoadoutFromEquippedView({
     super.key,
     required this.bloc,
     required this.state,
@@ -278,7 +278,7 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
       );
 
   Widget buildItems(BuildContext context) {
-    final items = state.loadout?.items;
+    final items = state.items;
     if (items == null || items.isEmpty) return Container();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -329,27 +329,11 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
       children: [
-        actionButton(
-          context,
-          label: "Delete".translate(context),
-          color: context.theme.errorLayers,
-          onTap: () => bloc.deleteLoadout(),
-        ),
-        actionButton(
-          context,
-          label: "Import to Little Light".translate(context),
-          onTap: () => bloc.importToLittleLight(),
-        ),
-        actionButton(
-          context,
-          label: "Equip loadout".translate(context),
-          onTap: () => bloc.equipLoadout(),
-        ),
         if (state.canSave)
           actionButton(
             context,
-            label: "Save changes".translate(context),
-            onTap: () => bloc.saveChanges(),
+            label: "Save Loadout".translate(context),
+            onTap: () => bloc.saveLoadout(),
           ),
       ],
     );

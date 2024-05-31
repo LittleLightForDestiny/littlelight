@@ -71,7 +71,7 @@ class LoadoutItemSocketControllerBloc extends SocketControllerBloc<LoadoutItemIn
   Future<bool> loadCanApplyPlug(int socketIndex, int plugHash) async {
     final item = this.item;
     if (item == null) return false;
-    final canApply = await isPlugAvailableToApplyForFreeViaApi(context, item, socketIndex, plugHash);
+    final canApply = await isPlugAvailableToApplyForFreeViaApi(manifest, item, socketIndex, plugHash);
     if (!canApply) return false;
     return true;
   }

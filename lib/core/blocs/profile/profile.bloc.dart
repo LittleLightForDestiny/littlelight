@@ -521,7 +521,7 @@ class ProfileBloc extends ChangeNotifier
       for (int socketIndex = 0; socketIndex < plugHashes.length; socketIndex++) {
         final plugHash = plugHashes[socketIndex];
         if (plugHash == null) continue;
-        final canApply = await isPlugAvailableToApplyForFreeViaApi(context, item, socketIndex, plugHash);
+        final canApply = await isPlugAvailableToApplyForFreeViaApi(manifest, item, socketIndex, plugHash);
         if (!canApply) continue;
         final socket = itemInfo.sockets?.elementAtOrNull(socketIndex);
         if (socket == null) continue;
@@ -548,6 +548,32 @@ class ProfileBloc extends ChangeNotifier
     await bungieAPI.snapshotLoadout(loadoutIndex, characterId, loadout.loadout);
     final character = getCharacterById(characterId);
     character?.loadouts?[loadoutIndex] = loadout.loadout;
+    notifyListeners();
+    _lastLocalChange = DateTime.now().toUtc();
+  }
+
+  Future<void> updateLoadoutIdentifiers(
+    DestinyLoadoutInfo loadout, {
+    int? colorHash,
+    int? nameHash,
+    int? iconHash,
+  }) async {
+    final loadoutIndex = loadout.index;
+    final characterId = loadout.characterId;
+    await bungieAPI.updateLoadoutIdentifiers(
+      loadoutIndex,
+      characterId,
+      loadout.loadout,
+      colorHash: colorHash,
+      nameHash: nameHash,
+      iconHash: iconHash,
+    );
+    final character = getCharacterById(characterId);
+    final currentLoadout = character?.loadouts?[loadoutIndex];
+    if (currentLoadout == null) return;
+    currentLoadout.colorHash = colorHash;
+    currentLoadout.iconHash = iconHash;
+    currentLoadout.nameHash = nameHash;
     notifyListeners();
     _lastLocalChange = DateTime.now().toUtc();
   }

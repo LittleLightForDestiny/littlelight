@@ -59,6 +59,11 @@ class DestinyLoadoutDetailsBloc extends ChangeNotifier {
     notifyListeners();
   }
 
+  bool get canSave =>
+      selectedNameHash != loadout?.loadout.nameHash || //
+      selectedIconHash != loadout?.loadout.iconHash ||
+      selectedColorHash != loadout?.loadout.colorHash;
+
   DestinyLoadoutDetailsBloc(
     BuildContext this.context, {
     required this.characterId,
@@ -69,14 +74,29 @@ class DestinyLoadoutDetailsBloc extends ChangeNotifier {
     _init();
   }
 
-  _init() async {
+  _init() {
+    _initLoadout();
+    _initConstants();
+    profile.addListener(_initLoadout);
+  }
+
+  dispose() {
+    super.dispose();
+    profile.removeListener(_initLoadout);
+  }
+
+  _initLoadout() async {
     final character = profile.getCharacterById(characterId);
     final loadout = character?.loadouts?[loadoutIndex];
     if (loadout == null) return;
     final loadoutInfo = await DestinyLoadoutInfo.fromInventory(profile, manifest, loadout, characterId, loadoutIndex);
-    final loadoutConstants = await manifest.getDefinition<DestinyLoadoutConstantsDefinition>(1);
     this._character = character;
     this._loadout = loadoutInfo;
+    notifyListeners();
+  }
+
+  _initConstants() async {
+    final loadoutConstants = await manifest.getDefinition<DestinyLoadoutConstantsDefinition>(1);
     this._loadoutConstants = loadoutConstants;
     notifyListeners();
   }
@@ -95,7 +115,7 @@ class DestinyLoadoutDetailsBloc extends ChangeNotifier {
       for (int i = 0; i < sockets.length; i++) {
         final plugHash = sockets[i].plugHash;
         if (plugHash == null) continue;
-        final canApply = await isPlugAvailableToApplyForFreeViaApi(context, item, i, plugHash);
+        final canApply = await isPlugAvailableToApplyForFreeViaApi(manifest, item, i, plugHash);
         if (!canApply) continue;
         socketPlugs[i] = plugHash;
       }
@@ -119,6 +139,17 @@ class DestinyLoadoutDetailsBloc extends ChangeNotifier {
     final loadout = _loadout;
     if (loadout == null) return;
     await inventory.equipDestinyLoadout(loadout);
+  }
+
+  void saveChanges() async {
+    final loadout = _loadout;
+    if (loadout == null) return;
+    await profile.updateLoadoutIdentifiers(
+      loadout,
+      nameHash: selectedNameHash,
+      iconHash: selectedIconHash,
+      colorHash: selectedColorHash,
+    );
   }
 
   void deleteLoadout() async {

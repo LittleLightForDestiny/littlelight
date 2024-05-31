@@ -418,7 +418,7 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     action.start();
     final plugs = <int, int>{};
     for (final p in action.plugs.entries) {
-      final canApply = await isPlugAvailableToApplyForFreeViaApi(_context, item, p.key, p.value);
+      final canApply = await isPlugAvailableToApplyForFreeViaApi(manifest, item, p.key, p.value);
       if (canApply) plugs[p.key] = p.value;
     }
     notification?.setPlugs(plugs);

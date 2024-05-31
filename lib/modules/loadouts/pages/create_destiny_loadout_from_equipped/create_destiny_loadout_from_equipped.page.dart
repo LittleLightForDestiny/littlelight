@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'destiny_loadout_details.bloc.dart';
-import 'destiny_loadout_details.view.dart';
+import 'create_destiny_loadout_from_equipped.bloc.dart';
+import 'create_destiny_loadout_from_equipped.view.dart';
 
-class DestinyLoadoutDetailsPage extends StatelessWidget {
+class CreateDestinyLoadoutFromEquippedPage extends StatelessWidget {
   final String characterId;
   final int loadoutIndex;
-  const DestinyLoadoutDetailsPage({
+  const CreateDestinyLoadoutFromEquippedPage({
     super.key,
     required this.characterId,
     required this.loadoutIndex,
@@ -18,15 +18,15 @@ class DestinyLoadoutDetailsPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (context) => DestinyLoadoutDetailsBloc(
+            create: (context) => CreateDestinyLoadoutFromEquippedBloc(
                   context,
                   characterId: characterId,
                   loadoutIndex: loadoutIndex,
                 ))
       ],
-      builder: (context, _) => DestinyLoadoutDetailsView(
-        bloc: context.read<DestinyLoadoutDetailsBloc>(),
-        state: context.watch<DestinyLoadoutDetailsBloc>(),
+      builder: (context, _) => CreateDestinyLoadoutFromEquippedView(
+        bloc: context.read<CreateDestinyLoadoutFromEquippedBloc>(),
+        state: context.watch<CreateDestinyLoadoutFromEquippedBloc>(),
       ),
     );
   }
