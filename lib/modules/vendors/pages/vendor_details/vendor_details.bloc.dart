@@ -38,6 +38,19 @@ class VendorDetailsBloc extends ChangeNotifier {
     this._sales = sales;
     this._items = items;
     notifyListeners();
+    _loadVendorComponents();
+  }
+
+  void _loadVendorComponents() async {
+    await _vendorsBloc.loadVendorComponents(characterId, vendorHash);
+    final categories = _vendorsBloc.categoriesFor(characterId, vendorHash);
+    final sales = _vendorsBloc.salesFor(characterId, vendorHash);
+    final items = _vendorsBloc.itemsFor(characterId, vendorHash);
+    this._categories = categories;
+    this._sales = sales;
+    this._items = items;
+    final item = items?.values.where((i) => i.itemHash == 3055790362);
+    notifyListeners();
   }
 
   bool isCategoryVisible(DestinyVendorCategory category) {
