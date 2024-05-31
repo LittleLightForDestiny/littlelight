@@ -1,3 +1,10 @@
+## [2.0.21] - 2024-05-31
+
+- Fixes a bug in armor stat filters
+- Added clarity insights to exotic armor intrinsics
+- Fixes crafting pattern progress missing for Fang of Ir Yut and Song of Ir Yut
+- Fixes vendor perks
+
 ## [2.0.20] - 2024-03-27
 
 - Fixes a visual bug on ranks
