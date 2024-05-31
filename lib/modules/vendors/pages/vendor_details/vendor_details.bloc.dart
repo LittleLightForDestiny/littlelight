@@ -49,7 +49,6 @@ class VendorDetailsBloc extends ChangeNotifier {
     this._categories = categories;
     this._sales = sales;
     this._items = items;
-    final item = items?.values.where((i) => i.itemHash == 3055790362);
     notifyListeners();
   }
 
