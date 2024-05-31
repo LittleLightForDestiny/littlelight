@@ -111,7 +111,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
   Widget membershipButton(BuildContext context, GeneralUser bungieNetUser, GroupUserInfoCard membership) {
     var plat = PlatformData.getPlatform(membership.membershipType ?? BungieMembershipType.ProtectedInvalidEnumValue);
     return Container(
-        color: Theme.of(context).colorScheme.secondary,
+        color: context.theme.secondarySurfaceLayers.layer1,
         padding: const EdgeInsets.all(8).copyWith(bottom: 0),
         child: Material(
             color: plat.color,

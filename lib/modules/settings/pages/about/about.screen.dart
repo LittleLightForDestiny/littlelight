@@ -298,7 +298,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
         .map((l) => l.name)
         .join("/"));
     return Container(
-        color: Theme.of(context).colorScheme.secondaryContainer,
+        color: context.theme.secondarySurfaceLayers.layer0,
         padding: const EdgeInsets.all(4),
         child: Row(
           children: flags + [Container(width: 4), languageNames],
