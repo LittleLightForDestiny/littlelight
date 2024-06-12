@@ -24,8 +24,8 @@ dependencies:
   bungie_api: 13.18.0
   shimmer: ^3.0.0
   timeago: ^3.0.1
-  firebase_crashlytics: ^3.4.8
-  firebase_analytics: ^10.7.4
+
+  firebase_analytics: ^11.0.1
   flutter_dotenv: ^5.0.2
   url_launcher: ^6.0.2
   wakelock_plus: ^1.0.0+3
@@ -37,7 +37,7 @@ dependencies:
   device_info_plus: ^10.1.0
 
   cached_network_image: ^3.3.0
-  launch_review: ^3.0.1
+  in_app_review: ^2.0.9
 
   flutter_linkify: ^6.0.0
 
@@ -51,6 +51,7 @@ dependencies:
 
   app_links: ^6.1.1
   protocol_registry: ^0.0.5
+  firebase_crashlytics: ^4.0.1
 
 dev_dependencies:
   build_runner: ^2.1.7
