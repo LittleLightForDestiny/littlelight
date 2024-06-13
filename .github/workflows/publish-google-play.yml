@@ -65,6 +65,11 @@ jobs:
         with:
           ref: ${{ steps.variables.outputs.head_ref }}
 
+      - name: Setup Java
+        uses: actions/setup-java
+        with:
+          java-version: 17
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
