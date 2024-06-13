@@ -186,22 +186,6 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
     return translations;
   }
 
-  Future<List<LanguageInfo>> getManifestSizes() async {
-    final languages = this.languages;
-    for (final language in languages) {
-      final file = await languageStorage(language.code).getManifestDatabaseFile();
-      final stat = await file?.stat();
-      final exists = await file?.exists() ?? false;
-      final size = stat?.size;
-      if (size != null && exists) {
-        language.sizeInKB = (size / 1024).floor();
-      } else {
-        language.sizeInKB = null;
-      }
-    }
-    return languages;
-  }
-
   Future<void> deleteLanguage(String code) async {
     await languageStorage(code).purge();
   }
