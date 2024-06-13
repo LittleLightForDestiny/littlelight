@@ -24,7 +24,7 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
     double maxWidth = 500;
     final showHorizontalBorders = mq.size.width > maxWidth;
     final borderSide = BorderSide(
-      color: open ? LittleLightTheme.of(context).surfaceLayers.layer3 : LittleLightTheme.of(context).onSurfaceLayers,
+      color: open ? context.theme.surfaceLayers.layer3 : context.theme.onSurfaceLayers,
       width: open ? 4 : 0,
     );
     return Container(
@@ -35,7 +35,7 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
         ),
         child: AnimatedContainer(
             decoration: BoxDecoration(
-                color: open ? LittleLightTheme.of(context).surfaceLayers : LittleLightTheme.of(context).onSurfaceLayers,
+                color: open ? context.theme.surfaceLayers : context.theme.onSurfaceLayers,
                 border: Border(
                     left: showHorizontalBorders ? borderSide : BorderSide.none,
                     right: showHorizontalBorders ? borderSide : BorderSide.none,
@@ -46,7 +46,7 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
                 physics: const NeverScrollableScrollPhysics(),
                 child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
                   Container(
-                    color: LittleLightTheme.of(context).surfaceLayers.layer3,
+                    color: context.theme.surfaceLayers.layer3,
                     padding: const EdgeInsets.all(8).add(EdgeInsets.only(
                       left: mq.viewPadding.left,
                       right: mq.viewPadding.right,

@@ -75,7 +75,7 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
   }
 
   Widget buildCategoryItem(BuildContext context, DestinyPresentationNodeDefinition def) {
-    final color = LittleLightTheme.of(context).onSurfaceLayers.layer3;
+    final color = context.theme.onSurfaceLayers.layer3;
     return Material(
       child: InkWell(
         child: Container(
@@ -107,7 +107,7 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
   }
 
   Widget buildEmblemItem(BuildContext context, DestinyInventoryItemDefinition def) {
-    final color = LittleLightTheme.of(context).onSurfaceLayers.layer3;
+    final color = context.theme.onSurfaceLayers.layer3;
     final url = def.secondarySpecial;
     final hash = def.hash;
     if (url == null || hash == null) return Container();

@@ -35,7 +35,7 @@ class FilledCircularProgressIndicator extends ProgressIndicator {
     );
   }
 
-  Color _getValueColor(BuildContext context) => valueColor?.value ?? LittleLightTheme.of(context).upgradeLayers;
+  Color _getValueColor(BuildContext context) => valueColor?.value ?? context.theme.upgradeLayers;
 
   @override
   _FilledCircularProgressIndicatorState createState() => _FilledCircularProgressIndicatorState();

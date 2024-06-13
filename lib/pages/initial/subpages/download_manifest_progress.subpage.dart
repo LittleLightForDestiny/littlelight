@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
 import 'package:little_light/pages/initial/subpages/subpage_base.dart';
 import 'package:provider/provider.dart';
@@ -33,7 +34,7 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
       constraints: const BoxConstraints(maxWidth: 400),
       child: Column(children: [
         LinearProgressIndicator(
-          backgroundColor: Theme.of(context).secondaryHeaderColor,
+          backgroundColor: context.theme.surfaceLayers.layer3,
           value: downloading ? progress : null,
         ),
         Row(

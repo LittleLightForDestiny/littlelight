@@ -23,19 +23,9 @@ class EditLoadoutView extends StatelessWidget {
     Key? key,
   }) : super(key: key);
 
-  Color get backgroundColor {
-    return Colors.transparent;
-    // final emblemDefinition = state.emblemDefinition;
-    // final bgColor = emblemDefinition?.backgroundColor;
-    // final background = Theme.of(context).colorScheme.background;
-    // if (bgColor == null) return background;
-    // return Color.lerp(bgColor.toMaterialColor(), background, .5) ?? background;
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: backgroundColor,
       appBar: buildAppBar(context),
       body: Column(children: [
         Expanded(

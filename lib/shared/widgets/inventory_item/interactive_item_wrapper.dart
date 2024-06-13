@@ -75,8 +75,8 @@ class InteractiveItemWrapper extends StatelessWidget {
     return Container(
       margin: EdgeInsets.all(itemMargin - selectedBorder),
       decoration: BoxDecoration(
-        border: Border.all(width: selectedBorder, color: LittleLightTheme.of(context).primaryLayers.layer1),
-        color: LittleLightTheme.of(context).primaryLayers.layer1.withOpacity(.2),
+        border: Border.all(width: selectedBorder, color: context.theme.primaryLayers.layer1),
+        color: context.theme.primaryLayers.layer1.withOpacity(.2),
       ),
     );
   }

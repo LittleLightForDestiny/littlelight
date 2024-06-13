@@ -57,8 +57,8 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
             text += "exception:\n${error.exceptionAsString()}\n";
             text += "stackTrace:\n$cleanStack\n";
             return Container(
-              decoration: BoxDecoration(
-                  color: LittleLightTheme.of(context).surfaceLayers.layer2, borderRadius: BorderRadius.circular(8)),
+              decoration:
+                  BoxDecoration(color: context.theme.surfaceLayers.layer2, borderRadius: BorderRadius.circular(8)),
               padding: const EdgeInsets.all(8),
               child: Text(
                 text,

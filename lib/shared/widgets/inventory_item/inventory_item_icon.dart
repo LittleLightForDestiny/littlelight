@@ -65,7 +65,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   }
 
   Widget? buildBorder(BuildContext context) {
-    final theme = LittleLightTheme.of(context);
+    final theme = context.theme;
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
     final isDeepSight = this.isDeepsight(context);
     final isMasterwork = itemInfo.state?.contains(ItemState.Masterwork) ?? false;
@@ -74,7 +74,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
     }
     final enableEyeCandy = context.select<UserSettingsBloc, bool>((value) => value.enableEyeCandy);
     if (isMasterwork) {
-      final masterworkLayers = LittleLightTheme.of(context).achievementLayers;
+      final masterworkLayers = context.theme.achievementLayers;
       return Shimmer.fromColors(
         enabled: enableEyeCandy,
         baseColor: theme.achievementLayers.layer0,
@@ -92,7 +92,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
 
   Widget buildBackground(BuildContext context) {
     return Container(
-      color: LittleLightTheme.of(context).surfaceLayers.layer0,
+      color: context.theme.surfaceLayers.layer0,
     );
   }
 
@@ -117,7 +117,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
     if (tierType == null) return null;
     final isExotic = tierType == TierType.Exotic;
     final imgPath = isExotic ? "assets/imgs/masterwork-outline-exotic.png" : "assets/imgs/masterwork-outline.png";
-    final masterworkLayers = LittleLightTheme.of(context).achievementLayers;
+    final masterworkLayers = context.theme.achievementLayers;
     final enableEyeCandy = context.select<UserSettingsBloc, bool>((value) => value.enableEyeCandy);
     return Stack(
       fit: StackFit.expand,

@@ -91,7 +91,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
     return Column(children: [
       Container(
         decoration: BoxDecoration(
-            color: LittleLightTheme.of(context).surfaceLayers.layer2,
+            color: context.theme.surfaceLayers.layer2,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(8))),
         padding: const EdgeInsets.all(8),
         child: Row(children: [
@@ -121,7 +121,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
       ),
       Container(
           decoration: BoxDecoration(
-            border: Border.all(color: LittleLightTheme.of(context).surfaceLayers.layer2, width: 2),
+            border: Border.all(color: context.theme.surfaceLayers.layer2, width: 2),
             borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
           ),
           margin: const EdgeInsets.only(bottom: 16),

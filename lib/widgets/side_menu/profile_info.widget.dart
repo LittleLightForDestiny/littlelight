@@ -201,8 +201,8 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
     return Container(
         decoration: BoxDecoration(
-            color: LittleLightTheme.of(context).surfaceLayers.layer0,
-            border: Border.all(width: 2, color: LittleLightTheme.of(context).surfaceLayers.layer3)),
+            color: context.theme.surfaceLayers.layer0,
+            border: Border.all(width: 2, color: context.theme.surfaceLayers.layer3)),
         child: url == null
             ? shimmer
             : QueuedNetworkImage(

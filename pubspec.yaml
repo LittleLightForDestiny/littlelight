@@ -16,7 +16,7 @@ dependencies:
     sdk: flutter
   tinycolor2: ^3.0.1
   shared_preferences: ^2.2.2
-  archive: ^3.4.9
+  archive: ^3.6.0
   sqflite: ^2.2.6
   http: ^1.1.2
   path_provider: ^2.0.2
@@ -24,20 +24,20 @@ dependencies:
   bungie_api: 13.18.0
   shimmer: ^3.0.0
   timeago: ^3.0.1
-  firebase_crashlytics: ^3.4.8
-  firebase_analytics: ^10.7.4
+
+  firebase_analytics: ^11.0.1
   flutter_dotenv: ^5.0.2
   url_launcher: ^6.0.2
   wakelock_plus: ^1.0.0+3
   flutter_advanced_switch: ^3.0.1
   logger: ^2.0.2+1
 
-  package_info_plus: ^5.0.1
+  package_info_plus: ^8.0.0
 
-  device_info_plus: ^9.1.1
+  device_info_plus: ^10.1.0
 
   cached_network_image: ^3.3.0
-  launch_review: ^3.0.1
+  in_app_review: ^2.0.9
 
   flutter_linkify: ^6.0.0
 
@@ -49,13 +49,14 @@ dependencies:
   collection: ^1.15.0-nullsafety.4
   json_annotation: ^4.8.1
 
-  app_links: ^3.5.0
-  protocol_registry : ^0.0.5
+  app_links: ^6.1.1
+  protocol_registry: ^0.0.5
+  firebase_crashlytics: ^4.0.1
 
 dev_dependencies:
   build_runner: ^2.1.7
   json_serializable: ^6.7.1
-  analyzer: ^6.2.0
+  analyzer: ^6.4.1
   sqflite_common_ffi: ^2.3.2
   flutter_test:
     sdk: flutter
@@ -112,7 +113,7 @@ msix_config:
   display_name: Little Light
   publisher: CN=D41F7C98-9BEA-49A9-95B5-EF33973EF3D4
   publisher_display_name: João Paulo Marquesini
-  identity_name:  30473JooPauloMarquesini.LittleLightforDestiny2
+  identity_name: 30473JooPauloMarquesini.LittleLightforDestiny2
   logo_path: ./windows/runner/resources/app-icon.png
   protocol_activation: luzinha
   capabilities: internetClient,runFullTrust

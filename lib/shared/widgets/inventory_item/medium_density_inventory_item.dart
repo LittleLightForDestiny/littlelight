@@ -143,7 +143,7 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
 
   Widget buildMainBackground(BuildContext context, DestinyInventoryItemDefinition? definition) {
     if (definition?.isEmblem ?? false) return buildEmblemMainBackground(context, definition);
-    final theme = LittleLightTheme.of(context);
+    final theme = context.theme;
     return Container(
       color: theme.surfaceLayers.layer1,
       child: buildWishlistTagBackground(context, definition),

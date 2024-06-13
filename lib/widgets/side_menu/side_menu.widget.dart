@@ -59,7 +59,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: Theme.of(context).cardColor,
+        color: context.theme.surfaceLayers.layer1,
         width: 280,
         child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.max, children: [
           Expanded(
@@ -111,7 +111,7 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
   Widget membershipButton(BuildContext context, GeneralUser bungieNetUser, GroupUserInfoCard membership) {
     var plat = PlatformData.getPlatform(membership.membershipType ?? BungieMembershipType.ProtectedInvalidEnumValue);
     return Container(
-        color: Theme.of(context).colorScheme.secondary,
+        color: context.theme.secondarySurfaceLayers.layer1,
         padding: const EdgeInsets.all(8).copyWith(bottom: 0),
         child: Material(
             color: plat.color,
@@ -144,8 +144,8 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
             child: Container(
                 alignment: Alignment.centerRight,
                 padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                decoration: BoxDecoration(
-                    border: Border(bottom: BorderSide(color: LittleLightTheme.of(context).surfaceLayers.layer2))),
+                decoration:
+                    BoxDecoration(border: Border(bottom: BorderSide(color: context.theme.surfaceLayers.layer2))),
                 child: label)));
   }
 

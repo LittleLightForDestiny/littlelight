@@ -76,7 +76,7 @@ Widget pagingButton(BuildContext context, [int direction = 1]) {
         return Container(
           constraints: const BoxConstraints.expand(width: 16),
           decoration: BoxDecoration(
-            border: Border.all(color: LittleLightTheme.of(context).onSurfaceLayers.layer1),
+            border: Border.all(color: context.theme.onSurfaceLayers.layer1),
           ),
           alignment: Alignment.center,
           child: !enabled

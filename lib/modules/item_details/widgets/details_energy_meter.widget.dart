@@ -174,7 +174,7 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
 
   Widget buildEnergyPiece(
       BuildContext context, int index, StatValues? available, StatValues? used, double animationValue) {
-    final theme = LittleLightTheme.of(context);
+    final theme = context.theme;
     final maxAvailable = max(available?.equipped ?? 0, available?.selected ?? 0);
     final maxUsed = max(used?.equipped ?? 0, used?.selected ?? 0);
     final isAvailable = index < maxAvailable;

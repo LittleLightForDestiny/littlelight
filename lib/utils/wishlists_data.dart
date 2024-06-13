@@ -12,19 +12,18 @@ class WishlistsData {
       case WishlistTag.GodPVE:
       case WishlistTag.GodPVP:
         return BoxDecoration(
-            border: Border.all(color: LittleLightTheme.of(context).achievementLayers, width: 1),
-            gradient: RadialGradient(
-                radius: 1, colors: [getBgColor(context, tag), LittleLightTheme.of(context).achievementLayers]));
+            border: Border.all(color: context.theme.achievementLayers, width: 1),
+            gradient: RadialGradient(radius: 1, colors: [getBgColor(context, tag), context.theme.achievementLayers]));
 
       case WishlistTag.Controller:
         return BoxDecoration(
-            border: Border.all(color: Theme.of(context).colorScheme.secondaryContainer, width: 1),
-            color: Theme.of(context).colorScheme.primary);
+            border: Border.all(color: context.theme.secondarySurfaceLayers.layer0, width: 1),
+            color: context.theme.primaryLayers.layer0);
 
       case WishlistTag.Mouse:
         return BoxDecoration(
-            border: Border.all(color: Theme.of(context).colorScheme.primary, width: 1),
-            color: Theme.of(context).colorScheme.secondaryContainer);
+            border: Border.all(color: context.theme.primaryLayers.layer0, width: 1),
+            color: context.theme.secondarySurfaceLayers.layer0);
       default:
         return BoxDecoration(color: getBgColor(context, tag));
     }
@@ -42,10 +41,10 @@ class WishlistsData {
         return Colors.black;
 
       case WishlistTag.Controller:
-        return Theme.of(context).colorScheme.secondaryContainer;
+        return context.theme.secondarySurfaceLayers.layer0;
 
       case WishlistTag.Mouse:
-        return Theme.of(context).colorScheme.primary;
+        return context.theme.primaryLayers.layer0;
 
       case WishlistTag.Trash:
         return Colors.lightGreen.shade500;
@@ -110,7 +109,7 @@ class WishlistsData {
             child: CenterIconWorkaround(
               FontAwesomeIcons.gamepad,
               size: size * .6,
-              color: Theme.of(context).colorScheme.secondaryContainer,
+              color: context.theme.secondarySurfaceLayers.layer0,
             ));
 
       case WishlistTag.Mouse:
@@ -119,7 +118,7 @@ class WishlistsData {
             child: CenterIconWorkaround(
               FontAwesomeIcons.computerMouse,
               size: size * .7,
-              color: Theme.of(context).colorScheme.primary,
+              color: context.theme.primaryLayers.layer0,
             ));
 
       default:
