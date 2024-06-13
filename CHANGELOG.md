@@ -1,3 +1,7 @@
+## [2.0.22] - 2024-06-13
+
+- Fixes some icons
+
 ## [2.0.21] - 2024-05-31
 
 - Fixes a bug in armor stat filters
