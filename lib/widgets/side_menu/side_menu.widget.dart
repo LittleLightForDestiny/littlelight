@@ -16,7 +16,7 @@ import 'package:little_light/modules/progress/pages/progress/progress.page.dart'
 import 'package:little_light/modules/settings/pages/about/about.screen.dart';
 import 'package:little_light/modules/triumphs/pages/home/triumphs_home.page.dart';
 import 'package:little_light/modules/duplicated_items/pages/duplicated_items/duplicated_items.page.dart';
-import 'package:little_light/pages/languages/languages.page_route.dart';
+import 'package:little_light/modules/settings/pages/change_language/change_language.page_route.dart';
 import 'package:little_light/modules/vendors/pages/home/vendors_home.page.dart';
 import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
@@ -164,6 +164,6 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
   }
 
   void changeLanguage(BuildContext context) {
-    pushRoute(context, LanguagesPageRoute());
+    pushRoute(context, ChangeLanguagePageRoute());
   }
 }

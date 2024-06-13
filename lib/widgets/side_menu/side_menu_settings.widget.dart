@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/settings/pages/settings/settings.page_route.dart';
-import 'package:little_light/pages/languages/languages.page_route.dart';
+import 'package:little_light/modules/settings/pages/change_language/change_language.page_route.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/utils/platform_data.dart';
@@ -61,7 +61,7 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
         auth.openBungieLogin(true);
       }),
       settingsItem(Text("Change Language".translate(context)), onTap: () {
-        pushRoute(context, LanguagesPageRoute());
+        pushRoute(context, ChangeLanguagePageRoute());
       }),
       settingsItem(Text("Settings".translate(context)), onTap: () {
         Navigator.of(context).push(SettingsPageRoute());

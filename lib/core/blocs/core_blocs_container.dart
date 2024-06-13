@@ -1,8 +1,10 @@
+import 'package:little_light/core/blocs/app/app.bloc.dart';
 import 'package:little_light/core/blocs/clarity/clarity_data.bloc.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
 import 'package:little_light/core/blocs/loadouts/loadouts.bloc.dart';
 import 'package:little_light/core/blocs/objective_tracking/objective_tracking.bloc.dart';
 import 'package:little_light/core/blocs/profile/craftables_helper.bloc.dart';
+import 'package:little_light/core/blocs/storage/language/language_storage.bloc.dart';
 import 'package:little_light/core/blocs/vendors/vendors.bloc.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
@@ -26,11 +28,14 @@ class CoreBlocsContainer extends MultiProvider {
   CoreBlocsContainer()
       : super(
           providers: [
-            ChangeNotifierProvider<UserSettingsBloc>(create: (context) => UserSettingsBloc(context)),
+            Provider(create: (c) => AppBloc(c)),
+            Provider(create: (c) => LanguageStorageBloc()),
+            ChangeNotifierProvider(create: (context) => UserSettingsBloc(context)),
             ChangeNotifierProvider(create: (context) => AppLifecycleBloc()),
             ChangeNotifierProvider(create: (context) => OfflineModeBloc()),
             ChangeNotifierProvider<ManifestService>(
-                create: (context) => getInjectedManifestService().initContext(context)),
+              create: (context) => getInjectedManifestService().initContext(context),
+            ),
             ChangeNotifierProvider<LanguageBloc>(create: (context) => getInjectedLanguageService()),
             ChangeNotifierProvider(create: (context) => ItemNotesBloc(context)),
             ChangeNotifierProvider(create: (context) => getInjectedLittleLightDataService()),

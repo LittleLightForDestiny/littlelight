@@ -18,6 +18,22 @@ setupLanguageService() {
   GetIt.I.registerSingleton<LanguageBloc>(LanguageBloc._internal());
 }
 
+const List<String> _availableLanguages = [
+  'de',
+  'en',
+  'es',
+  'es-mx',
+  'fr',
+  'it',
+  'ja',
+  'ko',
+  'pl',
+  'pt-br',
+  'ru',
+  'zh-cht',
+  'zh-chs',
+];
+
 class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer {
   final _fallbackLanguage = "en";
   String? _systemLanguage;
@@ -87,6 +103,8 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
     LanguageInfo(code: 'zh-cht', name: "繁體中文"),
     LanguageInfo(code: 'zh-chs', name: "简体中文")
   ];
+
+  List<String> get availableLanguages => _availableLanguages;
 
   Future<String> getTranslation(String text, {String? languageCode, Map<String, String> replace = const {}}) async {
     String code = languageCode ?? currentLanguage;
