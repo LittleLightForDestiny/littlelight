@@ -12,7 +12,7 @@ import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 import 'package:intl/intl.dart';
 
-const _wellRestedProgression = 2352765282;
+const _wellRestedProgression = 1519921522;
 
 class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   final DestinyCharacterInfo character;
