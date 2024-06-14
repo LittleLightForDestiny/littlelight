@@ -11,7 +11,7 @@ class MembershipStorageBloc {
   }
 
   MembershipStorage? get current {
-    final language = _globalStorageBloc.currentAccountID;
+    final language = _globalStorageBloc.currentMembershipID;
     if (language == null) return null;
     return get(language);
   }
