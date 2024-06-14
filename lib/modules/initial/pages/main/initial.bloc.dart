@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
@@ -20,7 +21,6 @@ import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/setup.dart';
@@ -42,12 +42,12 @@ class InitialPageStateNotifier
         ChangeNotifier,
         ManifestConsumer,
         AuthConsumer,
-        LittleLightDataConsumer,
         WishlistsConsumer,
         AnalyticsConsumer,
         StorageConsumer,
         BungieApiConsumer {
   final OfflineModeBloc _offlineModeBloc;
+  final LittleLightDataBloc _littleLightDataBloc;
 
   InitialPagePhase _phase = InitialPagePhase.Loading;
   InitialPagePhase get phase => _phase;
@@ -62,7 +62,9 @@ class InitialPageStateNotifier
 
   final BuildContext _context;
 
-  InitialPageStateNotifier(this._context) : _offlineModeBloc = _context.read<OfflineModeBloc>() {
+  InitialPageStateNotifier(this._context)
+      : _offlineModeBloc = _context.read<OfflineModeBloc>(),
+        _littleLightDataBloc = _context.read<LittleLightDataBloc>() {
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     _initLoading();
@@ -254,7 +256,7 @@ class InitialPageStateNotifier
       return;
     }
 
-    await littleLightData.getFeaturedWishlists();
+    await _littleLightDataBloc.getFeaturedWishlists();
 
     _phase = InitialPagePhase.WishlistsSelect;
     _loading = false;

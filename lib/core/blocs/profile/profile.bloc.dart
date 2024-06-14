@@ -8,7 +8,7 @@ import 'package:little_light/core/blocs/profile/profile_component_groups.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/character_sort_parameter.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
@@ -61,10 +61,10 @@ class _CachedItemsContainer {
   }
 }
 
-class ProfileBloc extends ChangeNotifier
-    with StorageConsumer, AuthConsumer, BungieApiConsumer, ManifestConsumer, WidgetsBindingObserver {
+class ProfileBloc extends ChangeNotifier with StorageConsumer, AuthConsumer, ManifestConsumer, WidgetsBindingObserver {
   final BuildContext context;
   final UserSettingsBloc userSettingsBloc;
+  final BungieApiService bungieAPI;
 
   DestinyProfileResponse? _cachedProfileResponse;
   bool pauseAutomaticUpdater = false;
@@ -97,7 +97,9 @@ class ProfileBloc extends ChangeNotifier
     return isInActivity;
   }
 
-  ProfileBloc(this.context) : this.userSettingsBloc = context.read<UserSettingsBloc>() {
+  ProfileBloc(this.context)
+      : this.userSettingsBloc = context.read<UserSettingsBloc>(),
+        this.bungieAPI = context.read<BungieApiService>() {
     init();
   }
 

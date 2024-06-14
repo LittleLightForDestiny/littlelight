@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
@@ -40,7 +38,6 @@ Future<void> setupServices() async {
   await setupAuthService();
   await setupLanguageService();
   await setupManifest();
-  await setupLittleLightDataService();
   await setupWishlistsService();
   await setupBungieApiService();
   await setupNotificationService();
@@ -52,12 +49,12 @@ initServices(BuildContext context) async {
   final appConfig = getInjectedAppConfig();
   final globalStorage = getInjectedGlobalStorage();
   final auth = getInjectedAuthService();
-  final language = getInjectedLanguageService();
+  // final language = getInjectedLanguageService();
   final manifest = getInjectedManifestService();
   await appConfig.setup();
   await globalStorage.setup();
   auth.setup();
-  await language.init(context);
+  // await language.init(context);
   await LittleLightApiService().reset();
   await manifest.setup();
 }

@@ -9,7 +9,7 @@ import 'package:little_light/models/item_notes_tag.dart';
 import 'package:little_light/models/loadout.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'membership_storage.keys.dart';
-import 'storage.base.dart';
+import '../storage.base.dart';
 
 setupMembershipStorageService() async {
   GetIt.I.registerFactoryParam<MembershipStorage, String, void>(

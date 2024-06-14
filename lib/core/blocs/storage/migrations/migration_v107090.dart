@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
-import 'package:little_light/services/storage/migrations/storage_migrations.dart';
+import 'package:little_light/core/blocs/storage/migrations/storage_migrations.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MigrationV1x9x0 extends StorageMigration {

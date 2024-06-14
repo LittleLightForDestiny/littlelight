@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/collaborators.dart';
@@ -11,11 +12,12 @@ import 'package:little_light/models/parsed_wishlist.dart';
 import 'package:little_light/models/scroll_area_type.dart';
 import 'package:little_light/models/tracked_objective.dart';
 import 'package:little_light/models/wishlist_index.dart';
-import 'package:little_light/services/storage/migrations/storage_migrations.dart';
+import 'package:little_light/core/blocs/storage/migrations/storage_migrations.dart';
+import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'global_storage.keys.dart';
-import 'storage.base.dart';
+import '../storage.base.dart';
 
 extension on WishlistFile {
   String get filename {
@@ -28,13 +30,17 @@ setupGlobalStorageService() async {
   await StorageMigration.runAllMigrations();
   final _sharedPrefs = await SharedPreferences.getInstance();
   GetIt.I.registerSingleton<SharedPreferences>(_sharedPrefs);
-  GetIt.I.registerSingleton<GlobalStorage>(GlobalStorage._internal());
+  GetIt.I.registerSingleton<GlobalStorageBloc>(GlobalStorageBloc._internal());
 }
 
-class GlobalStorage extends StorageBase<GlobalStorageKeys> {
+class GlobalStorageBloc extends StorageBase<GlobalStorageKeys> {
   bool _hasRunSetup = false;
 
-  GlobalStorage._internal();
+  factory GlobalStorageBloc(BuildContext context) {
+    return getInjectedGlobalStorage();
+  }
+
+  GlobalStorageBloc._internal();
 
   Future<Set<String>?> get accountIDs async {
     final List<dynamic>? ids = await getJson(GlobalStorageKeys.accountIDs);

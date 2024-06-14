@@ -7,10 +7,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:in_app_review/in_app_review.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/language_info.dart';
-import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/shared/widgets/headers/header.wiget.dart';
 import 'package:little_light/shared/widgets/multisection_scrollview/multisection_scrollview.dart';
@@ -45,7 +45,7 @@ class AboutScreen extends StatefulWidget {
   _AboutScreenState createState() => _AboutScreenState();
 }
 
-class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleLightDataConsumer {
+class _AboutScreenState extends State<AboutScreen> with StorageConsumer {
   String? packageVersion;
   String? appName;
   CollaboratorsResponse? collaborators;
@@ -69,7 +69,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
       }
     }
     setState(() {});
-    collaborators = await littleLightData.getCollaborators();
+    collaborators = await context.read<LittleLightDataBloc>().getCollaborators();
     collaborators?.supporters?.shuffle();
     setState(() {});
   }

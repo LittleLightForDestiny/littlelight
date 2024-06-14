@@ -1,6 +1,6 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/network_error.exception.dart';
@@ -9,10 +9,6 @@ import 'package:little_light/models/collaborators.dart';
 import 'package:little_light/models/game_data.dart';
 import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/storage/export.dart';
-
-setupLittleLightDataService() {
-  GetIt.I.registerSingleton<LittleLightDataBloc>(LittleLightDataBloc._internal());
-}
 
 class LittleLightDataBloc extends ChangeNotifier with StorageConsumer {
   final _featuredWishlistsURL =
@@ -37,7 +33,7 @@ class LittleLightDataBloc extends ChangeNotifier with StorageConsumer {
     notifyListeners();
   }
 
-  LittleLightDataBloc._internal();
+  LittleLightDataBloc(BuildContext context);
 
   Future<WishlistFolder> getFeaturedWishlists() async {
     WishlistFolder? data = await globalStorage.getFeaturedWishlists();

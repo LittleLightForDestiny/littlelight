@@ -2,7 +2,7 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/core/blocs/vendors/vendor_item_info.dart';
-import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:provider/provider.dart';
 
@@ -16,15 +16,18 @@ const _vendorComponents = [
   DestinyComponentType.ItemStats,
 ];
 
-class VendorsBloc extends ChangeNotifier with BungieApiConsumer, StorageConsumer {
+class VendorsBloc extends ChangeNotifier with StorageConsumer {
   @protected
   final BuildContext context;
   final UserSettingsBloc _userSettingsBloc;
+  final BungieApiService bungieAPI;
 
   bool _hasStartedLoading = false;
   Map<String, DestinyVendorsResponse> _characterVendorResponses = {};
 
-  VendorsBloc(BuildContext this.context) : _userSettingsBloc = context.read<UserSettingsBloc>();
+  VendorsBloc(BuildContext this.context)
+      : _userSettingsBloc = context.read<UserSettingsBloc>(),
+        bungieAPI = context.read<BungieApiService>();
 
   void _loadVendorsFor(String characterId) async {
     if (!_hasStartedLoading) {

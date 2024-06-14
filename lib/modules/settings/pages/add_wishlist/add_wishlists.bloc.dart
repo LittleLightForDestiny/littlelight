@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/models/wishlist_index.dart';
-import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:provider/provider.dart';
 
-class AddWishlistsBloc
-    with ChangeNotifier, LittleLightDataConsumer, WishlistsConsumer {
+class AddWishlistsBloc extends ChangeNotifier with WishlistsConsumer {
   final BuildContext context;
+  final LittleLightDataBloc _littleLightDataBloc;
 
   List<WishlistFile>? wishlists;
   WishlistFolder? _wishlistsIndexRoot;
@@ -14,10 +15,10 @@ class AddWishlistsBloc
   WishlistFolder? get currentFolder => _currentFolder ?? _wishlistsIndexRoot;
   bool get isRootFolder => wishlistsIndex == currentFolder;
 
-  AddWishlistsBloc(this.context);
+  AddWishlistsBloc(this.context) : _littleLightDataBloc = context.read<LittleLightDataBloc>();
 
   void getWishlists() async {
-    final index = await littleLightData.getFeaturedWishlists();
+    final index = await _littleLightDataBloc.getFeaturedWishlists();
     index.files?.shuffle();
     index.folders?.shuffle();
     _wishlistsIndexRoot = index;

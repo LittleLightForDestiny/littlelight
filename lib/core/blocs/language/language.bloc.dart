@@ -5,6 +5,8 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
+import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/storage/global/global_storage.bloc.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/language_info.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -35,12 +37,14 @@ const List<String> _availableLanguages = [
 ];
 
 class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer {
+  final GlobalStorageBloc globalStorageBloc;
+
   final _fallbackLanguage = "en";
   String? _systemLanguage;
-  String? get selectedLanguage => globalStorage.currentLanguage;
+  String? get selectedLanguage => globalStorageBloc.currentLanguage;
   set selectedLanguage(String? value) {
     manifest.closeDB();
-    globalStorage.currentLanguage = value;
+    globalStorageBloc.currentLanguage = value;
     _loadTranslations();
   }
 
@@ -48,9 +52,17 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
   final Map<String, Map<String, String>> _translationMaps = {};
   final Map<String, bool> _loading = {};
 
-  LanguageBloc._internal();
+  LanguageBloc._internal()
+      : globalStorageBloc = getInjectedGlobalStorage(),
+        super();
 
-  init(BuildContext context) {
+  factory LanguageBloc(BuildContext context) {
+    final bloc = getInjectedLanguageService();
+    bloc._init(context);
+    return bloc;
+  }
+
+  void _init(BuildContext context) {
     timeago.setLocaleMessages('auto', TranslatedLookupMessages(this));
     timeago.setLocaleMessages('short_auto', ShortTranslatedLookupMessages(this));
     timeago.setDefaultLocale('auto');

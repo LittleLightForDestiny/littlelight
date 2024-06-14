@@ -4,7 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 
 import 'language_storage.keys.dart';
-import 'storage.base.dart';
+import '../storage.base.dart';
 
 setupLanguageStorageService() async {
   GetIt.I.registerFactoryParam<LanguageStorage, String, void>((accountID, _) => LanguageStorage._internal(accountID));

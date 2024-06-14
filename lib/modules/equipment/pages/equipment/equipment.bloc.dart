@@ -2,6 +2,7 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/profile/sorters.dart';
@@ -15,7 +16,6 @@ import 'package:little_light/modules/item_details/pages/inventory_item_details/i
 import 'package:little_light/modules/search/pages/item_search/item_search.page_route.dart';
 import 'package:little_light/modules/search/pages/quick_transfer/quick_transfer.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
 import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
@@ -60,12 +60,13 @@ class _EquipmentState {
   }
 }
 
-class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
+class EquipmentBloc extends ChangeNotifier with ManifestConsumer {
   final BuildContext _context;
   final ProfileBloc _profileBloc;
   final SelectionBloc _selectionBloc;
   final UserSettingsBloc _userSettingsBloc;
   final ItemNotesBloc _itemNotesBloc;
+  final LittleLightDataBloc _littleLightDataBloc;
   final PageStorageBucket _pageStorageBucket = PageStorageBucket();
   PageStorageBucket get pageStorageBucket => _pageStorageBucket;
   GameData? _gameData;
@@ -76,7 +77,8 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
       : _profileBloc = _context.read<ProfileBloc>(),
         _selectionBloc = _context.read<SelectionBloc>(),
         _userSettingsBloc = _context.read<UserSettingsBloc>(),
-        _itemNotesBloc = _context.read<ItemNotesBloc>() {
+        _itemNotesBloc = _context.read<ItemNotesBloc>(),
+        _littleLightDataBloc = _context.read<LittleLightDataBloc>() {
     _init();
   }
   _init() {
@@ -89,7 +91,7 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
   }
 
   void _loadGameData() async {
-    _gameData = await littleLightData.getGameData();
+    _gameData = await _littleLightDataBloc.getGameData();
     notifyListeners();
   }
 

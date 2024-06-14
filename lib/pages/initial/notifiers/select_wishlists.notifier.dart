@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/models/wishlist_index.dart';
-import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:provider/provider.dart';
 
-class SelectWishlistNotifier
-    with ChangeNotifier, LittleLightDataConsumer, WishlistsConsumer {
+class SelectWishlistNotifier extends ChangeNotifier with WishlistsConsumer {
   final BuildContext context;
+  final LittleLightDataBloc _littleLightDataBloc;
 
   WishlistFolder? _wishlistsIndexRoot;
   WishlistFolder? get wishlistsIndex => _wishlistsIndexRoot;
@@ -14,10 +15,10 @@ class SelectWishlistNotifier
   bool get isRootFolder => wishlistsIndex == currentFolder;
   final Set<String> _selectedFiles = <String>{};
 
-  SelectWishlistNotifier(this.context);
+  SelectWishlistNotifier(this.context) : _littleLightDataBloc = context.read<LittleLightDataBloc>();
 
   void getFeaturedWishlists() async {
-    final index = await littleLightData.getFeaturedWishlists();
+    final index = await _littleLightDataBloc.getFeaturedWishlists();
     index.files?.shuffle();
     index.folders?.shuffle();
     _wishlistsIndexRoot = index;
@@ -59,8 +60,7 @@ class SelectWishlistNotifier
       wishlists.addAll(_getSelectedWishlists(f));
     }
     final files = folder?.files ?? [];
-    wishlists
-        .addAll(files.where((element) => _selectedFiles.contains(element.url)));
+    wishlists.addAll(files.where((element) => _selectedFiles.contains(element.url)));
     return wishlists;
   }
 

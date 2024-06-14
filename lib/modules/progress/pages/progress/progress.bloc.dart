@@ -2,6 +2,7 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/item_notes/item_notes.bloc.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/blocs/profile/sorters.dart';
@@ -14,7 +15,6 @@ import 'package:little_light/shared/modals/context_menu_overlay/character_contex
 import 'package:little_light/modules/item_details/pages/inventory_item_details/inventory_item_details.page_route.dart';
 import 'package:little_light/modules/search/pages/pursuit_search/pursuit_search.page_route.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/user_settings/little_light_persistent_page.dart';
@@ -70,9 +70,10 @@ class _ProgressState {
   }
 }
 
-class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
+class ProgressBloc extends ChangeNotifier with ManifestConsumer {
   final BuildContext _context;
   final ProfileBloc _profileBloc;
+  final LittleLightDataBloc _littleLightDataBloc;
   final SelectionBloc _selectionBloc;
   final UserSettingsBloc _userSettingsBloc;
   final ItemNotesBloc _itemNotesBloc;
@@ -86,7 +87,8 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
       : _profileBloc = _context.read<ProfileBloc>(),
         _selectionBloc = _context.read<SelectionBloc>(),
         _userSettingsBloc = _context.read<UserSettingsBloc>(),
-        _itemNotesBloc = _context.read<ItemNotesBloc>() {
+        _itemNotesBloc = _context.read<ItemNotesBloc>(),
+        _littleLightDataBloc = _context.read<LittleLightDataBloc>() {
     _init();
   }
   _init() {
@@ -99,7 +101,7 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
   }
 
   void _loadGameData() async {
-    _gameData = await littleLightData.getGameData();
+    _gameData = await _littleLightDataBloc.getGameData();
     notifyListeners();
   }
 

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:archive/archive.dart';
 import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/foundation.dart';
@@ -10,14 +11,15 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/parse.exception.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
-import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
+import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/services/manifest/manifest_download_progress.dart';
 import 'package:little_light/services/storage/export.dart';
+import 'package:little_light/utils/bungie_api.http_client.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
+import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart' as sqflite_ffi;
 import 'package:uuid/uuid.dart';
 
@@ -25,7 +27,7 @@ setupManifest() {
   GetIt.I.registerSingleton<ManifestService>(ManifestService._internal());
 }
 
-class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiConsumer, AnalyticsConsumer {
+class ManifestService extends ChangeNotifier with StorageConsumer, AppConfigConsumer, AnalyticsConsumer {
   @protected
   BuildContext? context;
   Database? _db;
@@ -107,7 +109,8 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     if (_manifestInfo != null) {
       return _manifestInfo!;
     }
-    DestinyManifestResponse response = await bungieAPI.getManifest();
+
+    DestinyManifestResponse response = await Destiny2.getDestinyManifest(BungieApiHttpClient(appConfig.apiKey));
     _manifestInfo = response.response;
     if (_manifestInfo == null) {
       throw ("Can't load manifest info");

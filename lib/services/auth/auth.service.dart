@@ -1,5 +1,5 @@
 import 'dart:async';
-import 'dart:io';
+import 'dart:io' as io;
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
@@ -14,15 +14,15 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
-import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
+import 'package:little_light/utils/bungie_api.http_client.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 setupAuthService() async {
   GetIt.I.registerSingleton<AuthService>(AuthService._internal());
 }
 
-class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
+class AuthService with StorageConsumer, AppConfigConsumer {
   Set<String>? _accountIDs;
   BungieNetToken? _currentToken;
   GroupUserInfoCard? _currentMembership;
@@ -39,8 +39,8 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
   }
 
   Future<UserMembershipData> addAccount(String authorizationCode) async {
-    final token = await bungieAPI.requestToken(authorizationCode);
-    final membershipData = await bungieAPI.getMembershipsForToken(token);
+    final token = await requestToken(authorizationCode);
+    final membershipData = await _getMembershipsForToken(token);
 
     final accountID = token.membershipId;
     _currentAccountID = accountID;
@@ -53,9 +53,14 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
     List<GroupUserInfoCard> validMemberships = <GroupUserInfoCard>[];
     for (final membership in memberships) {
       try {
-        final profile = await bungieAPI
-            .getProfile([DestinyComponentType.Characters], membership.membershipId!, membership.membershipType!);
-        if (profile?.characters?.data?.isNotEmpty ?? false) {
+        final profile = await Destiny2.getProfile(
+          BungieApiHttpClient(appConfig.apiKey, accessToken: token.accessToken),
+          [DestinyComponentType.Characters],
+          membership.membershipId!,
+          membership.membershipType!,
+        );
+
+        if (profile.response?.characters?.data?.isNotEmpty ?? false) {
           validMemberships.add(membership);
         }
       } catch (e) {
@@ -130,10 +135,16 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
     }
     for (final id in _accountIDs!) {
       final token = await accountStorage(id).getLatestToken();
-      final membership = await bungieAPI.getMembershipsForToken(token);
+      final membership = await _getMembershipsForToken(token);
       result[id] = membership;
     }
     return result;
+  }
+
+  Future<UserMembershipData> _getMembershipsForToken(BungieNetToken? token) async {
+    final client = BungieApiHttpClient(appConfig.apiKey, accessToken: token?.accessToken);
+    UserMembershipDataResponse response = await User.getMembershipDataForCurrentUser(client);
+    return response.response!;
   }
 
   resetToken() {
@@ -150,7 +161,8 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
   }
 
   Future<BungieNetToken> refreshToken(BungieNetToken token) async {
-    BungieNetToken bNetToken = await bungieAPI.refreshToken(token.refreshToken);
+    final client = BungieApiHttpClient(appConfig.apiKey);
+    final bNetToken = await OAuth.refreshToken(client, appConfig.clientId, appConfig.clientSecret, token.refreshToken);
     await _saveToken(bNetToken);
     return bNetToken;
   }
@@ -187,7 +199,8 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
   }
 
   Future<BungieNetToken> requestToken(String code) async {
-    BungieNetToken token = await bungieAPI.requestToken(code);
+    final client = BungieApiHttpClient(appConfig.apiKey);
+    BungieNetToken token = await OAuth.getToken(client, appConfig.clientId, appConfig.clientSecret, code);
     await _saveToken(token);
     return token;
   }
@@ -209,7 +222,7 @@ class BungieAuthBrowser implements OAuthBrowser {
   dynamic open(String url) async {
     final uri = Uri.parse(url);
     LaunchMode launchMode = LaunchMode.platformDefault;
-    if (Platform.isAndroid) {
+    if (io.Platform.isAndroid) {
       launchMode = LaunchMode.externalApplication;
     }
     await launchUrl(uri, mode: launchMode);

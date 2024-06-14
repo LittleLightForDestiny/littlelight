@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:bungie_api/destiny2.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/core/blocs/loadouts/loadout_item_index.dart';
 import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
@@ -12,7 +13,6 @@ import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route
 import 'package:little_light/modules/loadouts/pages/equip_loadout_quickmenu/equip_loadout_quickmenu.bottomsheet.dart';
 import 'package:little_light/modules/loadouts/pages/equip_random_loadout/equip_random_loadout.bottomsheet.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
-import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
@@ -28,9 +28,10 @@ const _equipmentBuckets = {
   InventoryBucket.classArmor,
 };
 
-class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, LittleLightDataConsumer {
+class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer {
   final BuildContext context;
   final ProfileBloc _profileBloc;
+  final LittleLightDataBloc _littleLightDataBloc;
   final List<DestinyCharacterInfo?>? characters;
   final VoidCallback? onSearchTap;
 
@@ -65,7 +66,8 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
     VoidCallback? this.onSearchTap,
     this.characterIndex,
     this.characters,
-  }) : _profileBloc = context.read<ProfileBloc>() {
+  })  : _profileBloc = context.read<ProfileBloc>(),
+        _littleLightDataBloc = context.read<LittleLightDataBloc>() {
     _init();
   }
 
@@ -76,7 +78,7 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
   }
 
   void fetchGameData() async {
-    _gameData = await littleLightData.getGameData();
+    _gameData = await _littleLightDataBloc.getGameData();
     notifyListeners();
   }
 
