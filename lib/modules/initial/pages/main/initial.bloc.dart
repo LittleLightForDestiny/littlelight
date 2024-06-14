@@ -20,7 +20,6 @@ import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifie
 import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/setup.dart';
@@ -38,14 +37,7 @@ enum InitialPagePhase {
 }
 
 class InitialPageStateNotifier
-    with
-        ChangeNotifier,
-        ManifestConsumer,
-        AuthConsumer,
-        WishlistsConsumer,
-        AnalyticsConsumer,
-        StorageConsumer,
-        BungieApiConsumer {
+    with ChangeNotifier, ManifestConsumer, AuthConsumer, WishlistsConsumer, AnalyticsConsumer, StorageConsumer {
   final OfflineModeBloc _offlineModeBloc;
   final LittleLightDataBloc _littleLightDataBloc;
 
