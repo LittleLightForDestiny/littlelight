@@ -1,17 +1,21 @@
 import 'package:bungie_api/models/core_settings_configuration.dart';
 import 'package:bungie_api/models/destiny_season_definition.dart';
 import 'package:bungie_api/models/destiny_season_pass_definition.dart';
+import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
-import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
+import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
+import 'package:provider/provider.dart';
 
 setupDestinySettingsService() {
   GetIt.I.registerSingleton<DestinySettingsService>(DestinySettingsService._internal());
 }
 
-class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestConsumer {
+class DestinySettingsService with StorageConsumer, ManifestConsumer {
+  BungieApiService? bungieAPI;
+
   DateTime? lastUpdated;
 
   DestinySettingsService._internal();
@@ -22,6 +26,10 @@ class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestCo
   static const int SeasonLevel = 3256821400;
   static const int SeasonOverlevel = 2140885848;
 
+  initContext(BuildContext context) {
+    this.bungieAPI = context.read<BungieApiService>();
+  }
+
   init() async {
     var settings = await globalStorage.getBungieCommonSettings();
     var seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
@@ -31,7 +39,7 @@ class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestCo
     var now = DateTime.now();
     if (now.isAfter(seasonEnd)) {
       logger.info("loaded settings from web");
-      settings = await bungieAPI.getCommonSettings();
+      settings = await bungieAPI?.getCommonSettings();
       seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
       seasonDef = await manifest.getDefinition<DestinySeasonDefinition>(seasonHash);
       await globalStorage.setBungieCommonSettings(settings);

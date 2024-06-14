@@ -16,6 +16,7 @@ import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/shared/blocs/bucket_options/bucket_options.bloc.dart';
 import 'package:provider/provider.dart';
 
@@ -40,6 +41,7 @@ class CoreBlocsContainer extends MultiProvider {
             Provider(create: (c) => MembershipStorageBloc()),
             Provider(create: (c) => getInjectedAuthService()),
             Provider(create: (c) => getInjectedBungieApi()),
+            Provider(create: (c) => getInjectedDestinySettingsService()),
             ChangeNotifierProvider(create: (context) => UserSettingsBloc(context)),
             ChangeNotifierProvider(create: (context) => AppLifecycleBloc()),
             ChangeNotifierProvider(create: (context) => OfflineModeBloc()),
