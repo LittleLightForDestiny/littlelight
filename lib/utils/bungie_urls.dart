@@ -23,6 +23,7 @@ Uri buildBungieUri({String? path, Map<String, dynamic>? params}) {
   final queryParams = _convertQueryParams(params);
   return Uri(
     scheme: "https",
+    host: "www.bungie.net",
     path: path,
     queryParameters: queryParams,
   );

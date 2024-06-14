@@ -63,10 +63,10 @@ class BungieApiHttpClient implements HttpClient {
     final errorCode = responseJson?["ErrorCode"] ?? 0;
 
     if (errorCode > 2) {
-      throw BungieApiException.fromJson(json, response.statusCode);
+      throw BungieApiException.fromJson(responseJson, response.statusCode);
     }
 
-    return HttpResponse(json, response.statusCode);
+    return HttpResponse(responseJson, response.statusCode);
   }
 
   Future<io.HttpClientRequest> createRequest(
