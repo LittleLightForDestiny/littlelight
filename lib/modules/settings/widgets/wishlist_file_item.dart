@@ -36,7 +36,7 @@ class WishlistFileItem extends SettingsOptionWidget {
         child: Text("Remove".translate(context)),
         style: ButtonStyle(
           visualDensity: VisualDensity.compact,
-          backgroundColor: WidgetStatePropertyAll<Color>(context.theme.errorLayers),
+          backgroundColor: MaterialStatePropertyAll<Color>(context.theme.errorLayers),
         ),
       );
     }

@@ -310,23 +310,25 @@ class LittleLightThemeData {
       surface: _surface,
       primary: _primary,
       primaryContainer: _primaryContainer,
+      background: _surface,
       secondary: _secondary,
       secondaryContainer: _secondaryContainer,
       onPrimary: onSurfaceLayers.layer0,
       onSecondary: onSurfaceLayers.layer0,
+      onBackground: onSurfaceLayers.layer0,
       onSurface: onSurfaceLayers.layer0,
       onError: onSurfaceLayers.layer0,
       error: errorLayers.layer0);
 
-  Color _getSwitchTrackColor(Set<WidgetState> states) {
-    if (states.contains(WidgetState.selected)) {
+  Color _getSwitchTrackColor(Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
       return primaryLayers.layer0;
     }
     return onSurfaceLayers.layer0.withOpacity(.2);
   }
 
-  Color _getSwitchThumbColor(Set<WidgetState> states) {
-    if (states.contains(WidgetState.selected)) {
+  Color _getSwitchThumbColor(Set<MaterialState> states) {
+    if (states.contains(MaterialState.selected)) {
       return primaryLayers.layer1;
     }
     return onSurfaceLayers.layer0.withOpacity(.4);
@@ -338,9 +340,9 @@ class LittleLightThemeData {
 
   SwitchThemeData get _switchTheme => SwitchThemeData(
         splashRadius: 14,
-        overlayColor: WidgetStateColor.resolveWith((states) => onSurfaceLayers.layer0.withOpacity(.1)),
-        trackColor: WidgetStateColor.resolveWith((states) => _getSwitchTrackColor(states)),
-        thumbColor: WidgetStateColor.resolveWith((states) => _getSwitchThumbColor(states)),
+        overlayColor: MaterialStateColor.resolveWith((states) => onSurfaceLayers.layer0.withOpacity(.1)),
+        trackColor: MaterialStateColor.resolveWith((states) => _getSwitchTrackColor(states)),
+        thumbColor: MaterialStateColor.resolveWith((states) => _getSwitchThumbColor(states)),
       );
 
   TextTheme get _textTheme => TextTheme(
@@ -351,8 +353,8 @@ class LittleLightThemeData {
 
   CardTheme get _cardTheme => CardTheme(color: colorScheme.surface);
 
-  WidgetStateTextStyle get labelStyle => WidgetStateTextStyle.resolveWith((states) {
-        final focus = states.contains(WidgetState.focused) || states.contains(WidgetState.selected);
+  MaterialStateTextStyle get labelStyle => MaterialStateTextStyle.resolveWith((states) {
+        final focus = states.contains(MaterialState.focused) || states.contains(MaterialState.selected);
         if (focus) {
           return textTheme.caption.copyWith(color: primaryLayers.layer3, fontSize: 18);
         }
@@ -366,7 +368,7 @@ class LittleLightThemeData {
       cardTheme: _cardTheme,
       textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
-        foregroundColor: WidgetStateColor.resolveWith((states) => primaryLayers.layer3),
+        foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3),
       )),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -396,8 +398,8 @@ class LittleLightThemeData {
         focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: primaryLayers.layer3, width: 2)),
       ),
       radioTheme: RadioThemeData(
-        fillColor: WidgetStateColor.resolveWith((states) {
-          if (states.contains(WidgetState.selected)) {
+        fillColor: MaterialStateColor.resolveWith((states) {
+          if (states.contains(MaterialState.selected)) {
             return primaryLayers.layer2;
           }
           return onSurfaceLayers.layer0;
