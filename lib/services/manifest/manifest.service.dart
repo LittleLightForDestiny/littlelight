@@ -7,17 +7,18 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/parse.exception.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
-import 'package:little_light/services/app_config/app_config.consumer.dart';
+import 'package:little_light/services/app_config/app_config.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/bungie_api/enums/definition_table_names.enum.dart';
 import 'package:little_light/services/manifest/manifest_download_progress.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/utils/bungie_api.http_client.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart' as sqflite;
 import 'package:sqflite_common/sqlite_api.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart' as sqflite_ffi;
@@ -27,9 +28,10 @@ setupManifest() {
   GetIt.I.registerSingleton<ManifestService>(ManifestService._internal());
 }
 
-class ManifestService extends ChangeNotifier with StorageConsumer, AppConfigConsumer, AnalyticsConsumer {
-  @protected
-  BuildContext? context;
+class ManifestService extends ChangeNotifier with StorageConsumer, AnalyticsConsumer {
+  late AppConfig appConfig;
+  late LanguageBloc languageBloc;
+
   Database? _db;
   DestinyManifest? _manifestInfo;
   final Map<String, dynamic> _cached = {};
@@ -38,7 +40,8 @@ class ManifestService extends ChangeNotifier with StorageConsumer, AppConfigCons
   ManifestService._internal();
 
   ManifestService initContext(BuildContext context) {
-    this.context = context;
+    this.appConfig = context.read<AppConfig>();
+    this.languageBloc = context.read<LanguageBloc>();
     return this;
   }
 
@@ -130,7 +133,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, AppConfigCons
   Future<bool> needsUpdate() async {
     DestinyManifest manifestInfo = await _getManifestInfo();
     String? currentVersion = await getSavedVersion();
-    String language = getInjectedLanguageService().currentLanguage;
+    String language = languageBloc.currentLanguage;
     var working = await test();
     return !working || currentVersion != manifestInfo.mobileWorldContentPaths?[language];
   }
@@ -144,7 +147,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, AppConfigCons
     }
     try {
       DestinyManifest info = await _getManifestInfo();
-      String language = getInjectedLanguageService().currentLanguage;
+      String language = languageBloc.currentLanguage;
       String? manifestFileURL = info.mobileWorldContentPaths?[language];
       String? url = BungieApiService.url(manifestFileURL);
       String localPath = await _localPath;

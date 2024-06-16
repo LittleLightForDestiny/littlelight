@@ -21,7 +21,7 @@ import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/setup.dart';
 import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:provider/provider.dart';
@@ -37,7 +37,8 @@ enum InitialPagePhase {
 }
 
 class InitialPageStateNotifier
-    with ChangeNotifier, ManifestConsumer, AuthConsumer, WishlistsConsumer, AnalyticsConsumer, StorageConsumer {
+    with ChangeNotifier, AuthConsumer, WishlistsConsumer, AnalyticsConsumer, StorageConsumer {
+  final ManifestService manifest;
   final OfflineModeBloc _offlineModeBloc;
   final LittleLightDataBloc _littleLightDataBloc;
 
@@ -56,7 +57,8 @@ class InitialPageStateNotifier
 
   InitialPageStateNotifier(this._context)
       : _offlineModeBloc = _context.read<OfflineModeBloc>(),
-        _littleLightDataBloc = _context.read<LittleLightDataBloc>() {
+        _littleLightDataBloc = _context.read<LittleLightDataBloc>(),
+        manifest = _context.read<ManifestService>() {
     SystemChrome.setSystemUIOverlayStyle(
         const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
     _initLoading();
@@ -65,7 +67,6 @@ class InitialPageStateNotifier
   Future<void> _initLoading() async {
     _loading = true;
     notifyListeners();
-    await setupServices();
 
     try {
       await initServices(_context);

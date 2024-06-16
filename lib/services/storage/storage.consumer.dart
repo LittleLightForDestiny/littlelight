@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:little_light/exceptions/not_initialized.exception.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
+
 import '../../core/blocs/storage/account/account_storage.service.dart';
 import '../../core/blocs/storage/global/global_storage.bloc.dart';
 import '../../core/blocs/storage/language/language_storage.service.dart';
@@ -38,7 +38,7 @@ extension Storages on StorageConsumer {
   LanguageStorage languageStorage(String code) => getInjectedLanguageStorage(code);
 
   LanguageStorage get currentLanguageStorage {
-    final language = getInjectedLanguageService().currentLanguage;
+    final language = globalStorage.currentLanguage ?? 'en';
     return getInjectedLanguageStorage(language);
   }
 }

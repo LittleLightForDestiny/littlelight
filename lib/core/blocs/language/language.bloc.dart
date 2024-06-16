@@ -3,9 +3,7 @@ import 'dart:core';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:http/http.dart' as http;
-import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/blocs/storage/global/global_storage.bloc.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/models/language_info.dart';
@@ -15,10 +13,6 @@ import 'package:timeago/timeago.dart' as timeago;
 
 import 'timeago_messages/translated_lookup_messages.dart';
 import 'timeago_messages/translated_short_lookup_messages.dart';
-
-setupLanguageService() {
-  GetIt.I.registerSingleton<LanguageBloc>(LanguageBloc._internal());
-}
 
 const List<String> _availableLanguages = [
   'de',
@@ -52,14 +46,10 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
   final Map<String, Map<String, String>> _translationMaps = {};
   final Map<String, bool> _loading = {};
 
-  LanguageBloc._internal()
+  LanguageBloc(BuildContext context)
       : globalStorageBloc = getInjectedGlobalStorage(),
-        super();
-
-  factory LanguageBloc(BuildContext context) {
-    final bloc = getInjectedLanguageService();
-    bloc._init(context);
-    return bloc;
+        super() {
+    // _init(context);
   }
 
   void _init(BuildContext context) {

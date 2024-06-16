@@ -12,6 +12,7 @@ import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
 import 'package:little_light/services/https_override/https_overrides.dart';
 import 'package:little_light/services/deeplinks_handler/deeplinks_handler.dart';
+import 'package:little_light/services/setup.dart';
 import 'package:provider/provider.dart';
 
 const _router = LittleLightRouter();
@@ -25,6 +26,7 @@ class LittleLightApp extends StatefulWidget {
 
 class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer {
   final deeplinks = DeeplinksHandler();
+  bool servicesStarted = false;
   @override
   void initState() {
     super.initState();
@@ -32,6 +34,13 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
     LittleLightNavigatorKeyContainer.navigatorKey = GlobalKey<NavigatorState>();
     deeplinks.addListener(updateDeepLinks);
     updateSystemOverlay();
+    startServices();
+  }
+
+  void startServices() async {
+    await setupServices();
+    servicesStarted = true;
+    setState(() {});
   }
 
   void updateSystemOverlay() async {
@@ -58,6 +67,7 @@ class _LittleLightAppState extends State<LittleLightApp> with AnalyticsConsumer 
 
   @override
   Widget build(BuildContext context) {
+    if (!servicesStarted) return Container();
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Little Light',

@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
-import 'language.bloc.dart';
 
-LanguageBloc getInjectedLanguageService() => GetIt.I<LanguageBloc>();
+import 'language.bloc.dart';
 
 extension LanguageContextConsumer on BuildContext {
   String get currentLanguage => watch<LanguageBloc>().currentLanguage;

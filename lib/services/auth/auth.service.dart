@@ -10,22 +10,31 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:get_it/get_it.dart';
-import 'package:little_light/core/blocs/language/language.consumer.dart';
+import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
-import 'package:little_light/services/app_config/app_config.consumer.dart';
+import 'package:little_light/services/app_config/app_config.dart';
 import 'package:little_light/services/storage/export.dart';
 import 'package:little_light/utils/bungie_api.http_client.dart';
+import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 setupAuthService() async {
   GetIt.I.registerSingleton<AuthService>(AuthService._internal());
 }
 
-class AuthService with StorageConsumer, AppConfigConsumer {
+class AuthService with StorageConsumer {
+  late AppConfig appConfig;
+  late LanguageBloc languageBloc;
   Set<String>? _accountIDs;
   BungieNetToken? _currentToken;
   GroupUserInfoCard? _currentMembership;
+
+  AuthService initContext(BuildContext context) {
+    this.appConfig = context.read<AppConfig>();
+    this.languageBloc = context.read<LanguageBloc>();
+    return this;
+  }
 
   AuthService._internal();
 
@@ -35,7 +44,7 @@ class AuthService with StorageConsumer, AppConfigConsumer {
 
   void openBungieLogin(bool forceReauth) async {
     var browser = BungieAuthBrowser();
-    OAuth.openOAuth(browser, appConfig.clientId, getInjectedLanguageService().currentLanguage, forceReauth);
+    OAuth.openOAuth(browser, appConfig.clientId, languageBloc.currentLanguage, forceReauth);
   }
 
   Future<UserMembershipData> addAccount(String authorizationCode) async {

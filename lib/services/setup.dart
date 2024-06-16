@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/inventory/inventory.bloc.dart';
-import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/user_settings/user_settings.bloc.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/analytics/analytics.service.dart';
@@ -9,7 +8,6 @@ import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/app_config/app_config.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/littlelight/wishlists.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/notification/notification.service.dart';
@@ -36,10 +34,8 @@ Future<void> setupServices() async {
   await setupStorageService();
   await setupAppConfig();
   await setupAuthService();
-  await setupLanguageService();
   await setupManifest();
   await setupWishlistsService();
-  await setupBungieApiService();
   await setupNotificationService();
   await setupSelectionService();
   await setupDestinySettingsService();

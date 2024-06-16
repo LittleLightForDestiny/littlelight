@@ -6,23 +6,24 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
 import 'package:bungie_api/settings.dart';
-import 'package:get_it/get_it.dart';
+import 'package:flutter/material.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
-import 'package:little_light/services/app_config/app_config.consumer.dart';
-import 'package:little_light/services/auth/auth.consumer.dart';
+import 'package:little_light/services/app_config/app_config.dart';
+import 'package:little_light/services/auth/auth.service.dart';
 import 'package:little_light/utils/bungie_api.http_client.dart';
+import 'package:provider/provider.dart';
 
 final _credentialsMissingException = Exception("Credentials are missing");
 
-Future<void> setupBungieApiService() async {
-  GetIt.I.registerSingleton<BungieApiService>(BungieApiService._internal());
-}
-
-class BungieApiService with AuthConsumer, AppConfigConsumer {
+class BungieApiService {
+  final AuthService auth;
+  final AppConfig appConfig;
   static const String baseUrl = 'https://www.bungie.net';
   static const String apiUrl = "$baseUrl/Platform";
 
-  BungieApiService._internal();
+  BungieApiService(BuildContext context)
+      : appConfig = context.read<AppConfig>(),
+        auth = context.read<AuthService>();
 
   static String? url(String? url) {
     if (url == null) return null;

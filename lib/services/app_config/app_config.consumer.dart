@@ -4,6 +4,7 @@ import 'app_config.dart';
 AppConfig getInjectedAppConfig() => GetIt.I<AppConfig>();
 
 extension AppConfigProvider on AppConfigConsumer {
+  @deprecated
   AppConfig get appConfig => getInjectedAppConfig();
 }
 
