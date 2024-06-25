@@ -4,7 +4,6 @@ import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/shared/modals/context_menu_overlay/character_context_menu.bloc.dart';
 import 'package:little_light/shared/utils/helpers/media_query_helper.dart';
 import 'package:little_light/shared/widgets/containers/menu_box.dart';
-import 'package:little_light/shared/widgets/inventory_item/inventory_item.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/create_loadout.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/equip_loadout.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/grind_optimizer.widget.dart';
@@ -14,7 +13,6 @@ import 'package:little_light/shared/widgets/overlay/base_overlay_widget.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:little_light/shared/widgets/tabs/menus/character_vertical_tab_menu.widget.dart';
 import 'package:little_light/shared/widgets/tabs/menus/current_character_tab_indicator.dart';
-import 'package:provider/provider.dart';
 
 class CharacterContextMenu extends BaseOverlayWidget {
   static final menuButtonKey = GlobalKey();
@@ -178,64 +176,6 @@ class CharacterContextMenu extends BaseOverlayWidget {
     return CreateLoadoutWidget(
       character: character,
       onClose: () => Navigator.of(context).pop(),
-    );
-  }
-
-  Widget? buildCurrentAverage(BuildContext context) {
-    final classType = state.character?.character.classType;
-    if (classType == null) return null;
-
-    final average = context.watch<CharacterContextMenuBloc>().getCurrentAverage(classType);
-    return Text("Current Average ${average?.toStringAsFixed(2)}");
-  }
-
-  Widget? buildAchievableAverage(BuildContext context) {
-    final classType = state.character?.character.classType;
-    if (classType == null) return null;
-    final average = context.watch<CharacterContextMenuBloc>().getAchievableAverage(classType);
-    return Text("Achievable Average ${average?.toStringAsFixed(2)}");
-  }
-
-  Widget? buildMaxPowerLoadoutItems(BuildContext context) {
-    final character = state.character;
-    if (character == null) return null;
-    final helper = context.watch<CharacterContextMenuBloc>();
-    final loadout = helper.maxPower?[character.character.classType];
-    if (loadout == null) return null;
-    return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-            children: loadout.values
-                .map((e) => SizedBox(
-                      width: 64,
-                      height: 64,
-                      child: InventoryItemWidget(
-                        e,
-                        density: InventoryItemWidgetDensity.Low,
-                      ),
-                    ))
-                .toList()));
-  }
-
-  Widget? buildMaxPowerNonExoticLoadoutItems(BuildContext context) {
-    final currentCharacter = state.characters?[charactersTabController.index];
-    if (currentCharacter == null) return null;
-    final helper = context.watch<CharacterContextMenuBloc>();
-    final loadout = helper.equippableMaxPower?[currentCharacter.character.classType];
-    if (loadout == null) return null;
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-          children: loadout.values
-              .map((e) => SizedBox(
-                    width: 64,
-                    height: 64,
-                    child: InventoryItemWidget(
-                      e,
-                      density: InventoryItemWidgetDensity.Low,
-                    ),
-                  ))
-              .toList()),
     );
   }
 
