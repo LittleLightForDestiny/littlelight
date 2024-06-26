@@ -1,1 +1,2 @@
-- Fixes crashes
+- Updated grind optimizer for Final Shape
+- Fixes missing crafting pattern progress

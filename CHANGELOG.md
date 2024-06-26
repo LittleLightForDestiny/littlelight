@@ -1,3 +1,8 @@
+## [2.0.24] - 2024-06-26
+
+- Updated grind optimizer for Final Shape
+- Fixes missing crafting pattern progress
+
 ## [2.0.23] - 2024-06-16
 
 - Fixes crashes
