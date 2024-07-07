@@ -43,10 +43,25 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
     notifyListeners();
   }
 
+  bool _includeWeaponMods = false;
+
+  bool get includeWeaponMods => _includeWeaponMods;
+  set includeWeaponMods(bool value) {
+    _includeWeaponMods = value;
+    notifyListeners();
+  }
+
   bool _enableArmorsInLoadouts = true;
   bool get enableArmorsInLoadouts => _enableArmorsInLoadouts;
   set enableArmorsInLoadouts(bool value) {
     _enableArmorsInLoadouts = value;
+    notifyListeners();
+  }
+
+  bool _includeArmorMods = false;
+  bool get includeArmorMods => _includeArmorMods;
+  set includeArmorMods(bool value) {
+    _includeArmorMods = value;
     notifyListeners();
   }
 
@@ -317,7 +332,10 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
     for (final item in items) {
       final isEquipped = item.instanceInfo?.isEquipped ?? false;
       if (item.bucketHash == InventoryBucket.subclass && !isEquipped) continue;
-      await itemIndex.addItem(manifest, item, equipped: isEquipped);
+      final isArmor = InventoryBucket.armorBucketHashes.contains(item.bucketHash);
+      final isWeapon = loadoutWeaponHashes.contains(item.bucketHash);
+      final includeMods = (isArmor && includeArmorMods) || (isWeapon && includeWeaponMods);
+      await itemIndex.addItem(manifest, item, equipped: isEquipped, includeMods: includeMods);
     }
     final loadout = itemIndex.toLoadout();
     loadout.emblemHash = character.character.emblemHash;

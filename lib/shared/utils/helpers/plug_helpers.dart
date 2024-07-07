@@ -24,8 +24,8 @@ Future<bool> isPlugAvailableToApplyForFreeViaApi(
   if (allowActions == false) return false;
   final hasMaterials = materialCost?.materials?.isNotEmpty ?? false;
   if (hasMaterials) return false;
-
   if (isPlugBlockedForApplying(plugDef)) return false;
+  if (plugDef?.plug?.plugCategoryIdentifier == 'intrinsics') return false;
   return true;
 }
 

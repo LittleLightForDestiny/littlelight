@@ -130,6 +130,7 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
     ManifestService manifest,
     InventoryItemInfo? item, {
     bool equipped = false,
+    bool includeMods = false,
   }) async {
     final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item?.itemHash);
     final bucketHash = def?.inventory?.bucketTypeHash;
@@ -141,13 +142,24 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
     if (this.containsItem(instanceId)) {
       await this.removeItem(manifest, item);
     }
+
+    Map<int, int> plugHashes = {};
+    if (includeMods && item != null) {
+      final sockets = item.sockets ?? [];
+      for (int i = 0; i < sockets.length; i++) {
+        final plugHash = sockets[i].plugHash;
+        final canApply = await isPlugAvailableToApplyForFreeViaApi(manifest, item, i, plugHash);
+        if (canApply && plugHash != null) plugHashes[i] = plugHash;
+      }
+    }
+
     final added = _addItemToLoadoutIndex(
       this,
       equipped,
       item: item,
       bucketHash: bucketHash,
       classType: def?.classType,
-      plugHashes: null,
+      plugHashes: plugHashes,
     );
     final equippingBlockLabel = def?.equippingBlock?.uniqueLabel;
     if (equipped && equippingBlockLabel != null) {

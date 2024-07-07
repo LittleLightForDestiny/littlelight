@@ -174,10 +174,18 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   Future<QueuedApplyPlugs?> _addApplyPlugsToQueue(InventoryItemInfo item, Map<int, int> plugs) async {
+    final nonAppliedPlugs = <int, int>{};
+    for (final p in plugs.entries) {
+      final isApplied = item.sockets?[p.key].plugHash == p.value;
+      if (!isApplied) {
+        nonAppliedPlugs[p.key] = p.value;
+      }
+    }
+    if (nonAppliedPlugs.isEmpty) return null;
     final notification = _notificationsBloc.createNotification(ApplyPlugsNotification(
       item: item,
     ));
-    final action = QueuedApplyPlugs(item: item, notification: notification, plugs: plugs);
+    final action = QueuedApplyPlugs(item: item, notification: notification, plugs: nonAppliedPlugs);
     final instanceId = item.instanceId;
     if (instanceId != null) instanceIdsToAvoid.add(instanceId);
     _actionQueue.add(action);

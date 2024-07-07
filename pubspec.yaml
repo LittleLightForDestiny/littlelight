@@ -29,6 +29,7 @@ dependencies:
   url_launcher: ^6.3.0
   wakelock_plus: ^1.2.5
   flutter_advanced_switch: ^3.1.0
+  flutter_switch: ^0.3.2
   logger: ^2.3.0
 
   package_info_plus: ^8.0.0
