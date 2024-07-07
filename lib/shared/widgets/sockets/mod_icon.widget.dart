@@ -37,7 +37,7 @@ class ModIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: LittleLightTheme.of(context).surfaceLayers.layer0,
+      color: context.theme.surfaceLayers.layer0,
       key: Key("plug_$plugHash"),
       child: AspectRatio(
         aspectRatio: 1,
@@ -102,7 +102,7 @@ class ModIconWidget extends StatelessWidget {
   }
 
   Widget? buildBorder(BuildContext context) {
-    final theme = LittleLightTheme.of(context);
+    final theme = context.theme;
     Color borderColor = theme.onSurfaceLayers.layer3.withOpacity(.5);
     if (equipped && selected) {
       borderColor = theme.primaryLayers.layer0.mix(theme.onSurfaceLayers.layer0, 30);

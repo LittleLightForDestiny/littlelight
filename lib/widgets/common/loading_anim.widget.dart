@@ -13,8 +13,8 @@ class LoadingAnimWidget extends StatelessWidget {
             width: 96,
             child: Shimmer.fromColors(
               enabled: enableEyeCandy,
-              baseColor: LittleLightTheme.of(context).onSurfaceLayers.layer2,
-              highlightColor: LittleLightTheme.of(context).surfaceLayers.layer2,
+              baseColor: context.theme.onSurfaceLayers.layer2,
+              highlightColor: context.theme.surfaceLayers.layer2,
               child: Image.asset("assets/anim/loading.webp"),
             )));
   }

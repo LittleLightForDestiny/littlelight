@@ -26,7 +26,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
   Color getBackgroundColor(BuildContext context) {
     final emblemDefinition = context.definition<DestinyInventoryItemDefinition>(_state(context).emblemHash);
     final bgColor = emblemDefinition?.backgroundColor;
-    final background = Theme.of(context).colorScheme.background;
+    final background = context.theme.surfaceLayers.layer1;
     if (bgColor == null) return background;
     return Color.lerp(bgColor.toMaterialColor(), background, .5) ?? background;
   }
@@ -192,7 +192,7 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
     return Container(
       alignment: Alignment.center,
       constraints: const BoxConstraints(minWidth: double.maxFinite),
-      color: LittleLightTheme.of(context).surfaceLayers.layer1,
+      color: context.theme.surfaceLayers.layer1,
       child: SafeArea(
         top: false,
         child: Container(

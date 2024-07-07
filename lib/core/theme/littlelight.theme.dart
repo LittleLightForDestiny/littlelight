@@ -298,8 +298,7 @@ class LittleLightThemeData {
     SwatchLayer.Layer1: const Color(0xFF46E038),
   }, defaultLayer: SwatchLayer.Layer1);
 
-  Color get _background => surfaceLayers.layer0;
-  Color get _surface => surfaceLayers.layer1;
+  Color get _surface => surfaceLayers.layer0;
   Color get _secondaryContainer => secondarySurfaceLayers.layer0;
   Color get _secondary => secondarySurfaceLayers.layer1;
 
@@ -308,15 +307,15 @@ class LittleLightThemeData {
 
   ColorScheme get colorScheme => ColorScheme(
       brightness: Brightness.dark,
-      background: _background,
       surface: _surface,
       primary: _primary,
       primaryContainer: _primaryContainer,
+      background: _surface,
       secondary: _secondary,
       secondaryContainer: _secondaryContainer,
-      onBackground: onSurfaceLayers.layer0,
       onPrimary: onSurfaceLayers.layer0,
       onSecondary: onSurfaceLayers.layer0,
+      onBackground: onSurfaceLayers.layer0,
       onSurface: onSurfaceLayers.layer0,
       onError: onSurfaceLayers.layer0,
       error: errorLayers.layer0);

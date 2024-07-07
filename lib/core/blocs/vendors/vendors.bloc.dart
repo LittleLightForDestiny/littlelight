@@ -70,6 +70,22 @@ class VendorsBloc extends ChangeNotifier with BungieApiConsumer, StorageConsumer
     notifyListeners();
   }
 
+  Future<void> loadVendorComponents(String characterId, int vendorHash) async {
+    try {
+      final response = await bungieAPI.getVendor(_vendorComponents, characterId, vendorHash);
+      final vendor = response?.vendor?.data;
+      if (vendor != null) {
+        this._characterVendorResponses[characterId]?.vendors?.data?["$vendorHash"] = vendor;
+      }
+      final itemComponents = response?.itemComponents;
+      if (itemComponents != null) {
+        this._characterVendorResponses[characterId]?.itemComponents?["$vendorHash"] = itemComponents;
+      }
+      currentMembershipStorage.saveCachedVendors(this._characterVendorResponses);
+      notifyListeners();
+    } catch (e) {}
+  }
+
   List<DestinyVendorCategory>? categoriesFor(String characterId, int? vendorHash) {
     final vendorsResponse = _getVendorsResponseFor(characterId);
     return vendorsResponse?.categories?.data?["$vendorHash"]?.categories;

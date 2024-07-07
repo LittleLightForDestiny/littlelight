@@ -51,7 +51,7 @@ class _LanguagesPageState extends State<LanguagesPage> {
     }
     var bottomPadding = MediaQuery.of(context).padding.bottom;
     return Container(
-      color: Theme.of(context).colorScheme.secondary,
+      color: context.theme.secondarySurfaceLayers.layer1,
       padding: const EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
           onPressed: () {
@@ -78,9 +78,9 @@ class _LanguagesPageState extends State<LanguagesPage> {
   }
 
   Widget buildLanguageItem(BuildContext context, LanguageInfo language) {
-    var color = Theme.of(context).colorScheme.secondaryContainer;
+    var color = context.theme.secondarySurfaceLayers.layer0;
     if (language.code == currentLanguage) {
-      color = Theme.of(context).colorScheme.secondary;
+      color = context.theme.secondarySurfaceLayers.layer1;
     }
     if (language.code == selectedLanguage) {
       color = Colors.lightBlue.shade500;
@@ -130,7 +130,7 @@ class _LanguagesPageState extends State<LanguagesPage> {
       !canDelete
           ? Container()
           : Material(
-              color: LittleLightTheme.of(context).colorScheme.error,
+              color: context.theme.colorScheme.error,
               borderRadius: BorderRadius.circular(30),
               child: InkWell(
                   borderRadius: BorderRadius.circular(30),

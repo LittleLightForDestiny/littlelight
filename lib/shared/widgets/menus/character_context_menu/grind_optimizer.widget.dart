@@ -10,6 +10,7 @@ import 'package:little_light/shared/widgets/inventory_item/low_density_inventory
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
 import 'package:little_light/core/blocs/selection/selection.bloc.dart';
+import 'package:little_light/models/item_info/inventory_item_info.dart';
 
 const List<int> _bucketsOrder = [
   InventoryBucket.kineticWeapons,
@@ -91,13 +92,14 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     final classType = character.character.classType;
     if (classType == null) return Container();
     final state = context.watch<CharacterContextMenuBloc>();
-    final currentAverage = state.getCurrentAverage(classType);
-    if (currentAverage == null) return Container();
-    final achievableAverage = state.getAchievableAverage(classType) ?? 0;
-    final achievableDiff = achievableAverage.floor() - currentAverage.floor();
-    final isInPinnacle = state.achievedPinnacleTier(classType);
-    final isMaxPower = state.achievedMaxPower(classType);
-    final goForReward = state.goForReward(classType);
+    final charCurrentAverage = state.getCurrentAverage(classType);
+    if (charCurrentAverage == null) return Container();
+    final acctCurrentAverage = state.getAcctCurrentAverage() ?? 0;
+    final achievableAverage = state.getAcctAchievableAverage() ?? 0;
+    final achievableDiff = achievableAverage.floor() - acctCurrentAverage.floor();
+    final isInPinnacle = state.achievedPinnacleTier();
+    final isMaxPower = state.achievedMaxPower();
+    final goForReward = state.goForReward();
     final goForMessage =
         isInPinnacle ? "Go for pinnacle reward?".translate(context) : "Go for powerful reward?".translate(context);
     final achievableMessage = isInPinnacle
@@ -106,27 +108,56 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     final bonusPower = character.artifactPower ?? 0;
     final bonusPowerProgress = state.getBonusPowerProgress();
     final items = state.getMaxPowerItems(classType);
+    final acctMaxPowerItems = state.getAcctMaxPowerItems();
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       MenuInfoBox(
         child: Column(
           children: [
             Row(children: [
-              Expanded(child: Text("Current base power:".translate(context))),
-              Text("${currentAverage.toStringAsFixed(2)}",
+              Expanded(child: Text("Character base power:".translate(context))),
+              Text("${charCurrentAverage.toStringAsFixed(2)}",
                   style: context.textTheme.subtitle.copyWith(color: context.theme.achievementLayers)),
             ]),
             SizedBox(height: 5),
-            _buildPartialLevelProgressBar(context, items?.length ?? 8, currentAverage, isMaxPower)
+            _buildPartialLevelProgressBar(context, items?.length ?? 8, charCurrentAverage, isMaxPower)
           ],
         ),
       ),
+      buildItems(context, items, charCurrentAverage),
+      Container(height: 4),
+      if (items != null)
+        ElevatedButton(
+          style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+          child: Text("Select all".translate(context).toUpperCase()),
+          onPressed: () {
+            context.read<SelectionBloc>().selectItems(items.values.toList());
+            onClose();
+          },
+        ),
+      Container(height: 8),
+      MenuInfoBox(
+        child: Column(
+          children: [
+            Row(children: [
+              Expanded(child: Text("Account base power:".translate(context))),
+              Text("${acctCurrentAverage.toStringAsFixed(2)}",
+                  textAlign: TextAlign.right,
+                  style: context.textTheme.subtitle.copyWith(color: context.theme.achievementLayers)),
+            ]),
+            SizedBox(height: 5),
+            _buildPartialLevelProgressBar(context, items?.length ?? 8, acctCurrentAverage, isMaxPower)
+          ],
+        ),
+      ),
+      buildItems(context, acctMaxPowerItems, acctCurrentAverage),
+      Container(height: 8),
       MenuInfoBox(
         child: Column(
           children: [
             Row(children: [
               Expanded(child: Text("Artifact bonus power:".translate(context))),
               Text("+${(bonusPower + bonusPowerProgress).toStringAsFixed(2)}",
-                  style: context.textTheme.subtitle.copyWith(color: LittleLightTheme.of(context).upgradeLayers.layer1)),
+                  style: context.textTheme.subtitle.copyWith(color: context.theme.upgradeLayers.layer1)),
             ]),
             SizedBox(height: 5),
             _buildBonusPowerProgressBar(context, bonusPower, bonusPowerProgress)
@@ -140,86 +171,79 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
               style: TextStyle(
                   color:
                       achievableDiff > 0 ? context.theme.successLayers.layer3 : context.theme.onSurfaceLayers.layer0)),
-          Text("${achievableAverage.toStringAsFixed(2)}"),
+          Text("${achievableAverage.toStringAsFixed(2)}", style: TextStyle(color: context.theme.achievementLayers)),
         ]),
       ),
       MenuBoxTitle(
         goForMessage,
-        trailing: Text(isMaxPower
+        trailing: Text(state.isMaxPower(charCurrentAverage)
             ? "Max".translate(context).toUpperCase()
             : goForReward
                 ? "Yes".translate(context).toUpperCase()
                 : "No".translate(context).toUpperCase()),
       ),
-      if (items != null)
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: _bucketsOrder
-                .map((hash) {
-                  final item = items[hash];
-                  if (item == null) return null;
-                  final average = currentAverage.toInt();
-                  final diff = (item.instanceInfo?.primaryStat?.value ?? average) - average;
-                  String text = "+" + diff.toString();
-                  Color color = context.theme.surfaceLayers.layer1;
-                  if (diff > 0) {
-                    color = context.theme.successLayers.layer0;
-                  }
-                  if (diff < 0) {
-                    text = diff.toString();
-                    color = context.theme.errorLayers.layer0;
-                  }
-                  return Container(
-                    width: 64,
-                    margin: EdgeInsets.only(right: 2),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Container(
-                          height: 64,
-                          margin: EdgeInsets.only(bottom: 4),
-                          child: LowDensityInventoryItem(item),
-                        ),
-                        Container(
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(4),
-                            gradient: LinearGradient(
-                              begin: Alignment.bottomCenter,
-                              end: Alignment.topCenter,
-                              colors: [
-                                context.theme.surfaceLayers.layer0.mix(color, 50),
-                                context.theme.onSurfaceLayers.layer0.mix(color, 70),
-                              ],
-                            ),
-                          ),
-                          padding: EdgeInsets.all(2),
-                          child: Text(
-                            text,
-                            style: context.textTheme.highlight.copyWith(
-                              color: context.theme.onSurfaceLayers.mix(color, 20),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                })
-                .whereType<Widget>()
-                .toList(),
-          ),
-        ),
-      Container(height: 4),
-      if (items != null)
-        ElevatedButton(
-          style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-          child: Text("Select all".translate(context).toUpperCase()),
-          onPressed: () {
-            context.read<SelectionBloc>().selectItems(items.values.toList());
-            onClose();
-          },
-        ),
     ]);
+  }
+
+  Widget buildItems(BuildContext context, Map<int, InventoryItemInfo>? items, double currentAverage) {
+    if (items == null) return Container();
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: _bucketsOrder
+            .map((hash) {
+              final item = items[hash];
+              if (item == null) return null;
+              final average = currentAverage.toInt();
+              final diff = (item.instanceInfo?.primaryStat?.value ?? average) - average;
+              String text = "+" + diff.toString();
+              Color color = context.theme.surfaceLayers.layer1;
+              if (diff > 0) {
+                color = context.theme.successLayers.layer0;
+              }
+              if (diff < 0) {
+                text = diff.toString();
+                color = context.theme.errorLayers.layer0;
+              }
+              return Container(
+                width: 64,
+                margin: EdgeInsets.only(right: 2),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      height: 64,
+                      margin: EdgeInsets.only(bottom: 4),
+                      child: LowDensityInventoryItem(item),
+                    ),
+                    Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(4),
+                        gradient: LinearGradient(
+                          begin: Alignment.bottomCenter,
+                          end: Alignment.topCenter,
+                          colors: [
+                            context.theme.surfaceLayers.layer0.mix(color, 50),
+                            context.theme.onSurfaceLayers.layer0.mix(color, 70),
+                          ],
+                        ),
+                      ),
+                      padding: EdgeInsets.all(2),
+                      child: Text(
+                        text,
+                        style: context.textTheme.highlight.copyWith(
+                          color: context.theme.onSurfaceLayers.mix(color, 20),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            })
+            .whereType<Widget>()
+            .toList(),
+      ),
+    );
   }
 }

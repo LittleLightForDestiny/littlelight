@@ -47,7 +47,7 @@ abstract class BasePersistentNotificationWidget<T extends BasePersistentNotifica
           : AnimatedSlide(
               key: Key("animated transfer slide $id"),
               duration: _animationDuration,
-              curve: accelerateEasing,
+              curve: Easing.legacyAccelerate,
               offset: Offset(notification.shouldPlayDismissAnimation ? 1.5 : 0, 0),
               child: Container(padding: const EdgeInsets.only(top: 4), child: child),
             ),

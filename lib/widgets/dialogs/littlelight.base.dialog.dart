@@ -42,7 +42,7 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
     final title = buildTitle(context);
     if (title == null) return Container();
     return Container(
-      color: LittleLightTheme.of(context).surfaceLayers.layer3,
+      color: context.theme.surfaceLayers.layer3,
       padding: const EdgeInsets.all(8),
       child: DefaultTextStyle(
         style: context.textTheme.title,

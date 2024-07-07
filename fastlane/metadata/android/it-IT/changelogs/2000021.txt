@@ -1,0 +1,4 @@
+- Fixes a bug in armor stat filters
+- Added clarity insights to exotic armor intrinsics
+- Fixes crafting pattern progress missing for Fang of Ir Yut and Song of Ir Yut
+- Fixes vendor perks

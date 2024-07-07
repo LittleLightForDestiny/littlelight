@@ -15,7 +15,7 @@ class DeeplinksHandler extends ChangeNotifier {
     // iOS is already handling deeplinks by itself
     if (Platform.isIOS) return;
     final _appLinks = AppLinks();
-    _appLinksSubscription = _appLinks.allUriLinkStream.listen(_linkListener);
+    _appLinksSubscription = _appLinks.uriLinkStream.asBroadcastStream().listen(_linkListener);
     registerProtocol();
   }
 

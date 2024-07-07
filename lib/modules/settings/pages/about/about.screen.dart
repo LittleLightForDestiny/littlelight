@@ -4,7 +4,7 @@ import 'package:bungie_api/enums/bungie_membership_type.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:launch_review/launch_review.dart';
+import 'package:in_app_review/in_app_review.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
@@ -298,7 +298,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
         .map((l) => l.name)
         .join("/"));
     return Container(
-        color: Theme.of(context).colorScheme.secondaryContainer,
+        color: context.theme.secondarySurfaceLayers.layer0,
         padding: const EdgeInsets.all(4),
         child: Row(
           children: flags + [Container(width: 4), languageNames],
@@ -339,7 +339,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
         if (url != null) launchUrlString(url);
         break;
       case AboutScreenActionType.Rate:
-        LaunchReview.launch(androidAppId: 'me.markezine.luzinha', iOSAppId: '1373037254');
+        InAppReview.instance.openStoreListing(appStoreId: '1373037254', microsoftStoreId: "9PMG9ZQ41K95");
         return;
     }
   }

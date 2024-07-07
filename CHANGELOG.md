@@ -1,3 +1,31 @@
+## [2.0.24] - 2024-06-26
+
+- Updated grind optimizer for Final Shape
+- Fixes missing crafting pattern progress
+
+## [2.0.23] - 2024-06-16
+
+- Fixes crashes
+
+## [2.0.22] - 2024-06-13
+
+- Fixes some icons
+
+## [2.0.21] - 2024-05-31
+
+- Fixes a bug in armor stat filters
+- Added clarity insights to exotic armor intrinsics
+- Fixes crafting pattern progress missing for Fang of Ir Yut and Song of Ir Yut
+- Fixes vendor perks
+
+## [2.0.20] - 2024-03-27
+
+- Fixes a visual bug on ranks
+
+## [2.0.19] - 2024-01-13
+
+- fixes some layout issues on progress
+
 ## [2.0.18] - 2024-01-08
 
 - Fixes some issues on the side menu prompting to exit the app

@@ -31,7 +31,14 @@ class CraftablesHelperBloc extends ChangeNotifier {
     }
     final recordHash = _itemToRecordHashMap[itemHash];
     if (recordHash == null) return null;
-    return _profileBloc.getProfileRecord(recordHash);
+    final profileRecord = _profileBloc.getProfileRecord(recordHash);
+    if (profileRecord != null) return profileRecord;
+    return _profileBloc.characters
+        ?.map((c) => c.characterId)
+        .whereType<String>()
+        .map((id) => _profileBloc.getCharacterRecord(id, recordHash))
+        .whereType<DestinyRecordComponent>()
+        .firstOrNull;
   }
 
   List<DestinyObjectiveProgress>? getItemCraftedObjectives(DestinyItemInfo item) {

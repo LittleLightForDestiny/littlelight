@@ -8,6 +8,7 @@ import 'package:little_light/shared/widgets/inventory_item/low_density_inventory
 import 'package:little_light/shared/widgets/containers/menu_box.dart';
 import 'package:little_light/shared/widgets/containers/menu_box_title.dart';
 import 'package:provider/provider.dart';
+import 'package:little_light/core/theme/littlelight.theme.dart';
 
 const List<int> _bucketsOrder = [
   InventoryBucket.kineticWeapons,
@@ -40,7 +41,8 @@ class MaxPowerOptionsWidget extends StatelessWidget {
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
         MenuBoxTitle(
           "Equippable max power".translate(context),
-          trailing: Text("${equippableAverage?.toStringAsFixed(2)}"),
+          trailing: Text("${equippableAverage?.toStringAsFixed(2)}",
+              style: context.textTheme.subtitle.copyWith(color: context.theme.achievementLayers)),
         ),
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,

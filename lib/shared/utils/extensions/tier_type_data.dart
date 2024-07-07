@@ -4,7 +4,7 @@ import 'package:little_light/core/theme/littlelight.theme.dart';
 
 extension TierTypeColorLayers on TierType {
   LayeredSwatch getColorLayer(BuildContext context) {
-    final theme = LittleLightTheme.of(context);
+    final theme = context.theme;
     switch (this) {
       case TierType.Basic:
         return theme.tierLayers.basic;
@@ -22,7 +22,7 @@ extension TierTypeColorLayers on TierType {
   }
 
   Color getTextColor(BuildContext context) {
-    final theme = LittleLightTheme.of(context);
+    final theme = context.theme;
     switch (this) {
       case TierType.Basic:
       case TierType.Unknown:

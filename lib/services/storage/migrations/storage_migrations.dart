@@ -49,7 +49,7 @@ class Version {
   }
 
   @override
-  bool operator ==(dynamic version) {
+  bool operator ==(Object version) {
     if (version is String) {
       version = Version.fromString(version);
     }

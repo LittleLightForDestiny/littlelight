@@ -58,14 +58,14 @@ jobs:
 
       - name: Setup MS Store Developer CLI
         uses: microsoft/setup-msstore-cli@v1
-      
+
       - name: Configure MS Store credentials
         run: msstore reconfigure --tenantId ${{ secrets.AZURE_AD_TENANT_ID }} --clientId ${{ secrets.AZURE_AD_CLIENT_ID }} --clientSecret ${{ secrets.AZURE_AD_CLIENT_SECRET }} --sellerId ${{ secrets.MS_STORE_SELLER_ID }}
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.16.5"
+          flutter-version: "3.19.6"
 
       - name: Create assets/_env
         shell: bash
@@ -81,7 +81,7 @@ jobs:
 
       - name: Download pub dependencies
         run: flutter pub get
-      
+
       - name: Build via Flutter
         run: flutter build windows --release
 
@@ -95,8 +95,8 @@ jobs:
         if: steps.variables.outputs.version != ''
         uses: thedoctor0/zip-release@0.7.1
         with:
-          type: 'zip'
-          filename: 'LittleLight-windows-${{ steps.variables.outputs.version }}.zip'
+          type: "zip"
+          filename: "LittleLight-windows-${{ steps.variables.outputs.version }}.zip"
           path: ${{ github.workspace }}/build/windows/x64/runner/Release
 
       - name: Upload build to Github Release
@@ -104,7 +104,7 @@ jobs:
         if: steps.variables.outputs.version != ''
         with:
           tag_name: ${{ steps.variable.outputs.version }}
-          files: 'LittleLight-windows-${{ steps.variables.outputs.version }}.zip'
+          files: "LittleLight-windows-${{ steps.variables.outputs.version }}.zip"
 
       - name: Create MSIX package
         if: steps.variables.outputs.track == 'production'
@@ -113,5 +113,3 @@ jobs:
       - name: Publish MSIX to the Microsoft Store
         if: steps.variables.outputs.track == 'production'
         run: msstore publish -v -i ./build/windows/x64/runner/Release
-
-      

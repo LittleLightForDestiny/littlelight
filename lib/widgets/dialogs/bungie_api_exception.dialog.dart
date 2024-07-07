@@ -77,7 +77,7 @@ class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, 
         TextButton(
           child: Text(
             "Clear app data".translate(context).toUpperCase(),
-            style: TextStyle(color: LittleLightTheme.of(context).errorLayers),
+            style: TextStyle(color: context.theme.errorLayers),
           ),
           onPressed: () async {
             await globalStorage.purge();

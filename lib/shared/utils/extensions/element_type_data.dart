@@ -5,7 +5,7 @@ import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
 
 extension DamageTypeColorLayers on DamageType {
   LayeredSwatch getColorLayer(BuildContext context) {
-    final theme = LittleLightTheme.of(context);
+    final theme = context.theme;
     switch (this) {
       case DamageType.Arc:
         return theme.damageTypeLayers.damageTypeArc;
@@ -46,7 +46,7 @@ extension DamageTypeColorLayers on DamageType {
 
 extension EnergyTypeColorLayers on DestinyEnergyType {
   LayeredSwatch getColorLayer(BuildContext context) {
-    final theme = LittleLightTheme.of(context);
+    final theme = context.theme;
     switch (this) {
       default:
         return theme.onSurfaceLayers;

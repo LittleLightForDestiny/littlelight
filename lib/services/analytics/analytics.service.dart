@@ -26,7 +26,7 @@ class AnalyticsService with AuthConsumer {
 
   registerPageOpen(LittleLightPersistentPage page) {
     if (!PlatformCapabilities.firebaseAnalyticsAvailable) return;
-    _analytics.setCurrentScreen(screenName: page.name, screenClassOverride: page.name);
+    _analytics.logScreenView(screenName: page.name, screenClass: page.name);
   }
 
   void registerNonFatal(e, StackTrace? stackTrace, {Map<String, String>? additionalInfo}) {

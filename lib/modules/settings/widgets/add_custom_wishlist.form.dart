@@ -62,7 +62,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
   Widget buildErrorMessage() {
     return Container(
       decoration: BoxDecoration(
-        color: LittleLightTheme.of(context).errorLayers,
+        color: context.theme.errorLayers,
         borderRadius: BorderRadius.circular(8),
       ),
       padding: const EdgeInsets.all(8),
@@ -135,7 +135,7 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
         ),
         Linkify(
           text: "https://wishlists.littlelight.club",
-          linkStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface),
+          linkStyle: TextStyle(color: context.theme.onSurfaceLayers.layer0),
           onOpen: onLinkClick,
         ),
         Container(

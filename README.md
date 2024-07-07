@@ -19,7 +19,7 @@ Right now it features:
 Visit [@LittleLightD2](http://twitter.com/LittleLightD2) or join the [Discord Server](https://discord.gg/ztdFGGz) for updates and more details.
 
 ## Bugs and feature requests
-Have a bug or a feature request? Please first search for [existing and closed issues](https://github.com/LittleLightForDestiny/LittleLight/issues). If your problem or idea is not addressed yet, please open a new issue.
+Have a bug or a feature request? Please first search for [existing and closed issues](https://github.com/LittleLightForDestiny/littlelight/issues). If your problem or idea is not addressed yet, please open a new issue.
 
 ## Support Little Light
 Support Little Light with a [one-time](https://ko-fi.com/littlelight) or [monthly](https://www.patreon.com/littlelightD2) donation and help us continue our active development.
@@ -29,7 +29,7 @@ If you speak a language other than English that Destiny supports, a great way to
 
 ## Contributing
 
-See [CONTRIBUTING.md](https://github.com/LittleLightForDestiny/littlelight/blob/master/docs/CONTRIBUTING.md) for information on how to Contribute to the development of Little Light.
+See [CONTRIBUTING.md](docs/CONTRIBUTING.md) for information on how to Contribute to the development of Little Light.
 
 ## License
 Code released under the [MIT license](http://choosealicense.com/licenses/mit/).

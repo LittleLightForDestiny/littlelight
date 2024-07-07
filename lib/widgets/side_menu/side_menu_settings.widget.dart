@@ -80,8 +80,8 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
           onTap: onTap,
           child: Container(
             alignment: Alignment.centerRight,
-            decoration: BoxDecoration(
-                border: Border(bottom: BorderSide(width: 1, color: LittleLightTheme.of(context).surfaceLayers.layer1))),
+            decoration:
+                BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: context.theme.surfaceLayers.layer1))),
             padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
             child: DefaultTextStyle(style: context.textTheme.button, child: child),
           )),
@@ -100,8 +100,8 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
 
     return Container(
       padding: const EdgeInsets.all(8),
-      decoration: BoxDecoration(
-          border: Border(bottom: BorderSide(width: 1, color: LittleLightTheme.of(context).surfaceLayers.layer1))),
+      decoration:
+          BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: context.theme.surfaceLayers.layer1))),
       child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
@@ -123,7 +123,7 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
     return Column(children: [
       Container(
         decoration: BoxDecoration(
-            color: LittleLightTheme.of(context).surfaceLayers.layer2,
+            color: context.theme.surfaceLayers.layer2,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(8))),
         padding: const EdgeInsets.all(8),
         child: Row(children: [
@@ -141,7 +141,7 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
       Container(
           margin: const EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
-              border: Border.all(color: LittleLightTheme.of(context).surfaceLayers.layer2, width: 2),
+              border: Border.all(color: context.theme.surfaceLayers.layer2, width: 2),
               borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8))),
           padding: const EdgeInsets.all(8).copyWith(bottom: 0),
           child: Column(

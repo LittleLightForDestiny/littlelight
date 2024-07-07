@@ -93,7 +93,7 @@ class LoadoutListItemWidget extends StatelessWidget {
     final onAction = this.onAction;
     if (onAction == null) return Container();
     return Container(
-      color: Theme.of(context).colorScheme.secondaryContainer,
+      color: context.theme.secondarySurfaceLayers.layer0,
       padding: const EdgeInsets.all(4).copyWith(top: 0),
       child: Row(
         children: [

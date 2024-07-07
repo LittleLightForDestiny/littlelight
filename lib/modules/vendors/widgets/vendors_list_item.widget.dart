@@ -25,8 +25,7 @@ class VendorsListItemWidget extends StatelessWidget {
         child: buildBackground(context),
       ),
       Container(
-        decoration:
-            BoxDecoration(border: Border.all(color: LittleLightTheme.of(context).surfaceLayers.layer3, width: 1)),
+        decoration: BoxDecoration(border: Border.all(color: context.theme.surfaceLayers.layer3, width: 1)),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           mainAxisSize: MainAxisSize.min,

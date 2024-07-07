@@ -84,6 +84,26 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
     return response.response;
   }
 
+  Future<DestinyVendorResponse?> getVendor(
+      List<DestinyComponentType> components, String characterId, int vendorHash) async {
+    BungieNetToken? token = await auth.getCurrentToken();
+    GroupUserInfoCard? membership = await auth.getMembership();
+    final membershipID = membership?.membershipId;
+    final membershipType = membership?.membershipType;
+    if (token == null || membershipID == null || membershipType == null) {
+      throw NotAuthorizedException(_credentialsMissingException);
+    }
+    DestinyVendorResponseResponse response = await Destiny2.getVendor(
+      Client(token: token),
+      characterId,
+      components,
+      membershipID,
+      membershipType,
+      vendorHash,
+    );
+    return response.response;
+  }
+
   Future<UserMembershipData?> getMemberships() async {
     BungieNetToken? token = await auth.getCurrentToken();
     return getMembershipsForToken(token);

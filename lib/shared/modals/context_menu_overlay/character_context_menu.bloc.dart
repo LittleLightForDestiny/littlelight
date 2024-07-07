@@ -55,9 +55,11 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
   Map<DestinyClass, Map<int, InventoryItemInfo>>? _maxPowerEquipments;
   Map<DestinyClass, Map<int, InventoryItemInfo>>? _maxEquippable;
   Map<DestinyClass, double>? _currentAverage;
-  Map<DestinyClass, double>? _achievableAverage;
   Map<DestinyClass, double>? _equippableAverage;
   Map<String, List<InventoryItemInfo>>? _itemsOnPostmaster;
+  Map<int, InventoryItemInfo>? _acctMaxPowerEquipments;
+  double? _acctCurrentAverage;
+  double? _acctAchievableAverage;
 
   GameData? _gameData;
 
@@ -103,9 +105,9 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
     for (final item in instancedItems) {
       final hash = item.itemHash;
       final def = defs[hash];
-      final tierType = def?.inventory?.tierType;
-      final characterClass = def?.classType;
       if (def == null) continue;
+      final tierType = def.inventory?.tierType;
+      final characterClass = def.classType;
       if (characterClass == null) continue;
       _addItemToMap(maxPower, item, def, characterClass);
 
@@ -114,15 +116,24 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
       _addItemToMap(maxPowerNonExotic, item, def, characterClass);
     }
 
+    final Map<int, InventoryItemInfo> acctMaxPower = Map.fromIterable(
+      maxPower.values.expand((map) => map.keys).toSet(),
+      key: (k) => k,
+      value: (k) => maxPower.values
+          .map((e) => e[k])
+          .whereType<InventoryItemInfo>()
+          .reduce((v, e) => (v.primaryStatValue ?? 0) >= (e.primaryStatValue ?? 0) ? v : e),
+    );
     final maxEquippable = maxPower.map((k, v) => MapEntry(k, _getMaxEquippableLoadout(v, maxPowerNonExotic[k]!)));
     final currentAverage = maxPower.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
-    final achievableAverage = maxPower.map((k, v) => MapEntry(k, _getAchievableAverage(v)));
     final equippableAverage = maxEquippable.map((k, v) => MapEntry(k, _getEquipmentAverage(v)));
     _maxPowerEquipments = maxPower;
     _maxEquippable = maxEquippable;
     _currentAverage = currentAverage;
-    _achievableAverage = achievableAverage;
     _equippableAverage = equippableAverage;
+    _acctMaxPowerEquipments = acctMaxPower;
+    _acctCurrentAverage = _getEquipmentAverage(acctMaxPower);
+    _acctAchievableAverage = _getAchievableAverage(acctMaxPower);
     notifyListeners();
   }
 
@@ -247,26 +258,28 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
 
   Map<DestinyClass, Map<int, InventoryItemInfo>>? get equippableMaxPower => _maxEquippable;
   Map<DestinyClass, Map<int, InventoryItemInfo>>? get maxPower => _maxPowerEquipments;
+  Map<int, InventoryItemInfo>? get acctMaxPower => _acctMaxPowerEquipments;
 
   double? getCurrentAverage(DestinyClass classType) => _currentAverage?[classType];
-  double? getAchievableAverage(DestinyClass classType) => _achievableAverage?[classType];
   double? getEquippableAverage(DestinyClass classType) => _equippableAverage?[classType];
+  double? getAcctCurrentAverage() => _acctCurrentAverage;
+  double? getAcctAchievableAverage() => _acctAchievableAverage;
 
   Map<int, InventoryItemInfo>? getMaxPowerItems(DestinyClass classType) => _maxPowerEquipments?[classType];
   Map<int, InventoryItemInfo>? getEquippableMaxPowerItems(DestinyClass classType) => _maxEquippable?[classType];
+  Map<int, InventoryItemInfo>? getAcctMaxPowerItems() => _acctMaxPowerEquipments;
 
-  bool achievedPowerfulTier(DestinyClass classType) =>
-      (_achievableAverage?[classType] ?? 0) >= (_gameData?.softCap ?? double.maxFinite);
-  bool achievedPinnacleTier(DestinyClass classType) =>
-      (_achievableAverage?[classType] ?? 0) >= (_gameData?.powerfulCap ?? double.maxFinite);
-  bool achievedMaxPower(DestinyClass classType) =>
+  bool achievedPowerfulTier() => (_acctAchievableAverage ?? 0) >= (_gameData?.softCap ?? double.maxFinite);
+  bool achievedPinnacleTier() => (_acctAchievableAverage ?? 0) >= (_gameData?.powerfulCap ?? double.maxFinite);
+  bool achievedMaxPower() =>
       // Use == so we show things correctly if they go over an out-of-date cap value
-      (_achievableAverage?[classType] ?? 0) == (_gameData?.pinnacleCap ?? double.maxFinite);
+      (_acctAchievableAverage ?? 0) == (_gameData?.pinnacleCap ?? double.maxFinite);
+  bool isMaxPower(double powerLevel) => powerLevel == (_gameData?.pinnacleCap ?? double.maxFinite);
 
-  bool goForReward(DestinyClass classType) {
-    if (!achievedPowerfulTier(classType)) return false;
-    final current = (getCurrentAverage(classType) ?? 0).floor();
-    final average = (getAchievableAverage(classType) ?? double.maxFinite).floor();
+  bool goForReward() {
+    if (!achievedPowerfulTier()) return false;
+    final current = (_acctCurrentAverage ?? 0).floor();
+    final average = (_acctAchievableAverage ?? double.maxFinite).floor();
     return current >= average;
   }
 
