@@ -1,3 +1,8 @@
+## [2.0.25] - 2024-07-30
+
+* fixes grind optimizer at max level
+* fixes some issues on settings
+
 ## [2.0.24] - 2024-06-26
 
 - Updated grind optimizer for Final Shape

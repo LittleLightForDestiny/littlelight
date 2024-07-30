@@ -1,2 +1,2 @@
-- Updated grind optimizer for Final Shape
-- Fixes missing crafting pattern progress
+* fixes grind optimizer at max level
+* fixes some issues on settings
