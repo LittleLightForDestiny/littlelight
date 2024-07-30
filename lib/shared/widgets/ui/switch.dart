@@ -82,6 +82,7 @@ class _LLSwitchState extends State<LLSwitch> {
   Widget build(BuildContext context) {
     return AdvancedSwitch(
       controller: controller,
+      initialValue: widget.value ?? false,
       width: widget.size.dimensions.width,
       height: widget.size.dimensions.height,
       activeColor: context.theme.primaryLayers,

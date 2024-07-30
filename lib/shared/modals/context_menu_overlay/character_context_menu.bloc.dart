@@ -276,6 +276,7 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
   bool isMaxPower(double powerLevel) => powerLevel == (_gameData?.pinnacleCap ?? double.maxFinite);
 
   bool goForReward() {
+    if (isMaxPower(_acctCurrentAverage ?? 0)) return false;
     if (!achievedPowerfulTier()) return false;
     final current = (_acctCurrentAverage ?? 0).floor();
     final average = (_acctAchievableAverage ?? double.maxFinite).floor();
