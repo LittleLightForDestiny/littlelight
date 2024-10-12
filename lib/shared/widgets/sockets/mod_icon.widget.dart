@@ -66,7 +66,7 @@ class ModIconWidget extends StatelessWidget {
 
   Widget? buildEnergyTypeOverlay(BuildContext context, DestinyInventoryItemDefinition? def) {
     var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-    if ([DestinyEnergyType.Any, DestinyEnergyType.Subclass].contains(energyType)) return null;
+    if ([DestinyEnergyType.Any, DestinyEnergyType.Subclass, DestinyEnergyType.Ghost].contains(energyType)) return null;
 
     return Positioned.fill(
       child: ManifestImageWidget<DestinyStatDefinition>(
