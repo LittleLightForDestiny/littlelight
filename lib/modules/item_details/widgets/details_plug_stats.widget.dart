@@ -32,7 +32,7 @@ class DetailsPlugStatsWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
         decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer0,
+          color: context.theme.surfaceLayers.layer1,
           borderRadius: BorderRadius.circular(4),
         ),
         margin: EdgeInsets.only(top: 4),
@@ -43,9 +43,9 @@ class DetailsPlugStatsWidget extends StatelessWidget {
   Widget buildTable(BuildContext context) {
     return Table(
       defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      defaultColumnWidth: FlexColumnWidth(1),
       columnWidths: {
-        0: IntrinsicColumnWidth(flex: 2),
-        1: FlexColumnWidth(omitComparison ? 2 : 1),
+        0: IntrinsicColumnWidth(flex: omitComparison ? 1 : 3),
       },
       children: [
         buildHeaderRow(context),
@@ -86,6 +86,7 @@ class DetailsPlugStatsWidget extends StatelessWidget {
         stat.statHash,
         textAlign: TextAlign.end,
         softWrap: false,
+        overflow: TextOverflow.fade,
         style: context.textTheme.body.copyWith(fontSize: fontSize),
       ),
       buildStatValue(context, stat.selected, stat.selectedDiffType),
