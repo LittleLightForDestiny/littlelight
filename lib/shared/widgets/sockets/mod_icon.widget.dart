@@ -66,7 +66,7 @@ class ModIconWidget extends StatelessWidget {
 
   Widget? buildEnergyTypeOverlay(BuildContext context, DestinyInventoryItemDefinition? def) {
     var energyType = def?.plug?.energyCost?.energyType ?? DestinyEnergyType.Any;
-    if ([DestinyEnergyType.Any, DestinyEnergyType.Subclass].contains(energyType)) return null;
+    if ([DestinyEnergyType.Any, DestinyEnergyType.Subclass, DestinyEnergyType.Ghost].contains(energyType)) return null;
 
     return Positioned.fill(
       child: ManifestImageWidget<DestinyStatDefinition>(
@@ -76,8 +76,15 @@ class ModIconWidget extends StatelessWidget {
   }
 
   Widget? buildEnergyCostOverlay(BuildContext context, DestinyInventoryItemDefinition? def) {
-    var energyCost = def?.plug?.energyCost?.energyCost ?? 0;
-    if (energyCost == 0) return null;
+    final energyCost = def?.plug?.energyCost?.energyCost ?? 0;
+    final energyCapacity = def?.plug?.energyCapacity?.capacityValue ?? 0;
+    String text = "";
+    if (energyCost > 0)
+      text = "$energyCost";
+    else if (energyCapacity > 0)
+      text = "+$energyCapacity";
+    else
+      return null;
     return Positioned.fill(
       child: LayoutBuilder(
         builder: (context, constraints) {
@@ -91,7 +98,7 @@ class ModIconWidget extends StatelessWidget {
                 right: 12,
               ),
               child: Text(
-                "$energyCost",
+                text,
                 style: const TextStyle(fontSize: 16),
               ),
             ),

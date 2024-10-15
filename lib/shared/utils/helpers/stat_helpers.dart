@@ -139,14 +139,14 @@ class StatComparison {
 }
 
 List<StatValues>? calculateStats(
-  Map<int, int?> equippedPlugHashes,
-  Map<int, int?> selectedPlugHashes,
-  DestinyInventoryItemDefinition? itemDefinition,
-  DestinyStatGroupDefinition? statGroupDefinition,
-  Map<int, DestinyInventoryItemDefinition>? plugDefinitions,
-) {
+    Map<int, int?> equippedPlugHashes,
+    Map<int, int?> selectedPlugHashes,
+    DestinyInventoryItemDefinition? itemDefinition,
+    DestinyStatGroupDefinition? statGroupDefinition,
+    Map<int, DestinyInventoryItemDefinition>? plugDefinitions,
+    {List<int>? requiredAvailableStatHashes}) {
   Map<int, StatValues> map = {};
-  final stats = getAvailableStats(itemDefinition, statGroupDefinition);
+  final stats = getAvailableStats(itemDefinition, statGroupDefinition, requiredAvailableStatHashes);
   if (stats == null) return null;
 
   final scaledStats = statGroupDefinition?.scaledStats;
@@ -204,28 +204,29 @@ List<StatValues>? calculateStats(
 List<DestinyItemInvestmentStatDefinition>? getAvailableStats(
   DestinyInventoryItemDefinition? itemDefinition,
   DestinyStatGroupDefinition? statGroupDefinition,
+  List<int>? requiredAvailableStatHashes,
 ) {
-  final scaledStats = statGroupDefinition?.scaledStats;
-  if (scaledStats == null) {
-    return null;
-  }
+  final scaledStats = statGroupDefinition?.scaledStats ?? [];
   final statWhitelist = scaledStats.map((s) => s.statHash).toList();
   final noBarStats = scaledStats.where((s) => s.displayAsNumeric ?? false).map((s) => s.statHash).toList();
   List<DestinyItemInvestmentStatDefinition> stats =
       itemDefinition?.investmentStats?.where((stat) => statWhitelist.contains(stat.statTypeHash)).toList() ?? [];
 
-  for (var stat in scaledStats) {
-    if (statWhitelist.contains(stat.statHash) && stats.where((s) => s.statTypeHash == stat.statHash).isEmpty) {
+  final scaledStatHashes = scaledStats.map((s) => s.statHash).whereType<int>().toList();
+  scaledStatHashes.addAll(requiredAvailableStatHashes ?? []);
+  for (final statHash in scaledStatHashes) {
+    if (stats.where((s) => s.statTypeHash == statHash).isEmpty) {
       var newStat = DestinyItemInvestmentStatDefinition()
-        ..statTypeHash = stat.statHash
+        ..statTypeHash = statHash
         ..value = 0
         ..isConditionallyActive = false;
       stats.add(newStat);
     }
   }
 
-  final orderedStatHashes = scaledStats.map((i) => i.statHash).toList();
+  if (scaledStats.isEmpty) return stats;
 
+  final orderedStatHashes = scaledStats.map((i) => i.statHash).toList();
   stats.sort((statA, statB) {
     final isNoBarStatA = noBarStats.contains(statA.statTypeHash);
     final isNoBarStatB = noBarStats.contains(statB.statTypeHash);
@@ -234,21 +235,21 @@ List<DestinyItemInvestmentStatDefinition>? getAvailableStats(
     final result = valA.compareTo(valB);
     if (result != 0) return result;
     final posA = orderedStatHashes.indexOf(statA.statTypeHash);
-    final posB = orderedStatHashes.toList().indexOf(statB.statTypeHash);
+    final posB = orderedStatHashes.indexOf(statB.statTypeHash);
     return posA.compareTo(posB);
   });
   return stats;
 }
 
 List<StatComparison> comparePlugStats(
-  Map<int, int?> basePlugHashes,
-  int socketIndex,
-  int? equippedPlugHash,
-  int? selectedPlugHash,
-  DestinyInventoryItemDefinition? itemDefinition,
-  DestinyStatGroupDefinition? statGroupDefinition,
-  Map<int, DestinyInventoryItemDefinition>? plugDefinitions,
-) {
+    Map<int, int?> basePlugHashes,
+    int socketIndex,
+    int? equippedPlugHash,
+    int? selectedPlugHash,
+    DestinyInventoryItemDefinition? itemDefinition,
+    DestinyStatGroupDefinition? statGroupDefinition,
+    Map<int, DestinyInventoryItemDefinition>? plugDefinitions,
+    {List<int>? requiredAvailableStatHashes}) {
   final baseHashes = basePlugHashes.map((key, value) => MapEntry(
         key,
         key == socketIndex ? null : value,
@@ -267,6 +268,7 @@ List<StatComparison> comparePlugStats(
     itemDefinition,
     statGroupDefinition,
     plugDefinitions,
+    requiredAvailableStatHashes: requiredAvailableStatHashes,
   );
   final selectedValues = calculateStats(
     baseHashes,
@@ -274,6 +276,7 @@ List<StatComparison> comparePlugStats(
     itemDefinition,
     statGroupDefinition,
     plugDefinitions,
+    requiredAvailableStatHashes: requiredAvailableStatHashes,
   );
   final selectedDef = plugDefinitions?[selectedPlugHash];
   final equippedDef = plugDefinitions?[equippedPlugHash];
@@ -318,7 +321,8 @@ List<StatComparison> comparePlugStats(
   }
   final scaledStats = statGroupDefinition?.scaledStats;
   final noBarStats = scaledStats?.where((s) => s.displayAsNumeric ?? false).map((s) => s.statHash).toList();
-  final orderedStatHashes = scaledStats?.map((i) => i.statHash).toList();
+  final orderedStatHashes = scaledStats?.map((i) => i.statHash).whereType<int>().toList() ?? [];
+  orderedStatHashes.addAll(requiredAvailableStatHashes ?? []);
   results.sort((a, b) {
     final isNoBarStatA = noBarStats?.contains(a.statHash) ?? false;
     final isNoBarStatB = noBarStats?.contains(b.statHash) ?? false;
@@ -327,8 +331,8 @@ List<StatComparison> comparePlugStats(
     final valB = isNoBarStatB ? 1 : 0;
     final result = valA.compareTo(valB);
     if (result != 0) return result;
-    final posA = orderedStatHashes?.indexOf(a.statHash) ?? 0;
-    final posB = orderedStatHashes?.indexOf(b.statHash) ?? 0;
+    final posA = orderedStatHashes.indexOf(a.statHash);
+    final posB = orderedStatHashes.indexOf(b.statHash);
     return posA.compareTo(posB);
   });
   return results;

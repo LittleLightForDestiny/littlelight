@@ -169,8 +169,18 @@ class DetailsPlugInfoWidget extends StatelessWidget {
 
   Widget buildEnergyCost(BuildContext context, int plugHash) {
     final definition = context.definition<DestinyInventoryItemDefinition>(plugHash);
+    int value = 0;
+    String text = "";
     final cost = definition?.plug?.energyCost?.energyCost;
-    if (cost == null) return Container();
+    final capacity = definition?.plug?.energyCapacity?.capacityValue;
+    if (cost != null) {
+      value = cost;
+      text = "Energy Cost".translate(context).toUpperCase();
+    } else if (capacity != null) {
+      value = capacity;
+      text = "Energy Capacity".translate(context).toUpperCase();
+    } else
+      return Container();
     return buildInfoContainer(
       context,
       Row(
@@ -178,10 +188,10 @@ class DetailsPlugInfoWidget extends StatelessWidget {
           Container(width: 20, child: Image.asset('assets/imgs/energy-type-icon.png')),
           Container(
             padding: const EdgeInsets.all(4),
-            child: Text("$cost", style: context.textTheme.itemPrimaryStatHighDensity),
+            child: Text("$value", style: context.textTheme.itemPrimaryStatHighDensity),
           ),
           Text(
-            "Energy Cost".translate(context).toUpperCase(),
+            text,
             style: context.textTheme.body,
           ),
         ],
