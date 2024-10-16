@@ -1,2 +1,2 @@
-* fixes grind optimizer at max level
-* fixes some issues on settings
+- Show energy capacity, energy capacity and cost values in stats diff
+- bug fixes
