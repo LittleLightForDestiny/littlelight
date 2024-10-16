@@ -1,3 +1,8 @@
+## [2.0.27] - 2024-10-16
+
+- show energy capacity and cost values in stats diff
+- bug fixes
+
 ## [2.0.26] - 2024-10-16
 
 - Show energy capacity, energy capacity and cost values in stats diff
