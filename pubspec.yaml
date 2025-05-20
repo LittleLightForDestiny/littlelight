@@ -36,7 +36,7 @@ dependencies:
   device_info_plus: ^11.4.0
 
   cached_network_image: ^3.3.1
-  in_app_review: ^2.0.9
+  in_app_review: ^2.0.10
 
   flutter_linkify: ^6.0.0
 
@@ -59,6 +59,13 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   msix: ^3.16.7
+
+dependency_overrides: 
+  in_app_review:
+    git:
+      url: git@github.com:shoboske/in_app_review.git
+      ref: patch-2
+      path: in_app_review
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec
