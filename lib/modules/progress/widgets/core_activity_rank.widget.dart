@@ -194,7 +194,7 @@ class CoreActivityRankItemWidget extends StatelessWidget {
             padding: EdgeInsets.all(2),
             margin: EdgeInsets.only(top: 4),
             decoration: BoxDecoration(
-              color: context.theme.surfaceLayers.withOpacity(.7),
+              color: context.theme.surfaceLayers.withValues(alpha: .7),
               borderRadius: BorderRadius.circular(4),
             ),
             child: Row(children: [
@@ -211,7 +211,7 @@ class CoreActivityRankItemWidget extends StatelessWidget {
       padding: EdgeInsets.all(2),
       margin: EdgeInsets.only(top: 4),
       decoration: BoxDecoration(
-        color: context.theme.surfaceLayers.withOpacity(.7),
+        color: context.theme.surfaceLayers.withValues(alpha: .7),
         borderRadius: BorderRadius.circular(4),
       ),
       child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [

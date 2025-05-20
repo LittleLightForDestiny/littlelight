@@ -34,9 +34,9 @@ class BusyIndicatorBottomGradientWidget extends StatelessWidget {
                 begin: Alignment(-.3, 0),
                 end: Alignment(.3, 0),
                 colors: [
-                  color.withOpacity(0),
+                  color.withValues(alpha: 0),
                   color,
-                  color.withOpacity(0),
+                  color.withValues(alpha: 0),
                 ],
               ),
               child: Container(
@@ -46,7 +46,7 @@ class BusyIndicatorBottomGradientWidget extends StatelessWidget {
                     end: Alignment.topCenter,
                     colors: [
                       color,
-                      color.withOpacity(0),
+                      color.withValues(alpha: 0),
                     ],
                   ),
                 ),

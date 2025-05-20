@@ -16,7 +16,7 @@ class MilestoneItemInfoBoxWidget extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color: context.theme.surfaceLayers.layer0.withOpacity(.8),
+              color: context.theme.surfaceLayers.layer0.withValues(alpha: .8),
               borderRadius: BorderRadius.circular(4),
             ),
             padding: EdgeInsets.all(4),

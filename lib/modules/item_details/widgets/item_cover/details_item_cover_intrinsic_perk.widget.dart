@@ -68,7 +68,7 @@ class DetailsItemCoverIntrinsicPerkWidget extends DetailsItemIntrinsicPerkWidget
             width: 96 * pixelSize,
             padding: EdgeInsets.all(16 * pixelSize),
             foregroundDecoration: BoxDecoration(
-              border: Border.all(width: 1 * pixelSize, color: context.theme.onSurfaceLayers.withOpacity(.1)),
+              border: Border.all(width: 1 * pixelSize, color: context.theme.onSurfaceLayers.withValues(alpha: .1)),
             ),
             child: PerkIconWidget(
               plugItemHash: plugHash,

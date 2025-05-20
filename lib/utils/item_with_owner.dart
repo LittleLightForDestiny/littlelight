@@ -8,7 +8,7 @@ class ItemWithOwner {
   final String? _ownerId;
   String get ownerId {
     if (_ownerId != null) {
-      return _ownerId!;
+      return _ownerId;
     }
     if (item.bucketHash == InventoryBucket.general) return OWNER_VAULT;
     return OWNER_PROFILE;

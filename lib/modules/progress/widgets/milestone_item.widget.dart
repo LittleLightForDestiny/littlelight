@@ -90,7 +90,7 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
                 gradient: RadialGradient(
               colors: [
                 context.theme.surfaceLayers.layer2,
-                context.theme.surfaceLayers.layer2.withOpacity(0),
+                context.theme.surfaceLayers.layer2.withValues(alpha: 0),
               ],
               stops: [.2, 1],
             )),
@@ -115,7 +115,8 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
               Container(
                 padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4), color: context.theme.surfaceLayers.layer0.withOpacity(.8)),
+                    borderRadius: BorderRadius.circular(4),
+                    color: context.theme.surfaceLayers.layer0.withValues(alpha: .8)),
                 child: ManifestText<DestinyMilestoneDefinition>(
                   milestone.milestoneHash,
                   textExtractor: (def) => def.displayProperties?.description,
@@ -145,7 +146,7 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
     return Container(
         margin: EdgeInsets.only(top: 2),
         decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer0.withOpacity(.8),
+          color: context.theme.surfaceLayers.layer0.withValues(alpha: .8),
           borderRadius: BorderRadius.circular(4),
         ),
         padding: EdgeInsets.all(4),
@@ -254,7 +255,7 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
     return Container(
         margin: EdgeInsets.only(top: 2),
         decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer0.withOpacity(.8),
+          color: context.theme.surfaceLayers.layer0.withValues(alpha: .8),
           borderRadius: BorderRadius.circular(4),
         ),
         padding: EdgeInsets.all(4),

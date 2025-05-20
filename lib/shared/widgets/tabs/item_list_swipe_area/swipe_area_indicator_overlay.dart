@@ -51,8 +51,9 @@ class DividerIndicatorOverlay extends StatelessWidget {
 
   Widget buildScrollSection(BuildContext context, ScrollAreaType type) {
     final isActive = activeTypes?[type] ?? false;
-    final color =
-        isActive ? context.theme.primaryLayers.layer2.withOpacity(.7) : context.theme.onSurfaceLayers.withOpacity(.2);
+    final color = isActive
+        ? context.theme.primaryLayers.layer2.withValues(alpha: .7)
+        : context.theme.onSurfaceLayers.withValues(alpha: .2);
     return Container(
       margin: EdgeInsets.all(4),
       decoration: BoxDecoration(
@@ -61,7 +62,7 @@ class DividerIndicatorOverlay extends StatelessWidget {
         gradient: LinearGradient(
           colors: [
             color,
-            color.withOpacity(0),
+            color.withValues(alpha: 0),
             color,
           ],
           stops: [0, .5, 1],
@@ -76,7 +77,7 @@ class DividerIndicatorOverlay extends StatelessWidget {
           ),
           child: Text(
             type.label(context).toUpperCase(),
-            style: context.textTheme.title.copyWith(color: color.withOpacity(1)),
+            style: context.textTheme.title.copyWith(color: color.withValues(alpha: 1)),
           )),
     );
   }

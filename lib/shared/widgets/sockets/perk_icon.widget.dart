@@ -46,11 +46,11 @@ class PerkIconWidget extends StatelessWidget {
     final intrinsic = plugDef?.plug?.plugCategoryIdentifier == "intrinsics";
     final exotic = itemDef?.inventory?.tierType == TierType.Exotic;
     Color bgColor = Colors.transparent;
-    Color borderColor = baseBorderColor(context).withOpacity(.5);
+    Color borderColor = baseBorderColor(context).withValues(alpha: .5);
     final isRound = !intrinsic || exotic;
     final isEnhanced = plugDef?.inventory?.tierType == TierType.Common;
     if (equipped && !intrinsic) {
-      bgColor = perkColor(context).withOpacity(.5);
+      bgColor = perkColor(context).withValues(alpha: .5);
     }
     if (selected && !intrinsic) {
       bgColor = perkColor(context);
@@ -92,7 +92,7 @@ class PerkIconWidget extends StatelessWidget {
                             end: Alignment.topCenter,
                             colors: [
                               context.theme.achievementLayers.layer0,
-                              context.theme.achievementLayers.layer0.withOpacity(0),
+                              context.theme.achievementLayers.layer0.withValues(alpha: 0),
                             ],
                           )),
                     )),

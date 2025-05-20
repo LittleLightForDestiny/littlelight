@@ -12,7 +12,7 @@ extension ContextLittleLightTheme on BuildContext {
 class LayeredSwatch extends Color {
   final Map<SwatchLayer, Color> _swatches;
   LayeredSwatch(this._swatches, {SwatchLayer defaultLayer = SwatchLayer.Layer0})
-      : super(_swatches[defaultLayer]!.value);
+      : super(_swatches[defaultLayer]!.toARGB32());
 
   Color get layer0 => _swatches[SwatchLayer.Layer0] ?? this;
   Color get layer1 => _swatches[SwatchLayer.Layer1] ?? layer0;
@@ -32,7 +32,7 @@ class LayeredSwatch extends Color {
     return LayeredSwatch(_reversedSwatches);
   }
 
-  MaterialColor get asMaterialColor => MaterialColor(layer0.value, {
+  MaterialColor get asMaterialColor => MaterialColor(layer0.toARGB32(), {
         100: layer0,
         200: layer0,
         300: layer0,
@@ -310,28 +310,26 @@ class LittleLightThemeData {
       surface: _surface,
       primary: _primary,
       primaryContainer: _primaryContainer,
-      background: _surface,
       secondary: _secondary,
       secondaryContainer: _secondaryContainer,
       onPrimary: onSurfaceLayers.layer0,
       onSecondary: onSurfaceLayers.layer0,
-      onBackground: onSurfaceLayers.layer0,
       onSurface: onSurfaceLayers.layer0,
       onError: onSurfaceLayers.layer0,
       error: errorLayers.layer0);
 
-  Color _getSwitchTrackColor(Set<MaterialState> states) {
-    if (states.contains(MaterialState.selected)) {
+  Color _getSwitchTrackColor(Set<WidgetState> states) {
+    if (states.contains(WidgetState.selected)) {
       return primaryLayers.layer0;
     }
-    return onSurfaceLayers.layer0.withOpacity(.2);
+    return onSurfaceLayers.layer0.withValues(alpha: .2);
   }
 
-  Color _getSwitchThumbColor(Set<MaterialState> states) {
-    if (states.contains(MaterialState.selected)) {
+  Color _getSwitchThumbColor(Set<WidgetState> states) {
+    if (states.contains(WidgetState.selected)) {
       return primaryLayers.layer1;
     }
-    return onSurfaceLayers.layer0.withOpacity(.4);
+    return onSurfaceLayers.layer0.withValues(alpha: .4);
   }
 
   AppBarTheme get _appBarTheme => AppBarTheme(
@@ -340,9 +338,9 @@ class LittleLightThemeData {
 
   SwitchThemeData get _switchTheme => SwitchThemeData(
         splashRadius: 14,
-        overlayColor: MaterialStateColor.resolveWith((states) => onSurfaceLayers.layer0.withOpacity(.1)),
-        trackColor: MaterialStateColor.resolveWith((states) => _getSwitchTrackColor(states)),
-        thumbColor: MaterialStateColor.resolveWith((states) => _getSwitchThumbColor(states)),
+        overlayColor: WidgetStateColor.resolveWith((states) => onSurfaceLayers.layer0.withValues(alpha: .1)),
+        trackColor: WidgetStateColor.resolveWith((states) => _getSwitchTrackColor(states)),
+        thumbColor: WidgetStateColor.resolveWith((states) => _getSwitchThumbColor(states)),
       );
 
   TextTheme get _textTheme => TextTheme(
@@ -353,8 +351,8 @@ class LittleLightThemeData {
 
   CardTheme get _cardTheme => CardTheme(color: colorScheme.surface);
 
-  MaterialStateTextStyle get labelStyle => MaterialStateTextStyle.resolveWith((states) {
-        final focus = states.contains(MaterialState.focused) || states.contains(MaterialState.selected);
+  WidgetStateTextStyle get labelStyle => WidgetStateTextStyle.resolveWith((states) {
+        final focus = states.contains(WidgetState.focused) || states.contains(WidgetState.selected);
         if (focus) {
           return textTheme.caption.copyWith(color: primaryLayers.layer3, fontSize: 18);
         }
@@ -368,7 +366,7 @@ class LittleLightThemeData {
       cardTheme: _cardTheme,
       textButtonTheme: TextButtonThemeData(
           style: ButtonStyle(
-        foregroundColor: MaterialStateColor.resolveWith((states) => primaryLayers.layer3),
+        foregroundColor: WidgetStateColor.resolveWith((states) => primaryLayers.layer3),
       )),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -398,8 +396,8 @@ class LittleLightThemeData {
         focusedBorder: UnderlineInputBorder(borderSide: BorderSide(color: primaryLayers.layer3, width: 2)),
       ),
       radioTheme: RadioThemeData(
-        fillColor: MaterialStateColor.resolveWith((states) {
-          if (states.contains(MaterialState.selected)) {
+        fillColor: WidgetStateColor.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
             return primaryLayers.layer2;
           }
           return onSurfaceLayers.layer0;

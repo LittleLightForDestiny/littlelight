@@ -179,9 +179,9 @@ class DetailsWishlistBuildsWidget extends StatelessWidget {
           borderRadius: BorderRadius.circular(_perkIconSize),
           border: selected ? Border.all(color: context.theme.onSurfaceLayers, width: .5) : null,
           color: (equipped || selected)
-              ? context.theme.primaryLayers.layer1.withOpacity(selected ? 1 : .7)
+              ? context.theme.primaryLayers.layer1.withValues(alpha: selected ? 1 : .7)
               : available
-                  ? context.theme.primaryLayers.layer1.withOpacity(.4)
+                  ? context.theme.primaryLayers.layer1.withValues(alpha: .4)
                   : Colors.transparent,
         ),
         foregroundDecoration: enhanced
@@ -191,8 +191,8 @@ class DetailsWishlistBuildsWidget extends StatelessWidget {
                   begin: Alignment.bottomCenter,
                   end: Alignment.topCenter,
                   colors: [
-                    context.theme.achievementLayers.layer0.withOpacity(.5),
-                    context.theme.achievementLayers.layer0.withOpacity(0),
+                    context.theme.achievementLayers.layer0.withValues(alpha: .5),
+                    context.theme.achievementLayers.layer0.withValues(alpha: 0),
                   ],
                 ))
             : null,

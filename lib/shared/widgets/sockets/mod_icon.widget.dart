@@ -110,7 +110,7 @@ class ModIconWidget extends StatelessWidget {
 
   Widget? buildBorder(BuildContext context) {
     final theme = context.theme;
-    Color borderColor = theme.onSurfaceLayers.layer3.withOpacity(.5);
+    Color borderColor = theme.onSurfaceLayers.layer3.withValues(alpha: .5);
     if (equipped && selected) {
       borderColor = theme.primaryLayers.layer0.mix(theme.onSurfaceLayers.layer0, 30);
     } else if (selected) {
@@ -178,7 +178,7 @@ class ModIconWidget extends StatelessWidget {
     if (available) return null;
     return Positioned.fill(
       child: Container(
-        color: context.theme.surfaceLayers.layer0.withOpacity(.5),
+        color: context.theme.surfaceLayers.layer0.withValues(alpha: .5),
       ),
     );
   }

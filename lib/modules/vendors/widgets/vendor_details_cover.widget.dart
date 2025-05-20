@@ -77,7 +77,7 @@ class VendorDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
     final definition = context.definition<DestinyVendorDefinition>(state.vendorHash);
     double nameLeftOffset = lerpDouble(kToolbarHeight * 2 - 16, kToolbarHeight, expandRatio) ?? 0;
     return Container(
-      color: context.theme.surfaceLayers.layer2.withOpacity(.6),
+      color: context.theme.surfaceLayers.layer2.withValues(alpha: .6),
       padding: EdgeInsets.only(left: nameLeftOffset + 8),
       alignment: Alignment.centerLeft,
       child: Text(
@@ -185,7 +185,7 @@ class VendorDetailsCoverContents extends StatelessWidget {
     final definition = context.definition<DestinyVendorDefinition>(state.vendorHash);
     double nameLeftOffset = lerpDouble(kToolbarHeight * 2 - 16, kToolbarHeight, expandRatio) ?? 0;
     return Container(
-      color: context.theme.surfaceLayers.layer2.withOpacity(.6),
+      color: context.theme.surfaceLayers.layer2.withValues(alpha: .6),
       padding: EdgeInsets.only(left: nameLeftOffset + 8),
       alignment: Alignment.centerLeft,
       child: Text(

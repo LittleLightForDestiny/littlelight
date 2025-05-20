@@ -216,12 +216,12 @@ EXTERNAL SOURCES:
     :path: Flutter/ephemeral/.symlinks/plugins/wakelock_plus/macos
 
 SPEC CHECKSUMS:
-  app_links: 10e0a0ab602ffaf34d142cd4862f29d34b303b2a
-  device_info_plus: ce1b7762849d3ec103d0e0517299f2db7ad60720
+  app_links: 9028728e32c83a0831d9db8cf91c526d16cc5468
+  device_info_plus: a56e6e74dbbd2bb92f2da12c64ddd4f67a749041
   Firebase: 26b040b20866a55f55eb3611b9fcf3ae64816b86
-  firebase_analytics: 2370857414db883542ff3cc0cf4634d1de55b37b
-  firebase_core: 3cf30a8be4c850f7192bf9597f5939d0c3af706b
-  firebase_crashlytics: e1cab8da891bf7000cdf8e09fd7b14f348d92b6e
+  firebase_analytics: 9fb3c55bc08874714572700ea96ffaac44226728
+  firebase_core: ea275803f29cf381a67cabc99e9e3209ccf49199
+  firebase_crashlytics: 6408e97b98c84203f092d76c5d10df6cfc956f3f
   FirebaseAnalytics: f9211b719db260cc91aebee8bb539cb367d0dfd1
   FirebaseCore: a2b95ae4ce7c83ceecfbbbe3b6f1cddc7415a808
   FirebaseCoreExtension: 4ec89dd0c6de93d6becde32122d68b7c35f6bf5d
@@ -234,17 +234,17 @@ SPEC CHECKSUMS:
   GoogleAppMeasurement: f65fc137531af9ad647f1c0a42f3b6a4d3a98049
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleUtilities: ea963c370a38a8069cc5f7ba4ca849a60b6d7d15
-  in_app_review: a850789fad746e89bce03d4aeee8078b45a53fd0
+  in_app_review: ffac7b4a0a71cdaecb1383807e7a8244b09e6d93
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
-  package_info_plus: fa739dd842b393193c5ca93c26798dff6e3d0e0c
-  path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
+  package_info_plus: a8a591e70e87ce97ce5d21b2594f69cea9e0312f
+  path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
   PromisesSwift: 9d77319bbe72ebf6d872900551f7eeba9bce2851
-  shared_preferences_foundation: fcdcbc04712aee1108ac7fda236f363274528f78
-  sqflite: 673a0e54cc04b7d6dba8d24fb8095b31c3a99eec
-  url_launcher_macos: 5f437abeda8c85500ceb03f5c1938a8c5a705399
-  wakelock_plus: 4783562c9a43d209c458cb9b30692134af456269
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
+  sqflite: c35dad70033b8862124f8337cc994a809fcd9fa3
+  url_launcher_macos: de10e46d8d8b9e3a7b8a133e8de92b104379f05e
+  wakelock_plus: 21ddc249ac4b8d018838dbdabd65c5976c308497
 
 PODFILE CHECKSUM: e6941affa76272697b93766f7a7df72c8e5d2cb8
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2

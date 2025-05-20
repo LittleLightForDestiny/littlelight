@@ -95,7 +95,7 @@ class DetailsItemCoverStatWidget extends StatelessWidget {
     return Container(
       width: width,
       height: 18 * pixelSize,
-      color: Colors.grey.shade700.withOpacity(.7),
+      color: Colors.grey.shade700.withValues(alpha: .7),
       child: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
         scrollDirection: Axis.horizontal,

@@ -80,7 +80,7 @@ Widget pagingButton(BuildContext context, [int direction = 1]) {
           ),
           alignment: Alignment.center,
           child: !enabled
-              ? Container(color: Colors.grey.shade300.withOpacity(.2))
+              ? Container(color: Colors.grey.shade300.withValues(alpha: .2))
               : Material(
                   color: Colors.transparent,
                   child: InkWell(
