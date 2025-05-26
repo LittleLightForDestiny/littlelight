@@ -109,7 +109,7 @@ class MainItemTypeBottomBarFilterWidget extends BaseFilterWidget<MainItemTypeFil
             gradient: LinearGradient(
           colors: [
             context.theme.surfaceLayers.layer2,
-            context.theme.surfaceLayers.layer2.withOpacity(0),
+            context.theme.surfaceLayers.layer2.withValues(alpha: 0),
           ],
           end: Alignment.bottomCenter,
         )),

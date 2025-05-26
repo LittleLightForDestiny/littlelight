@@ -129,7 +129,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
         ),
         Shimmer.fromColors(
           enabled: enableEyeCandy,
-          baseColor: masterworkLayers.withOpacity(.2),
+          baseColor: masterworkLayers.withValues(alpha: .2),
           highlightColor: masterworkLayers.layer3,
           period: const Duration(seconds: 5),
           child: Image.asset(
@@ -194,8 +194,8 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
               padding: EdgeInsets.all(borderSize),
               child: Shimmer.fromColors(
                   enabled: enableEyeCandy,
-                  baseColor: context.theme.onSurfaceLayers.layer0.withOpacity(0),
-                  highlightColor: context.theme.onSurfaceLayers.layer0.withOpacity(1),
+                  baseColor: context.theme.onSurfaceLayers.layer0.withValues(alpha: 0),
+                  highlightColor: context.theme.onSurfaceLayers.layer0.withValues(alpha: 1),
                   child: Image.asset("assets/imgs/engram-placeholder.png")),
             ),
           ),

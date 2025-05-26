@@ -1,2 +1,2 @@
-- Updated grind optimizer for Final Shape
-- Fixes missing crafting pattern progress
+- show energy capacity and cost values in stats diff
+- bug fixes

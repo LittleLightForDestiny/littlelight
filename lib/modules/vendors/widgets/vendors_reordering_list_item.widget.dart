@@ -48,7 +48,7 @@ class VendorsReorderingListItemWidget extends StatelessWidget {
             gradient: LinearGradient(
               colors: <Color>[
                 context.theme.surfaceLayers.layer0,
-                context.theme.surfaceLayers.layer0.withOpacity(.2),
+                context.theme.surfaceLayers.layer0.withValues(alpha: .2),
               ],
               begin: Alignment.centerLeft,
               end: Alignment.center,

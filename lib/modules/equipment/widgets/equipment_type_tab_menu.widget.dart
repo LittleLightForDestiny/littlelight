@@ -20,7 +20,7 @@ class EquipmentTypeTabMenuWidget extends CustomTabMenu {
   Color getItemForegroundColor(BuildContext context, int index) {
     final opacity = (index - controller.animation.value).abs().clamp(0, 1).toDouble();
     final selectedColor = context.theme.onSurfaceLayers.layer0;
-    final unselectedColor = context.theme.onSurfaceLayers.layer3.withOpacity(.7);
+    final unselectedColor = context.theme.onSurfaceLayers.layer3.withValues(alpha: .7);
     return Color.lerp(selectedColor, unselectedColor, opacity) ?? Colors.transparent;
   }
 
@@ -60,7 +60,7 @@ class EquipmentTypeTabMenuWidget extends CustomTabMenu {
           gradient: LinearGradient(
         colors: [
           context.theme.surfaceLayers.layer2,
-          context.theme.surfaceLayers.layer2.withOpacity(0),
+          context.theme.surfaceLayers.layer2.withValues(alpha: 0),
         ],
         end: Alignment.bottomCenter,
       )),

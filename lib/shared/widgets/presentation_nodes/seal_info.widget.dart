@@ -73,7 +73,7 @@ class SealInfoWidget extends StatelessWidget {
         alignment: Alignment.centerLeft,
         height: 8.0,
         margin: EdgeInsets.only(bottom: 2),
-        color: bgColor.withOpacity(.5),
+        color: bgColor.withValues(alpha: .5),
         child: FractionallySizedBox(widthFactor: progress.clamp(0, 1), child: Container(color: color)));
   }
 
@@ -101,7 +101,7 @@ class SealInfoWidget extends StatelessWidget {
         padding: const EdgeInsets.all(4),
         decoration: BoxDecoration(
           border: Border.all(color: color, width: 2),
-          color: color.withOpacity(.5),
+          color: color.withValues(alpha: .5),
         ),
         child: Row(children: [
           Expanded(

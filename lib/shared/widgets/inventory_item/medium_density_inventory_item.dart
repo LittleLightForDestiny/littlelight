@@ -94,7 +94,7 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
             constraints: const BoxConstraints(minHeight: double.infinity),
             foregroundDecoration: BoxDecoration(
               gradient: RadialGradient(
-                colors: [bgColor.withOpacity(0), bgColor],
+                colors: [bgColor.withValues(alpha: 0), bgColor],
                 stops: const [.5, 1],
                 radius: 1.8,
                 center: Alignment.bottomRight,
@@ -293,7 +293,7 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         gradient: LinearGradient(
-          colors: [bgColor, bgColor.withOpacity(0)],
+          colors: [bgColor, bgColor.withValues(alpha: 0)],
           stops: const [.6, .9],
         ),
       ),

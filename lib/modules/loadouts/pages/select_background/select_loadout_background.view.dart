@@ -81,10 +81,12 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
         child: Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            gradient: LinearGradient(
-                begin: const Alignment(0, 0),
-                end: const Alignment(1, 2),
-                colors: [color.withOpacity(.05), color.withOpacity(.1), color.withOpacity(.03), color.withOpacity(.1)]),
+            gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
+              color.withValues(alpha: .05),
+              color.withValues(alpha: .1),
+              color.withValues(alpha: .03),
+              color.withValues(alpha: .1)
+            ]),
             border: Border.all(color: color, width: 1),
           ),
           padding: const EdgeInsets.all(16),

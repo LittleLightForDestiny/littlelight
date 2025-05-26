@@ -32,73 +32,70 @@ class LoadoutsHomeView extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Builder(
-        builder: (context) => Scaffold(
-          appBar: buildAppBar(context),
-          body: Column(
-            children: [
-              Expanded(
-                child: Stack(
-                  children: [
-                    buildTabs(context),
-                    Positioned(
-                      bottom: 0,
-                      right: 0,
-                      left: 0,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            child: NotificationsWidget(),
-                          ),
-                          BusyIndicatorLineWidget(),
-                        ],
+        builder:
+            (context) => Scaffold(
+              appBar: buildAppBar(context),
+              body: Column(
+                children:
+                    [
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            buildTabs(context),
+                            Positioned(
+                              bottom: 0,
+                              right: 0,
+                              left: 0,
+                              child: renderOnlyOnLittleLightLoadouts(context, buildNotificationWidget(context)),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                      renderOnlyOnLittleLightLoadouts(context, buildFooter(context)),
+                    ].whereType<Widget>().toList(),
               ),
-              renderOnlyOnLittleLightLoadouts(context, buildFooter(context)),
-            ].whereType<Widget>().toList(),
-          ),
-        ),
+            ),
       ),
+    );
+  }
+
+  Widget buildNotificationWidget(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [Container(padding: EdgeInsets.all(8), child: NotificationsWidget()), BusyIndicatorLineWidget()],
     );
   }
 
   AppBar buildAppBar(BuildContext context) {
     return AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.menu),
-          onPressed: () {
-            Scaffold.of(context).openDrawer();
-          },
-        ),
-        actions: [
-          renderOnlyOnLittleLightLoadouts(context, buildReorderButton(context)),
-          renderOnlyOnLittleLightLoadouts(context, buildSearchButton(context)),
-          renderOnlyOnLittleLightLoadouts(
+      leading: IconButton(
+        icon: const Icon(Icons.menu),
+        onPressed: () {
+          Scaffold.of(context).openDrawer();
+        },
+      ),
+      actions:
+          [
+            renderOnlyOnLittleLightLoadouts(context, buildReorderButton(context)),
+            renderOnlyOnLittleLightLoadouts(context, buildSearchButton(context)),
+            renderOnlyOnLittleLightLoadouts(
               context,
               IconButton(
                 icon: const Icon(FontAwesomeIcons.download),
                 onPressed: () => littleLightLoadoutsBloc.reloadLoadouts(),
-              )),
-        ].whereType<Widget>().toList(),
-        bottom: buildTabBar(context),
-        title: buildTitle(context));
+              ),
+            ),
+          ].whereType<Widget>().toList(),
+      bottom: buildTabBar(context),
+      title: buildTitle(context),
+    );
   }
 
   PreferredSizeWidget buildTabBar(BuildContext context) {
     final tabbar = TabBar(
       tabs: [
-        Container(
-          alignment: Alignment.center,
-          child: Text("Little Light".translate(context)),
-        ),
-        Container(
-          alignment: Alignment.center,
-          child: Text("Destiny".translate(context)),
-        ),
+        Container(alignment: Alignment.center, child: Text("Little Light".translate(context))),
+        Container(alignment: Alignment.center, child: Text("Destiny".translate(context))),
       ],
     );
     return PreferredSize(
@@ -107,10 +104,13 @@ class LoadoutsHomeView extends StatelessWidget {
         color: context.theme.secondarySurfaceLayers.layer1,
         elevation: 2,
         child: LayoutBuilder(
-            builder: (context, constraints) => Container(
+          builder:
+              (context, constraints) => Container(
                 constraints: BoxConstraints(minWidth: constraints.maxWidth),
                 height: tabbar.preferredSize.height,
-                child: tabbar)),
+                child: tabbar,
+              ),
+        ),
       ),
     );
   }
@@ -124,21 +124,18 @@ class LoadoutsHomeView extends StatelessWidget {
       );
     }
     return littlelightLoadoutsState.reordering
-        ? Text(
-            "Reordering Loadouts".translate(context),
-          )
-        : Text(
-            "Loadouts".translate(context),
-          );
+        ? Text("Reordering Loadouts".translate(context))
+        : Text("Loadouts".translate(context));
   }
 
   Widget buildSearchButton(BuildContext context) {
     if (littlelightLoadoutsState.reordering) return Container();
     return IconButton(
       enableFeedback: false,
-      icon: littlelightLoadoutsState.searchOpen
-          ? const Icon(FontAwesomeIcons.xmark)
-          : const Icon(FontAwesomeIcons.magnifyingGlass),
+      icon:
+          littlelightLoadoutsState.searchOpen
+              ? const Icon(FontAwesomeIcons.xmark)
+              : const Icon(FontAwesomeIcons.magnifyingGlass),
       onPressed: () => littleLightLoadoutsBloc.toggleSearch(),
     );
   }
@@ -146,28 +143,31 @@ class LoadoutsHomeView extends StatelessWidget {
   Widget buildReorderButton(BuildContext context) {
     if (littlelightLoadoutsState.searchOpen) return Container();
     return IconButton(
-        enableFeedback: false,
-        icon: littlelightLoadoutsState.reordering
-            ? const Icon(FontAwesomeIcons.check)
-            : Transform.rotate(angle: pi / 2, child: const Icon(FontAwesomeIcons.rightLeft)),
-        onPressed: () => littleLightLoadoutsBloc.toggleReordering());
+      enableFeedback: false,
+      icon:
+          littlelightLoadoutsState.reordering
+              ? const Icon(FontAwesomeIcons.check)
+              : Transform.rotate(angle: pi / 2, child: const Icon(FontAwesomeIcons.rightLeft)),
+      onPressed: () => littleLightLoadoutsBloc.toggleReordering(),
+    );
   }
 
-  Widget? renderOnlyOnLittleLightLoadouts(BuildContext context, Widget? widget) {
+  Widget renderOnlyOnLittleLightLoadouts(BuildContext context, Widget? widget) {
     final tab = DefaultTabController.maybeOf(context);
-    if (tab == null) return null;
+    if (tab == null) return Container();
 
     final tabAnimation = tab.animation;
-    if (tabAnimation == null) return null;
+    if (tabAnimation == null) return Container();
 
-    if (widget == null) return null;
+    if (widget == null) return Container();
 
     return AnimatedBuilder(
-        animation: tabAnimation,
-        builder: (context, _) {
-          if (tab.index > 0) return Container();
-          return widget;
-        });
+      animation: tabAnimation,
+      builder: (context, _) {
+        if (tab.index > 0) return Container();
+        return widget;
+      },
+    );
   }
 
   Widget? buildFooter(BuildContext context) {
@@ -178,24 +178,29 @@ class LoadoutsHomeView extends StatelessWidget {
     return Material(
       elevation: 1,
       color: context.theme.secondarySurfaceLayers,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Container(
-          padding: EdgeInsets.all(8),
-          height: kToolbarHeight,
-          child: ElevatedButton(
-            onPressed: littleLightLoadoutsBloc.createNew,
-            child: Text("Create Loadout".translate(context)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            padding: EdgeInsets.all(8),
+            height: kToolbarHeight,
+            child: ElevatedButton(
+              onPressed: littleLightLoadoutsBloc.createNew,
+              child: Text("Create Loadout".translate(context)),
+            ),
           ),
-        ),
-        if (paddingBottom > 0) BusyIndicatorBottomGradientWidget(),
-      ]),
+          if (paddingBottom > 0) BusyIndicatorBottomGradientWidget(),
+        ],
+      ),
     );
   }
 
   Widget buildTabs(BuildContext context) {
-    return TabBarView(children: [
-      LittleLightLoadoutsView(bloc: littleLightLoadoutsBloc, state: littlelightLoadoutsState),
-      DestinyLoadoutsView(bloc: destinyLoadoutsBloc, state: destinyLoadoutsState),
-    ]);
+    return TabBarView(
+      children: [
+        LittleLightLoadoutsView(bloc: littleLightLoadoutsBloc, state: littlelightLoadoutsState),
+        DestinyLoadoutsView(bloc: destinyLoadoutsBloc, state: destinyLoadoutsState),
+      ],
+    );
   }
 }

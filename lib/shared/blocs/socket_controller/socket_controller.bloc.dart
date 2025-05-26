@@ -389,6 +389,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     });
     final statGroupDefinition =
         await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
+    final energyCostStatHashes = await _getEnergyCostStatHashes(plugDefinitions);
     return comparePlugStats(
       selectedPlugHashes,
       selectedSocketIndex,
@@ -397,6 +398,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
       itemDefinition,
       statGroupDefinition,
       plugDefinitions,
+      requiredAvailableStatHashes: energyCostStatHashes,
     );
   }
 
@@ -516,6 +518,21 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
 
   @protected
   Future<bool> loadCanApplyPlug(int socketIndex, int plugHash);
+
+  Future<List<int>> _getEnergyCostStatHashes(Map<int, DestinyInventoryItemDefinition> plugDefs) async {
+    final costEnergyTypeHashes =
+        plugDefs.values.map((e) => e.plug?.energyCost?.energyTypeHash).whereType<int>().toSet();
+    final capacityEnergyTypeHashes =
+        plugDefs.values.map((e) => e.plug?.energyCapacity?.energyTypeHash).whereType<int>().toSet();
+    final allEnergyTypeHashes = costEnergyTypeHashes.toList() + capacityEnergyTypeHashes.toList();
+    if (allEnergyTypeHashes.isEmpty) return [];
+    final energyTypeDefs = await manifest.getDefinitions<DestinyEnergyTypeDefinition>(allEnergyTypeHashes);
+    final costStatHashes = costEnergyTypeHashes.map((e) => energyTypeDefs[e]?.costStatHash).whereType<int>().toSet();
+    final capacityStatHashes =
+        capacityEnergyTypeHashes.map((e) => energyTypeDefs[e]?.capacityStatHash).whereType<int>().toSet();
+    final statHashes = costStatHashes.toList() + capacityStatHashes.toList();
+    return statHashes;
+  }
 
   /// async load data
 

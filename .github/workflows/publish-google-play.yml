@@ -98,7 +98,7 @@ jobs:
         run: flutter build apk
 
       - name: Upload APK to workflow run
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: LittleLight-android-apk
           path: ${{ github.workspace }}/build/app/outputs/flutter-apk/app-release.apk
@@ -147,7 +147,7 @@ jobs:
           bundle install
 
       - name: Upload aab to workflow run
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: LittleLight-android-aab
           path: ${{ github.workspace }}/build/app/outputs/bundle/release/app-release.aab

@@ -13,10 +13,9 @@ Color? colorFromHex(String hex) {
 }
 
 String hexFromColor(Color color) {
-  return "#${color.value.toRadixString(16)}";
+  return "#${color.toARGB32().toRadixString(16)}";
 }
 
 extension ToMaterialColor on DestinyColor {
-  Color toMaterialColor([double opacity = 1]) =>
-      Color.fromRGBO(red ?? 0, green ?? 0, blue ?? 0, opacity);
+  Color toMaterialColor([double opacity = 1]) => Color.fromRGBO(red ?? 0, green ?? 0, blue ?? 0, opacity);
 }

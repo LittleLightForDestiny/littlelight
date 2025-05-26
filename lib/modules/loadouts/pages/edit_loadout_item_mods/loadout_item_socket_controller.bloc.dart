@@ -78,7 +78,7 @@ class LoadoutItemSocketControllerBloc extends SocketControllerBloc<LoadoutItemIn
 
   @override
   Future<bool> calculateHasEnoughEnergyFor(int socketIndex, int plugHash) async {
-    final availableEnergy = availableEnergyCapacity?.equipped ?? 0;
+    final availableEnergy = availableEnergyCapacity?.selected ?? 0;
     final usedEnergy = usedEnergyCapacity?.selected ?? 0;
     final currentPlugHash = selectedPlugHashForSocket(socketIndex) ?? equippedPlugHashForSocket(socketIndex);
     final currentPlugDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(currentPlugHash);

@@ -17,12 +17,7 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
 
   final VoidCallback? onTap;
   final VoidCallback? onLongPress;
-  const DestinyLoadoutListItemWidget(
-    this.loadout, {
-    super.key,
-    this.onTap,
-    this.onLongPress,
-  });
+  const DestinyLoadoutListItemWidget(this.loadout, {super.key, this.onTap, this.onLongPress});
 
   @override
   Widget build(BuildContext context) {
@@ -43,23 +38,21 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     buildLoadoutTitle(context),
-                    Container(
-                      padding: EdgeInsets.all(4),
-                      child: buildItems(context),
-                    ),
+                    Container(padding: EdgeInsets.all(4), child: buildItems(context)),
                   ],
                 ),
               ),
               Positioned.fill(
-                  child: Material(
-                color: Colors.transparent,
-                child: InkWell(
-                  borderRadius: BorderRadius.circular(4),
-                  onTap: onTap,
-                  onLongPress: onLongPress,
-                  child: Container(),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(4),
+                    onTap: onTap,
+                    onLongPress: onLongPress,
+                    child: Container(),
+                  ),
                 ),
-              )),
+              ),
             ],
           ),
         ),
@@ -70,9 +63,7 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
   Widget buildBackground(BuildContext context) {
     final colorDef = context.definition<DestinyLoadoutColorDefinition>(loadout.loadout.colorHash);
     if (colorDef == null) {
-      return Container(
-        color: context.theme.surfaceLayers.layer2,
-      );
+      return Container(color: context.theme.surfaceLayers.layer2);
     }
     return QueuedNetworkImage.fromBungie(colorDef.colorImagePath, fit: BoxFit.cover);
   }
@@ -83,18 +74,13 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
         gradient: LinearGradient(
           colors: [
-            context.theme.surfaceLayers.layer0.withOpacity(.7),
-            context.theme.surfaceLayers.layer0.withOpacity(0)
+            context.theme.surfaceLayers.layer0.withValues(alpha: .7),
+            context.theme.surfaceLayers.layer0.withAlpha(0),
           ],
         ),
       ),
       padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Row(
-        children: [
-          Expanded(child: buildLoadoutName(context)),
-          buildLoadoutIcon(context),
-        ],
-      ),
+      child: Row(children: [Expanded(child: buildLoadoutName(context)), buildLoadoutIcon(context)]),
     );
   }
 
@@ -109,19 +95,9 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
   Widget buildLoadoutIcon(BuildContext context) {
     final iconDef = context.definition<DestinyLoadoutIconDefinition>(loadout.loadout.iconHash);
     if (iconDef == null) {
-      return Container(
-          width: 24,
-          height: 24,
-          child: Icon(
-            FontAwesomeIcons.squarePlus,
-            size: 18,
-          ));
+      return Container(width: 24, height: 24, child: Icon(FontAwesomeIcons.squarePlus, size: 18));
     }
-    return Container(
-      width: 24,
-      height: 24,
-      child: QueuedNetworkImage.fromBungie(iconDef.iconImagePath),
-    );
+    return Container(width: 24, height: 24, child: QueuedNetworkImage.fromBungie(iconDef.iconImagePath));
   }
 
   Widget buildItems(BuildContext context) {
@@ -145,7 +121,7 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
             Flexible(child: buildItem(context, InventoryBucket.legArmor)),
             Flexible(child: buildItem(context, InventoryBucket.classArmor)),
           ],
-        )
+        ),
       ],
     );
   }
@@ -154,30 +130,27 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
     final item = loadout.items?[bucketHash];
     if (item == null) return buildItemNotFound(context);
     return Container(
-        constraints: BoxConstraints(maxWidth: 32, maxHeight: 32),
-        padding: EdgeInsets.all(1),
-        child: AspectRatio(
-            aspectRatio: 1,
-            child: InventoryItemIcon(
-              item,
-              borderSize: 1,
-            )));
+      constraints: BoxConstraints(maxWidth: 32, maxHeight: 32),
+      padding: EdgeInsets.all(1),
+      child: AspectRatio(aspectRatio: 1, child: InventoryItemIcon(item, borderSize: 1)),
+    );
   }
 
   Widget buildItemNotFound(BuildContext context) {
     return Container(
-        constraints: BoxConstraints(maxWidth: 32, maxHeight: 32),
-        padding: EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer1,
-          border: Border.all(color: context.theme.onSurfaceLayers.layer3, width: 2),
+      constraints: BoxConstraints(maxWidth: 32, maxHeight: 32),
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer1,
+        border: Border.all(color: context.theme.onSurfaceLayers.layer3, width: 2),
+      ),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+          _notFoundIconHash,
+          color: context.theme.errorLayers.layer3,
         ),
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-            _notFoundIconHash,
-            color: context.theme.errorLayers.layer3,
-          ),
-        ));
+      ),
+    );
   }
 }

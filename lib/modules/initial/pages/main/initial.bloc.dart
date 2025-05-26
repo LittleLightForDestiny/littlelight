@@ -34,7 +34,7 @@ enum InitialPagePhase {
   AuthorizationRequest,
   MembershipSelect,
   WishlistsSelect,
-  EnsureCache
+  EnsureCache,
 }
 
 class InitialPageStateNotifier
@@ -64,7 +64,8 @@ class InitialPageStateNotifier
 
   InitialPageStateNotifier(this._context) : _offlineModeBloc = _context.read<OfflineModeBloc>() {
     SystemChrome.setSystemUIOverlayStyle(
-        const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark));
+      const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark),
+    );
     _initLoading();
   }
 
@@ -299,8 +300,9 @@ class InitialPageStateNotifier
   }
 
   Future<void> _startApp() async {
-    Navigator.of(_context)
-        .pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const MainScreen()), (r) => false);
+    Navigator.of(
+      _context,
+    ).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const MainScreen()), (r) => false);
   }
 
   void clearDataAndRestart() async {

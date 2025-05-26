@@ -1,3 +1,18 @@
+## [2.0.27] - 2024-10-16
+
+- show energy capacity and cost values in stats diff
+- bug fixes
+
+## [2.0.26] - 2024-10-16
+
+- Show energy capacity, energy capacity and cost values in stats diff
+- bug fixes
+
+## [2.0.25] - 2024-07-30
+
+* fixes grind optimizer at max level
+* fixes some issues on settings
+
 ## [2.0.24] - 2024-06-26
 
 - Updated grind optimizer for Final Shape

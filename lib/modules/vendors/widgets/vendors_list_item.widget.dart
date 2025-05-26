@@ -60,7 +60,7 @@ class VendorsListItemWidget extends StatelessWidget {
             gradient: LinearGradient(
               colors: <Color>[
                 context.theme.surfaceLayers.layer0,
-                context.theme.surfaceLayers.layer0.withOpacity(.2),
+                context.theme.surfaceLayers.layer0.withValues(alpha: .2),
               ],
               begin: Alignment.bottomCenter,
               end: Alignment.center,
@@ -94,7 +94,8 @@ class VendorsListItemWidget extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(4),
               decoration: BoxDecoration(
-                  color: context.theme.surfaceLayers.layer0.withOpacity(.7), borderRadius: BorderRadius.circular(4)),
+                  color: context.theme.surfaceLayers.layer0.withValues(alpha: .7),
+                  borderRadius: BorderRadius.circular(4)),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -191,7 +192,7 @@ class VendorsListItemWidget extends StatelessWidget {
         if (sale.saleStatus != VendorItemStatus.Success)
           Positioned.fill(
             child: Container(
-              color: context.theme.surfaceLayers.withOpacity(.6),
+              color: context.theme.surfaceLayers.withValues(alpha: .6),
             ),
           )
       ]),

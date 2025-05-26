@@ -86,7 +86,7 @@ jobs:
         run: flutter build windows --release
 
       - name: Upload build to workflow run
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: LittleLight-windows
           path: ${{ github.workspace }}/build/windows/x64/runner/Release

@@ -56,7 +56,7 @@ class DetailsItemCoverModsWidget extends DetailsItemModsWidget {
     return Stack(children: [
       Container(
         decoration: BoxDecoration(
-          color: isSocketSelected ? context.theme.onSurfaceLayers.layer0.withOpacity(.1) : Colors.transparent,
+          color: isSocketSelected ? context.theme.onSurfaceLayers.layer0.withValues(alpha: .1) : Colors.transparent,
           borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
         ),
         padding: EdgeInsets.all(8 * pixelSize),
@@ -120,7 +120,7 @@ class DetailsItemCoverModsWidget extends DetailsItemModsWidget {
       duration: _animationDuration,
       key: Key("mod_options_$socketIndex"),
       decoration: BoxDecoration(
-        color: context.theme.onSurfaceLayers.layer0.withOpacity(.1),
+        color: context.theme.onSurfaceLayers.layer0.withValues(alpha: .1),
         borderRadius: BorderRadius.circular(4).copyWith(topLeft: Radius.zero),
       ),
       padding: EdgeInsets.all(8 * pixelSize),

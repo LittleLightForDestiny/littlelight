@@ -42,12 +42,12 @@ class LoadoutChangeResultNotificationWidget extends BasePersistentNotificationWi
 
   @override
   Widget? buildIcons(BuildContext context, LoadoutChangeResultNotification notification) {
-    final removedDef = context.definition<DestinyInventoryItemDefinition>(
-      notification.results.removedItems?.firstOrNull?.inventoryItem?.itemHash,
-    );
-    final addedDef = context.definition<DestinyInventoryItemDefinition>(
-      notification.results.removedItems?.firstOrNull?.inventoryItem?.itemHash,
-    );
+    // final removedDef = context.definition<DestinyInventoryItemDefinition>(
+    //   notification.results.removedItems?.firstOrNull?.inventoryItem?.itemHash,
+    // );
+    // final addedDef = context.definition<DestinyInventoryItemDefinition>(
+    //   notification.results.removedItems?.firstOrNull?.inventoryItem?.itemHash,
+    // );
     return null;
   }
 

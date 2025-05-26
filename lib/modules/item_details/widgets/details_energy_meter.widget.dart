@@ -197,7 +197,9 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
       height: 8,
       margin: EdgeInsets.all(2),
       child: Container(
-        color: isUsed ? theme.errorLayers.withOpacity(.8) : context.theme.onSurfaceLayers.layer0.withOpacity(.5),
+        color: isUsed
+            ? theme.errorLayers.withValues(alpha: .8)
+            : context.theme.onSurfaceLayers.layer0.withValues(alpha: .5),
       ),
     );
   }
