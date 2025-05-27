@@ -1,19 +1,13 @@
+import 'package:little_light/core/blocs/notifications/item_action_notification.dart';
 import 'package:little_light/models/item_info/destiny_item_info.dart';
-import 'action_notification.dart';
 
-enum PlugStatus {
-  Applying,
-  Success,
-  Fail,
-}
+enum PlugStatus { Applying, Success, Fail }
 
-class ApplyPlugsNotification extends ActionNotification {
+class ApplyPlugsNotification extends ItemActionNotification {
   Map<int, int>? _plugs;
   final Map<int, PlugStatus> _statuses = {};
 
-  ApplyPlugsNotification({
-    required DestinyItemInfo item,
-  }) : super(item: item);
+  ApplyPlugsNotification({required DestinyItemInfo item}) : super(item: item);
 
   @override
   String get id => "apply-mods-${item.itemHash}-${item.instanceId}-${createdAt.millisecondsSinceEpoch}";

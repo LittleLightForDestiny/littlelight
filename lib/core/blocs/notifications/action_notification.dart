@@ -1,8 +1,6 @@
-import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'base_notification_action.dart';
 
 abstract class ActionNotification extends BaseNotification {
-  final DestinyItemInfo item;
   bool _isFinished = false;
   bool _shouldPlayDismissAnimation = false;
   bool _dismissAnimationFinished = false;
@@ -10,7 +8,7 @@ abstract class ActionNotification extends BaseNotification {
   final DateTime _createdAt;
   DateTime get createdAt => _createdAt;
 
-  ActionNotification({required this.item}) : _createdAt = DateTime.now();
+  ActionNotification() : _createdAt = DateTime.now();
 
   double get progress;
 
@@ -18,6 +16,8 @@ abstract class ActionNotification extends BaseNotification {
 
   @override
   String get id;
+
+  int? get targetHash;
 
   bool get finishedWithSuccess => _isFinished;
   bool get shouldPlayDismissAnimation => _shouldPlayDismissAnimation;

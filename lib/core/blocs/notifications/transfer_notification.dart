@@ -1,6 +1,7 @@
 import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/shared/models/transfer_destination.dart';
-import 'action_notification.dart';
+
+import 'item_action_notification.dart';
 
 enum TransferSteps {
   PullFromPostmaster,
@@ -12,18 +13,15 @@ enum TransferSteps {
   EquipOnCharacter,
 }
 
-class TransferNotification extends ActionNotification {
+class TransferNotification extends ItemActionNotification {
   final TransferDestination source;
   final TransferDestination destination;
   Set<TransferSteps>? _steps;
   TransferSteps? _currentStep;
   final List<TransferNotification> _sideEffects = [];
 
-  TransferNotification({
-    required DestinyItemInfo item,
-    required this.source,
-    required this.destination,
-  }) : super(item: item);
+  TransferNotification({required DestinyItemInfo item, required this.source, required this.destination})
+    : super(item: item);
 
   @override
   String get id => "transfer-action-${item.itemHash}-${item.instanceId}-${createdAt.millisecondsSinceEpoch}";
