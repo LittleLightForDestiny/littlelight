@@ -14,12 +14,7 @@ import 'package:little_light/shared/blocs/scoped_value_repository/scoped_value_r
 import 'package:little_light/shared/utils/helpers/loadout_helpers.dart';
 import 'package:provider/provider.dart';
 
-enum LoadoutIncludedItemTypes {
-  Subclass,
-  Weapon,
-  Armor,
-  Other,
-}
+enum LoadoutIncludedItemTypes { Subclass, Weapon, Armor, Other, Mods }
 
 class IncludedItemTypes extends StorableValue<bool> {
   IncludedItemTypes(LoadoutIncludedItemTypes super.key, [super.value]);
@@ -65,13 +60,13 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
   }
 
   EquipLoadoutQuickmenuBloc(this._context, this.character, this.equip)
-      : loadoutsBloc = _context.read<LoadoutsBloc>(),
-        profileBloc = _context.read<ProfileBloc>(),
-        manifest = _context.read<ManifestService>(),
-        valueStore = _context.read<ScopedValueRepositoryBloc>(),
-        userSettings = _context.read<UserSettingsBloc>(),
-        inventory = _context.read<InventoryBloc>(),
-        super() {
+    : loadoutsBloc = _context.read<LoadoutsBloc>(),
+      profileBloc = _context.read<ProfileBloc>(),
+      manifest = _context.read<ManifestService>(),
+      valueStore = _context.read<ScopedValueRepositoryBloc>(),
+      userSettings = _context.read<UserSettingsBloc>(),
+      inventory = _context.read<InventoryBloc>(),
+      super() {
     _init();
   }
 
@@ -80,6 +75,7 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
     valueStore.storeValue(IncludedItemTypes(LoadoutIncludedItemTypes.Armor, true));
     valueStore.storeValue(IncludedItemTypes(LoadoutIncludedItemTypes.Weapon, true));
     valueStore.storeValue(IncludedItemTypes(LoadoutIncludedItemTypes.Subclass, true));
+    valueStore.storeValue(IncludedItemTypes(LoadoutIncludedItemTypes.Mods, true));
     loadoutsBloc.addListener(_filter);
     valueStore.addListener(_filter);
     profileBloc.addListener(_updateDestinyLoadouts);
@@ -158,11 +154,7 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
       validSlots.add(InventoryBucket.subclass);
     }
     if (hasWeapons) {
-      validSlots.addAll([
-        InventoryBucket.kineticWeapons,
-        InventoryBucket.energyWeapons,
-        InventoryBucket.powerWeapons,
-      ]);
+      validSlots.addAll([InventoryBucket.kineticWeapons, InventoryBucket.energyWeapons, InventoryBucket.powerWeapons]);
     }
     if (hasArmor) {
       validSlots.addAll([
@@ -174,20 +166,18 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
       ]);
     }
     if (hasOther) {
-      validSlots.addAll([
-        InventoryBucket.ghost,
-        InventoryBucket.vehicle,
-        InventoryBucket.ships,
-      ]);
+      validSlots.addAll([InventoryBucket.ghost, InventoryBucket.vehicle, InventoryBucket.ships]);
     }
     return validSlots;
   }
 
   void equipLittleLightLoadout(LoadoutItemIndex loadout) async {
+    final includeMods = valueStore.getValue(IncludedItemTypes(LoadoutIncludedItemTypes.Mods))?.value ?? false;
     final newLoadout = await loadout.duplicateWithFilters(
       manifest,
       classFilter: character.character.classType,
       bucketFilter: selectedBuckets,
+      includeMods: includeMods,
     );
 
     if (equip) {
@@ -204,10 +194,9 @@ class EquipLoadoutQuickmenuBloc extends ChangeNotifier {
   }
 
   void editDestinyLoadout(DestinyLoadoutInfo loadout) async {
-    Navigator.of(_context).pushReplacement(DestinyLoadoutDetailsPageRoute(
-      loadoutIndex: loadout.index,
-      characterId: loadout.characterId,
-    ));
+    Navigator.of(
+      _context,
+    ).pushReplacement(DestinyLoadoutDetailsPageRoute(loadoutIndex: loadout.index, characterId: loadout.characterId));
   }
 
   void cancel() {
