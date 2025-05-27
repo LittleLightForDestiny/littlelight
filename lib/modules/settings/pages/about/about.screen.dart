@@ -77,123 +77,97 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            enableFeedback: false,
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-          title: Text("About".translate(context)),
+      appBar: AppBar(
+        leading: IconButton(
+          enableFeedback: false,
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
         ),
-        body: MultiSectionScrollView(
-          _sections,
-          crossAxisSpacing: 4,
-          mainAxisSpacing: 4,
-          padding: const EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
-        ));
+        title: Text("About".translate(context)),
+      ),
+      body: MultiSectionScrollView(
+        _sections,
+        crossAxisSpacing: 4,
+        mainAxisSpacing: 4,
+        padding: const EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+      ),
+    );
   }
 
   List<ScrollableSection> get _sections {
     List<ScrollableSection> list = [
       appInfoSliver,
-      headerSliver(Text(
-        "Contact".translate(context).toUpperCase(),
-      )),
+      headerSliver(Text("Contact".translate(context).toUpperCase())),
       contactInfoSliver,
       spacerSliver,
     ];
     final isMobile = Platform.isAndroid || Platform.isIOS;
     if (isMobile || showDonationLinks) {
       list += [
-        headerSliver(Text(
-          "Support Little Light".translate(context).toUpperCase(),
-        )),
+        headerSliver(Text("Support Little Light".translate(context).toUpperCase())),
         supportSliver,
         spacerSliver,
       ];
     }
     final supporters = collaborators?.supporters;
     if (supporters != null) {
-      list += [
-        headerSliver(Text(
-          "Supporters".translate(context).toUpperCase(),
-        )),
-        collaboratorsSliver(supporters),
-      ];
+      list += [headerSliver(Text("Supporters".translate(context).toUpperCase())), collaboratorsSliver(supporters)];
     }
     final developers = collaborators?.developers;
     if (developers != null) {
-      list += [
-        headerSliver(Text(
-          "Development".translate(context).toUpperCase(),
-        )),
-        collaboratorsSliver(developers),
-      ];
+      list += [headerSliver(Text("Development".translate(context).toUpperCase())), collaboratorsSliver(developers)];
     }
     final curators = collaborators?.curators;
     if (curators != null) {
-      list += [
-        headerSliver(Text(
-          "Godroll Curators".translate(context).toUpperCase(),
-        )),
-        collaboratorsSliver(curators),
-      ];
+      list += [headerSliver(Text("Godroll Curators".translate(context).toUpperCase())), collaboratorsSliver(curators)];
     }
     final translators = collaborators?.translators;
     if (translators != null) {
-      list += [
-        headerSliver(Text(
-          "Translations".translate(context).toUpperCase(),
-        )),
-      ];
+      list += [headerSliver(Text("Translations".translate(context).toUpperCase()))];
       for (var language in translators) {
-        list += [
-          translationHeaderSliver(language),
-          collaboratorsSliver(language.translators),
-        ];
+        list += [translationHeaderSliver(language), collaboratorsSliver(language.translators)];
       }
     }
 
     return list;
   }
 
-  ScrollableSection get appInfoSliver => FixedHeightScrollSection(112.0,
-      itemCount: 1,
-      itemBuilder: (context, _) => Row(
-            children: <Widget>[
-              Container(
-                  width: 96,
-                  height: 96,
-                  padding: const EdgeInsets.only(right: 8),
-                  child: Image.asset('assets/imgs/app_icon.png')),
-              Expanded(
-                  child: Column(
+  ScrollableSection get appInfoSliver => FixedHeightScrollSection(
+    112.0,
+    itemCount: 1,
+    itemBuilder:
+        (context, _) => Row(
+          children: <Widget>[
+            Container(
+              width: 96,
+              height: 96,
+              padding: const EdgeInsets.only(right: 8),
+              child: Image.asset('assets/imgs/app_icon.png'),
+            ),
+            Expanded(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Text(
-                    "$appName v$packageVersion",
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
+                  Text("$appName v$packageVersion", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 ],
-              ))
-            ],
-          ));
+              ),
+            ),
+          ],
+        ),
+  );
 
-  ScrollableSection headerSliver(Widget title) => FixedHeightScrollSection(
-        40.0,
-        itemCount: 1,
-        itemBuilder: (context, _) => HeaderWidget(child: title),
-      );
+  ScrollableSection headerSliver(Widget title) =>
+      FixedHeightScrollSection(40.0, itemCount: 1, itemBuilder: (context, _) => HeaderWidget(child: title));
 
   ScrollableSection get contactInfoSliver {
     final actions = [
       AboutScreenAction(
-        icon: FontAwesomeIcons.twitter,
-        label: const Text("@LittleLightD2"),
-        url: "http://www.twitter.com/littlelightD2",
+        icon: FontAwesomeIcons.bluesky,
+        label: const Text("Bluesky"),
+        url: "https://bsky.app/profile/littlelight.club",
       ),
       AboutScreenAction(
         icon: FontAwesomeIcons.discord,
@@ -224,30 +198,23 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
     final actions = [
       if (isMobile)
         AboutScreenAction(
-            color: isIOS ? const Color.fromARGB(255, 22, 147, 245) : const Color.fromARGB(255, 49, 159, 185),
-            icon: isIOS ? FontAwesomeIcons.appStoreIos : FontAwesomeIcons.googlePlay,
-            label: Text(
-              "Rate it".translate(context).toUpperCase(),
-            ),
-            type: AboutScreenActionType.Rate),
+          color: isIOS ? const Color.fromARGB(255, 22, 147, 245) : const Color.fromARGB(255, 49, 159, 185),
+          icon: isIOS ? FontAwesomeIcons.appStoreIos : FontAwesomeIcons.googlePlay,
+          label: Text("Rate it".translate(context).toUpperCase()),
+          type: AboutScreenActionType.Rate,
+        ),
       if (showDonationLinks)
         AboutScreenAction(
           color: const Color.fromRGBO(249, 104, 84, 1),
           iconWidget: Image.asset("assets/imgs/patreon-icon.png"),
-          label: Text(
-            "Become a Patron".translate(context),
-            textAlign: TextAlign.center,
-          ),
+          label: Text("Become a Patron".translate(context), textAlign: TextAlign.center),
           url: 'https://www.patreon.com/littlelightD2',
         ),
       if (showDonationLinks)
         AboutScreenAction(
           color: const Color.fromRGBO(26, 169, 222, 1),
           iconWidget: Image.asset("assets/imgs/ko-fi-icon.png"),
-          label: Text(
-            "Buy me a Coffee".translate(context),
-            textAlign: TextAlign.center,
-          ),
+          label: Text("Buy me a Coffee".translate(context), textAlign: TextAlign.center),
           url: "https://ko-fi.com/littlelight",
         ),
     ];
@@ -283,26 +250,24 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
     );
   }
 
-  ScrollableSection get spacerSliver => FixedHeightScrollSection(
-        48,
-        itemCount: 1,
-        itemBuilder: (context, index) => Container(),
-      );
+  ScrollableSection get spacerSliver =>
+      FixedHeightScrollSection(48, itemCount: 1, itemBuilder: (context, index) => Container());
 
   Widget buildTranslationHeader(BuildContext context, TranslationLanguage language) {
     final languages = language.languages;
     List<Widget> flags = languages.map((l) => flagIcon(l)).toList();
-    Text languageNames = Text(languages
-        .map((l) => context.watch<LanguageBloc>().languages.firstWhereOrNull((element) => element.code == l))
-        .whereType<LanguageInfo>()
-        .map((l) => l.name)
-        .join("/"));
+    Text languageNames = Text(
+      languages
+          .map((l) => context.watch<LanguageBloc>().languages.firstWhereOrNull((element) => element.code == l))
+          .whereType<LanguageInfo>()
+          .map((l) => l.name)
+          .join("/"),
+    );
     return Container(
-        color: context.theme.secondarySurfaceLayers.layer0,
-        padding: const EdgeInsets.all(4),
-        child: Row(
-          children: flags + [Container(width: 4), languageNames],
-        ));
+      color: context.theme.secondarySurfaceLayers.layer0,
+      padding: const EdgeInsets.all(4),
+      child: Row(children: flags + [Container(width: 4), languageNames]),
+    );
   }
 
   Widget flagIcon(String code) {
@@ -315,21 +280,21 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
 
   Widget buildExternalLinkButton(BuildContext context, AboutScreenAction action) {
     return ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.all(4),
-          backgroundColor: action.color ?? context.theme.primaryLayers,
-          tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        ),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          Expanded(
-            child: action.iconWidget ?? SizedBox(width: 36, height: 36, child: Icon(action.icon, size: 32)),
-          ),
-          Container(
-            height: 4,
-          ),
-          action.label
-        ]),
-        onPressed: () => doAction(action));
+      style: ElevatedButton.styleFrom(
+        padding: const EdgeInsets.all(4),
+        backgroundColor: action.color ?? context.theme.primaryLayers,
+        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+      ),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Expanded(child: action.iconWidget ?? SizedBox(width: 36, height: 36, child: Icon(action.icon, size: 32))),
+          Container(height: 4),
+          action.label,
+        ],
+      ),
+      onPressed: () => doAction(action),
+    );
   }
 
   void doAction(AboutScreenAction action) {
