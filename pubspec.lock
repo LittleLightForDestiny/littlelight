@@ -553,9 +553,9 @@ packages:
     dependency: "direct main"
     description:
       path: in_app_review
-      ref: patch-2
-      resolved-ref: "560e70f35afef55daa9ff6d6ce29c2599755422c"
-      url: "git@github.com:shoboske/in_app_review.git"
+      ref: "v2.0.11"
+      resolved-ref: b8c06c44b8a610f063495337757316cb04e987d9
+      url: "https://github.com/LittleLightForDestiny/in_app_review"
     source: git
     version: "2.0.10"
   in_app_review_platform_interface:
