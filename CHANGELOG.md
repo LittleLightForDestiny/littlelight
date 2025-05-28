@@ -1,3 +1,8 @@
+## [2.1.0] - 2025-05-28
+
+- Adds destiny loadouts
+- Minor fixes to equipping loadouts with mods
+
 ## [2.0.27] - 2024-10-16
 
 - show energy capacity and cost values in stats diff

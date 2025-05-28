@@ -1,2 +1,2 @@
-- show energy capacity and cost values in stats diff
-- bug fixes
+- Adds destiny loadouts
+- Minor fixes to equipping loadouts with mods
