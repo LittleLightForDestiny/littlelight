@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/notifications/notification_actions.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/shared/widgets/inventory_item/inventory_item_icon.dart';
 import 'package:little_light/shared/widgets/loading/default_loading_shimmer.dart';
 import 'package:little_light/shared/widgets/notifications/base_active_notification.widget.dart';
+import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
 extension on PlugStatus {
@@ -21,19 +23,14 @@ extension on PlugStatus {
 }
 
 class ActiveApplyPlugsNotificationWidget extends BaseActiveNotificationWidget<ApplyPlugsNotification> {
-  const ActiveApplyPlugsNotificationWidget(
-    ApplyPlugsNotification notification, {
-    Key? key,
-  }) : super(notification, key: key);
+  const ActiveApplyPlugsNotificationWidget(ApplyPlugsNotification notification, {Key? key})
+    : super(notification, key: key);
 
   Widget? buildTransferProgress(BuildContext context, ApplyPlugsNotification notification) {
     return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: notification.plugs.entries
-            .map(
-              (e) => buildModIcon(context, e.key, e.value),
-            )
-            .toList());
+      mainAxisSize: MainAxisSize.min,
+      children: notification.plugs.entries.map((e) => buildModIcon(context, e.key, e.value)).toList(),
+    );
   }
 
   Widget buildModIcon(BuildContext context, int? hash, PlugStatus status) {
@@ -44,19 +41,12 @@ class ActiveApplyPlugsNotificationWidget extends BaseActiveNotificationWidget<Ap
       child: Stack(
         alignment: Alignment.center,
         children: [
+          Container(width: 34, height: 34, color: status.getColor(context)),
           Container(
             width: 34,
             height: 34,
-            color: status.getColor(context),
+            child: DefaultLoadingShimmer(child: Container(color: context.theme.onSurfaceLayers)),
           ),
-          Container(
-              width: 34,
-              height: 34,
-              child: DefaultLoadingShimmer(
-                child: Container(
-                  color: context.theme.onSurfaceLayers,
-                ),
-              )),
           Container(
             width: 32,
             height: 32,
@@ -74,4 +64,14 @@ class ActiveApplyPlugsNotificationWidget extends BaseActiveNotificationWidget<Ap
   }
 
   Widget? buildAdditionalInfo(BuildContext context, ApplyPlugsNotification notification) => null;
+
+  @override
+  Widget buildIcon(BuildContext context) {
+    final hash = notification.targetHash;
+    if (hash == null) return Container();
+    return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
+      hash,
+      (def) => def != null ? InventoryItemIcon(notification.item, borderSize: .5) : Container(),
+    );
+  }
 }

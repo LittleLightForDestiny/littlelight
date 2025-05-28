@@ -8,6 +8,7 @@ class DestinyCharacterInfo {
   int? artifactPower;
   int? totalPower;
   DestinyCharacterActivitiesComponent? activities;
+  List<DestinyLoadoutComponent>? loadouts;
 
   String? get characterId => character.characterId;
 
@@ -15,6 +16,7 @@ class DestinyCharacterInfo {
     this.character, {
     this.progression,
     this.activities,
+    this.loadouts,
   });
 
   Map<String, DestinyStat>? get stats {

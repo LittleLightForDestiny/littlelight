@@ -96,7 +96,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         constraints: const BoxConstraints(minHeight: double.infinity),
         foregroundDecoration: BoxDecoration(
           gradient: RadialGradient(
-            colors: [bgColor.withOpacity(0), bgColor],
+            colors: [bgColor.withValues(alpha: 0), bgColor],
             stops: const [.5, 1],
             radius: 1.8,
             center: Alignment.bottomRight,
@@ -308,7 +308,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
         gradient: LinearGradient(
-          colors: [bgColor, bgColor.withOpacity(0)],
+          colors: [bgColor, bgColor.withValues(alpha: 0)],
           stops: const [.6, .7],
         ),
       ),
@@ -1022,7 +1022,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
                               if (hash == null) return null;
                               final categoryName = c.displayProperties?.name?.toUpperCase();
                               return Container(
-                                color: Colors.black.withOpacity(.5),
+                                color: Colors.black.withValues(alpha: .5),
                                 margin: const EdgeInsets.only(right: 4),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,

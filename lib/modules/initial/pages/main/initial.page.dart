@@ -13,7 +13,7 @@ class InitialPageContianer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopScope(
-        onPopInvoked: (_) => false,
+        onPopInvokedWithResult: (_, result) => false,
         child: MultiProvider(
           providers: [
             ChangeNotifierProvider<ManifestDownloaderNotifier>(

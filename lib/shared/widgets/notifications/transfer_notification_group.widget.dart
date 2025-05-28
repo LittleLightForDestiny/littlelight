@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/notifications/item_action_notification.dart';
 import 'package:little_light/shared/widgets/notifications/active_apply_mod_notification.widget.dart';
 import 'package:little_light/shared/widgets/notifications/active_transfer_notification.widget.dart';
 import 'package:little_light/shared/widgets/notifications/queued_transfer_notification.widget.dart';
 import '../../../core/blocs/notifications/notification_actions.dart';
 
 class TransferNotificationGroup extends StatelessWidget {
-  final List<ActionNotification> notifications;
+  final List<ItemActionNotification> notifications;
   const TransferNotificationGroup(this.notifications);
 
   @override
   Widget build(BuildContext context) {
     return Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          buildQueuedRow(context),
-          buildActiveColumn(context),
-        ].whereType<Widget>().toList());
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [buildQueuedRow(context), buildActiveColumn(context)].whereType<Widget>().toList(),
+    );
   }
 
   Widget? buildQueuedRow(BuildContext context) {
@@ -24,16 +23,13 @@ class TransferNotificationGroup extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(8),
       child: Wrap(
-          runAlignment: WrapAlignment.end,
-          crossAxisAlignment: WrapCrossAlignment.end,
-          alignment: WrapAlignment.end,
-          spacing: 4,
-          runSpacing: 4,
-          children: queued
-              .map((notification) => QueuedTransferNotificationWidget(
-                    notification,
-                  ))
-              .toList()),
+        runAlignment: WrapAlignment.end,
+        crossAxisAlignment: WrapCrossAlignment.end,
+        alignment: WrapAlignment.end,
+        spacing: 4,
+        runSpacing: 4,
+        children: queued.map((notification) => QueuedTransferNotificationWidget(notification)).toList(),
+      ),
     );
   }
 
@@ -41,9 +37,10 @@ class TransferNotificationGroup extends StatelessWidget {
     final active = notifications.where((n) => n.active).toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
-      children: active.reversed.map((notification) {
-        return buildActiveNotification(context, notification);
-      }).toList(),
+      children:
+          active.reversed.map((notification) {
+            return buildActiveNotification(context, notification);
+          }).toList(),
     );
   }
 

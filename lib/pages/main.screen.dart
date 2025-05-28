@@ -82,7 +82,7 @@ class MainScreenState extends State<MainScreen> with AuthConsumer {
   Widget build(BuildContext context) {
     if (currentScreen == null) return Container();
     return PopScope(
-        onPopInvoked: (_) => _exitApp(context),
+        onPopInvokedWithResult: (_, result) => _exitApp(context),
         child: Scaffold(
           key: MainScreenScaffoldGlobalKey,
           drawer: Container(

@@ -180,7 +180,7 @@ class VendorsHomeView extends StatelessWidget {
   Widget buildTabPanGestureDetector(BuildContext context, CustomTabController tabController) {
     return Stack(
       children: [
-        IgnorePointer(child: Container(color: Colors.red.withOpacity(.3))),
+        IgnorePointer(child: Container(color: Colors.red.withValues(alpha: .3))),
         CustomTabGestureDetector(
           controller: tabController,
         ),

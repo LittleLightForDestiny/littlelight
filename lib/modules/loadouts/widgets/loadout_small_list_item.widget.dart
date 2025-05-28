@@ -31,7 +31,7 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
       margin: const EdgeInsets.all(4),
       clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
-        border: Border.all(width: 1, color: context.theme.onSurfaceLayers.withOpacity(.5)),
+        border: Border.all(width: 1, color: context.theme.onSurfaceLayers.withValues(alpha: .5)),
         borderRadius: BorderRadius.circular(4),
       ),
       child: ClipRRect(
@@ -80,7 +80,7 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
         padding: const EdgeInsets.all(4),
         alignment: Alignment.centerLeft,
         decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.withOpacity(.7),
+          color: context.theme.surfaceLayers.withValues(alpha: .7),
           borderRadius: BorderRadius.circular(4),
         ),
         child: Text(
@@ -119,7 +119,7 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
     return Container(
         width: 32,
         height: 32,
-        margin: EdgeInsets.only(right: 2),
+        margin: EdgeInsets.only(right: 1),
         child: InventoryItemIcon(
           item,
           borderSize: .5,

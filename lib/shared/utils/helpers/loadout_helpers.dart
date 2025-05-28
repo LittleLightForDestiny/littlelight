@@ -26,7 +26,7 @@ const loadoutClassSpecificBucketHashes = [
   InventoryBucket.gauntlets,
   InventoryBucket.chestArmor,
   InventoryBucket.legArmor,
-  InventoryBucket.classArmor
+  InventoryBucket.classArmor,
 ];
 
 bool isLoadoutClassSpecificSlot(int hash) {
@@ -80,10 +80,7 @@ extension LoadoutHelpers on Loadout {
     return [...equipped, ...unequipped].any((element) => element.itemInstanceId == instanceId);
   }
 
-  Future<LoadoutItemIndex> generateIndex({
-    required ProfileBloc profile,
-    required ManifestService manifest,
-  }) async {
+  Future<LoadoutItemIndex> generateIndex({required ProfileBloc profile, required ManifestService manifest}) async {
     final items = this.equipped + this.unequipped;
     final itemHashes = items.map((e) => e.itemHash).whereType<int>().toSet();
     await manifest.getDefinitions<DestinyInventoryItemDefinition>(itemHashes);
@@ -96,8 +93,9 @@ extension LoadoutHelpers on Loadout {
       bool asEquipped = this.equipped.contains(item);
       final instanceId = item.itemInstanceId;
       final inventoryItem = profile.getItemByInstanceId(instanceId);
-      final plugDefs =
-          await manifest.getDefinitions<DestinyInventoryItemDefinition>(item.socketPlugs?.values ?? <int>[]);
+      final plugDefs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(
+        item.socketPlugs?.values ?? <int>[],
+      );
       final overridePlug = plugDefs.values.firstWhereOrNull((p) => shouldPlugOverrideStyleItemHash(p));
       _addItemToLoadoutIndex(
         index,
@@ -113,9 +111,7 @@ extension LoadoutHelpers on Loadout {
   }
 }
 
-enum LoadoutChangeResultsCause {
-  BlockingExotic,
-}
+enum LoadoutChangeResultsCause { BlockingExotic }
 
 class LoadoutChangeResults {
   final List<LoadoutItemInfo>? removedItems;
@@ -130,41 +126,61 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
     ManifestService manifest,
     InventoryItemInfo? item, {
     bool equipped = false,
+    bool includeMods = false,
   }) async {
     final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item?.itemHash);
     final bucketHash = def?.inventory?.bucketTypeHash;
-    final classType = [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock]
-        .firstWhereOrNull((element) => element == def?.classType);
+    final classType = [
+      DestinyClass.Titan,
+      DestinyClass.Hunter,
+      DestinyClass.Warlock,
+    ].firstWhereOrNull((element) => element == def?.classType);
     if (bucketHash == null) return null;
     final instanceId = item?.instanceId;
     if (instanceId == null) return null;
     if (this.containsItem(instanceId)) {
       await this.removeItem(manifest, item);
     }
+
+    Map<int, int> plugHashes = {};
+    if (includeMods && item != null) {
+      final sockets = item.sockets ?? [];
+      for (int i = 0; i < sockets.length; i++) {
+        final plugHash = sockets[i].plugHash;
+        final canApply = await isPlugAvailableToApplyForFreeViaApi(manifest, item, i, plugHash);
+        if (canApply && plugHash != null) plugHashes[i] = plugHash;
+      }
+    }
+
     final added = _addItemToLoadoutIndex(
       this,
       equipped,
       item: item,
       bucketHash: bucketHash,
       classType: def?.classType,
-      plugHashes: null,
+      plugHashes: plugHashes,
     );
     final equippingBlockLabel = def?.equippingBlock?.uniqueLabel;
     if (equipped && equippingBlockLabel != null) {
-      final competingItems = slots.values
-          .map((value) => classType == null ? value.genericEquipped : value.classSpecificEquipped[classType])
-          .whereType<LoadoutItemInfo>();
+      final competingItems =
+          slots.values
+              .map((value) => classType == null ? value.genericEquipped : value.classSpecificEquipped[classType])
+              .whereType<LoadoutItemInfo>();
       final hashes = competingItems.map((e) => e.inventoryItem?.itemHash);
       final definitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
-      final blockingHashes = definitions.values
-          .where((d) => d.equippingBlock?.uniqueLabel == equippingBlockLabel)
-          .map((d) => d.hash)
-          .whereType<int>();
-      final blockingItems = competingItems
-          .where((i) =>
-              i.inventoryItem?.itemHash != added?.inventoryItem?.itemHash &&
-              blockingHashes.contains(i.inventoryItem?.itemHash))
-          .toList();
+      final blockingHashes =
+          definitions.values
+              .where((d) => d.equippingBlock?.uniqueLabel == equippingBlockLabel)
+              .map((d) => d.hash)
+              .whereType<int>();
+      final blockingItems =
+          competingItems
+              .where(
+                (i) =>
+                    i.inventoryItem?.itemHash != added?.inventoryItem?.itemHash &&
+                    blockingHashes.contains(i.inventoryItem?.itemHash),
+              )
+              .toList();
       if (blockingItems.isNotEmpty) {
         for (final blocking in blockingItems) await removeItem(manifest, blocking.inventoryItem);
         return LoadoutChangeResults(
@@ -177,20 +193,12 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
     return LoadoutChangeResults(addedItem: added);
   }
 
-  Future<LoadoutChangeResults?> removeItem(
-    ManifestService manifest,
-    InventoryItemInfo? item,
-  ) async {
+  Future<LoadoutChangeResults?> removeItem(ManifestService manifest, InventoryItemInfo? item) async {
     if (item == null) return null;
     final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
     final bucketHash = def?.inventory?.bucketTypeHash;
     if (bucketHash == null) return null;
-    final removed = _removeItemFromLoadoutIndex(
-      this,
-      item,
-      bucketHash: bucketHash,
-      classType: def?.classType,
-    );
+    final removed = _removeItemFromLoadoutIndex(this, item, bucketHash: bucketHash, classType: def?.classType);
     return LoadoutChangeResults(removedItems: [removed].whereType<LoadoutItemInfo>().toList());
   }
 
@@ -217,33 +225,35 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
     final unequippedItems = <LoadoutItem>[];
     for (final slot in this.slots.entries) {
       final bucketHash = slot.key;
-      final classEquipped = slot.value.classSpecificEquipped.entries.map((entry) => LoadoutItem(
-            bucketHash: bucketHash,
-            itemHash: entry.value.itemHash,
-            itemInstanceId: entry.value.instanceId,
-            classType: entry.key,
-            socketPlugs: entry.value.itemPlugs,
-          ));
+      final classEquipped = slot.value.classSpecificEquipped.entries.map(
+        (entry) => LoadoutItem(
+          bucketHash: bucketHash,
+          itemHash: entry.value.itemHash,
+          itemInstanceId: entry.value.instanceId,
+          classType: entry.key,
+          socketPlugs: entry.value.itemPlugs,
+        ),
+      );
       bool hasGenericEquipped =
           slot.value.genericEquipped.itemHash != null || slot.value.genericEquipped.itemPlugs.isNotEmpty;
-      final genericEquipped = hasGenericEquipped
-          ? LoadoutItem(
-              bucketHash: bucketHash,
-              itemHash: slot.value.genericEquipped.itemHash,
-              itemInstanceId: slot.value.genericEquipped.instanceId,
-              socketPlugs: slot.value.genericEquipped.itemPlugs,
-            )
-          : null;
-      final unequipped = slot.value.unequipped.map((item) => LoadoutItem(
-            bucketHash: bucketHash,
-            itemHash: item.itemHash,
-            itemInstanceId: item.instanceId,
-            socketPlugs: item.itemPlugs,
-          ));
-      equippedItems.addAll([
-        ...classEquipped,
-        if (genericEquipped != null) genericEquipped,
-      ]);
+      final genericEquipped =
+          hasGenericEquipped
+              ? LoadoutItem(
+                bucketHash: bucketHash,
+                itemHash: slot.value.genericEquipped.itemHash,
+                itemInstanceId: slot.value.genericEquipped.instanceId,
+                socketPlugs: slot.value.genericEquipped.itemPlugs,
+              )
+              : null;
+      final unequipped = slot.value.unequipped.map(
+        (item) => LoadoutItem(
+          bucketHash: bucketHash,
+          itemHash: item.itemHash,
+          itemInstanceId: item.instanceId,
+          socketPlugs: item.itemPlugs,
+        ),
+      );
+      equippedItems.addAll([...classEquipped, if (genericEquipped != null) genericEquipped]);
 
       unequippedItems.addAll(unequipped);
     }
@@ -285,36 +295,69 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
         .toList();
   }
 
-  Future<LoadoutItemIndex> duplicateWithFilters(ManifestService manifest,
-      {DestinyClass? classFilter, List<int>? bucketFilter}) async {
+  Future<LoadoutItemIndex> duplicateWithFilters(
+    ManifestService manifest, {
+    DestinyClass? classFilter,
+    List<int>? bucketFilter,
+    bool includeMods = false,
+  }) async {
     final result = LoadoutItemIndex(name, emblemHash: emblemHash);
     final equipped = this.getEquippedItems(classFilter);
     final nonEquipped = this.getNonEquippedItems();
     for (final e in equipped) {
       if (e.inventoryItem == null) continue;
       final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(e.itemHash);
+
+      final bucketHash = def?.inventory?.bucketTypeHash;
+      final classType = def?.classType;
+
+      if (bucketHash == null || classType == null) continue;
+
       if (classFilter != null) {
-        final classType = def?.classType;
         if (classType != classFilter && classType != DestinyClass.Unknown) continue;
       }
+
       if (bucketFilter != null) {
-        final bucket = def?.inventory?.bucketTypeHash;
-        if (!bucketFilter.contains(bucket)) continue;
+        if (!bucketFilter.contains(bucketHash)) continue;
       }
-      await result.addItem(manifest, e.inventoryItem, equipped: true);
+
+      final plugs = includeMods ? e.itemPlugs : null;
+
+      await _addItemToLoadoutIndex(
+        result,
+        true,
+        item: e.inventoryItem,
+        bucketHash: bucketHash,
+        classType: classType,
+        plugHashes: plugs,
+      );
     }
     for (final e in nonEquipped) {
       if (e.inventoryItem == null) continue;
       final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(e.itemHash);
+      final bucketHash = def?.inventory?.bucketTypeHash;
+      final classType = def?.classType;
+
+      if (bucketHash == null || classType == null) continue;
+
       if (classFilter != null) {
-        final classType = def?.classType;
         if (classType != classFilter && classType != DestinyClass.Unknown) continue;
       }
+
       if (bucketFilter != null) {
-        final bucket = def?.inventory?.bucketTypeHash;
-        if (!bucketFilter.contains(bucket)) continue;
+        if (!bucketFilter.contains(bucketHash)) continue;
       }
-      await result.addItem(manifest, e.inventoryItem);
+
+      final plugs = includeMods ? e.itemPlugs : null;
+
+      await _addItemToLoadoutIndex(
+        result,
+        false,
+        item: e.inventoryItem,
+        bucketHash: bucketHash,
+        classType: classType,
+        plugHashes: plugs,
+      );
     }
     return result;
   }

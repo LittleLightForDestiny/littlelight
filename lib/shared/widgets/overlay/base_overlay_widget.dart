@@ -62,7 +62,7 @@ abstract class BaseOverlayWidget extends StatelessWidget {
         behavior: HitTestBehavior.opaque,
         onTap: () => hide(context),
         child: Container(
-          color: context.theme.surfaceLayers.layer0.withOpacity(.6),
+          color: context.theme.surfaceLayers.layer0.withValues(alpha: .6),
         ),
       ),
     );

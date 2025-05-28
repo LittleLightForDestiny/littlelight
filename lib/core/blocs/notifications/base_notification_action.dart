@@ -4,10 +4,24 @@ abstract class BaseNotification extends ChangeNotifier {
   String get id;
   bool _shouldDismiss = false;
   bool get shouldDismiss => _shouldDismiss;
+
+  bool _disposed = false;
   void dismiss() {
     _shouldDismiss = true;
     notifyListeners();
     dispose();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
+  }
+
+  @override
+  void notifyListeners() {
+    if (_disposed) return;
+    super.notifyListeners();
   }
 }
 

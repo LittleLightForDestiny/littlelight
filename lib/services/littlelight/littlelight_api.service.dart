@@ -91,11 +91,7 @@ class LittleLightApiService with AuthConsumer, StorageConsumer, AppConfigConsume
       throw NotAuthorizedException(_credentialsMissingException);
     }
 
-    body = {
-      ...body,
-      'membership_id': membershipID,
-      'uuid': uuid,
-    };
+    body = {...body, 'membership_id': membershipID, 'uuid': uuid};
     if (secret != null) {
       body['secret'] = secret;
     }

@@ -45,10 +45,10 @@ class CollectibleItemWidget extends StatelessWidget {
             decoration: BoxDecoration(
                 border: Border.all(color: context.theme.surfaceLayers.layer3, width: 1),
                 gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
-                  context.theme.onSurfaceLayers.withOpacity(.05),
-                  context.theme.onSurfaceLayers.withOpacity(.1),
-                  context.theme.onSurfaceLayers.withOpacity(.03),
-                  context.theme.onSurfaceLayers.withOpacity(.1)
+                  context.theme.onSurfaceLayers.withValues(alpha: .05),
+                  context.theme.onSurfaceLayers.withValues(alpha: .1),
+                  context.theme.onSurfaceLayers.withValues(alpha: .03),
+                  context.theme.onSurfaceLayers.withValues(alpha: .1)
                 ])),
             child: Stack(children: [
               buildItem(context),
@@ -329,7 +329,7 @@ class CollectibleItemWidget extends StatelessWidget {
           width: 1,
         ),
         borderRadius: BorderRadius.circular(_titleBarIconsSize),
-        color: context.theme.surfaceLayers.layer2.withOpacity(.8),
+        color: context.theme.surfaceLayers.layer2.withValues(alpha: .8),
       ),
       alignment: Alignment.center,
       child: Text(

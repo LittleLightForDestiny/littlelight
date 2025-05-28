@@ -37,12 +37,12 @@ class PresentationNodeItemWidget extends StatelessWidget {
     final color = completed ? context.completedColor : context.inProgressColor;
     return Container(
         decoration: BoxDecoration(
-            border: Border.all(color: color.withOpacity(.6), width: 1),
+            border: Border.all(color: color.withValues(alpha: .6), width: 1),
             gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
-              color.withOpacity(.05),
-              color.withOpacity(.1),
-              color.withOpacity(.03),
-              color.withOpacity(.1)
+              color.withValues(alpha: .05),
+              color.withValues(alpha: .1),
+              color.withValues(alpha: .03),
+              color.withValues(alpha: .1)
             ])),
         child: Stack(children: [
           Row(children: buildContent(context, definition)),
@@ -60,10 +60,10 @@ class PresentationNodeItemWidget extends StatelessWidget {
     final progressValue = progress?.getProgress(definition?.scope)?.progressValue ?? 0;
     return Container(
       height: 4,
-      color: color.withOpacity(.4),
+      color: color.withValues(alpha: .4),
       alignment: Alignment.centerLeft,
       child: FractionallySizedBox(
-          widthFactor: progressValue / completionValue, child: Container(color: color.withOpacity(.7))),
+          widthFactor: progressValue / completionValue, child: Container(color: color.withValues(alpha: .7))),
     );
   }
 

@@ -2,6 +2,8 @@ import 'package:bungie_api/destiny2.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
+import 'package:little_light/models/destiny_loadout.dart';
+import 'package:little_light/modules/loadouts/widgets/destiny_loadout_list_item.widget.dart';
 import 'package:little_light/modules/loadouts/widgets/loadout_small_list_item.widget.dart';
 import 'package:little_light/services/bungie_api/enums/destiny_item_category.enum.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
@@ -19,11 +21,7 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
   final EquipLoadoutQuickmenuBloc bloc;
   final EquipLoadoutQuickmenuBloc state;
 
-  const EquipLoadoutQuickmenuView({
-    Key? key,
-    required this.bloc,
-    required this.state,
-  }) : super(key: key);
+  const EquipLoadoutQuickmenuView({Key? key, required this.bloc, required this.state}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +34,10 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
           buildHeader(context),
           Flexible(
             child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [buildLoadoutList(context)],
-                )),
+              scrollDirection: Axis.vertical,
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [buildLoadoutList(context)]),
+            ),
           ),
           buildOptions(context),
         ],
@@ -62,18 +58,20 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
 
   Widget buildOptions(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: context.mediaQuery.padding.bottom, top: 8),
-        child: context.mediaQuery.tabletOrBigger
-            ? IntrinsicHeight(
-                child: Row(children: [
-                Expanded(child: buildFreeSlotsSlider(context)),
-                SizedBox(width: 8),
-                Expanded(child: buildItemsToInclude(context))
-              ]))
-            : Column(children: [
-                buildFreeSlotsSlider(context),
-                buildItemsToInclude(context),
-              ]));
+      padding: EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: context.mediaQuery.padding.bottom, top: 8),
+      child:
+          context.mediaQuery.tabletOrBigger
+              ? IntrinsicHeight(
+                child: Row(
+                  children: [
+                    Expanded(child: buildFreeSlotsSlider(context)),
+                    SizedBox(width: 8),
+                    Expanded(child: buildItemsToInclude(context)),
+                  ],
+                ),
+              )
+              : Column(children: [buildFreeSlotsSlider(context), buildItemsToInclude(context)]),
+    );
   }
 
   Widget buildFreeSlotsSlider(BuildContext context) {
@@ -89,17 +87,12 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               color: context.theme.surfaceLayers.layer1,
             ),
-            child: Row(children: [
-              Expanded(
-                  child: Text(
-                "Free Slots".translate(context),
-                style: context.textTheme.highlight,
-              )),
-              Text(
-                "${state.freeSlots}",
-                style: context.textTheme.highlight,
-              )
-            ]),
+            child: Row(
+              children: [
+                Expanded(child: Text("Free Slots".translate(context), style: context.textTheme.highlight)),
+                Text("${state.freeSlots}", style: context.textTheme.highlight),
+              ],
+            ),
           ),
           Slider(
             min: 0,
@@ -129,16 +122,17 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
         ManifestText<DestinyInventoryBucketDefinition>(InventoryBucket.subclass),
         LoadoutIncludedItemTypes.Subclass,
       ),
-      buildItemTypeSwitch(
-        context,
-        Text("Other".translate(context)),
-        LoadoutIncludedItemTypes.Other,
-      ),
+      buildItemTypeSwitch(context, Text("Other".translate(context)), LoadoutIncludedItemTypes.Other),
     ];
     return MenuBox(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Row(
+            children: [
+              buildItemTypeSwitch(context, Text(context.translate("Include mods")), LoadoutIncludedItemTypes.Mods),
+            ],
+          ),
           Row(children: [types[0], types[1]]),
           Row(children: [types[2], types[3]]),
         ],
@@ -152,19 +146,14 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
         child: Container(
           padding: EdgeInsets.all(8),
           margin: EdgeInsets.all(2),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: context.theme.surfaceLayers.layer1,
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8), color: context.theme.surfaceLayers.layer1),
           child: Row(
             children: [
               Expanded(child: label),
-              SizedBox(
-                width: 4,
-              ),
+              SizedBox(width: 4),
               LLSwitch.callback(context.readValue(IncludedItemTypes(key))?.value ?? false, (value) {
                 context.storeValue(IncludedItemTypes(key, value));
-              })
+              }),
             ],
             mainAxisSize: MainAxisSize.min,
           ),
@@ -176,15 +165,31 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
 
   Widget buildLoadoutList(BuildContext context) {
     final loadouts = state.loadouts;
+    final destinyLoadouts = state.destinyLoadouts ?? <DestinyLoadoutInfo>[];
     if (loadouts == null) return Container(height: 256, child: LoadingAnimWidget());
     return Column(
-        children: loadouts
-            .map((e) => LoadoutSmallListItemWidget(
-                  e,
-                  classFilter: state.character.character.classType,
-                  bucketFilter: state.selectedBuckets,
-                  onTap: () => bloc.loadoutSelected(e),
-                ))
-            .toList());
+      children: [
+        ...loadouts
+            .map(
+              (e) => LoadoutSmallListItemWidget(
+                e,
+                classFilter: state.character.character.classType,
+                bucketFilter: state.selectedBuckets,
+                onTap: () => bloc.equipLittleLightLoadout(e),
+              ),
+            )
+            .toList(),
+        ...destinyLoadouts.map(
+          (loadout) => Container(
+            padding: EdgeInsets.all(4),
+            child: DestinyLoadoutListItemWidget(
+              loadout,
+              onTap: () => bloc.equipDestinyLoadout(loadout),
+              onLongPress: () => bloc.editDestinyLoadout(loadout),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

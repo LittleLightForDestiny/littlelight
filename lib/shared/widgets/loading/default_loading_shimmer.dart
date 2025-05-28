@@ -11,7 +11,7 @@ class DefaultLoadingShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: enabled ? context.theme.onSurfaceLayers.withOpacity(.2) : context.theme.onSurfaceLayers,
+      baseColor: enabled ? context.theme.onSurfaceLayers.withValues(alpha: .2) : context.theme.onSurfaceLayers,
       highlightColor: context.theme.onSurfaceLayers,
       enabled: enabled,
       child: child ?? Container(color: context.theme.onSurfaceLayers),

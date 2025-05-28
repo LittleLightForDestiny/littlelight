@@ -8,7 +8,6 @@ import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/utils/extensions/inventory_item_data.dart';
 import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/shared/utils/helpers/deepsight_helpers.dart';
-import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
@@ -55,7 +54,12 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
         ));
   }
 
-  Widget buildSubclass(BuildContext context) => buildIconImage(context);
+  Widget buildSubclass(BuildContext context) => AspectRatio(
+        aspectRatio: 1,
+        child: Container(
+          child: buildIconImage(context),
+        ),
+      );
 
   Widget buildQuestStep(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
@@ -98,10 +102,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
 
   Widget buildIconImage(BuildContext context) {
     final overrideStyleItemHash = itemInfo.overrideStyleItemHash;
-    final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
-    if (overrideStyleItemHash != null) {
-      return ManifestImageWidget<DestinyInventoryItemDefinition>(overrideStyleItemHash);
-    }
+    final definition = context.definition<DestinyInventoryItemDefinition>(overrideStyleItemHash ?? itemInfo.itemHash);
     final iconImage = definition?.displayProperties?.icon;
     if (iconImage != null) {
       return QueuedNetworkImage.fromBungie(iconImage, fit: BoxFit.cover);
@@ -128,7 +129,7 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
         ),
         Shimmer.fromColors(
           enabled: enableEyeCandy,
-          baseColor: masterworkLayers.withOpacity(.2),
+          baseColor: masterworkLayers.withValues(alpha: .2),
           highlightColor: masterworkLayers.layer3,
           period: const Duration(seconds: 5),
           child: Image.asset(
@@ -193,8 +194,8 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
               padding: EdgeInsets.all(borderSize),
               child: Shimmer.fromColors(
                   enabled: enableEyeCandy,
-                  baseColor: context.theme.onSurfaceLayers.layer0.withOpacity(0),
-                  highlightColor: context.theme.onSurfaceLayers.layer0.withOpacity(1),
+                  baseColor: context.theme.onSurfaceLayers.layer0.withValues(alpha: 0),
+                  highlightColor: context.theme.onSurfaceLayers.layer0.withValues(alpha: 1),
                   child: Image.asset("assets/imgs/engram-placeholder.png")),
             ),
           ),

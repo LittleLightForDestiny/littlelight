@@ -178,8 +178,8 @@ class ItemCoverContentsWidget extends StatelessWidget {
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        tierColor.withOpacity(.6),
-                        tierColor.withOpacity(.3),
+                        tierColor.withValues(alpha: .6),
+                        tierColor.withValues(alpha: .3),
                         Colors.transparent,
                       ],
                       stops: const [0, .7, 1],
@@ -191,7 +191,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
                     decoration: BoxDecoration(
                         gradient: LinearGradient(colors: [
                       tierColor,
-                      tierColor.withOpacity(.3),
+                      tierColor.withValues(alpha: .3),
                       Colors.transparent,
                     ], stops: const [
                       0,
@@ -274,7 +274,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
                   softWrap: false,
                   overflow: TextOverflow.ellipsis,
                   style: context.textTheme.itemNameScreenshot.copyWith(
-                    color: textColor?.withOpacity(.9),
+                    color: textColor?.withValues(alpha: .9),
                     fontSize: lerpDouble(kToolbarHeight * .5, pixelSize * 74, expandRatio),
                   ),
                 )),
@@ -282,7 +282,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
               definition?.itemTypeDisplayName?.toUpperCase() ?? "",
               style: context.textTheme.itemTypeScreenshot.copyWith(
                 fontSize: lerpDouble(kToolbarHeight * .3, pixelSize * 34, expandRatio),
-                color: textColor?.withOpacity(.8),
+                color: textColor?.withValues(alpha: .8),
               ),
             ),
           ],

@@ -11,6 +11,7 @@ import 'package:little_light/models/item_info/inventory_item_info.dart';
 import 'package:little_light/modules/loadouts/pages/edit/edit_loadout.page_route.dart';
 import 'package:little_light/modules/loadouts/pages/equip_loadout_quickmenu/equip_loadout_quickmenu.bottomsheet.dart';
 import 'package:little_light/modules/loadouts/pages/equip_random_loadout/equip_random_loadout.bottomsheet.dart';
+import 'package:little_light/modules/loadouts/pages/save_destiny_loadout_quickmenu/save_destiny_loadout_quickmenu.bottomsheet.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
@@ -42,10 +43,25 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
     notifyListeners();
   }
 
+  bool _includeWeaponMods = false;
+
+  bool get includeWeaponMods => _includeWeaponMods;
+  set includeWeaponMods(bool value) {
+    _includeWeaponMods = value;
+    notifyListeners();
+  }
+
   bool _enableArmorsInLoadouts = true;
   bool get enableArmorsInLoadouts => _enableArmorsInLoadouts;
   set enableArmorsInLoadouts(bool value) {
     _enableArmorsInLoadouts = value;
+    notifyListeners();
+  }
+
+  bool _includeArmorMods = false;
+  bool get includeArmorMods => _includeArmorMods;
+  set includeArmorMods(bool value) {
+    _includeArmorMods = value;
     notifyListeners();
   }
 
@@ -317,11 +333,19 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
     for (final item in items) {
       final isEquipped = item.instanceInfo?.isEquipped ?? false;
       if (item.bucketHash == InventoryBucket.subclass && !isEquipped) continue;
-      await itemIndex.addItem(manifest, item, equipped: isEquipped);
+      final isArmor = InventoryBucket.armorBucketHashes.contains(item.bucketHash);
+      final isWeapon = loadoutWeaponHashes.contains(item.bucketHash);
+      final includeMods = (isArmor && includeArmorMods) || (isWeapon && includeWeaponMods);
+      await itemIndex.addItem(manifest, item, equipped: isEquipped, includeMods: includeMods);
     }
     final loadout = itemIndex.toLoadout();
     loadout.emblemHash = character.character.emblemHash;
-    Navigator.of(navigatorContext).push(EditLoadoutPageRoute.createFromPreset(loadout));
+    Navigator.of(navigatorContext).pushReplacement(EditLoadoutPageRoute.createFromPreset(loadout));
+  }
+
+  void saveDestinyLoadout(BuildContext navigatorContext, DestinyCharacterInfo character) async {
+    Navigator.of(navigatorContext).pop();
+    SaveDestinyLoadoutBottomsheet(character).show(navigatorContext);
   }
 
   void openLoadoutTransfer(BuildContext navigatorContext, DestinyCharacterInfo character, bool equip) async {
