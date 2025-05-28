@@ -19,7 +19,7 @@ dependencies:
   archive: ^4.0.7
   sqflite: ^2.3.3+1
   path_provider: ^2.1.3
-  font_awesome_flutter: ^10.7.0
+  font_awesome_flutter: ^10.8.0
   bungie_api: 13.18.0
   shimmer: ^3.0.0
   timeago: ^3.6.1

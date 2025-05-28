@@ -26,7 +26,7 @@ jobs:
           repository: LittleLightForDestiny/LittleLightTranslations
           token: ${{ secrets.BOT_PAT }}
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v4
         with:
           node-version: "14"
           cache: "npm"
