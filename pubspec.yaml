@@ -64,8 +64,8 @@ dev_dependencies:
 dependency_overrides: 
   in_app_review:
     git:
-      url: git@github.com:shoboske/in_app_review.git
-      ref: patch-2
+      url: https://github.com/LittleLightForDestiny/in_app_review
+      ref: v2.0.11
       path: in_app_review
 
 # For information on the generic Dart part of this file, see the
