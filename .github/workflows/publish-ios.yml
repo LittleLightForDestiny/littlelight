@@ -43,7 +43,7 @@ on:
 jobs:
   ios-app-store:
     name: Publish to iOS app store
-    runs-on: macos-latest
+    runs-on: macos-15
 
     env:
       APPSTORE_CONNECT_KEY_ID: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}

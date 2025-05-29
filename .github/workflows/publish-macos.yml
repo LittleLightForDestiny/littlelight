@@ -43,8 +43,8 @@ on:
 jobs:
   macos-app-store:
     name: Publish to MacOS app store
-    runs-on: macos-latest
-
+    runs-on: macos-15
+    
     env:
       APPSTORE_CONNECT_KEY_ID: ${{ secrets.APPSTORE_CONNECT_KEY_ID }}
       APPSTORE_CONNECT_ISSUER_ID: ${{ secrets.APPSTORE_CONNECT_ISSUER_ID }}
