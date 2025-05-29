@@ -1,3 +1,8 @@
+## [2.1.1] - 2025-05-29
+
+- Adds destiny loadouts
+- Minor fixes to equipping loadouts with mods
+
 ## [2.1.0] - 2025-05-28
 
 - Adds destiny loadouts

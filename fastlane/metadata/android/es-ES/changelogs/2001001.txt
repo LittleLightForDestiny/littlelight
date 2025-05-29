@@ -1,0 +1,2 @@
+- Adds destiny loadouts
+- Minor fixes to equipping loadouts with mods
