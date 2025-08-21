@@ -4,7 +4,6 @@ import 'package:little_light/core/blocs/profile/destiny_character_info.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enum.dart';
 import 'package:little_light/shared/modals/context_menu_overlay/character_context_menu.bloc.dart';
-import 'package:little_light/shared/widgets/containers/menu_box_title.dart';
 import 'package:little_light/shared/widgets/containers/menu_info_box.dart';
 import 'package:little_light/shared/widgets/inventory_item/low_density_inventory_item.dart';
 import 'package:provider/provider.dart';
@@ -65,28 +64,6 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildBonusPowerProgressBar(BuildContext context, int bonusPower, double bonusPowerProgress) {
-    return Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-      Text("+$bonusPower", style: context.textTheme.highlight),
-      Expanded(
-          child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 4),
-              child: Stack(alignment: Alignment.center, children: [
-                LinearProgressIndicator(
-                    color: context.theme.primaryLayers.layer1,
-                    minHeight: 4,
-                    value: bonusPowerProgress,
-                    backgroundColor: context.theme.onSurfaceLayers.layer3),
-                Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [
-                  Container(height: 4, width: 2, color: context.theme.surfaceLayers.layer0),
-                  Container(height: 4, width: 2, color: context.theme.surfaceLayers.layer0),
-                  Container(height: 4, width: 2, color: context.theme.surfaceLayers.layer0),
-                ]),
-              ]))),
-      Text("+${bonusPower + 1}", style: context.textTheme.highlight),
-    ]);
-  }
-
   @override
   Widget build(BuildContext context) {
     final classType = character.character.classType;
@@ -95,94 +72,63 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
     final charCurrentAverage = state.getCurrentAverage(classType);
     if (charCurrentAverage == null) return Container();
     final acctCurrentAverage = state.getAcctCurrentAverage() ?? 0;
-    final achievableAverage = state.getAcctAchievableAverage() ?? 0;
-    final achievableDiff = achievableAverage.floor() - acctCurrentAverage.floor();
-    final isInPinnacle = state.achievedPinnacleTier();
     final isMaxPower = state.achievedMaxPower();
-    final goForReward = state.goForReward();
-    final goForMessage =
-        isInPinnacle ? "Go for pinnacle reward?".translate(context) : "Go for powerful reward?".translate(context);
-    final achievableMessage = isInPinnacle
-        ? "Achievable without pinnacles:".translate(context)
-        : "Achievable without powerfuls:".translate(context);
-    final bonusPower = character.artifactPower ?? 0;
-    final bonusPowerProgress = state.getBonusPowerProgress();
-    final items = state.getMaxPowerItems(classType);
+    final charMaxPowerItems = state.getMaxPowerItems(classType);
     final acctMaxPowerItems = state.getAcctMaxPowerItems();
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      MenuInfoBox(
-        child: Column(
-          children: [
-            Row(children: [
-              Expanded(child: Text("Character base power:".translate(context))),
-              Text("${charCurrentAverage.toStringAsFixed(2)}",
-                  style: context.textTheme.subtitle.copyWith(color: context.theme.achievementLayers)),
-            ]),
-            SizedBox(height: 5),
-            _buildPartialLevelProgressBar(context, items?.length ?? 8, charCurrentAverage, isMaxPower)
-          ],
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        MenuInfoBox(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(child: Text("Equippable max power:".translate(context))),
+                  Text(
+                    "${charCurrentAverage.toStringAsFixed(2)}",
+                    style: context.textTheme.subtitle.copyWith(color: context.theme.achievementLayers),
+                  ),
+                ],
+              ),
+              SizedBox(height: 5),
+              _buildPartialLevelProgressBar(context, charMaxPowerItems?.length ?? 8, charCurrentAverage, isMaxPower),
+            ],
+          ),
         ),
-      ),
-      buildItems(context, items, charCurrentAverage),
-      Container(height: 4),
-      if (items != null)
-        ElevatedButton(
-          style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-          child: Text("Select all".translate(context).toUpperCase()),
-          onPressed: () {
-            context.read<SelectionBloc>().selectItems(items.values.toList());
-            onClose();
-          },
+        buildItems(context, charMaxPowerItems, charCurrentAverage),
+        Container(height: 4),
+        if (charMaxPowerItems != null)
+          ElevatedButton(
+            style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+            child: Text("Select all".translate(context).toUpperCase()),
+            onPressed: () {
+              context.read<SelectionBloc>().selectItems(charMaxPowerItems.values.toList());
+              onClose();
+            },
+          ),
+        Container(height: 8),
+        MenuInfoBox(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(child: Text("Account max power:".translate(context))),
+                  Text(
+                    "${acctCurrentAverage.toStringAsFixed(2)}",
+                    textAlign: TextAlign.right,
+                    style: context.textTheme.subtitle.copyWith(color: context.theme.achievementLayers),
+                  ),
+                ],
+              ),
+              SizedBox(height: 5),
+              _buildPartialLevelProgressBar(context, charMaxPowerItems?.length ?? 8, acctCurrentAverage, isMaxPower),
+            ],
+          ),
         ),
-      Container(height: 8),
-      MenuInfoBox(
-        child: Column(
-          children: [
-            Row(children: [
-              Expanded(child: Text("Account base power:".translate(context))),
-              Text("${acctCurrentAverage.toStringAsFixed(2)}",
-                  textAlign: TextAlign.right,
-                  style: context.textTheme.subtitle.copyWith(color: context.theme.achievementLayers)),
-            ]),
-            SizedBox(height: 5),
-            _buildPartialLevelProgressBar(context, items?.length ?? 8, acctCurrentAverage, isMaxPower)
-          ],
-        ),
-      ),
-      buildItems(context, acctMaxPowerItems, acctCurrentAverage),
-      Container(height: 8),
-      MenuInfoBox(
-        child: Column(
-          children: [
-            Row(children: [
-              Expanded(child: Text("Artifact bonus power:".translate(context))),
-              Text("+${(bonusPower + bonusPowerProgress).toStringAsFixed(2)}",
-                  style: context.textTheme.subtitle.copyWith(color: context.theme.upgradeLayers.layer1)),
-            ]),
-            SizedBox(height: 5),
-            _buildBonusPowerProgressBar(context, bonusPower, bonusPowerProgress)
-          ],
-        ),
-      ),
-      MenuInfoBox(
-        child: Row(children: [
-          Expanded(child: Text(achievableMessage)),
-          Text("+$achievableDiff  ",
-              style: TextStyle(
-                  color:
-                      achievableDiff > 0 ? context.theme.successLayers.layer3 : context.theme.onSurfaceLayers.layer0)),
-          Text("${achievableAverage.toStringAsFixed(2)}", style: TextStyle(color: context.theme.achievementLayers)),
-        ]),
-      ),
-      MenuBoxTitle(
-        goForMessage,
-        trailing: Text(state.isMaxPower(charCurrentAverage)
-            ? "Max".translate(context).toUpperCase()
-            : goForReward
-                ? "Yes".translate(context).toUpperCase()
-                : "No".translate(context).toUpperCase()),
-      ),
-    ]);
+        buildItems(context, acctMaxPowerItems, acctCurrentAverage),
+        Container(height: 8),
+      ],
+    );
   }
 
   Widget buildItems(BuildContext context, Map<int, InventoryItemInfo>? items, double currentAverage) {
