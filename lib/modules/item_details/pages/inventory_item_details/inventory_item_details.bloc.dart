@@ -62,17 +62,17 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
   List<InventoryItemInfo>? _duplicates;
 
   InventoryItemDetailsBloc(BuildContext context, {InventoryItemInfo? item})
-      : _item = item,
-        _profileBloc = context.read<ProfileBloc>(),
-        _inventoryBloc = context.read<InventoryBloc>(),
-        _itemNotesBloc = context.read<ItemNotesBloc>(),
-        _socketControllerBloc = context.read<SocketControllerBloc>(),
-        _manifestBloc = context.read<ManifestService>(),
-        _littleLightDataBloc = context.read<LittleLightDataBloc>(),
-        _wishlists = getInjectedWishlistsService(),
-        _loadoutsBloc = context.read<LoadoutsBloc>(),
-        _userSettingsBloc = context.read<UserSettingsBloc>(),
-        super(context) {
+    : _item = item,
+      _profileBloc = context.read<ProfileBloc>(),
+      _inventoryBloc = context.read<InventoryBloc>(),
+      _itemNotesBloc = context.read<ItemNotesBloc>(),
+      _socketControllerBloc = context.read<SocketControllerBloc>(),
+      _manifestBloc = context.read<ManifestService>(),
+      _littleLightDataBloc = context.read<LittleLightDataBloc>(),
+      _wishlists = getInjectedWishlistsService(),
+      _loadoutsBloc = context.read<LoadoutsBloc>(),
+      _userSettingsBloc = context.read<UserSettingsBloc>(),
+      super(context) {
     _init();
   }
 
@@ -95,10 +95,12 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
   void _updateItem() async {
     final allItems = _profileBloc.allItems;
-    final item = allItems.firstWhereOrNull((item) =>
-        item.itemHash == this.itemHash && //
-        item.instanceId == this.instanceId &&
-        item.stackIndex == this.stackIndex);
+    final item = allItems.firstWhereOrNull(
+      (item) =>
+          item.itemHash == this.itemHash && //
+          item.instanceId == this.instanceId &&
+          item.stackIndex == this.stackIndex,
+    );
     if (item == null) return;
 
     this._item = item;
@@ -122,6 +124,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     _updateKillTracker();
     _updateCraftedProgress();
     _updateDuplicates();
+    _updateItemSetEquippedCount();
 
     notifyListeners();
   }
@@ -181,7 +184,7 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
         context,
         defs,
         _profileBloc.characters ?? [],
-      )
+      ),
     ]).sort(duplicates);
   }
 
@@ -339,4 +342,31 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     if (item == null) return;
     AddToLoadoutBottomsheet(item).show(context);
   }
+
+  void _updateItemSetEquippedCount() async {
+    final characterId = item?.characterId;
+    if (characterId == null) return;
+    final def = await _manifestBloc.getDefinition<DestinyInventoryItemDefinition>(itemHash);
+    final itemSetHash = def?.equippingBlock?.equipableItemSetHash;
+    if (itemSetHash == null) return;
+    final itemSetDef = await _manifestBloc.getDefinition<DestinyEquipableItemSetDefinition>(itemSetHash);
+    final setItems = itemSetDef?.setItems;
+    if (setItems == null) return;
+    final itemSetCount =
+        _profileBloc.allInstancedItems
+            .where((e) {
+              final isEquipped = e.isEquipped ?? false;
+              final isOnCharacter = e.characterId == characterId;
+              if (!isEquipped || !isOnCharacter) return false;
+              return setItems.contains(e.itemHash);
+            })
+            .length;
+    _itemSetCount = itemSetCount;
+  }
+
+  int? _itemSetCount;
+
+  @override
+  int? get itemSetCount => _itemSetCount;
+
 }

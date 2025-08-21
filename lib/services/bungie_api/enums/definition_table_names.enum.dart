@@ -56,6 +56,8 @@ class DefinitionTableNames {
     DestinyLoadoutColorDefinition: (json) => DestinyLoadoutColorDefinition.fromJson(json),
     DestinyLoadoutNameDefinition: (json) => DestinyLoadoutNameDefinition.fromJson(json),
     DestinyLoadoutConstantsDefinition: (json) => DestinyLoadoutConstantsDefinition.fromJson(json),
+    DestinyEquipableItemSetDefinition: (json) => DestinyEquipableItemSetDefinition.fromJson(json),
+    DestinyInventoryItemConstantsDefinition: (json) => DestinyInventoryItemConstantsDefinition.fromJson(json),
   };
 
   static Map<Type, String> fromClass = {
@@ -111,5 +113,7 @@ class DefinitionTableNames {
     DestinyLoadoutColorDefinition: "DestinyLoadoutColorDefinition",
     DestinyLoadoutNameDefinition: "DestinyLoadoutNameDefinition",
     DestinyLoadoutConstantsDefinition: "DestinyLoadoutConstantsDefinition",
+    DestinyEquipableItemSetDefinition: "DestinyEquipableItemSetDefinition",
+    DestinyInventoryItemConstantsDefinition: "DestinyInventoryItemConstantsDefinition",
   };
 }
