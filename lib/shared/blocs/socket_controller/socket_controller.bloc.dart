@@ -413,7 +413,7 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     int selectedMasterwork = 0;
     for (final s in stats) {
       equipped += s.equipped;
-      selected += s.equipped;
+      selected += s.selected;
       equippedMasterWork += s.equippedMasterwork;
       selectedMasterwork += s.selectedMasterwork;
     }
