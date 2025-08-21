@@ -11,6 +11,7 @@ import 'package:little_light/shared/utils/helpers/deepsight_helpers.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:tinycolor2/tinycolor2.dart';
 
 class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   final DestinyItemInfo itemInfo;
@@ -34,36 +35,42 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
       }
     }
     return AspectRatio(
-        aspectRatio: 1,
-        child: Stack(
-          children: [
-            buildBorder(context),
-            Container(
+      aspectRatio: 1,
+      child: Stack(
+        children:
+            [
+              buildBorder(context),
+              Container(
                 padding: EdgeInsets.all(borderSize),
                 child: Stack(
                   fit: StackFit.expand,
-                  children: [
-                    buildBackground(context),
-                    buildIconImage(context),
-                    buildMasterworkOverlay(context),
-                    buildCraftedWeaponOverlay(context),
-                    buildSeasonOverlay(context),
-                  ].whereType<Widget>().toList(),
-                )),
-          ].whereType<Widget>().toList(),
-        ));
+                  children:
+                      [
+                        buildBackground(context),
+                        buildIconImage(context),
+                        buildMasterworkOverlay(context),
+                        buildSeasonOverlay(context),
+                        buildCraftedWeaponOverlay(context),
+                        buildGearTier(context),
+                      ].whereType<Widget>().toList(),
+                ),
+              ),
+            ].whereType<Widget>().toList(),
+      ),
+    );
   }
 
   Widget buildSubclass(BuildContext context) => AspectRatio(
-        aspectRatio: 1,
-        child: Container(
-          child: buildIconImage(context),
-        ),
-      );
+    aspectRatio: 1,
+    child: Container(
+      child: buildIconImage(context),
+    ),
+  );
 
   Widget buildQuestStep(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
-    final imgUrl = definition?.displayProperties?.iconSequences?.lastOrNull?.frames?.lastOrNull ??
+    final imgUrl =
+        definition?.displayProperties?.iconSequences?.lastOrNull?.frames?.lastOrNull ??
         definition?.displayProperties?.icon;
     return QueuedNetworkImage.fromBungie(imgUrl);
   }
@@ -144,9 +151,12 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
   Widget? buildSeasonOverlay(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
     final versionNumber = itemInfo.versionNumber;
+    final isFeaturedItem = definition?.isFeaturedItem ?? false;
     final watermarkIcons = definition?.quality?.displayVersionWatermarkIcons;
     String? badgeUrl;
-    if (watermarkIcons == null) //
+    if (isFeaturedItem && definition?.iconWatermarkFeatured != null) //
+      badgeUrl = definition?.iconWatermarkFeatured;
+    else if (watermarkIcons == null) //
       badgeUrl = definition?.iconWatermark ?? definition?.iconWatermarkShelved;
     else if (versionNumber != null) //
       badgeUrl = watermarkIcons[versionNumber];
@@ -156,6 +166,24 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
     return QueuedNetworkImage.fromBungie(
       badgeUrl,
       fit: BoxFit.fill,
+    );
+  }
+
+  Widget? buildGearTier(BuildContext context) {
+    final gearTier = itemInfo.gearTier ?? 0;
+    if (gearTier <= 1) return null;
+    final itemConstantsDef = context.definition<DestinyInventoryItemConstantsDefinition>(1);
+    final iconUrl = itemConstantsDef?.gearTierOverlayImagePaths?[gearTier - 1];
+    if (iconUrl == null) return null;
+    final iconColor = switch (gearTier) {
+      4 => context.theme.tierLayers.superior.lighten(45),
+      5 => context.theme.tierLayers.exotic.lighten(20),
+      _ => context.theme.onSurfaceLayers.layer0,
+    };
+    return QueuedNetworkImage.fromBungie(
+      iconUrl,
+      fit: BoxFit.fill,
+      color: iconColor,
     );
   }
 
@@ -193,10 +221,11 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
             child: Padding(
               padding: EdgeInsets.all(borderSize),
               child: Shimmer.fromColors(
-                  enabled: enableEyeCandy,
-                  baseColor: context.theme.onSurfaceLayers.layer0.withValues(alpha: 0),
-                  highlightColor: context.theme.onSurfaceLayers.layer0.withValues(alpha: 1),
-                  child: Image.asset("assets/imgs/engram-placeholder.png")),
+                enabled: enableEyeCandy,
+                baseColor: context.theme.onSurfaceLayers.layer0.withValues(alpha: 0),
+                highlightColor: context.theme.onSurfaceLayers.layer0.withValues(alpha: 1),
+                child: Image.asset("assets/imgs/engram-placeholder.png"),
+              ),
             ),
           ),
         ],

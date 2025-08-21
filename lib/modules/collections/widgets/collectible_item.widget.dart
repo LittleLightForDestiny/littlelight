@@ -241,8 +241,11 @@ class CollectibleItemWidget extends StatelessWidget {
   Widget buildSeasonOverlay(BuildContext context, DestinyInventoryItemDefinition? definition) {
     if (definition == null) return Container();
     final watermarkIcons = definition.quality?.displayVersionWatermarkIcons;
+    final isFeaturedItem = definition.isFeaturedItem ?? false;
     String? badgeUrl;
-    if (watermarkIcons == null) //
+    if (isFeaturedItem && definition.iconWatermarkFeatured != null) //
+      badgeUrl = definition.iconWatermarkFeatured;
+    else if (watermarkIcons == null) //
       badgeUrl = definition.iconWatermark ?? definition.iconWatermarkShelved;
     else if (watermarkIcons.length == 1) //
       badgeUrl = watermarkIcons[0];

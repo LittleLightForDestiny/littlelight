@@ -14,9 +14,9 @@ class LoadoutItemInfo extends DestinyItemInfo {
   LoadoutItemInfo({
     this.inventoryItem,
     Map<int, int>? itemPlugs,
-  })  : _itemHash = inventoryItem?.itemHash,
-        _instanceId = inventoryItem?.instanceId,
-        itemPlugs = itemPlugs ?? {};
+  }) : _itemHash = inventoryItem?.itemHash,
+       _instanceId = inventoryItem?.instanceId,
+       itemPlugs = itemPlugs ?? {};
 
   LoadoutItemInfo clone() {
     final result = LoadoutItemInfo();
@@ -79,4 +79,7 @@ class LoadoutItemInfo extends DestinyItemInfo {
 
   @override
   List<int>? get tooltipNotificationIndexes => inventoryItem?.tooltipNotificationIndexes;
+
+  @override
+  int? get gearTier => inventoryItem?.gearTier;
 }

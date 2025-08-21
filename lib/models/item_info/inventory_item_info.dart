@@ -18,13 +18,13 @@ class InventoryItemInfo extends DestinyItemInfo {
     int? stackIndex,
     DestinyItemObjectivesComponent? this.objectives,
   }) : super(
-          characterId: characterId,
-          plugObjectives: plugObjectives,
-          reusablePlugs: reusablePlugs,
-          sockets: sockets,
-          stats: stats,
-          stackIndex: stackIndex,
-        );
+         characterId: characterId,
+         plugObjectives: plugObjectives,
+         reusablePlugs: reusablePlugs,
+         sockets: sockets,
+         stats: stats,
+         stackIndex: stackIndex,
+       );
 
   @override
   int? get itemHash => _item.itemHash;
@@ -71,15 +71,15 @@ class InventoryItemInfo extends DestinyItemInfo {
   String? get expirationDate => _item.expirationDate;
 
   InventoryItemInfo clone() => InventoryItemInfo(
-        DestinyItemComponent.fromJson(_item.toJson()),
-        characterId: characterId,
-        instanceInfo: instanceInfo,
-        plugObjectives: plugObjectives,
-        reusablePlugs: reusablePlugs,
-        sockets: sockets,
-        stats: stats,
-        stackIndex: stackIndex,
-      );
+    DestinyItemComponent.fromJson(_item.toJson()),
+    characterId: characterId,
+    instanceInfo: instanceInfo,
+    plugObjectives: plugObjectives,
+    reusablePlugs: reusablePlugs,
+    sockets: sockets,
+    stats: stats,
+    stackIndex: stackIndex,
+  );
 
   @override
   int? get energyCapacity => instanceInfo?.energy?.energyCapacity;
@@ -95,4 +95,7 @@ class InventoryItemInfo extends DestinyItemInfo {
 
   @override
   List<int>? get tooltipNotificationIndexes => _item.tooltipNotificationIndexes;
+
+  @override
+  int? get gearTier => instanceInfo?.gearTier;
 }

@@ -40,4 +40,5 @@ abstract class DestinyItemInfo {
   int? get itemLevel;
   int? get quality;
   List<int>? get tooltipNotificationIndexes;
+  int? get gearTier;
 }

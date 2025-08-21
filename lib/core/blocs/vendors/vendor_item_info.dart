@@ -96,4 +96,7 @@ class VendorItemInfo extends DestinyItemInfo {
 
   @override
   List<int>? get tooltipNotificationIndexes => null;
+
+  @override
+  int? get gearTier => instanceInfo?.gearTier;
 }
