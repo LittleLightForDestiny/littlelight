@@ -5,9 +5,9 @@ import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab_menu.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
-const _milestonesQuestStepNodeHash = 4018888208;
+const _milestonesQuestStepNodeHash = 2970959307;
 const _pursuitsIconRecordHash = 435168078;
-const _ranksIconObjectiveHash = 1674713289;
+const _ranksIconObjectiveHash = 2808356364;
 
 const iconWidth = 92.0;
 
