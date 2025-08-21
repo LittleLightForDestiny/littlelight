@@ -31,8 +31,8 @@ class ModIconWidget extends StatelessWidget {
     this.onTap,
     Key? key,
   }) : super(
-          key: key ?? Key("mod_grid_item_$plugHash"),
-        );
+         key: key ?? Key("mod_grid_item_$plugHash"),
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -76,6 +76,8 @@ class ModIconWidget extends StatelessWidget {
   }
 
   Widget? buildEnergyCostOverlay(BuildContext context, DestinyInventoryItemDefinition? def) {
+    final plugCategoryIdentifier = def?.plug?.plugCategoryIdentifier;
+    if (plugCategoryIdentifier?.contains("armor.masterworks") ?? false) return null;
     final energyCost = def?.plug?.energyCost?.energyCost ?? 0;
     final energyCapacity = def?.plug?.energyCapacity?.capacityValue ?? 0;
     String text = "";
