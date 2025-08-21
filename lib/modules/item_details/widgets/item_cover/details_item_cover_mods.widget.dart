@@ -6,7 +6,6 @@ import 'package:little_light/modules/item_details/widgets/item_cover/details_ite
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
 import 'package:little_light/shared/widgets/sockets/mod_icon.widget.dart';
 import 'package:little_light/shared/widgets/scrollable_grid_view/paginated_plug_grid_view.dart';
-import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
 
 const _animationDuration = const Duration(milliseconds: 300);
@@ -23,21 +22,23 @@ class DetailsItemCoverModsWidget extends DetailsItemModsWidget {
     final state = context.watch<SocketControllerBloc>();
     final sockets = state.socketsForCategory(socketCategory);
     if (sockets == null) return Container();
+    final showEnergyBar = socketsHaveEnergyMasterwork(context, sockets);
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 20 * pixelSize),
+        margin: EdgeInsets.symmetric(vertical: 10 * pixelSize),
         child: DetailsItemCoverPersistentCollapsibleContainer(
-          title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
+          title: buildTitle(context, showEnergyBar),
           persistenceID: 'item cover mods $socketCategoryHash',
-          content: buildContent(context),
+          content: buildContent(context, showEnergyBar),
           pixelSize: pixelSize,
         ));
   }
 
   @override
-  Widget buildContent(BuildContext context) {
+  Widget buildContent(BuildContext context, bool showEnergyBar) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        if (showEnergyBar) buildBars(context),
         buildSockets(context),
         buildOptionsContainer(context),
       ],
