@@ -7,10 +7,7 @@ import 'package:little_light/services/bungie_api/enums/inventory_bucket_hash.enu
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/profile/destiny_settings.consumer.dart';
 import 'package:little_light/shared/utils/helpers/bucket_full_helper.dart';
-import 'package:little_light/widgets/common/definition_provider.widget.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
-
-const _wellRestedProgression = 2352765282;
 
 class VaultInfoWidget extends StatelessWidget with DestinySettingsConsumer {
   final List<DestinyItemComponent>? currencies;
@@ -95,8 +92,6 @@ class VaultInfoWidget extends StatelessWidget with DestinySettingsConsumer {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
-          buildWellRested(context),
-          SizedBox(width: 4),
           buildSeasonalRank(context),
           SizedBox(width: 4),
           buildSeasonalRankProgress(context),
@@ -113,57 +108,9 @@ class VaultInfoWidget extends StatelessWidget with DestinySettingsConsumer {
     int overlevel = overLevelProg?.level ?? 0;
     int progress = level + overlevel;
     return Text(
-      "Season Rank {rank}".translate(context, replace: {"rank": "$progress"}),
+      "Rewards Pass Rank {rank}".translate(context, replace: {"rank": "$progress"}),
       style: context.textTheme.caption,
     );
-  }
-
-  Widget? buildWellRested(BuildContext context) {
-    final progressionHash = destinySettings.seasonalRankProgressionHash;
-    final levelProg = progressions?["$progressionHash"];
-    final overLevelProg = progressions?["${destinySettings.seasonalPrestigeRankProgressionHash}"];
-    final currentProg = (levelProg?.level ?? 0) < (levelProg?.levelCap ?? 0) ? levelProg : overLevelProg;
-    final hash = currentProg?.progressionHash;
-    if (hash == null) return null;
-    final wellRestedLevels = 5;
-    return DefinitionProviderWidget<DestinyProgressionDefinition>(hash, (definition) {
-      if (definition == null) return Container();
-      final progLevel = currentProg?.level ?? 0;
-      final minLevel = 0;
-      final maxLevel = (definition.steps?.length ?? 100) - 1;
-      final currentLevel = progLevel.clamp(minLevel, maxLevel);
-      final weeklyProgress = currentProg?.weeklyProgress ?? 0;
-      int levelAtStartOfTheWeek = currentLevel;
-      int progressAtStartOfTheWeek = weeklyProgress;
-      while (progressAtStartOfTheWeek > 0) {
-        final step = definition.steps?[levelAtStartOfTheWeek];
-        final requiredXP = step?.progressTotal ?? 0;
-        if (requiredXP == 0) break;
-        progressAtStartOfTheWeek -= requiredXP;
-        if (progressAtStartOfTheWeek > 0) {
-          levelAtStartOfTheWeek = (levelAtStartOfTheWeek - 1).clamp(minLevel, maxLevel);
-        }
-      }
-      int levelsGainedWhileWellRested = currentLevel - levelAtStartOfTheWeek;
-      int remainingLevels = wellRestedLevels - levelsGainedWhileWellRested;
-
-      if (remainingLevels > 0) {
-        return Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Text(
-              "$remainingLevels",
-              style: context.textTheme.caption.copyWith(color: context.theme.upgradeLayers.layer2),
-            ),
-            SizedBox(
-                width: 16,
-                height: 16,
-                child: ManifestImageWidget<DestinySandboxPerkDefinition>(_wellRestedProgression)),
-          ],
-        );
-      }
-      return Container();
-    });
   }
 
   Widget buildSeasonalRankProgress(BuildContext context) {

@@ -70,6 +70,9 @@ class DestinyLoadoutItemInfo extends DestinyItemInfo {
   @override
   int? get versionNumber => _originalItem.versionNumber;
 
+  @override
+  int? get gearTier => _originalItem.gearTier;
+
   static Future<DestinyLoadoutItemInfo> fromInventoryItem(
     ManifestService manifest,
     InventoryItemInfo item,

@@ -22,6 +22,8 @@ import 'package:little_light/modules/item_details/widgets/details_item_rewards.w
 import 'package:little_light/modules/item_details/widgets/details_item_stats.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_supers.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_item_tags.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_item_set.widget.dart';
+import 'package:little_light/modules/item_details/widgets/details_item_raw_data.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_transfer_block.widget.dart';
 import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover.widget.dart';
 import 'package:little_light/modules/item_details/widgets/details_wishlist_builds.widget.dart';
@@ -59,23 +61,25 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final footer = buildFooter(context);
     return Scaffold(
       body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  buildBody(context, hasFooter: footer != null),
-                  Positioned(
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    child: buildNotificationWidget(context, hasFooter: footer != null),
-                  ),
-                ],
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children:
+            [
+              Expanded(
+                child: Stack(
+                  children: [
+                    buildBody(context, hasFooter: footer != null),
+                    Positioned(
+                      left: 0,
+                      bottom: 0,
+                      right: 0,
+                      child: buildNotificationWidget(context, hasFooter: footer != null),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            footer,
-          ].whereType<Widget>().toList()),
+              footer,
+            ].whereType<Widget>().toList(),
+      ),
     );
   }
 
@@ -89,69 +93,75 @@ abstract class BaseItemDetailsView extends StatelessWidget {
   Widget buildLandscapeBody(BuildContext context, {required bool hasFooter}) {
     return CustomScrollView(
       controller: scrollController,
-      slivers: [
-        DetailsItemLandscapeCoverWidget(
-          state,
-          socketState,
-        ),
-        buildDescription(context),
-        buildWishlistInfo(context),
-        buildLockState(context),
-        buildActions(context),
-        buildDuplicates(context),
-        buildCraftedLevel(context),
-        ...buildIntrinsicPerks(context),
-        ...buildArmorEnergy(context),
-        buildStats(context),
-        ...buildSupers(context),
-        ...buildAbilities(context),
-        ...buildReusablePerks(context),
-        ...buildMods(context),
-        buildWishlistBuilds(context),
-        buildWishlistNotes(context),
-        buildItemProgress(context),
-        buildQuestSteps(context),
-        buildRewards(context),
-        buildItemNotes(context),
-        buildItemTags(context),
-        buildItemLoadouts(context),
-        buildLore(context),
-        buildCollectibleInfo(context),
-        buildEmptySpace(context, hasFooter: hasFooter),
-      ].whereType<Widget>().toList(),
+      slivers:
+          [
+            DetailsItemLandscapeCoverWidget(
+              state,
+              socketState,
+            ),
+            buildDescription(context),
+            buildWishlistInfo(context),
+            buildLockState(context),
+            buildActions(context),
+            buildDuplicates(context),
+            buildCraftedLevel(context),
+            ...buildIntrinsicPerks(context),
+            ...buildArmorEnergy(context),
+            buildStats(context),
+            ...buildSupers(context),
+            ...buildAbilities(context),
+            ...buildReusablePerks(context),
+            ...buildMods(context),
+            buildItemSet(context),
+            buildWishlistBuilds(context),
+            buildWishlistNotes(context),
+            buildItemProgress(context),
+            buildQuestSteps(context),
+            buildRewards(context),
+            buildItemNotes(context),
+            buildItemTags(context),
+            buildItemLoadouts(context),
+            buildLore(context),
+            buildCollectibleInfo(context),
+            buildRawData(context),
+            buildEmptySpace(context, hasFooter: hasFooter),
+          ].whereType<Widget>().toList(),
     );
   }
 
   Widget buildPortraitBody(BuildContext context, {required bool hasFooter}) {
     return CustomScrollView(
       controller: scrollController,
-      slivers: [
-        DetailsItemCoverWidget(state),
-        buildDescription(context),
-        buildWishlistInfo(context),
-        buildLockState(context),
-        buildActions(context),
-        buildDuplicates(context),
-        buildCraftedLevel(context),
-        ...buildIntrinsicPerks(context),
-        ...buildArmorEnergy(context),
-        buildStats(context),
-        ...buildSupers(context),
-        ...buildAbilities(context),
-        ...buildReusablePerks(context),
-        ...buildMods(context),
-        buildWishlistBuilds(context),
-        buildWishlistNotes(context),
-        buildItemProgress(context),
-        buildQuestSteps(context),
-        buildRewards(context),
-        buildItemNotes(context),
-        buildItemTags(context),
-        buildItemLoadouts(context),
-        buildLore(context),
-        buildCollectibleInfo(context),
-        buildEmptySpace(context, hasFooter: hasFooter),
-      ].whereType<Widget>().toList(),
+      slivers:
+          [
+            DetailsItemCoverWidget(state),
+            buildDescription(context),
+            buildWishlistInfo(context),
+            buildLockState(context),
+            buildActions(context),
+            buildDuplicates(context),
+            buildCraftedLevel(context),
+            ...buildIntrinsicPerks(context),
+            ...buildArmorEnergy(context),
+            buildStats(context),
+            ...buildSupers(context),
+            ...buildAbilities(context),
+            ...buildReusablePerks(context),
+            ...buildMods(context),
+            buildItemSet(context),
+            buildWishlistBuilds(context),
+            buildWishlistNotes(context),
+            buildItemProgress(context),
+            buildQuestSteps(context),
+            buildRewards(context),
+            buildItemNotes(context),
+            buildItemTags(context),
+            buildItemLoadouts(context),
+            buildLore(context),
+            buildCollectibleInfo(context),
+            buildRawData(context),
+            buildEmptySpace(context, hasFooter: hasFooter),
+          ].whereType<Widget>().toList(),
     );
   }
 
@@ -167,7 +177,7 @@ abstract class BaseItemDetailsView extends StatelessWidget {
         ),
         useLoadingFooter
             ? SizedBox(height: bottomPadding, child: BusyIndicatorBottomGradientWidget())
-            : BusyIndicatorLineWidget()
+            : BusyIndicatorLineWidget(),
       ],
     );
   }
@@ -220,18 +230,20 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final def = context.definition<DestinyInventoryItemDefinition>(state.itemHash);
     final isInstance = state.item?.instanceId != null;
     final canViewInCollection = isInstance && (def?.equippable ?? false);
-    final canAddToLoadout = isInstance &&
+    final canAddToLoadout =
+        isInstance &&
         (def?.equippable ?? false) &&
         InventoryBucket.loadoutBucketHashes.contains(
           def?.inventory?.bucketTypeHash,
         );
     if (!canViewInCollection && !canAddToLoadout) return null;
     return sectionContainer(
-        context,
-        DetailsItemActionsWidget(
-          onAddToLoadout: canAddToLoadout ? bloc.addToLoadout : null,
-          onViewInCollections: canViewInCollection ? bloc.viewInCollections : null,
-        ));
+      context,
+      DetailsItemActionsWidget(
+        onAddToLoadout: canAddToLoadout ? bloc.addToLoadout : null,
+        onViewInCollections: canViewInCollection ? bloc.viewInCollections : null,
+      ),
+    );
   }
 
   List<Widget> buildIntrinsicPerks(BuildContext context) {
@@ -357,83 +369,97 @@ abstract class BaseItemDetailsView extends StatelessWidget {
 
   Widget? buildItemNotes(BuildContext context) {
     return sectionContainer(
-        context,
-        DetailsItemNotesWidget(
-          customName: state.customName,
-          notes: state.itemNotes,
-          onEditTap: state.editNotes,
-        ));
+      context,
+      DetailsItemNotesWidget(
+        customName: state.customName,
+        notes: state.itemNotes,
+        onEditTap: state.editNotes,
+      ),
+    );
   }
 
   Widget? buildItemTags(BuildContext context) {
     return sectionContainer(
-        context,
-        DetailsItemTagsWidget(
-          tags: state.tags,
-          onRemoveTag: state.removeTag,
-          onAddTap: state.editTags,
-        ));
+      context,
+      DetailsItemTagsWidget(
+        tags: state.tags,
+        onRemoveTag: state.removeTag,
+        onAddTap: state.editTags,
+      ),
+    );
   }
 
   Widget? buildItemLoadouts(BuildContext context) {
     final loadouts = state.loadouts;
     if (loadouts == null || loadouts.isEmpty) return null;
     return sectionContainer(
-        context,
-        DetailsItemLoadoutsWidget(
-          loadouts: loadouts,
-          onSelectLoadout: (l) => bloc.openLoadout(l),
-          onAddToLoadout: () => bloc.addToLoadout(),
-        ));
+      context,
+      DetailsItemLoadoutsWidget(
+        loadouts: loadouts,
+        onSelectLoadout: (l) => bloc.openLoadout(l),
+        onAddToLoadout: () => bloc.addToLoadout(),
+      ),
+    );
   }
 
   Widget? buildWishlistBuilds(BuildContext context) {
     final builds = state.wishlistBuilds;
     if (builds == null) return null;
     return sectionContainer(
-        context,
-        DetailsWishlistBuildsWidget(
-          builds,
-          allAvailablePlugHashes: socketState.allAvailablePlugHashes,
-          allSelectedPlugHashes: socketState.allSelectedPlugHashes,
-          allEquippedPlugHashes: socketState.allEquippedPlugHashes,
-          viewAllBuilds: bloc.showAllWishlistBuilds,
-          enableViewAllBuilds: true,
-          onToggleViewAllBuilds: (value) => bloc.showAllWishlistBuilds = value,
-        ));
+      context,
+      DetailsWishlistBuildsWidget(
+        builds,
+        allAvailablePlugHashes: socketState.allAvailablePlugHashes,
+        allSelectedPlugHashes: socketState.allSelectedPlugHashes,
+        allEquippedPlugHashes: socketState.allEquippedPlugHashes,
+        viewAllBuilds: bloc.showAllWishlistBuilds,
+        enableViewAllBuilds: true,
+        onToggleViewAllBuilds: (value) => bloc.showAllWishlistBuilds = value,
+      ),
+    );
   }
 
   Widget? buildWishlistNotes(BuildContext context) {
     final notes = state.wishlistNotes;
     if (notes == null) return null;
     return sectionContainer(
-        context,
-        DetailsWishlistNotesWidget(
-          notes,
-          viewAllNotes: bloc.showAllWishlistNotes,
-          enableViewAllNotes: true,
-          onToggleViewAllNotes: (value) => bloc.showAllWishlistNotes = value,
-        ));
+      context,
+      DetailsWishlistNotesWidget(
+        notes,
+        viewAllNotes: bloc.showAllWishlistNotes,
+        enableViewAllNotes: true,
+        onToggleViewAllNotes: (value) => bloc.showAllWishlistNotes = value,
+      ),
+    );
   }
 
   Widget? buildLore(BuildContext context) {
     final hash = state.itemHash;
     if (hash == null) return null;
     return sectionContainer(
-        context,
-        DetailsItemLoreWidget(
-          hash,
-        ));
+      context,
+      DetailsItemLoreWidget(
+        hash,
+      ),
+    );
   }
 
   Widget? buildCollectibleInfo(BuildContext context) {
     final hash = state.itemHash;
     if (hash == null) return null;
     return sectionContainer(
-        context,
-        DetailsItemCollectibleInfoWidget(
-          hash,
-        ));
+      context,
+      DetailsItemCollectibleInfoWidget(
+        hash,
+      ),
+    );
+  }
+
+  Widget? buildRawData(BuildContext context) {
+    return sectionContainer(
+      context,
+      DetailsItemRawDataWidget(),
+    );
   }
 
   Widget buildEmptySpace(BuildContext context, {required bool hasFooter}) {
@@ -451,34 +477,37 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     final selection = selectionState.selectedItems;
     if (selection.isNotEmpty) {
       return Container(
-          color: context.theme.surfaceLayers.layer1,
-          child: Column(
-            children: [
-              SelectedItemsWidget(),
-              SizedBox(
-                height: mqPadding.bottom,
-                child: BusyIndicatorBottomGradientWidget(),
-              ),
-            ],
-          ));
+        color: context.theme.surfaceLayers.layer1,
+        child: Column(
+          children: [
+            SelectedItemsWidget(),
+            SizedBox(
+              height: mqPadding.bottom,
+              child: BusyIndicatorBottomGradientWidget(),
+            ),
+          ],
+        ),
+      );
     }
     final item = state.item;
     if (item == null) return null;
     if ((state.transferDestinations?.isEmpty ?? true) && (state.equipDestinations?.isEmpty ?? true)) return null;
     return AnimatedBuilder(
-        animation: scrollController,
-        builder: (context, child) {
-          final isLandscape = context.mediaQuery.isLandscape || context.mediaQuery.tabletOrBigger;
-          final isStart = scrollController.position.pixels < 100;
-          return AnimatedAlign(
-              alignment: Alignment.topCenter,
-              duration: _animationDuration,
-              heightFactor: isLandscape && isStart ? 0 : 1,
-              child: child);
-        },
-        child: Container(
-          color: context.theme.surfaceLayers.layer1,
-          child: Column(children: [
+      animation: scrollController,
+      builder: (context, child) {
+        final isLandscape = context.mediaQuery.isLandscape || context.mediaQuery.tabletOrBigger;
+        final isStart = scrollController.position.pixels < 100;
+        return AnimatedAlign(
+          alignment: Alignment.topCenter,
+          duration: _animationDuration,
+          heightFactor: isLandscape && isStart ? 0 : 1,
+          child: child,
+        );
+      },
+      child: Container(
+        color: context.theme.surfaceLayers.layer1,
+        child: Column(
+          children: [
             DetailsTransferBlockWidget(
               item,
               transferDestinations: state.transferDestinations,
@@ -489,7 +518,23 @@ abstract class BaseItemDetailsView extends StatelessWidget {
               height: mqPadding.bottom,
               child: BusyIndicatorBottomGradientWidget(),
             ),
-          ]),
-        ));
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget? buildItemSet(BuildContext context) {
+    final item = state.item;
+    if (item == null) return null;
+    final definition = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
+    final equipableItemSetHash = definition?.equippingBlock?.equipableItemSetHash;
+    if (equipableItemSetHash == null) return null;
+    return sectionContainer(
+      context,
+      DetailsItemItemSetWidget(
+        equipableItemSetHash,
+      ),
+    );
   }
 }

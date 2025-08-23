@@ -31,9 +31,9 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
   bool get canTrack => true;
 
   ItemDetailsBloc(this.context)
-      : this.userSettingsBloc = context.read<UserSettingsBloc>(),
-        this.selectionBloc = context.read<SelectionBloc>(),
-        super();
+    : this.userSettingsBloc = context.read<UserSettingsBloc>(),
+      this.selectionBloc = context.read<SelectionBloc>(),
+      super();
 
   int? get itemHash;
   int? get styleHash;
@@ -100,18 +100,18 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
   }
 
   bool get showAllWishlistBuilds => userSettingsBloc.getSectionVisibleState(
-        _allWishlistsBuildsVisibilityKey,
-        defaultValue: false,
-      );
+    _allWishlistsBuildsVisibilityKey,
+    defaultValue: false,
+  );
   set showAllWishlistBuilds(bool value) {
     userSettingsBloc.setSectionVisibleState(_allWishlistsBuildsVisibilityKey, value);
     notifyListeners();
   }
 
   bool get showAllWishlistNotes => userSettingsBloc.getSectionVisibleState(
-        _allWishlistsNotesVisibilityKey,
-        defaultValue: false,
-      );
+    _allWishlistsNotesVisibilityKey,
+    defaultValue: false,
+  );
   set showAllWishlistNotes(bool value) {
     userSettingsBloc.setSectionVisibleState(_allWishlistsNotesVisibilityKey, value);
     notifyListeners();
@@ -128,4 +128,6 @@ abstract class ItemDetailsBloc extends ChangeNotifier {
   List<LoadoutItemIndex>? get loadouts;
   void openLoadout(LoadoutItemIndex loadout);
   void addToLoadout();
+
+  int? get itemSetCount => null;
 }

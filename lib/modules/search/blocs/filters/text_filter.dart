@@ -44,6 +44,8 @@ class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer
     final terms = searchString.split(RegExp("[,.|]")).map((s) => removeDiacritics(s.toLowerCase().trim()));
     final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(hash);
     if (def == null) return false;
+    if (hash == int.tryParse(searchString)) return true;
+    if (instanceId == searchString) return true;
     final name = removeDiacritics(def.displayProperties?.name?.toLowerCase().trim() ?? "");
     final itemType = removeDiacritics(def.itemTypeDisplayName?.toLowerCase().trim() ?? "");
 

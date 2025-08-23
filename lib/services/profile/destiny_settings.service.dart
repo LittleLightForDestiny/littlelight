@@ -19,7 +19,7 @@ class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestCo
   CoreSettingsConfiguration? _currentSettings;
   DestinySeasonPassDefinition? _currentSeasonPassDef;
 
-  static const int SeasonLevel = 3256821400;
+  static const int SeasonLevel = 3733477714;
   static const int SeasonOverlevel = 2140885848;
 
   init() async {
@@ -27,8 +27,8 @@ class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestCo
     var seasonHash = settings?.destiny2CoreSettings?.currentSeasonHash;
     var seasonDef = await manifest.getDefinition<DestinySeasonDefinition>(seasonHash);
     final endDateStr = seasonDef?.endDate;
-    var seasonEnd = endDateStr != null ? DateTime.parse(endDateStr) : DateTime.fromMillisecondsSinceEpoch(0);
-    var now = DateTime.now();
+    final seasonEnd = endDateStr != null ? DateTime.parse(endDateStr) : DateTime.fromMillisecondsSinceEpoch(0);
+    final now = DateTime.now();
     if (now.isAfter(seasonEnd)) {
       logger.info("loaded settings from web");
       settings = await bungieAPI.getCommonSettings();
@@ -36,8 +36,21 @@ class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestCo
       seasonDef = await manifest.getDefinition<DestinySeasonDefinition>(seasonHash);
       await globalStorage.setBungieCommonSettings(settings);
     }
+    var seasonPassHash = seasonDef?.seasonPassHash;
+    if (seasonPassHash == null) {
+      seasonPassHash = seasonDef?.seasonPassList?.where((e) {
+        final seasonPassStartDate = e.seasonPassStartDate;
+        final seasonPassEndDate = e.seasonPassEndDate;
+        if (seasonPassStartDate == null || seasonPassEndDate == null) return false;
+        final seasonPassStart = DateTime.parse(seasonPassStartDate);
+        final seasonPassEnd = DateTime.parse(seasonPassEndDate);
+        return now.isAfter(seasonPassStart) && now.isBefore(seasonPassEnd);
+      })
+      .map((e) => e.seasonPassHash)
+      .firstOrNull;
+    }
     _currentSettings = settings;
-    _currentSeasonPassDef = await manifest.getDefinition<DestinySeasonPassDefinition>(seasonDef?.seasonPassHash);
+    _currentSeasonPassDef = await manifest.getDefinition<DestinySeasonPassDefinition>(seasonPassHash);
   }
 
   int? get seasonalRankProgressionHash {

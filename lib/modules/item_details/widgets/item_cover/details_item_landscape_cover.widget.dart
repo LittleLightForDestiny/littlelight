@@ -11,6 +11,7 @@ import 'package:little_light/modules/item_details/widgets/item_cover/details_ite
 import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_stats.widget.dart';
 import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_supers.widget.dart';
 import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_transfer_block.widget.dart';
+import 'package:little_light/modules/item_details/widgets/item_cover/details_item_cover_item_set.widget.dart';
 import 'package:little_light/services/bungie_api/bungie_api.service.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/shared/blocs/socket_controller/socket_controller.bloc.dart';
@@ -383,6 +384,7 @@ class ItemCoverContentsWidget extends StatelessWidget {
                 ),
               ),
               ...categories.map((c) => buildSocketCategory(context, expandRatio, pixelSize, c)),
+              buildItemSet(context, pixelSize),
             ],
           ),
         ));
@@ -538,5 +540,14 @@ class ItemCoverContentsWidget extends StatelessWidget {
         pixelSize: pixelSize,
       ),
     );
+  }
+
+  Widget buildItemSet(BuildContext context, double pixelSize) {
+    final item = state.item;
+    if (item == null) return Container();
+    final definition = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
+    final equipableItemSetHash = definition?.equippingBlock?.equipableItemSetHash;
+    if (equipableItemSetHash == null) return Container();
+    return DetailsItemCoverItemSetWidget(equipableItemSetHash, pixelSize: pixelSize);
   }
 }

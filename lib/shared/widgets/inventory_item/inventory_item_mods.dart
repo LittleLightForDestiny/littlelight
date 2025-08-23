@@ -7,6 +7,8 @@ import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/widgets/common/manifest_image.widget.dart';
 
+final _plugCategoryFilter = RegExp(r'(armor\.masterworks|transfusers\.level)');
+
 class InventoryItemMods extends StatelessWidget with WishlistsConsumer {
   final DestinyItemInfo itemInfo;
   final int categoryHash;
@@ -22,7 +24,9 @@ class InventoryItemMods extends StatelessWidget with WishlistsConsumer {
   Widget build(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
     final sockets = itemInfo.sockets;
-    final socketCategory = definition?.sockets?.socketCategories //
+    final socketCategory = definition
+        ?.sockets
+        ?.socketCategories //
         ?.firstWhereOrNull((c) => c.socketCategoryHash == categoryHash);
     final plugs = socketCategory?.socketIndexes?.map((e) => sockets?[e]).whereType<DestinyItemSocketState>();
     if (plugs == null || plugs.isEmpty) return Container();
@@ -30,17 +34,21 @@ class InventoryItemMods extends StatelessWidget with WishlistsConsumer {
       height: plugSize,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children: plugs //
-            .where((p) => (p.isVisible ?? false) && (p.isEnabled ?? false))
-            .map((p) => buildPlug(context, p.plugHash))
-            .whereType<Widget>()
-            .toList(),
+        children:
+            plugs //
+                .where((p) => (p.isVisible ?? false) && (p.isEnabled ?? false))
+                .map((p) => buildPlug(context, p.plugHash))
+                .whereType<Widget>()
+                .toList(),
       ),
     );
   }
 
   Widget? buildPlug(BuildContext context, int? plugHash) {
     if (plugHash == null) return null;
+    final def = context.definition<DestinyInventoryItemDefinition>(plugHash);
+    final plugCategoryIdentifier = def?.plug?.plugCategoryIdentifier ?? "";
+    if (_plugCategoryFilter.hasMatch(plugCategoryIdentifier)) return null;
     return Container(
       margin: plugMargin,
       decoration: BoxDecoration(

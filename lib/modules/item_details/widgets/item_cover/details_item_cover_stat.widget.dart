@@ -106,7 +106,7 @@ class DetailsItemCoverStatWidget extends StatelessWidget {
             children: <Widget>[
               AnimatedContainer(
                 duration: _barAnimationDuration,
-                width: isNegative ? 0 : (baseBarSize / maxBarSize) * (width),
+                width: isNegative ? 0 : (baseBarSize.clamp(0, maxBarSize) / maxBarSize) * (width),
                 color: getBaseColor(context),
               ),
               AnimatedContainer(
@@ -175,7 +175,7 @@ class DetailsCoverTotalItemStatWidget extends DetailsItemCoverStatWidget {
       : super(modValues: modValues, pixelSize: pixelSize);
 
   @override
-  int get maxValue => 100;
+  int get maxValue => 103;
 
   Widget buildLabel(BuildContext context) {
     return Container(

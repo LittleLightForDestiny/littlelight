@@ -7,7 +7,6 @@ import 'package:little_light/shared/widgets/containers/menu_box.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/create_loadout.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/equip_loadout.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/grind_optimizer.widget.dart';
-import 'package:little_light/shared/widgets/menus/character_context_menu/max_power_options.widget.dart';
 import 'package:little_light/shared/widgets/menus/character_context_menu/postmaster_options.widget.dart';
 import 'package:little_light/shared/widgets/overlay/base_overlay_widget.dart';
 import 'package:little_light/shared/widgets/tabs/custom_tab/custom_tab.dart';
@@ -79,7 +78,6 @@ class CharacterContextMenu extends BaseOverlayWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   buildCreateLoadout(context),
-                  buildMaxPower(context),
                   buildGrindOptimizer(context),
                   buildPostmasterOptions(context),
                   IntrinsicHeight(
@@ -152,14 +150,6 @@ class CharacterContextMenu extends BaseOverlayWidget {
       character: character,
       onClose: () => Navigator.of(context).pop(),
     ));
-  }
-
-  Widget? buildMaxPower(BuildContext context) {
-    final character = state.character;
-    if (character == null) return null;
-    return MaxPowerOptionsWidget(
-      character: character,
-    );
   }
 
   Widget? buildEquipLoadout(BuildContext context) {

@@ -139,12 +139,13 @@ class StatComparison {
 }
 
 List<StatValues>? calculateStats(
-    Map<int, int?> equippedPlugHashes,
-    Map<int, int?> selectedPlugHashes,
-    DestinyInventoryItemDefinition? itemDefinition,
-    DestinyStatGroupDefinition? statGroupDefinition,
-    Map<int, DestinyInventoryItemDefinition>? plugDefinitions,
-    {List<int>? requiredAvailableStatHashes}) {
+  Map<int, int?> equippedPlugHashes,
+  Map<int, int?> selectedPlugHashes,
+  DestinyInventoryItemDefinition? itemDefinition,
+  DestinyStatGroupDefinition? statGroupDefinition,
+  Map<int, DestinyInventoryItemDefinition>? plugDefinitions, {
+  List<int>? requiredAvailableStatHashes,
+}) {
   Map<int, StatValues> map = {};
   final stats = getAvailableStats(itemDefinition, statGroupDefinition, requiredAvailableStatHashes);
   if (stats == null) return null;
@@ -158,7 +159,35 @@ List<StatValues>? calculateStats(
     map[statHash] = StatValues(statHash, rawEquipped: s.value ?? 0, rawSelected: s.value ?? 0, scale: scale);
   }
 
-  for (final socketIndex in equippedPlugHashes.keys) {
+  // Armor v3.0:
+  //  - Masterworked armor adds 5 to the lowest 3 base stats
+  //  - One of the tuning mods adds 1 to the lowest 3 base stats
+  //  - The only hint we get is: isConditionallyActive == true
+  //  - We save the list of lowest 3 stats when we get to the masterwork socket
+  //  - User selectable mods do not change The lowest 3 stats
+  // Order socket indexes by type so we get the base stats before applying masterwork
+  // and tuning stats.
+  final armorStatIndexes = <int>[];
+  final masterworkStatIndexes = <int>[];
+  final tuningStatIndexes = <int>[];
+  final otherStatIndexes = <int>[];
+  for (final index in equippedPlugHashes.keys) {
+    final def = plugDefinitions?[equippedPlugHashes[index]];
+    final plugCategory = def?.plug?.plugCategoryIdentifier ?? "";
+    final uiPlugLabel = def?.plug?.uiPlugLabel ?? "";
+    if (plugCategory == 'armor_stats')
+      armorStatIndexes.add(index);
+    else if (uiPlugLabel.contains('masterwork'))
+      masterworkStatIndexes.add(index);
+    else if (plugCategory.contains('.tuning.mods'))
+      tuningStatIndexes.add(index);
+    else
+      otherStatIndexes.add(index);
+  }
+  final socketIndexes = [...armorStatIndexes, ...masterworkStatIndexes, ...tuningStatIndexes, ...otherStatIndexes];
+
+  final lowest3Stats = <StatValues>[];
+  for (final socketIndex in socketIndexes) {
     final equippedPlugHash = equippedPlugHashes[socketIndex];
     final selectedPlugHash = selectedPlugHashes[socketIndex];
 
@@ -168,28 +197,39 @@ List<StatValues>? calculateStats(
     final equippedStats = equippedDef?.investmentStats ?? [];
     final selectedStats = selectedDef?.investmentStats ?? [];
     final equippedStatsMap = <int?, DestinyItemInvestmentStatDefinition>{
-      for (final stat in equippedStats) stat.statTypeHash: stat
+      for (final stat in equippedStats) stat.statTypeHash: stat,
     };
     final selectedStatsMap = <int?, DestinyItemInvestmentStatDefinition>{
-      for (final stat in selectedStats) stat.statTypeHash: stat
+      for (final stat in selectedStats) stat.statTypeHash: stat,
     };
+
+    final isMasterwork = masterworkStatIndexes.contains(socketIndex);
+    final isTuning = tuningStatIndexes.contains(socketIndex);
+    final isArmorItem = itemDefinition?.itemType == DestinyItemType.Armor;
+    // Armor v3.0: get 3 lowest stats for applying masterwork and tuning stats
+    if (isArmorItem && isMasterwork) {
+      lowest3Stats.addAll(map.values.sorted((a, b) => a.rawEquipped.compareTo(b.rawEquipped)).take(3));
+    }
 
     for (final statHash in map.keys) {
       final equippedStat = equippedStatsMap[statHash];
       final selectedStat = selectedStatsMap[statHash];
-
-      final equippedIsMasterwork = equippedDef?.plug?.uiPlugLabel?.contains('masterwork') ?? false;
-      final selectedIsMasterwork = selectedDef?.plug?.uiPlugLabel?.contains('masterwork') ?? false;
-      final equippedValue = equippedIsMasterwork ? 0 : equippedStat?.value;
-      final equippedMasterworkValue = !equippedIsMasterwork ? 0 : equippedStat?.value;
-      final selectedValue = selectedIsMasterwork ? 0 : selectedStat?.value;
-      final selectedMasterworkValue = !selectedIsMasterwork ? 0 : selectedStat?.value;
       final values = map[statHash] ?? StatValues(statHash);
-      values.rawEquipped += equippedValue ?? 0;
-      values.rawEquippedMasterwork += equippedMasterworkValue ?? 0;
-      values.rawSelected += (selectedPlugHash != null ? selectedValue : equippedValue) ?? 0;
-      values.rawSelectedMasterwork +=
-          (selectedPlugHash != null ? selectedMasterworkValue : equippedMasterworkValue) ?? 0;
+
+      int equippedValue = equippedStat?.value ?? 0;
+      int selectedValue = selectedStat?.value ?? 0;
+      if (isArmorItem && (isMasterwork || isTuning)) {
+        if ((equippedStat?.isConditionallyActive ?? false) && !lowest3Stats.contains(values)) equippedValue = 0;
+        if ((selectedStat?.isConditionallyActive ?? false) && !lowest3Stats.contains(values)) selectedValue = 0;
+      }
+      if (selectedPlugHash == null) selectedValue = equippedValue;
+      if (isMasterwork) {
+        values.rawEquippedMasterwork += equippedValue;
+        values.rawSelectedMasterwork += selectedValue;
+      } else {
+        values.rawEquipped += equippedValue;
+        values.rawSelected += selectedValue;
+      }
     }
   }
   final ordered = map.values.toList();
@@ -216,10 +256,11 @@ List<DestinyItemInvestmentStatDefinition>? getAvailableStats(
   scaledStatHashes.addAll(requiredAvailableStatHashes ?? []);
   for (final statHash in scaledStatHashes) {
     if (stats.where((s) => s.statTypeHash == statHash).isEmpty) {
-      var newStat = DestinyItemInvestmentStatDefinition()
-        ..statTypeHash = statHash
-        ..value = 0
-        ..isConditionallyActive = false;
+      var newStat =
+          DestinyItemInvestmentStatDefinition()
+            ..statTypeHash = statHash
+            ..value = 0
+            ..isConditionallyActive = false;
       stats.add(newStat);
     }
   }
@@ -242,26 +283,33 @@ List<DestinyItemInvestmentStatDefinition>? getAvailableStats(
 }
 
 List<StatComparison> comparePlugStats(
-    Map<int, int?> basePlugHashes,
-    int socketIndex,
-    int? equippedPlugHash,
-    int? selectedPlugHash,
-    DestinyInventoryItemDefinition? itemDefinition,
-    DestinyStatGroupDefinition? statGroupDefinition,
-    Map<int, DestinyInventoryItemDefinition>? plugDefinitions,
-    {List<int>? requiredAvailableStatHashes}) {
-  final baseHashes = basePlugHashes.map((key, value) => MapEntry(
-        key,
-        key == socketIndex ? null : value,
-      ));
-  final equippedHashes = basePlugHashes.map((key, value) => MapEntry(
-        key,
-        key == socketIndex ? equippedPlugHash : value,
-      ));
-  final selectedHashes = basePlugHashes.map((key, value) => MapEntry(
-        key,
-        key == socketIndex ? selectedPlugHash : value,
-      ));
+  Map<int, int?> basePlugHashes,
+  int socketIndex,
+  int? equippedPlugHash,
+  int? selectedPlugHash,
+  DestinyInventoryItemDefinition? itemDefinition,
+  DestinyStatGroupDefinition? statGroupDefinition,
+  Map<int, DestinyInventoryItemDefinition>? plugDefinitions, {
+  List<int>? requiredAvailableStatHashes,
+}) {
+  final baseHashes = basePlugHashes.map(
+    (key, value) => MapEntry(
+      key,
+      key == socketIndex ? null : value,
+    ),
+  );
+  final equippedHashes = basePlugHashes.map(
+    (key, value) => MapEntry(
+      key,
+      key == socketIndex ? equippedPlugHash : value,
+    ),
+  );
+  final selectedHashes = basePlugHashes.map(
+    (key, value) => MapEntry(
+      key,
+      key == socketIndex ? selectedPlugHash : value,
+    ),
+  );
   final equippedValues = calculateStats(
     baseHashes,
     equippedHashes,
@@ -289,22 +337,27 @@ List<StatComparison> comparePlugStats(
   for (final statHash in statHashes) {
     final equippedStat = equippedValues?.firstWhereOrNull((element) => element.statHash == statHash);
     final selectedStat = selectedValues?.firstWhereOrNull((element) => element.statHash == statHash);
-    final equippedValue = equippedStat == null
-        ? 0
-        : (equippedStat.selected + equippedStat.selectedMasterwork) -
-            (equippedStat.equipped + equippedStat.equippedMasterwork);
-    final selectedValue = selectedStat == null
-        ? 0
-        : (selectedStat.selected + selectedStat.selectedMasterwork) -
-            (selectedStat.equipped + selectedStat.equippedMasterwork);
-    final rawEquipped = ((equippedStat?.rawSelected ?? 0) + (equippedStat?.rawSelectedMasterwork ?? 0)) -
+    final equippedValue =
+        equippedStat == null
+            ? 0
+            : (equippedStat.selected + equippedStat.selectedMasterwork) -
+                (equippedStat.equipped + equippedStat.equippedMasterwork);
+    final selectedValue =
+        selectedStat == null
+            ? 0
+            : (selectedStat.selected + selectedStat.selectedMasterwork) -
+                (selectedStat.equipped + selectedStat.equippedMasterwork);
+    final rawEquipped =
+        ((equippedStat?.rawSelected ?? 0) + (equippedStat?.rawSelectedMasterwork ?? 0)) -
         ((equippedStat?.rawEquipped ?? 0) + (equippedStat?.rawEquippedMasterwork ?? 0));
-    final rawSelected = ((selectedStat?.rawSelected ?? 0) + (selectedStat?.rawSelectedMasterwork ?? 0)) -
+    final rawSelected =
+        ((selectedStat?.rawSelected ?? 0) + (selectedStat?.rawSelectedMasterwork ?? 0)) -
         ((selectedStat?.rawEquipped ?? 0) + (selectedStat?.rawEquippedMasterwork ?? 0));
 
-    final diffType = rawSelected == rawEquipped
-        ? StatDifferenceType.Neutral
-        : rawSelected > rawEquipped
+    final diffType =
+        rawSelected == rawEquipped
+            ? StatDifferenceType.Neutral
+            : rawSelected > rawEquipped
             ? StatDifferenceType.Positive
             : StatDifferenceType.Negative;
 

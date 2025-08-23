@@ -291,14 +291,6 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
       (_acctAchievableAverage ?? 0) == (_gameData?.pinnacleCap ?? double.maxFinite);
   bool isMaxPower(double powerLevel) => powerLevel == (_gameData?.pinnacleCap ?? double.maxFinite);
 
-  bool goForReward() {
-    if (isMaxPower(_acctCurrentAverage ?? 0)) return false;
-    if (!achievedPowerfulTier()) return false;
-    final current = (_acctCurrentAverage ?? 0).floor();
-    final average = (_acctAchievableAverage ?? double.maxFinite).floor();
-    return current >= average;
-  }
-
   List<InventoryItemInfo> getPostmasterItems(String? characterId) {
     return _itemsOnPostmaster?[characterId] ?? [];
   }

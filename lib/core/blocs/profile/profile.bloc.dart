@@ -290,16 +290,11 @@ class ProfileBloc extends ChangeNotifier
         final isEquipped = element.instanceInfo?.isEquipped ?? false;
         return element.characterId == c.characterId && isEquipped;
       });
-      final artifact = equippedItems.firstWhereOrNull((element) => element.bucketHash == InventoryBucket.artifact);
       final powerBuckets = InventoryBucket.weaponBucketHashes + InventoryBucket.armorBucketHashes;
       final armorItems = equippedItems.where((element) => powerBuckets.contains(element.bucketHash));
       final armorPowerSum = armorItems.fold<int>(0, (p, e) => p + (e.primaryStatValue ?? 0));
       final armorPower = (armorPowerSum / armorItems.length).floor();
-      final artifactPower = artifact?.primaryStatValue ?? 0;
-      final totalPower = armorPower + artifactPower;
-      c.armorPower = armorPower;
-      c.artifactPower = artifactPower;
-      c.totalPower = totalPower;
+      c.totalPower = armorPower;
     }
     _vaultItemCount = allItems.where((element) => element.bucketHash == InventoryBucket.general).length;
   }

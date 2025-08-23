@@ -16,13 +16,13 @@ class DefinitionItemInfo extends DestinyItemInfo {
     DestinyItemObjectivesComponent? objectives,
     int? stackIndex,
   }) : super(
-          characterId: null,
-          reusablePlugs: reusablePlugs,
-          sockets: sockets,
-          stats: stats,
-          stackIndex: stackIndex,
-          objectives: objectives,
-        );
+         characterId: null,
+         reusablePlugs: reusablePlugs,
+         sockets: sockets,
+         stats: stats,
+         stackIndex: stackIndex,
+         objectives: objectives,
+       );
 
   @override
   int? get itemHash => _definition.hash;
@@ -80,4 +80,7 @@ class DefinitionItemInfo extends DestinyItemInfo {
 
   @override
   List<int>? get tooltipNotificationIndexes => null;
+
+  @override
+  int? get gearTier => null;
 }
