@@ -112,7 +112,8 @@ class CollectiblesSearchBloc extends ChangeNotifier {
         filteredItems.add(collectibleHash);
         continue;
       }
-      if (int.tryParse(search) == collectible.itemHash) {
+      final intHash = int.tryParse(search);
+      if (intHash != null && intHash == collectible.itemHash) {
         filteredItems.add(collectibleHash);
         continue;
       }
