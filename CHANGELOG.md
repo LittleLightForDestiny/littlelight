@@ -1,3 +1,7 @@
+## [2.2.1] - 2025-08-23
+
+- updates for armor 3.0%0D%0A- added gear tier display%0D%0A- adds featured icons on featured items%0D%0A- adds ⌜stats for nerds⌟ on item info%0D%0A- updated grind optimizer%0D%0A- bug fixes
+
 ## [2.2.0] - 2025-08-23
 
 - updates for armor 3.0%0D%0A- added gear tier display%0D%0A- adds featured icons on featured items%0D%0A- adds ⌜stats for nerds⌟ on item info%0D%0A- updated grind optimizer%0D%0A- bug fixes
