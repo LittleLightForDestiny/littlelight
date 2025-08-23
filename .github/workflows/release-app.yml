@@ -47,8 +47,8 @@ jobs:
             CHANGELOG="${CHANGELOG//'%'/'%25'}"
             CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
             CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
-            echo "::set-output name=version::${{ github.event.release.tag_name }}"
-            echo "::set-output name=changelog::${CHANGELOG}"
+            echo "version=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
+            echo "changelog=${CHANGELOG}" >> $GITHUB_OUTPUT
           fi
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
@@ -56,8 +56,8 @@ jobs:
             CHANGELOG="${CHANGELOG//'%'/'%25'}"
             CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
             CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
-            echo "::set-output name=version::${{ github.event.inputs.version }}"
-            echo "::set-output name=changelog::${CHANGELOG}"
+            echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+            echo "changelog=${CHANGELOG}" >> $GITHUB_OUTPUT
           fi
 
       - uses: actions/setup-node@v4
@@ -82,7 +82,13 @@ jobs:
 
       - name: Check for modified files
         id: git-check
-        run: echo ::set-output name=modified::$(if git diff-index --quiet HEAD --; then echo "false"; else echo "true"; fi)
+        run: |
+          if git diff-index --quiet HEAD --;
+          then
+            echo "modified=false" >> $GITHUB_OUTPUT;
+          else
+            echo "modified=true" >> $GITHUB_OUTPUT;
+          fi
 
       - name: Push changes
         uses: stefanzweifel/git-auto-commit-action@v4
