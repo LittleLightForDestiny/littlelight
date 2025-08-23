@@ -64,17 +64,17 @@ jobs:
           then
             if [ "${{ github.event.release.prerelease }}" == true ]
             then
-              echo "::set-output name=track::beta"
+              echo "track=beta" >> $GITHUB_OUTPUT
             else
-              echo "::set-output name=track::production"
+              echo "track=production" >> $GITHUB_OUTPUT
             fi
-            echo "::set-output name=head_ref::main"
+            echo "head_ref=main" >> $GITHUB_OUTPUT
           fi
 
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
-            echo "::set-output name=track::${{ github.event.inputs.track }}"
-            echo "::set-output name=head_ref::${{ github.head_ref }}"
+            echo "track=${{ github.event.inputs.track }}" >> $GITHUB_OUTPUT
+            echo "head_ref=${{ github.head_ref }}" >> $GITHUB_OUTPUT
           fi
 
       - name: Checkout
