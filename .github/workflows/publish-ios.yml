@@ -137,6 +137,9 @@ jobs:
       - name: Download pub dependencies
         run: flutter pub get
 
+      - name: Workaround for wrong xcode version
+        run: sudo xcode-select --switch /Applications/Xcode_16.4.app
+
       - name: Pod repo update
         working-directory: ios
         run: pod install --repo-update
