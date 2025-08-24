@@ -1,0 +1,1 @@
+- updates for armor 3.0%0D%0A- added gear tier display%0D%0A- adds featured icons on featured items%0D%0A- adds ⌜stats for nerds⌟ on item info%0D%0A- updated grind optimizer%0D%0A- bug fixes
