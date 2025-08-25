@@ -44,18 +44,12 @@ jobs:
           if [ "${{ github.event_name }}" == "release" ] 
           then
             CHANGELOG="${{ github.event.release.body }}"
-            CHANGELOG="${CHANGELOG//'%'/'%25'}"
-            CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
-            CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
             echo "version=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
             echo "changelog=${CHANGELOG}" >> $GITHUB_OUTPUT
           fi
           if [ "${{ github.event_name }}" == "workflow_dispatch" ] 
           then
             CHANGELOG="${{ github.event.inputs.changelog }}"
-            CHANGELOG="${CHANGELOG//'%'/'%25'}"
-            CHANGELOG="${CHANGELOG//$'\n'/'%0A'}"
-            CHANGELOG="${CHANGELOG//$'\r'/'%0D'}"
             echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
             echo "changelog=${CHANGELOG}" >> $GITHUB_OUTPUT
           fi
