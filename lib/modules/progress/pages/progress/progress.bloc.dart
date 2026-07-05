@@ -28,6 +28,7 @@ typedef CharactersBounties = Map<String, List<DestinyItemInfo>>;
 class CharacterPursuits {
   Map<int?, List<DestinyItemInfo>> quests = {};
   List<DestinyItemInfo> bounties = [];
+  List<DestinyItemInfo> orders = [];
   List<int?>? questCategories;
 
   Future<void> sortQuestCategories(ManifestService manifest) async {
@@ -42,6 +43,10 @@ class _ProgressState {
 
   void addPursuit(DestinyItemInfo item, DestinyInventoryItemDefinition? def) {
     final isBounty = def?.itemType == DestinyItemType.Bounty;
+    final isOrder = item.bucketHash == InventoryBucket.orders;
+    if (isOrder) {
+      return addOrder(item);
+    }
     if (isBounty) {
       return addBounty(item);
     }
@@ -65,6 +70,13 @@ class _ProgressState {
     categoryQuests.add(item);
   }
 
+  void addOrder(DestinyItemInfo item) {
+    final characterId = item.characterId;
+    if (characterId == null) return;
+    final characterPursuits = pursuits[characterId] ??= CharacterPursuits();
+    characterPursuits.orders.add(item);
+  }
+
   Future<void> sortCategories(ManifestService manifest) async {
     await Future.wait(pursuits.values.map((e) => e.sortQuestCategories(manifest)));
   }
@@ -83,10 +95,10 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
   _ProgressState _equipmentState = _ProgressState();
 
   ProgressBloc(this._context)
-      : _profileBloc = _context.read<ProfileBloc>(),
-        _selectionBloc = _context.read<SelectionBloc>(),
-        _userSettingsBloc = _context.read<UserSettingsBloc>(),
-        _itemNotesBloc = _context.read<ItemNotesBloc>() {
+    : _profileBloc = _context.read<ProfileBloc>(),
+      _selectionBloc = _context.read<SelectionBloc>(),
+      _userSettingsBloc = _context.read<UserSettingsBloc>(),
+      _itemNotesBloc = _context.read<ItemNotesBloc>() {
     _init();
   }
   _init() {
@@ -127,7 +139,9 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
         ...sorters,
       ]).sort(_profileBloc.allItems);
     }
-    final pursuits = items.where((i) => i.bucketHash == InventoryBucket.pursuits);
+    final pursuits = items.where(
+      (i) => i.bucketHash == InventoryBucket.pursuits || i.bucketHash == InventoryBucket.orders,
+    );
 
     for (final item in pursuits) {
       final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
@@ -167,11 +181,7 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
     if (hash == null) return;
 
     if (_selectionBloc.hasSelection || _userSettingsBloc.tapToSelect) {
-      return _selectionBloc.toggleSelected(
-        hash,
-        instanceId: instanceId,
-        stackIndex: stackIndex,
-      );
+      return _selectionBloc.toggleSelected(hash, instanceId: instanceId, stackIndex: stackIndex);
     }
 
     Navigator.of(_context).push(InventoryItemDetailsPageRoute(item));
@@ -186,11 +196,7 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
       Navigator.of(_context).push(InventoryItemDetailsPageRoute(item));
       return;
     }
-    return _selectionBloc.toggleSelected(
-      hash,
-      instanceId: instanceId,
-      stackIndex: stackIndex,
-    );
+    return _selectionBloc.toggleSelected(hash, instanceId: instanceId, stackIndex: stackIndex);
   }
 
   void openSearch() {
@@ -205,10 +211,15 @@ class ProgressBloc extends ChangeNotifier with ManifestConsumer, LittleLightData
     return _equipmentState.pursuits[character.characterId]?.bounties;
   }
 
+  List<DestinyItemInfo>? ordersFor(DestinyCharacterInfo character) {
+    return _equipmentState.pursuits[character.characterId]?.orders;
+  }
+
   void openContextMenu(CustomTabController characterTabController) {
     final characters = this.characters;
     if (characters == null) return;
-    Navigator.of(_context)
-        .push(CharacterContextMenuModalRoute(characterTabController, characters: characters, onSearchTap: openSearch));
+    Navigator.of(
+      _context,
+    ).push(CharacterContextMenuModalRoute(characterTabController, characters: characters, onSearchTap: openSearch));
   }
 }
