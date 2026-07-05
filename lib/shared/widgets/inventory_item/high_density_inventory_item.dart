@@ -41,6 +41,8 @@ import 'utils/get_mods_socket_category.dart';
 import 'utils/get_perks_socket_category.dart';
 import 'utils/get_subclass_mods_socket_category.dart';
 import 'utils/get_subclass_super_plug_item.dart';
+import 'package:little_light/utils/intrinsic_breaker_utils.dart';
+import 'package:little_light/shared/utils/extensions/breaker_type_data.dart';
 
 const _titleBarHeight = 32.0;
 const _titleBarIconSize = 24.0;
@@ -830,9 +832,15 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatHighDensity;
     final ammoType = definition.equippingBlock?.ammoType;
+    final breakerType = IntrinsicBreakerUtils.getBreakerType(context, definition);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        if (breakerType != null)
+          Padding(
+            padding: const EdgeInsets.only(right: 6),
+            child: Icon(breakerType.icon, size: _primaryStatIconsSize),
+          ),
         Padding(
           padding: const EdgeInsets.only(right: 12),
           child: Icon(
