@@ -4,10 +4,12 @@ import 'package:little_light/modules/search/blocs/filter_options/crafted_filter_
 import 'package:little_light/modules/search/blocs/filter_options/deepsight_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filter_options/main_item_type_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filter_options/weapon_frame_filter_options.dart';
+import 'package:little_light/modules/search/blocs/filter_options/breaker_type_filter_options.dart';
 import 'package:little_light/modules/search/blocs/filters/crafted_filter.dart';
 import 'package:little_light/modules/search/blocs/filters/deepsight_filter.dart';
 import 'package:little_light/modules/search/blocs/filters/export.dart';
 import 'package:little_light/modules/search/blocs/filters/weapon_frame_filter.dart';
+import 'package:little_light/modules/search/blocs/filters/breaker_type_filter.dart';
 import 'filter_options/export.dart';
 import 'filters/main_item_type_filter.dart';
 
@@ -27,6 +29,7 @@ _defaultSearchFilters(BuildContext context) => <Type, BaseItemFilter>{
       DeepsightFilterOptions: DeepsightFilter(),
       CraftedFilterOptions: CraftedFilter(),
       WeaponFrameFilterOptions: WeaponFrameFilter(),
+      BreakerTypeFilterOptions: BreakerTypeFilter(),
 
       /// armor filter types
       EnergyLevelFilterOptions: EnergyLevelFilter(),
