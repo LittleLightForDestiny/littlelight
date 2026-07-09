@@ -18,45 +18,41 @@ class VendorsReorderingListItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: context.theme.surfaceLayers.layer0,
-      child: Stack(children: [
-        Positioned(
-          top: 0,
-          right: 0,
-          bottom: 0,
-          child: buildBackground(context),
-        ),
-        Container(
-          decoration: BoxDecoration(border: Border.all(color: context.theme.surfaceLayers.layer3, width: 1)),
-          child: buildHeader(context),
-        ),
-      ]),
+      child: Stack(
+        children: [
+          Positioned(top: 0, right: 0, bottom: 0, child: buildBackground(context)),
+          Container(
+            decoration: BoxDecoration(border: Border.all(color: context.theme.surfaceLayers.layer3, width: 1)),
+            child: buildHeader(context),
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildBackground(BuildContext context) {
     final definition = context.definition<DestinyVendorDefinition>(data.vendor.vendorHash);
     final url = definition?.locations?.first.backgroundImagePath ?? definition?.displayProperties?.largeIcon;
-    return Stack(fit: StackFit.passthrough, children: [
-      QueuedNetworkImage(
-        fit: BoxFit.fitHeight,
-        alignment: Alignment.topRight,
-        imageUrl: BungieApiService.url(url),
-      ),
-      Positioned.fill(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: <Color>[
-                context.theme.surfaceLayers.layer0,
-                context.theme.surfaceLayers.layer0.withValues(alpha: .2),
-              ],
-              begin: Alignment.centerLeft,
-              end: Alignment.center,
+    return Stack(
+      fit: StackFit.passthrough,
+      children: [
+        QueuedNetworkImage(fit: BoxFit.fitHeight, alignment: Alignment.topRight, imageUrl: BungieApiService.url(url)),
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: <Color>[
+                  context.theme.surfaceLayers.layer0,
+                  context.theme.surfaceLayers.layer0.withValues(alpha: .2),
+                ],
+                begin: Alignment.centerLeft,
+                end: Alignment.center,
+              ),
             ),
           ),
         ),
-      )
-    ]);
+      ],
+    );
   }
 
   Widget buildHeader(BuildContext context) {
@@ -82,9 +78,7 @@ class VendorsReorderingListItemWidget extends StatelessWidget {
               imageUrl: BungieApiService.url(definition?.displayProperties?.smallTransparentIcon),
             ),
           ),
-          Container(
-            width: 4,
-          ),
+          Container(width: 4),
           Expanded(
             child: Container(
               padding: EdgeInsets.all(4),
@@ -97,8 +91,10 @@ class VendorsReorderingListItemWidget extends StatelessWidget {
                     style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
                   Container(height: 2),
-                  ManifestText<DestinyFactionDefinition>(definition?.factionHash,
-                      style: const TextStyle(fontWeight: FontWeight.w300)),
+                  ManifestText<DestinyFactionDefinition>(
+                    definition?.factionHash,
+                    style: const TextStyle(fontWeight: FontWeight.w300),
+                  ),
                 ],
               ),
             ),

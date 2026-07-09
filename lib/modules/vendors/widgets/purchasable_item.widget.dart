@@ -20,10 +20,12 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
 
   @override
   Widget buildForeground(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    return Column(children: [
-      Container(height: 96.0, child: super.buildForeground(context, definition)),
-      Expanded(child: buildCost(context)),
-    ]);
+    return Column(
+      children: [
+        Container(height: 96.0, child: super.buildForeground(context, definition)),
+        Expanded(child: buildCost(context)),
+      ],
+    );
   }
 
   @override
@@ -51,7 +53,7 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
     if (isUnlocked) {
       return Container(
         margin: EdgeInsets.only(right: 4),
-        child: Icon(
+        child: FaIcon(
           FontAwesomeIcons.solidCircleCheck,
           color: definition?.inventory?.tierType?.getTextColor(context),
           size: 18,
@@ -68,10 +70,7 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
     if (itemLevel == null) return null;
     final level = itemLevel * 10 + quality;
     final textStyle = context.textTheme.itemPrimaryStatHighDensity;
-    return Text(
-      "$level",
-      style: textStyle,
-    );
+    return Text("$level", style: textStyle);
   }
 
   Widget buildCost(BuildContext context) {
@@ -79,9 +78,7 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
     // final inventory = profile.getProfileInventory();
     // var currencies = profile.getProfileCurrencies();
     return Container(
-      decoration: BoxDecoration(
-        color: context.theme.surfaceLayers,
-      ),
+      decoration: BoxDecoration(color: context.theme.surfaceLayers),
       margin: const EdgeInsets.all(2),
       padding: const EdgeInsets.all(4),
       child: costs != null && costs.isNotEmpty
@@ -89,12 +86,10 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                  Text(
-                    "Cost:".translate(context).toUpperCase(),
-                    style: context.textTheme.highlight,
-                  ),
-                  buildCostCurrencies(context),
-                ])
+                Text("Cost:".translate(context).toUpperCase(), style: context.textTheme.highlight),
+                buildCostCurrencies(context),
+              ],
+            )
           : null,
     );
   }
@@ -104,23 +99,25 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
     if (costs == null) return Container();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Row(children: [
-        for (final c in costs)
-          Container(
-            margin: EdgeInsets.only(left: 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(c.itemHash),
-                ),
-                Text("${c.quantity}"),
-              ],
+      child: Row(
+        children: [
+          for (final c in costs)
+            Container(
+              margin: EdgeInsets.only(left: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 20,
+                    height: 20,
+                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(c.itemHash),
+                  ),
+                  Text("${c.quantity}"),
+                ],
+              ),
             ),
-          )
-      ]),
+        ],
+      ),
     );
   }
 }

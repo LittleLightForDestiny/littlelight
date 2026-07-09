@@ -29,10 +29,12 @@ class SortersListWidget extends StatelessWidget {
               shrinkWrap: true,
               itemCount: active.length,
               physics: NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) => Container(
-                  key: Key("${active[index].type}_$index"),
-                  child: ActiveSorterWidget.fromParameter(active[index], index)),
-              onReorder: (int oldIndex, int newIndex) {
+              itemBuilder:
+                  (context, index) => Container(
+                    key: Key("${active[index].type}_$index"),
+                    child: ActiveSorterWidget.fromParameter(active[index], index),
+                  ),
+              onReorderItem: (int oldIndex, int newIndex) {
                 context.read<SearchSorterBloc>().reorderSorters(oldIndex, newIndex);
               },
             ),
@@ -40,7 +42,7 @@ class SortersListWidget extends StatelessWidget {
             margin: EdgeInsets.all(4),
             child: HeaderWidget(child: Text("Available Sorters".translate(context).toUpperCase())),
           ),
-          ...state.available.map((s) => AvailableSorterWidget.fromParameter(s)).toList()
+          ...state.available.map((s) => AvailableSorterWidget.fromParameter(s)).toList(),
         ],
       ),
     );

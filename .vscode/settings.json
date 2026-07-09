@@ -1,7 +1,8 @@
 {
-    "dart.lineLength": 120,
-    "editor.formatOnSave": true,
-    "files.associations": {
-        "iosfwd": "cpp"
-    },
+  "dart.lineLength": 120,
+  "editor.formatOnSave": true,
+  "files.associations": {
+    "iosfwd": "cpp"
+  },
+  "dart.flutterSdkPath": ".fvm/versions/3.44.5"
 }

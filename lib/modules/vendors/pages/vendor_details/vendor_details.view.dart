@@ -19,39 +19,29 @@ import 'package:little_light/widgets/common/loading_anim.widget.dart';
 class VendorDetailsView extends StatelessWidget {
   final VendorDetailsBloc bloc;
   final VendorDetailsBloc state;
-  const VendorDetailsView(
-    this.bloc,
-    this.state, {
-    Key? key,
-  }) : super(key: key);
+  const VendorDetailsView(this.bloc, this.state, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  NestedScrollView(
-                    headerSliverBuilder: (
-                      BuildContext context,
-                      bool innerBoxIsScrolled,
-                    ) =>
-                        [VendorDetailsCoverWidget(state)],
-                    body: buildBody(context),
-                  ),
-                  Positioned(
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    child: buildNotificationWidget(context),
-                  ),
-                ],
-              ),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                NestedScrollView(
+                  headerSliverBuilder: (BuildContext context, bool innerBoxIsScrolled) => [
+                    VendorDetailsCoverWidget(state),
+                  ],
+                  body: buildBody(context),
+                ),
+                Positioned(left: 0, bottom: 0, right: 0, child: buildNotificationWidget(context)),
+              ],
             ),
-          ].whereType<Widget>().toList()),
+          ),
+        ].whereType<Widget>().toList(),
+      ),
     );
   }
 
@@ -97,17 +87,11 @@ class VendorDetailsView extends StatelessWidget {
     final icon = visible ? FontAwesomeIcons.solidSquareMinus : FontAwesomeIcons.solidSquarePlus;
     return Stack(
       children: [
-        Icon(
-          icon,
-          size: 20,
-        ),
+        Icon(icon, size: 20),
         Positioned.fill(
           child: InkWell(
             onTap: () => bloc.changeCategoryVisibility(category, !visible),
-            child: Material(
-              color: Colors.transparent,
-              child: Container(),
-            ),
+            child: Material(color: Colors.transparent, child: Container()),
           ),
         ),
       ],
@@ -120,16 +104,16 @@ class VendorDetailsView extends StatelessWidget {
     if (itemIndexes == null || allItems == null) return null;
     final items = itemIndexes.map((i) => allItems["$i"]).whereType<VendorItemInfo>().toList();
 
-    return FixedHeightScrollSection(128,
-        itemCount: items.length,
-        itemBuilder: (context, index) => InteractiveItemWrapper(
-              PurchasableItemWidget(
-                items[index],
-              ),
-              item: items[index],
-              selectedBorder: 0,
-              itemMargin: 2,
-            ));
+    return FixedHeightScrollSection(
+      128,
+      itemCount: items.length,
+      itemBuilder: (context, index) => InteractiveItemWrapper(
+        PurchasableItemWidget(items[index]),
+        item: items[index],
+        selectedBorder: 0,
+        itemMargin: 2,
+      ),
+    );
   }
 
   Widget buildNotificationWidget(BuildContext context) {
@@ -137,14 +121,10 @@ class VendorDetailsView extends StatelessWidget {
     final useLoadingFooter = bottomPadding > 0;
     return Column(
       children: [
-        Container(
-          alignment: Alignment.bottomRight,
-          child: const NotificationsWidget(),
-          padding: EdgeInsets.all(8),
-        ),
+        Container(alignment: Alignment.bottomRight, child: const NotificationsWidget(), padding: EdgeInsets.all(8)),
         useLoadingFooter
             ? SizedBox(height: bottomPadding, child: BusyIndicatorBottomGradientWidget())
-            : BusyIndicatorLineWidget()
+            : BusyIndicatorLineWidget(),
       ],
     );
   }
