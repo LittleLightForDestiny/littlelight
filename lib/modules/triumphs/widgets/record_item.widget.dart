@@ -35,28 +35,35 @@ class RecordItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final foregroundColor = this.foregroundColor(context);
     return Container(
-        decoration: BoxDecoration(
-          border: Border.all(color: foregroundColor, width: 1),
-        ),
-        child: Stack(children: [
+      decoration: BoxDecoration(
+        border: Border.all(color: foregroundColor, width: 1),
+      ),
+      child: Stack(
+        children: [
           buildContent(context),
-          Positioned.fill(child: MaterialButton(child: Container(), onPressed: onTap))
-        ]));
+          Positioned.fill(
+            child: MaterialButton(child: Container(), onPressed: onTap),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
     return Column(
-        children: [
-      Expanded(
+      children: [
+        Expanded(
           child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          buildIcon(context),
-          Expanded(child: buildBasicInfo(context)),
-        ].whereType<Widget>().toList(),
-      )),
-      buildFooter(context)
-    ].whereType<Widget>().toList());
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildIcon(context),
+              Expanded(child: buildBasicInfo(context)),
+            ].whereType<Widget>().toList(),
+          ),
+        ),
+        buildFooter(context),
+      ].whereType<Widget>().toList(),
+    );
   }
 
   Widget buildBasicInfo(BuildContext context) {
@@ -78,23 +85,29 @@ class RecordItemWidget extends StatelessWidget {
     final definition = context.definition<DestinyRecordDefinition>(this.recordHash);
     final foregroundColor = this.foregroundColor(context);
     int? scoreValue = definition?.completionInfo?.scoreValue;
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      Expanded(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
           child: Container(
-              padding: const EdgeInsets.all(4),
-              child: Text(
-                definition?.displayProperties?.name ?? "",
-                softWrap: true,
-                style: context.textTheme.itemNameHighDensity.copyWith(color: foregroundColor),
-              ))),
-      if (progress?.tracking ?? false) buildTrackingIcon(context),
-      Container(
+            padding: const EdgeInsets.all(4),
+            child: Text(
+              definition?.displayProperties?.name ?? "",
+              softWrap: true,
+              style: context.textTheme.itemNameHighDensity.copyWith(color: foregroundColor),
+            ),
+          ),
+        ),
+        if (progress?.tracking ?? false) buildTrackingIcon(context),
+        Container(
           padding: const EdgeInsets.only(left: 4, right: 4),
           child: Text(
             "${scoreValue}",
             style: context.textTheme.body.copyWith(color: foregroundColor),
-          )),
-    ]);
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildDescription(BuildContext context) {
@@ -110,12 +123,14 @@ class RecordItemWidget extends StatelessWidget {
               overflow: TextOverflow.fade,
               style: context.textTheme.body.copyWith(color: foregroundColor),
             )
-          : ManifestText<DestinyRecordDefinition>(recordHash,
+          : ManifestText<DestinyRecordDefinition>(
+              recordHash,
               textExtractor: (def) => def.displayProperties?.description ?? "",
               overflow: TextOverflow.fade,
               style: context.textTheme.body.copyWith(
                 color: foregroundColor,
-              )),
+              ),
+            ),
     );
   }
 
@@ -146,8 +161,9 @@ class RecordItemWidget extends StatelessWidget {
 
   Widget? buildSingleObjective(BuildContext context) {
     final definition = context.definition<DestinyRecordDefinition>(this.recordHash);
-    final objectiveDefinition =
-        context.definition<DestinyObjectiveDefinition>(definition?.objectiveHashes?.firstOrNull);
+    final objectiveDefinition = context.definition<DestinyObjectiveDefinition>(
+      definition?.objectiveHashes?.firstOrNull,
+    );
     final hash = objectiveDefinition?.hash;
     if (hash == null) return Container();
     final objective = this.progress?.getProgress(definition?.scope)?.objectives?.firstOrNull;
@@ -165,24 +181,26 @@ class RecordItemWidget extends StatelessWidget {
     final hasIcon = (definition?.displayProperties?.hasIcon ?? false) && definition?.displayProperties?.icon != null;
     if (!hasIcon) return null;
     return Container(
-        margin: EdgeInsets.all(4),
-        width: _recordIconSize,
-        height: _recordIconSize,
-        child: ManifestImageWidget<DestinyRecordDefinition>(recordHash));
+      margin: EdgeInsets.all(4),
+      width: _recordIconSize,
+      height: _recordIconSize,
+      child: ManifestImageWidget<DestinyRecordDefinition>(recordHash),
+    );
   }
 
   Widget buildTrackingIcon(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(2),
-        decoration: BoxDecoration(
-          color: context.theme.successLayers.layer0.mix(context.theme.surfaceLayers, 40),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Icon(
-          FontAwesomeIcons.crosshairs,
-          size: 12,
-          color: context.theme.successLayers.layer3.mix(context.theme.onSurfaceLayers, 50),
-        ));
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: context.theme.successLayers.layer0.mix(context.theme.surfaceLayers, 40),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Icon(
+        FontAwesomeIcons.crosshairs.data,
+        size: 12,
+        color: context.theme.successLayers.layer3.mix(context.theme.onSurfaceLayers, 50),
+      ),
+    );
   }
 
   Widget? buildObjectives(BuildContext context) {
@@ -195,8 +213,9 @@ class RecordItemWidget extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: objectiveHashes
-            .mapIndexed((index, hash) => Expanded(
-                    child: Container(
+            .mapIndexed(
+              (index, hash) => Expanded(
+                child: Container(
                   margin: const EdgeInsets.all(2),
                   child: SmallObjectiveWidget(
                     hash,
@@ -204,7 +223,9 @@ class RecordItemWidget extends StatelessWidget {
                     color: foregroundColor(context),
                     objective: objectives?[index],
                   ),
-                )))
+                ),
+              ),
+            )
             .toList(),
       ),
     );

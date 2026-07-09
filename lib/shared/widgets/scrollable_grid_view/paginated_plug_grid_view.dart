@@ -27,36 +27,41 @@ class PaginatedScrollableGridView<T> extends ScrollableGridViewBase<T> {
     double? itemMainAxisExtent,
     this.initialFocus = 0,
   }) : super.withItemsPerRow(
-          records,
-          key: key,
-          itemBuilder: itemBuilder,
-          itemsPerRow: itemsPerRow,
-          gridSpacing: gridSpacing,
-          maxRows: maxRows,
-          itemMainAxisExtent: itemMainAxisExtent,
-        );
+         records,
+         key: key,
+         itemBuilder: itemBuilder,
+         itemsPerRow: itemsPerRow,
+         gridSpacing: gridSpacing,
+         maxRows: maxRows,
+         itemMainAxisExtent: itemMainAxisExtent,
+       );
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      var specs = getSpecs(constraints.maxWidth);
-      if (specs.pageCount <= 1) {
-        return buildScrollableGrid(context, specs);
-      }
-      specs = getSpecs(constraints.maxWidth - 32);
-      final initialIndex = (initialFocus / specs.itemsPerPage).floor();
-      return DefaultTabController(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        var specs = getSpecs(constraints.maxWidth);
+        if (specs.pageCount <= 1) {
+          return buildScrollableGrid(context, specs);
+        }
+        specs = getSpecs(constraints.maxWidth - 32);
+        final initialIndex = (initialFocus / specs.itemsPerPage).floor();
+        return DefaultTabController(
           length: specs.pageCount,
           initialIndex: initialIndex.clamp(0, specs.pageCount),
           child: SizedBox(
             height: specs.tabHeight,
-            child: Row(children: [
-              Builder(builder: (context) => pagingButton(context, -1)),
-              Expanded(child: Builder(builder: (context) => buildScrollableGrid(context, specs))),
-              Builder(builder: (context) => pagingButton(context, 1)),
-            ]),
-          ));
-    });
+            child: Row(
+              children: [
+                Builder(builder: (context) => pagingButton(context, -1)),
+                Expanded(child: Builder(builder: (context) => buildScrollableGrid(context, specs))),
+                Builder(builder: (context) => pagingButton(context, 1)),
+              ],
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 
@@ -65,28 +70,34 @@ Widget pagingButton(BuildContext context, [int direction = 1]) {
   final length = controller.length;
 
   return AnimatedBuilder(
-      animation: controller.animation!,
-      builder: (context, child) {
-        final currentIndex = controller.index;
-        final enabled = direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
-        return Container(
-          constraints: const BoxConstraints.expand(width: 16),
-          decoration: BoxDecoration(
-            border: Border.all(color: context.theme.onSurfaceLayers.layer1),
-          ),
-          alignment: Alignment.center,
-          child: !enabled
-              ? Container(color: Colors.grey.shade300.withValues(alpha: .2))
-              : Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                      onTap: () {
-                        controller.animateTo(currentIndex + direction);
-                      },
-                      child: Container(
-                          constraints: const BoxConstraints.expand(),
-                          child: Icon(direction > 0 ? FontAwesomeIcons.caretRight : FontAwesomeIcons.caretLeft,
-                              size: 16)))),
-        );
-      });
+    animation: controller.animation!,
+    builder: (context, child) {
+      final currentIndex = controller.index;
+      final enabled = direction < 0 ? currentIndex > 0 : currentIndex < length - 1;
+      return Container(
+        constraints: const BoxConstraints.expand(width: 16),
+        decoration: BoxDecoration(
+          border: Border.all(color: context.theme.onSurfaceLayers.layer1),
+        ),
+        alignment: Alignment.center,
+        child: !enabled
+            ? Container(color: Colors.grey.shade300.withValues(alpha: .2))
+            : Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: () {
+                    controller.animateTo(currentIndex + direction);
+                  },
+                  child: Container(
+                    constraints: const BoxConstraints.expand(),
+                    child: Icon(
+                      direction > 0 ? FontAwesomeIcons.caretRight.data : FontAwesomeIcons.caretLeft.data,
+                      size: 16,
+                    ),
+                  ),
+                ),
+              ),
+      );
+    },
+  );
 }

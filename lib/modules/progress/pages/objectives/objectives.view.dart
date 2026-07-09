@@ -111,7 +111,10 @@ class ObjectivesView extends StatelessWidget {
       children: [
         child,
         Positioned.fill(
-          child: Material(color: Colors.transparent, child: InkWell(onTap: () => bloc.openDetails(objective))),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(onTap: () => bloc.openDetails(objective)),
+          ),
         ),
       ],
     );
@@ -130,8 +133,8 @@ class ObjectivesView extends StatelessWidget {
   Widget buildReorderButton(BuildContext context) => buildIconButton(
     context,
     state.reordering
-        ? Icon(FontAwesomeIcons.check)
-        : Transform.rotate(angle: pi / 2, child: const Icon(FontAwesomeIcons.rightLeft)),
+        ? const FaIcon(FontAwesomeIcons.check)
+        : Transform.rotate(angle: pi / 2, child: const FaIcon(FontAwesomeIcons.rightLeft)),
     onTap: () => bloc.toggleReordering(),
   );
 
@@ -178,7 +181,10 @@ class ObjectivesView extends StatelessWidget {
     color: selected ? context.theme.secondarySurfaceLayers.layer3 : Colors.transparent,
     child: InkWell(
       enableFeedback: false,
-      child: AspectRatio(aspectRatio: 1, child: Container(padding: EdgeInsets.all(8), child: icon)),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Container(padding: EdgeInsets.all(8), child: icon),
+      ),
       onTap: onTap,
     ),
   );

@@ -246,7 +246,7 @@ class SettingsView extends StatelessWidget {
             tags.map((t) => TagPillWidget.fromTag(t, onRemove: () => _bloc.removePriorityTag(t))).toList() +
             [
               TagPillWidget(
-                icon: FontAwesomeIcons.circlePlus,
+                icon: FontAwesomeIcons.circlePlus.data,
                 tagName: "Add Tag".translate(context),
                 background: context.theme.primaryLayers.layer0,
                 foreground: context.theme.onSurfaceLayers.layer0,

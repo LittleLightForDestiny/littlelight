@@ -36,7 +36,7 @@ class ActiveSorterWidget extends StatelessWidget {
       ),
       child: Row(
         children: [
-          ReorderableDragStartListener(index: index, child: Icon(FontAwesomeIcons.bars)),
+          ReorderableDragStartListener(index: index, child: const FaIcon(FontAwesomeIcons.bars)),
           SizedBox(width: 8),
           Expanded(
             child: DefaultTextStyle(
@@ -68,7 +68,7 @@ class ActiveSorterWidget extends StatelessWidget {
           buildOptionButton(
             context,
             isAscending ? enabledColor : disabledColor,
-            FontAwesomeIcons.chevronUp,
+            FontAwesomeIcons.chevronUp.data,
             !isAscending
                 ? () => context.read<SearchSorterBloc>().updateDirection(parameter, SorterDirection.Ascending)
                 : null,
@@ -77,7 +77,7 @@ class ActiveSorterWidget extends StatelessWidget {
           buildOptionButton(
             context,
             !isAscending ? enabledColor : disabledColor,
-            FontAwesomeIcons.chevronDown,
+            FontAwesomeIcons.chevronDown.data,
             isAscending
                 ? () => context.read<SearchSorterBloc>().updateDirection(parameter, SorterDirection.Descending)
                 : null,
@@ -85,7 +85,7 @@ class ActiveSorterWidget extends StatelessWidget {
         buildOptionButton(
           context,
           context.theme.errorLayers.layer2,
-          FontAwesomeIcons.xmark,
+          FontAwesomeIcons.xmark.data,
           () => context.read<SearchSorterBloc>().removeSorter(parameter),
         ),
       ],

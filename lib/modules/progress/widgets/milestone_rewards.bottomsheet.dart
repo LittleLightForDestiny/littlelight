@@ -54,52 +54,59 @@ class MilestoneRewardsBottomSheet extends BaseListBottomSheet {
     final hasDescription = entryDescription != null && entryDescription.isNotEmpty;
     return Opacity(
       opacity: (itemEntry.entry.earned ?? false) ? 1 : .6,
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            buildRewardIcon(context, itemEntry),
-            if (entryName != null && entryName.isNotEmpty)
-              Expanded(
-                child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                  Text(entryName),
-                  Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              buildRewardIcon(context, itemEntry),
+              if (entryName != null && entryName.isNotEmpty)
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Container(
-                        padding: EdgeInsets.only(right: 4),
-                        child: ManifestText<DestinyInventoryItemDefinition>(
-                          itemHash,
-                          style: context.textTheme.body,
-                        ),
-                      ),
-                      if (redeemed)
-                        Flexible(
-                            child: Text(
-                          "(Redeemed)".translate(context),
-                          style: context.textTheme.body,
-                        )),
-                      if (earned && !redeemed)
-                        Flexible(
-                          child: Text(
-                            "(Available)".translate(context),
-                            style: context.textTheme.body,
+                      Text(entryName),
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(right: 4),
+                            child: ManifestText<DestinyInventoryItemDefinition>(
+                              itemHash,
+                              style: context.textTheme.body,
+                            ),
                           ),
-                        ),
+                          if (redeemed)
+                            Flexible(
+                              child: Text(
+                                "(Redeemed)".translate(context),
+                                style: context.textTheme.body,
+                              ),
+                            ),
+                          if (earned && !redeemed)
+                            Flexible(
+                              child: Text(
+                                "(Available)".translate(context),
+                                style: context.textTheme.body,
+                              ),
+                            ),
+                        ],
+                      ),
                     ],
-                  )
-                ]),
+                  ),
+                ),
+            ],
+          ),
+          if (hasDescription)
+            Container(
+              margin: EdgeInsets.all(8),
+              child: Text(
+                entryDescription.replaceBungieVariables(context),
+                style: context.textTheme.body,
               ),
-          ],
-        ),
-        if (hasDescription)
-          Container(
-            margin: EdgeInsets.all(8),
-            child: Text(
-              entryDescription.replaceBungieVariables(context),
-              style: context.textTheme.body,
             ),
-          )
-      ]),
+        ],
+      ),
     );
   }
 
@@ -113,26 +120,29 @@ class MilestoneRewardsBottomSheet extends BaseListBottomSheet {
       width: 24,
       height: 24,
       margin: EdgeInsets.only(right: 8),
-      child: Stack(clipBehavior: Clip.none, children: [
-        ManifestImageWidget<DestinyInventoryItemDefinition>(item.itemHash),
-        if (entry.redeemed ?? false)
-          Positioned(
-            top: -3,
-            right: -3,
-            child: Container(
-              width: 12,
-              height: 12,
-              decoration: BoxDecoration(
-                color: context.theme.upgradeLayers.layer0,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(
-                FontAwesomeIcons.check,
-                size: 8,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ManifestImageWidget<DestinyInventoryItemDefinition>(item.itemHash),
+          if (entry.redeemed ?? false)
+            Positioned(
+              top: -3,
+              right: -3,
+              child: Container(
+                width: 12,
+                height: 12,
+                decoration: BoxDecoration(
+                  color: context.theme.upgradeLayers.layer0,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: FaIcon(
+                  FontAwesomeIcons.check,
+                  size: 8,
+                ),
               ),
             ),
-          ),
-      ]),
+        ],
+      ),
     );
   }
 

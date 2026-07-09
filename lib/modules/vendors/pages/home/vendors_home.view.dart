@@ -94,8 +94,8 @@ class VendorsHomeView extends StatelessWidget {
     return IconButton(
       enableFeedback: false,
       icon: state.reordering
-          ? const Icon(FontAwesomeIcons.check)
-          : Transform.rotate(angle: pi / 2, child: const Icon(FontAwesomeIcons.rightLeft)),
+          ? const FaIcon(FontAwesomeIcons.check)
+          : Transform.rotate(angle: pi / 2, child: const FaIcon(FontAwesomeIcons.rightLeft)),
       onPressed: () => bloc.toggleReordering(),
     );
   }

@@ -67,7 +67,7 @@ class VendorsReorderingListItemWidget extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(8),
               color: context.theme.surfaceLayers.layer0,
-              child: Icon(FontAwesomeIcons.bars),
+              child: const FaIcon(FontAwesomeIcons.bars),
             ),
           ),
           Container(

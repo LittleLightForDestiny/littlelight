@@ -74,14 +74,14 @@ enum DefaultTagType {
   Infuse,
 }
 
-const Map<ItemTagIcon, IconData> tagIconData = {
-  ItemTagIcon.Heart: FontAwesomeIcons.solidHeart,
-  ItemTagIcon.Star: FontAwesomeIcons.solidStar,
+final Map<ItemTagIcon, IconData> tagIconData = {
+  ItemTagIcon.Heart: FontAwesomeIcons.solidHeart.data,
+  ItemTagIcon.Star: FontAwesomeIcons.solidStar.data,
   ItemTagIcon.Infuse: LittleLightIcons.infuse,
   ItemTagIcon.Resources: LittleLightIcons.resources,
   ItemTagIcon.Trash: Icons.delete,
-  ItemTagIcon.ThumbsUp: FontAwesomeIcons.solidThumbsUp,
-  ItemTagIcon.ThumbsDown: FontAwesomeIcons.solidThumbsDown,
+  ItemTagIcon.ThumbsUp: FontAwesomeIcons.solidThumbsUp.data,
+  ItemTagIcon.ThumbsDown: FontAwesomeIcons.solidThumbsDown.data,
   ItemTagIcon.Vanguard: LittleLightIcons.vanguard,
   ItemTagIcon.Vanguard2: LittleLightIcons.vanguard2,
   ItemTagIcon.Crucible: LittleLightIcons.crucible,
@@ -113,7 +113,7 @@ const Map<ItemTagIcon, IconData> tagIconData = {
   ItemTagIcon.BlockerSmall: LittleLightIcons.blocker_small,
   ItemTagIcon.BlockerMedium: LittleLightIcons.blocker_medium,
   ItemTagIcon.BlockerLarge: LittleLightIcons.blocker_large,
-  ItemTagIcon.BlockerGiant: LittleLightIcons.blocker_giant
+  ItemTagIcon.BlockerGiant: LittleLightIcons.blocker_giant,
 };
 
 @JsonSerializable()

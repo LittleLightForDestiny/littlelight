@@ -53,8 +53,8 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
     if (isUnlocked) {
       return Container(
         margin: EdgeInsets.only(right: 4),
-        child: FaIcon(
-          FontAwesomeIcons.solidCircleCheck,
+        child: Icon(
+          FontAwesomeIcons.solidCircleCheck.data,
           color: definition?.inventory?.tierType?.getTextColor(context),
           size: 18,
         ),
@@ -70,7 +70,10 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
     if (itemLevel == null) return null;
     final level = itemLevel * 10 + quality;
     final textStyle = context.textTheme.itemPrimaryStatHighDensity;
-    return Text("$level", style: textStyle);
+    return Text(
+      "$level",
+      style: textStyle,
+    );
   }
 
   Widget buildCost(BuildContext context) {
@@ -78,7 +81,9 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
     // final inventory = profile.getProfileInventory();
     // var currencies = profile.getProfileCurrencies();
     return Container(
-      decoration: BoxDecoration(color: context.theme.surfaceLayers),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers,
+      ),
       margin: const EdgeInsets.all(2),
       padding: const EdgeInsets.all(4),
       child: costs != null && costs.isNotEmpty
@@ -86,7 +91,10 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                Text("Cost:".translate(context).toUpperCase(), style: context.textTheme.highlight),
+                Text(
+                  "Cost:".translate(context).toUpperCase(),
+                  style: context.textTheme.highlight,
+                ),
                 buildCostCurrencies(context),
               ],
             )

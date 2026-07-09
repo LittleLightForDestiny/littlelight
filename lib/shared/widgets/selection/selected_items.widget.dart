@@ -25,27 +25,29 @@ class SelectedItemsWidget extends StatelessWidget {
     final items = selectionState(context).selectedItems;
     return Container(
       color: context.theme.surfaceLayers.layer1,
-      child: Column(children: [
-        Container(
-          height: 1,
-          color: context.theme.onSurfaceLayers.layer3,
-        ),
-        buildHeader(context, items),
-        buildSelectedItems(context, items),
-        buildOptions(context),
-        buildTransferDestinations(context, items),
-      ]),
+      child: Column(
+        children: [
+          Container(
+            height: 1,
+            color: context.theme.onSurfaceLayers.layer3,
+          ),
+          buildHeader(context, items),
+          buildSelectedItems(context, items),
+          buildOptions(context),
+          buildTransferDestinations(context, items),
+        ],
+      ),
     );
   }
 
   Widget buildHeader(BuildContext context, List<DestinyItemInfo> items) {
     return Container(
-        color: context.theme.secondarySurfaceLayers.layer0,
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: [
-            Expanded(
-                child: Container(
+      color: context.theme.secondarySurfaceLayers.layer0,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          Expanded(
+            child: Container(
               padding: const EdgeInsets.all(8),
               child: Text(
                 items.length > 1
@@ -58,68 +60,79 @@ class SelectedItemsWidget extends StatelessWidget {
                       ),
                 style: context.textTheme.subtitle,
               ),
-            )),
-            buildClearButton(context),
-          ],
-        ));
+            ),
+          ),
+          buildClearButton(context),
+        ],
+      ),
+    );
   }
 
   Widget buildSelectedItems(BuildContext context, List<DestinyItemInfo> items) {
     if (items.length == 1) return buildSingleItem(context, items.first);
     return SizedBox(
-        height: _selectedItemSize + 16,
-        child: ListView.separated(
-          itemCount: items.length,
-          scrollDirection: Axis.horizontal,
-          padding: const EdgeInsets.all(8),
-          itemBuilder: (BuildContext context, int index) => listItemBuilder(
-            context,
-            items[index],
-          ),
-          separatorBuilder: (BuildContext context, int index) => Container(width: 2),
-        ));
+      height: _selectedItemSize + 16,
+      child: ListView.separated(
+        itemCount: items.length,
+        scrollDirection: Axis.horizontal,
+        padding: const EdgeInsets.all(8),
+        itemBuilder: (BuildContext context, int index) => listItemBuilder(
+          context,
+          items[index],
+        ),
+        separatorBuilder: (BuildContext context, int index) => Container(width: 2),
+      ),
+    );
   }
 
   Widget listItemBuilder(BuildContext context, DestinyItemInfo item) {
     return SizedBox(
       width: _selectedItemSize,
       height: _selectedItemSize,
-      child: Stack(children: [
-        SelectedItemThumb(item),
-        Positioned.fill(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(onTap: () {
-              final hash = item.itemHash;
-              final id = item.instanceId;
-              if (hash == null) return;
-              selectionBloc(context).unselectItem(hash, instanceId: id, stackIndex: item.stackIndex);
-            }),
+      child: Stack(
+        children: [
+          SelectedItemThumb(item),
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  final hash = item.itemHash;
+                  final id = item.instanceId;
+                  if (hash == null) return;
+                  selectionBloc(context).unselectItem(hash, instanceId: id, stackIndex: item.stackIndex);
+                },
+              ),
+            ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 
   Widget buildSingleItem(BuildContext context, DestinyItemInfo item) {
     return SizedBox(
       height: _instancedItemHeight,
-      child: Stack(children: [
-        SelectedItemInstance(
-          item,
-        ),
-        Positioned.fill(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(onTap: () {
-              final hash = item.itemHash;
-              final id = item.instanceId;
-              if (hash == null) return;
-              selectionBloc(context).unselectItem(hash, instanceId: id, stackIndex: item.stackIndex);
-            }),
+      child: Stack(
+        children: [
+          SelectedItemInstance(
+            item,
           ),
-        ),
-      ]),
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
+                  final hash = item.itemHash;
+                  final id = item.instanceId;
+                  if (hash == null) return;
+                  selectionBloc(context).unselectItem(hash, instanceId: id, stackIndex: item.stackIndex);
+                },
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -132,7 +145,7 @@ class SelectedItemsWidget extends StatelessWidget {
           padding: const EdgeInsets.all(8),
           child: Row(
             children: [
-              const Icon(FontAwesomeIcons.circleMinus, size: 16),
+              const FaIcon(FontAwesomeIcons.circleMinus, size: 16),
               Container(width: 8),
               Text(context.translate("Clear"), style: context.textTheme.button),
             ],
@@ -178,42 +191,46 @@ class SelectedItemsWidget extends StatelessWidget {
   Widget buildStackTransfer(BuildContext context, DestinyItemInfo item) {
     if (selectionState(context).transferDestinations.isEmpty) return Container();
     return Container(
-        key: Key("stack-transfer-${item.itemHash}"),
-        child: StackTransferWidget(
-          total: item.quantity,
-          onTransferPressed: (stackSize, destination) {
-            final items = selectionBloc(context).selectedItems;
-            inventoryBloc(context).transfer(items.first, destination, stackSize: stackSize);
-            selectionBloc(context).clear();
-          },
-          transferDestinations: selectionState(context).transferDestinations,
-        ));
+      key: Key("stack-transfer-${item.itemHash}"),
+      child: StackTransferWidget(
+        total: item.quantity,
+        onTransferPressed: (stackSize, destination) {
+          final items = selectionBloc(context).selectedItems;
+          inventoryBloc(context).transfer(items.first, destination, stackSize: stackSize);
+          selectionBloc(context).clear();
+        },
+        transferDestinations: selectionState(context).transferDestinations,
+      ),
+    );
   }
 
   Widget buildOptions(BuildContext context) {
     final state = selectionState(context);
     final bloc = context.read<SelectionBloc>();
     return Container(
-        child: Row(children: [
-      if (state.canLock)
-        buildOption(
-          context,
-          "Lock".translate(context),
-          state.lockBusy ? null : () => bloc.lockSelected(true),
-        ),
-      if (state.canUnlock)
-        buildOption(
-          context,
-          "Unlock".translate(context),
-          state.lockBusy ? null : () => bloc.lockSelected(false),
-        ),
-      if (state.selectedItems.length == 1)
-        buildOption(
-          context,
-          "Details".translate(context),
-          () => bloc.viewDetails(),
-        ),
-    ]));
+      child: Row(
+        children: [
+          if (state.canLock)
+            buildOption(
+              context,
+              "Lock".translate(context),
+              state.lockBusy ? null : () => bloc.lockSelected(true),
+            ),
+          if (state.canUnlock)
+            buildOption(
+              context,
+              "Unlock".translate(context),
+              state.lockBusy ? null : () => bloc.lockSelected(false),
+            ),
+          if (state.selectedItems.length == 1)
+            buildOption(
+              context,
+              "Details".translate(context),
+              () => bloc.viewDetails(),
+            ),
+        ],
+      ),
+    );
   }
 
   Widget buildOption(BuildContext context, String label, VoidCallback? onTap) {

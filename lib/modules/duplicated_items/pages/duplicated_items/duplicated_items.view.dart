@@ -69,7 +69,7 @@ class DuplicatedItemsView extends StatelessWidget {
   Widget buildSearchButton(BuildContext context) {
     return IconButton(
       enableFeedback: false,
-      icon: state.searchOpen ? const Icon(FontAwesomeIcons.xmark) : const Icon(FontAwesomeIcons.magnifyingGlass),
+      icon: state.searchOpen ? const FaIcon(FontAwesomeIcons.xmark) : const FaIcon(FontAwesomeIcons.magnifyingGlass),
       onPressed: () => bloc.toggleSearchOpen(),
     );
   }
@@ -115,13 +115,15 @@ class DuplicatedItemsView extends StatelessWidget {
     final hasSelection = context.watch<SelectionBloc>().hasSelection;
     final bottomPadding = context.mediaQuery.viewPadding.bottom;
     if (!hasSelection) return MainItemTypeBottomBarFilterWidget();
-    return Column(children: [
-      SelectedItemsWidget(),
-      if (bottomPadding > 0)
-        Container(
-          color: context.theme.surfaceLayers.layer1,
-          child: BusyIndicatorBottomGradientWidget(),
-        ),
-    ]);
+    return Column(
+      children: [
+        SelectedItemsWidget(),
+        if (bottomPadding > 0)
+          Container(
+            color: context.theme.surfaceLayers.layer1,
+            child: BusyIndicatorBottomGradientWidget(),
+          ),
+      ],
+    );
   }
 }

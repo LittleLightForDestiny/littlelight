@@ -65,55 +65,54 @@ class ActiveTransferNotificationWidget extends BaseActiveNotificationWidget<Tran
     final destination = notification.destination;
     return Row(
       mainAxisSize: MainAxisSize.min,
-      children:
-          [
-            buildTransferStepEntity(
-              context,
-              const PostmasterIconWidget(borderWidth: .5),
-              notification: notification,
-              requiredSteps: {TransferSteps.PullFromPostmaster},
-              progressStep: TransferSteps.PullFromPostmaster,
-            ),
-            buildTransferArrow(context, step: TransferSteps.PullFromPostmaster, notification: notification),
-            buildTransferStepEntity(
-              context,
-              buildEquipIcon(context),
-              notification: notification,
-              requiredSteps: {TransferSteps.Unequip},
-              progressStep: TransferSteps.Unequip,
-            ),
-            buildTransferArrow(context, step: TransferSteps.Unequip, notification: notification),
-            buildTransferStepEntity(
-              context,
-              buildTransferStepIcon(source),
-              notification: notification,
-              requiredSteps: {TransferSteps.Unequip, TransferSteps.PullFromPostmaster, TransferSteps.MoveToVault},
-              progressStep: TransferSteps.MoveToVault,
-            ),
-            buildTransferArrow(context, step: TransferSteps.MoveToVault, notification: notification),
-            buildTransferStepEntity(
-              context,
-              buildTransferStepIcon(TransferDestination.vault()),
-              notification: notification,
-              requiredSteps: {TransferSteps.MoveToVault, TransferSteps.MoveToCharacter},
-              progressStep: TransferSteps.MoveToCharacter,
-            ),
-            buildTransferArrow(context, step: TransferSteps.MoveToCharacter, notification: notification),
-            buildTransferStepEntity(
-              context,
-              buildTransferStepIcon(destination),
-              notification: notification,
-              requiredSteps: {TransferSteps.MoveToCharacter, TransferSteps.EquipOnCharacter},
-              progressStep: TransferSteps.EquipOnCharacter,
-            ),
-            buildTransferArrow(context, step: TransferSteps.EquipOnCharacter, notification: notification),
-            buildTransferStepEntity(
-              context,
-              buildEquipIcon(context),
-              notification: notification,
-              requiredSteps: {TransferSteps.EquipOnCharacter},
-            ),
-          ].whereType<Widget>().toList(),
+      children: [
+        buildTransferStepEntity(
+          context,
+          const PostmasterIconWidget(borderWidth: .5),
+          notification: notification,
+          requiredSteps: {TransferSteps.PullFromPostmaster},
+          progressStep: TransferSteps.PullFromPostmaster,
+        ),
+        buildTransferArrow(context, step: TransferSteps.PullFromPostmaster, notification: notification),
+        buildTransferStepEntity(
+          context,
+          buildEquipIcon(context),
+          notification: notification,
+          requiredSteps: {TransferSteps.Unequip},
+          progressStep: TransferSteps.Unequip,
+        ),
+        buildTransferArrow(context, step: TransferSteps.Unequip, notification: notification),
+        buildTransferStepEntity(
+          context,
+          buildTransferStepIcon(source),
+          notification: notification,
+          requiredSteps: {TransferSteps.Unequip, TransferSteps.PullFromPostmaster, TransferSteps.MoveToVault},
+          progressStep: TransferSteps.MoveToVault,
+        ),
+        buildTransferArrow(context, step: TransferSteps.MoveToVault, notification: notification),
+        buildTransferStepEntity(
+          context,
+          buildTransferStepIcon(TransferDestination.vault()),
+          notification: notification,
+          requiredSteps: {TransferSteps.MoveToVault, TransferSteps.MoveToCharacter},
+          progressStep: TransferSteps.MoveToCharacter,
+        ),
+        buildTransferArrow(context, step: TransferSteps.MoveToCharacter, notification: notification),
+        buildTransferStepEntity(
+          context,
+          buildTransferStepIcon(destination),
+          notification: notification,
+          requiredSteps: {TransferSteps.MoveToCharacter, TransferSteps.EquipOnCharacter},
+          progressStep: TransferSteps.EquipOnCharacter,
+        ),
+        buildTransferArrow(context, step: TransferSteps.EquipOnCharacter, notification: notification),
+        buildTransferStepEntity(
+          context,
+          buildEquipIcon(context),
+          notification: notification,
+          requiredSteps: {TransferSteps.EquipOnCharacter},
+        ),
+      ].whereType<Widget>().toList(),
     );
   }
 
@@ -148,7 +147,7 @@ class ActiveTransferNotificationWidget extends BaseActiveNotificationWidget<Tran
       margin: const EdgeInsets.only(right: 4),
       width: _iconSize,
       height: _iconSize,
-      child: const Icon(FontAwesomeIcons.chevronRight),
+      child: const FaIcon(FontAwesomeIcons.chevronRight),
     );
     if (isFinished) {
       return arrow;
@@ -158,7 +157,7 @@ class ActiveTransferNotificationWidget extends BaseActiveNotificationWidget<Tran
         margin: const EdgeInsets.only(right: 4),
         width: _iconSize,
         height: _iconSize,
-        child: const Icon(FontAwesomeIcons.circleXmark, size: 24),
+        child: const FaIcon(FontAwesomeIcons.circleXmark, size: 24),
       );
     }
     if (isInProgress) {
@@ -189,10 +188,9 @@ class ActiveTransferNotificationWidget extends BaseActiveNotificationWidget<Tran
 
   Widget buildAdditionalInfo(BuildContext context, TransferNotification notification) {
     return Column(
-      children:
-          notification.sideEffects
-              .map((se) => Container(padding: EdgeInsets.only(top: 4), child: buildNotificationContent(context, se)))
-              .toList(),
+      children: notification.sideEffects
+          .map((se) => Container(padding: EdgeInsets.only(top: 4), child: buildNotificationContent(context, se)))
+          .toList(),
     );
   }
 

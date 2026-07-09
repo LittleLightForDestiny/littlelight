@@ -84,7 +84,7 @@ class VendorDetailsView extends StatelessWidget {
 
   Widget buildToggleButton(BuildContext context, DestinyVendorCategory category) {
     final visible = state.isCategoryVisible(category);
-    final icon = visible ? FontAwesomeIcons.solidSquareMinus : FontAwesomeIcons.solidSquarePlus;
+    final icon = visible ? FontAwesomeIcons.solidSquareMinus.data : FontAwesomeIcons.solidSquarePlus.data;
     return Stack(
       children: [
         Icon(icon, size: 20),

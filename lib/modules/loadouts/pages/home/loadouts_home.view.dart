@@ -32,29 +32,27 @@ class LoadoutsHomeView extends StatelessWidget {
     return DefaultTabController(
       length: 2,
       child: Builder(
-        builder:
-            (context) => Scaffold(
-              appBar: buildAppBar(context),
-              body: Column(
-                children:
-                    [
-                      Expanded(
-                        child: Stack(
-                          children: [
-                            buildTabs(context),
-                            Positioned(
-                              bottom: 0,
-                              right: 0,
-                              left: 0,
-                              child: renderOnlyOnLittleLightLoadouts(context, buildNotificationWidget(context)),
-                            ),
-                          ],
-                        ),
-                      ),
-                      renderOnlyOnLittleLightLoadouts(context, buildFooter(context)),
-                    ].whereType<Widget>().toList(),
+        builder: (context) => Scaffold(
+          appBar: buildAppBar(context),
+          body: Column(
+            children: [
+              Expanded(
+                child: Stack(
+                  children: [
+                    buildTabs(context),
+                    Positioned(
+                      bottom: 0,
+                      right: 0,
+                      left: 0,
+                      child: renderOnlyOnLittleLightLoadouts(context, buildNotificationWidget(context)),
+                    ),
+                  ],
+                ),
               ),
-            ),
+              renderOnlyOnLittleLightLoadouts(context, buildFooter(context)),
+            ].whereType<Widget>().toList(),
+          ),
+        ),
       ),
     );
   }
@@ -62,7 +60,10 @@ class LoadoutsHomeView extends StatelessWidget {
   Widget buildNotificationWidget(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
-      children: [Container(padding: EdgeInsets.all(8), child: NotificationsWidget()), BusyIndicatorLineWidget()],
+      children: [
+        Container(padding: EdgeInsets.all(8), child: NotificationsWidget()),
+        BusyIndicatorLineWidget(),
+      ],
     );
   }
 
@@ -74,18 +75,17 @@ class LoadoutsHomeView extends StatelessWidget {
           Scaffold.of(context).openDrawer();
         },
       ),
-      actions:
-          [
-            renderOnlyOnLittleLightLoadouts(context, buildReorderButton(context)),
-            renderOnlyOnLittleLightLoadouts(context, buildSearchButton(context)),
-            renderOnlyOnLittleLightLoadouts(
-              context,
-              IconButton(
-                icon: const Icon(FontAwesomeIcons.download),
-                onPressed: () => littleLightLoadoutsBloc.reloadLoadouts(),
-              ),
-            ),
-          ].whereType<Widget>().toList(),
+      actions: [
+        renderOnlyOnLittleLightLoadouts(context, buildReorderButton(context)),
+        renderOnlyOnLittleLightLoadouts(context, buildSearchButton(context)),
+        renderOnlyOnLittleLightLoadouts(
+          context,
+          IconButton(
+            icon: const FaIcon(FontAwesomeIcons.download),
+            onPressed: () => littleLightLoadoutsBloc.reloadLoadouts(),
+          ),
+        ),
+      ].whereType<Widget>().toList(),
       bottom: buildTabBar(context),
       title: buildTitle(context),
     );
@@ -104,12 +104,11 @@ class LoadoutsHomeView extends StatelessWidget {
         color: context.theme.secondarySurfaceLayers.layer1,
         elevation: 2,
         child: LayoutBuilder(
-          builder:
-              (context, constraints) => Container(
-                constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                height: tabbar.preferredSize.height,
-                child: tabbar,
-              ),
+          builder: (context, constraints) => Container(
+            constraints: BoxConstraints(minWidth: constraints.maxWidth),
+            height: tabbar.preferredSize.height,
+            child: tabbar,
+          ),
         ),
       ),
     );
@@ -132,10 +131,9 @@ class LoadoutsHomeView extends StatelessWidget {
     if (littlelightLoadoutsState.reordering) return Container();
     return IconButton(
       enableFeedback: false,
-      icon:
-          littlelightLoadoutsState.searchOpen
-              ? const Icon(FontAwesomeIcons.xmark)
-              : const Icon(FontAwesomeIcons.magnifyingGlass),
+      icon: littlelightLoadoutsState.searchOpen
+          ? const FaIcon(FontAwesomeIcons.xmark)
+          : const FaIcon(FontAwesomeIcons.magnifyingGlass),
       onPressed: () => littleLightLoadoutsBloc.toggleSearch(),
     );
   }
@@ -144,10 +142,9 @@ class LoadoutsHomeView extends StatelessWidget {
     if (littlelightLoadoutsState.searchOpen) return Container();
     return IconButton(
       enableFeedback: false,
-      icon:
-          littlelightLoadoutsState.reordering
-              ? const Icon(FontAwesomeIcons.check)
-              : Transform.rotate(angle: pi / 2, child: const Icon(FontAwesomeIcons.rightLeft)),
+      icon: littlelightLoadoutsState.reordering
+          ? const FaIcon(FontAwesomeIcons.check)
+          : Transform.rotate(angle: pi / 2, child: const FaIcon(FontAwesomeIcons.rightLeft)),
       onPressed: () => littleLightLoadoutsBloc.toggleReordering(),
     );
   }

@@ -32,24 +32,28 @@ class ItemOrderParameterWidget extends StatelessWidget {
         color: context.theme.surfaceLayers.layer1,
         child: Material(
           color: Colors.transparent,
-          child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-            buildHandle(context, index),
-            Container(width: 8),
-            Expanded(
-              child: Text(
-                parameter.type?.getName(context).toUpperCase() ?? "",
-                style: context.textTheme.highlight,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              buildHandle(context, index),
+              Container(width: 8),
+              Expanded(
+                child: Text(
+                  parameter.type?.getName(context).toUpperCase() ?? "",
+                  style: context.textTheme.highlight,
+                ),
               ),
-            ),
-            buildDirectionButton(context),
-            Container(width: 8),
-            Container(
+              buildDirectionButton(context),
+              Container(width: 8),
+              Container(
                 padding: const EdgeInsets.all(8),
                 child: Switch(
                   onChanged: onToggle,
                   value: parameter.active,
-                ))
-          ]),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -84,13 +88,16 @@ class ItemOrderParameterWidget extends StatelessWidget {
           foregroundColor: context.theme.onSurfaceLayers,
         ),
         child: Icon(
-            parameter.direction == SorterDirection.Ascending
-                ? FontAwesomeIcons.chevronUp
-                : FontAwesomeIcons.chevronDown,
-            size: 14),
+          parameter.direction == SorterDirection.Ascending
+              ? FontAwesomeIcons.chevronUp.data
+              : FontAwesomeIcons.chevronDown.data,
+          size: 14,
+        ),
         onPressed: () {
-          final direction = [SorterDirection.Ascending, SorterDirection.Descending]
-              .firstWhere((element) => element != parameter.direction);
+          final direction = [
+            SorterDirection.Ascending,
+            SorterDirection.Descending,
+          ].firstWhere((element) => element != parameter.direction);
           onChangeDirection?.call(direction);
         },
       ),

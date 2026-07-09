@@ -31,51 +31,54 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
   final LoadoutIndexSlot? slot;
   final Set<DestinyClass>? availableClasses;
   LoadoutSlotWidget(this.bucketHash, {Key? key, required this.slot, this.onItemTap, this.availableClasses})
-      : super(key: key);
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final bucketDef = context.definition<DestinyInventoryBucketDefinition>(this.bucketHash);
     final hasTransferDestination = bucketDef?.hasTransferDestination ?? false;
-    return Column(children: [
-      HeaderWidget(child: Text(bucketDef?.displayProperties?.name?.toUpperCase() ?? "")),
-      buildSlotBlock(
-        context,
-        headerText: "Equip".translate(context),
-      ),
-      if (hasTransferDestination)
+    return Column(
+      children: [
+        HeaderWidget(child: Text(bucketDef?.displayProperties?.name?.toUpperCase() ?? "")),
         buildSlotBlock(
           context,
-          headerText: "Transfer".translate(context),
-          isEquipment: false,
+          headerText: "Equip".translate(context),
         ),
-      Container(height: 8)
-    ]);
+        if (hasTransferDestination)
+          buildSlotBlock(
+            context,
+            headerText: "Transfer".translate(context),
+            isEquipment: false,
+          ),
+        Container(height: 8),
+      ],
+    );
   }
 
   Widget buildSlotBlock(BuildContext context, {required String headerText, bool isEquipment = true}) {
     return Container(
-        margin: EdgeInsets.only(top: 4),
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: context.theme.surfaceLayers.layer1,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            buildBlockTitle(context, headerText),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                padding: EdgeInsets.all(4),
-                reverse: true,
-                child: buildItemIcons(context, isEquipment: isEquipment),
-              ),
+      margin: EdgeInsets.only(top: 4),
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: context.theme.surfaceLayers.layer1,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          buildBlockTitle(context, headerText),
+          Container(
+            alignment: Alignment.centerLeft,
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: EdgeInsets.all(4),
+              reverse: true,
+              child: buildItemIcons(context, isEquipment: isEquipment),
             ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildBlockTitle(BuildContext context, String text) {
@@ -104,12 +107,14 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
       children: [
         if (classSlots != null)
           ...classSlots
-              .map((e) => buildItemIcon(
-                    context,
-                    classType: e,
-                    loadoutIndexItem: slot?.classSpecificEquipped[e],
-                    equipped: true,
-                  ))
+              .map(
+                (e) => buildItemIcon(
+                  context,
+                  classType: e,
+                  loadoutIndexItem: slot?.classSpecificEquipped[e],
+                  equipped: true,
+                ),
+              )
               .toList(),
         if (showGenericSlot)
           buildItemIcon(
@@ -127,60 +132,74 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
     return Row(
       children: [
         ...items
-            .map((e) => buildItemIcon(
-                  context,
-                  loadoutIndexItem: e,
-                ))
+            .map(
+              (e) => buildItemIcon(
+                context,
+                loadoutIndexItem: e,
+              ),
+            )
             .toList(),
         if (showEmptySlot) buildItemIcon(context),
       ],
     );
   }
 
-  Widget buildItemIcon(BuildContext context,
-      {LoadoutItemInfo? loadoutIndexItem, DestinyClass? classType, bool equipped = false}) {
+  Widget buildItemIcon(
+    BuildContext context, {
+    LoadoutItemInfo? loadoutIndexItem,
+    DestinyClass? classType,
+    bool equipped = false,
+  }) {
     final hasItem = loadoutIndexItem?.inventoryItem != null;
     final hasPlugs = loadoutIndexItem?.itemPlugs.isNotEmpty ?? false;
     return Container(
-        width: 64,
-        height: 64,
-        margin: EdgeInsets.all(2),
-        child: Stack(
-            children: [
+      width: 64,
+      height: 64,
+      margin: EdgeInsets.all(2),
+      child: Stack(
+        children: [
           hasItem ? buildItemSlotIcon(context, loadoutIndexItem) : buildEmptySlotIcon(context, classType),
           hasPlugs ? Positioned(child: buildPlugsIcon(context), bottom: 0, right: 0) : null,
           Material(
             color: Colors.transparent,
             child: InkWell(
-              onTap: () => onItemTap?.call(LoadoutItemAction(
-                equipped,
-                item: loadoutIndexItem,
-                classType: classType,
-              )),
+              onTap: () => onItemTap?.call(
+                LoadoutItemAction(
+                  equipped,
+                  item: loadoutIndexItem,
+                  classType: classType,
+                ),
+              ),
             ),
           ),
-        ].whereType<Widget>().toList()));
+        ].whereType<Widget>().toList(),
+      ),
+    );
   }
 
   Widget buildItemSlotIcon(BuildContext context, LoadoutItemInfo? loadoutItem, {DestinyClass? classType}) {
     final item = loadoutItem?.inventoryItem;
     if (item == null) return buildEmptySlotIcon(context, classType);
-    return Stack(children: [
-      InventoryItemIcon(item),
-    ]);
+    return Stack(
+      children: [
+        InventoryItemIcon(item),
+      ],
+    );
   }
 
   Widget buildEmptySlotIcon(BuildContext context, DestinyClass? classType) {
-    return Stack(children: [
-      ManifestImageWidget<DestinyInventoryItemDefinition>(loadoutEmptySlotItemHash),
-      Positioned.fill(
-        child: Icon(
-          classType?.icon ?? Icons.add_circle_outline,
-          color: context.theme.onSurfaceLayers.layer2,
-          size: 24,
+    return Stack(
+      children: [
+        ManifestImageWidget<DestinyInventoryItemDefinition>(loadoutEmptySlotItemHash),
+        Positioned.fill(
+          child: Icon(
+            classType?.icon ?? Icons.add_circle_outline,
+            color: context.theme.onSurfaceLayers.layer2,
+            size: 24,
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget buildPlugsIcon(BuildContext context) {
@@ -191,7 +210,7 @@ class LoadoutSlotWidget extends StatelessWidget with ProfileConsumer, ManifestCo
         borderRadius: BorderRadius.circular(12),
         color: context.theme.surfaceLayers,
       ),
-      child: Icon(
+      child: const FaIcon(
         FontAwesomeIcons.gear,
         size: 12,
       ),

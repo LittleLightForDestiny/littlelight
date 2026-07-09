@@ -12,18 +12,21 @@ class WishlistsData {
       case WishlistTag.GodPVE:
       case WishlistTag.GodPVP:
         return BoxDecoration(
-            border: Border.all(color: context.theme.achievementLayers, width: 1),
-            gradient: RadialGradient(radius: 1, colors: [getBgColor(context, tag), context.theme.achievementLayers]));
+          border: Border.all(color: context.theme.achievementLayers, width: 1),
+          gradient: RadialGradient(radius: 1, colors: [getBgColor(context, tag), context.theme.achievementLayers]),
+        );
 
       case WishlistTag.Controller:
         return BoxDecoration(
-            border: Border.all(color: context.theme.secondarySurfaceLayers.layer0, width: 1),
-            color: context.theme.primaryLayers.layer0);
+          border: Border.all(color: context.theme.secondarySurfaceLayers.layer0, width: 1),
+          color: context.theme.primaryLayers.layer0,
+        );
 
       case WishlistTag.Mouse:
         return BoxDecoration(
-            border: Border.all(color: context.theme.primaryLayers.layer0, width: 1),
-            color: context.theme.secondarySurfaceLayers.layer0);
+          border: Border.all(color: context.theme.primaryLayers.layer0, width: 1),
+          color: context.theme.secondarySurfaceLayers.layer0,
+        );
       default:
         return BoxDecoration(color: getBgColor(context, tag));
     }
@@ -78,48 +81,65 @@ class WishlistsData {
     switch (tag) {
       case WishlistTag.GodPVE:
         return Container(
-            alignment: Alignment.center,
-            child: CenterIconWorkaround(LittleLightIcons.vanguard,
-                size: size * .8, color: LittleLightThemeData().onSurfaceLayers));
+          alignment: Alignment.center,
+          child: CenterIconWorkaround(
+            LittleLightIcons.vanguard,
+            size: size * .8,
+            color: LittleLightThemeData().onSurfaceLayers,
+          ),
+        );
       case WishlistTag.PVE:
         return Container(
-            alignment: Alignment.center, child: CenterIconWorkaround(LittleLightIcons.vanguard, size: size * .8));
+          alignment: Alignment.center,
+          child: CenterIconWorkaround(LittleLightIcons.vanguard, size: size * .8),
+        );
       case WishlistTag.GodPVP:
         return Container(
-            alignment: Alignment.center,
-            child: CenterIconWorkaround(LittleLightIcons.crucible,
-                size: size * .9, color: LittleLightThemeData().onSurfaceLayers));
+          alignment: Alignment.center,
+          child: CenterIconWorkaround(
+            LittleLightIcons.crucible,
+            size: size * .9,
+            color: LittleLightThemeData().onSurfaceLayers,
+          ),
+        );
       case WishlistTag.PVP:
         return Container(
-            alignment: Alignment.center, child: CenterIconWorkaround(LittleLightIcons.crucible, size: size * .9));
+          alignment: Alignment.center,
+          child: CenterIconWorkaround(LittleLightIcons.crucible, size: size * .9),
+        );
       case WishlistTag.Bungie:
         return Container(
-            alignment: Alignment.center, child: CenterIconWorkaround(LittleLightIcons.bungie, size: size * .9));
+          alignment: Alignment.center,
+          child: CenterIconWorkaround(LittleLightIcons.bungie, size: size * .9),
+        );
 
       case WishlistTag.Trash:
         return Container(
-            padding: EdgeInsets.all(size * .1),
-            child: Image.asset(
-              "assets/imgs/trash-roll-icon.png",
-            ));
+          padding: EdgeInsets.all(size * .1),
+          child: Image.asset(
+            "assets/imgs/trash-roll-icon.png",
+          ),
+        );
 
       case WishlistTag.Controller:
         return Container(
-            alignment: Alignment.center,
-            child: CenterIconWorkaround(
-              FontAwesomeIcons.gamepad,
-              size: size * .6,
-              color: context.theme.secondarySurfaceLayers.layer0,
-            ));
+          alignment: Alignment.center,
+          child: CenterIconWorkaround(
+            FontAwesomeIcons.gamepad.data,
+            size: size * .6,
+            color: context.theme.secondarySurfaceLayers.layer0,
+          ),
+        );
 
       case WishlistTag.Mouse:
         return Container(
-            alignment: Alignment.center,
-            child: CenterIconWorkaround(
-              FontAwesomeIcons.computerMouse,
-              size: size * .7,
-              color: context.theme.primaryLayers.layer0,
-            ));
+          alignment: Alignment.center,
+          child: CenterIconWorkaround(
+            FontAwesomeIcons.computerMouse.data,
+            size: size * .7,
+            color: context.theme.primaryLayers.layer0,
+          ),
+        );
 
       default:
         return Container();

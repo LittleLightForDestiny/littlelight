@@ -48,34 +48,36 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
 
   Widget buildWithDefinition(BuildContext context, DestinyMilestoneDefinition? def) {
     return ClipRRect(
-        borderRadius: BorderRadius.circular(4),
-        clipBehavior: Clip.antiAlias,
-        child: Stack(
-          children: [
-            Positioned.fill(child: buildBackground(context, def)),
-            buildForeground(context, def),
-          ],
-        ));
+      borderRadius: BorderRadius.circular(4),
+      clipBehavior: Clip.antiAlias,
+      child: Stack(
+        children: [
+          Positioned.fill(child: buildBackground(context, def)),
+          buildForeground(context, def),
+        ],
+      ),
+    );
   }
 
   Widget buildForeground(BuildContext context, DestinyMilestoneDefinition? def) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            buildMilestoneHeader(context, def),
-            Expanded(child: SizedBox()),
-            buildModifiers(context, def),
-            buildPhases(context, def),
-            buildChallenges(context, def),
-            buildQuestsInfo(context, def),
-            buildRewards(context),
-            buildActivities(context, def),
-          ].whereType<Widget>().toList(),
-        ));
+      padding: EdgeInsets.all(4),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          buildMilestoneHeader(context, def),
+          Expanded(child: SizedBox()),
+          buildModifiers(context, def),
+          buildPhases(context, def),
+          buildChallenges(context, def),
+          buildQuestsInfo(context, def),
+          buildRewards(context),
+          buildActivities(context, def),
+        ].whereType<Widget>().toList(),
+      ),
+    );
   }
 
   Widget buildMilestoneHeader(BuildContext context, DestinyMilestoneDefinition? def) {
@@ -87,13 +89,14 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
         if (iconUrl != null)
           Container(
             decoration: BoxDecoration(
-                gradient: RadialGradient(
-              colors: [
-                context.theme.surfaceLayers.layer2,
-                context.theme.surfaceLayers.layer2.withValues(alpha: 0),
-              ],
-              stops: [.2, 1],
-            )),
+              gradient: RadialGradient(
+                colors: [
+                  context.theme.surfaceLayers.layer2,
+                  context.theme.surfaceLayers.layer2.withValues(alpha: 0),
+                ],
+                stops: [.2, 1],
+              ),
+            ),
             width: 64,
             height: 64,
             child: QueuedNetworkImage.fromBungie(iconUrl),
@@ -106,26 +109,31 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
             children: [
               Container(
                 padding: EdgeInsets.all(4),
-                decoration:
-                    BoxDecoration(borderRadius: BorderRadius.circular(4), color: context.theme.surfaceLayers.layer2),
-                child: Text(def?.displayProperties?.name?.toUpperCase() ?? "",
-                    style: context.textTheme.itemNameHighDensity),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(4),
+                  color: context.theme.surfaceLayers.layer2,
+                ),
+                child: Text(
+                  def?.displayProperties?.name?.toUpperCase() ?? "",
+                  style: context.textTheme.itemNameHighDensity,
+                ),
               ),
               Flexible(child: SizedBox(height: 2)),
               Container(
                 padding: EdgeInsets.all(4),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(4),
-                    color: context.theme.surfaceLayers.layer0.withValues(alpha: .8)),
+                  borderRadius: BorderRadius.circular(4),
+                  color: context.theme.surfaceLayers.layer0.withValues(alpha: .8),
+                ),
                 child: ManifestText<DestinyMilestoneDefinition>(
                   milestone.milestoneHash,
                   textExtractor: (def) => def.displayProperties?.description,
                   style: context.textTheme.body,
                 ),
-              )
+              ),
             ],
           ),
-        )
+        ),
       ],
     );
   }
@@ -144,22 +152,23 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
     final challengeObjectives = quest.challenges?.map((e) => e.objective).whereType<DestinyObjectiveProgress>() ?? [];
     final stepObjectives = quest.status?.stepObjectives ?? [];
     return Container(
-        margin: EdgeInsets.only(top: 2),
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer0.withValues(alpha: .8),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        padding: EdgeInsets.all(4),
-        child: Column(
-          children: [
-            ...challengeObjectives.map(
-              (objective) => buildQuestObjective(context, objective),
-            ),
-            ...stepObjectives.map(
-              (objective) => buildQuestObjective(context, objective),
-            ),
-          ],
-        ));
+      margin: EdgeInsets.only(top: 2),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer0.withValues(alpha: .8),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      padding: EdgeInsets.all(4),
+      child: Column(
+        children: [
+          ...challengeObjectives.map(
+            (objective) => buildQuestObjective(context, objective),
+          ),
+          ...stepObjectives.map(
+            (objective) => buildQuestObjective(context, objective),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildQuestObjective(BuildContext context, DestinyObjectiveProgress objective) {
@@ -194,23 +203,26 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
             },
             child: Container(
               padding: EdgeInsets.all(8),
-              child: Row(children: [
-                Expanded(child: Text(name?.toUpperCase() ?? "", style: context.textTheme.itemNameHighDensity)),
-                Container(
+              child: Row(
+                children: [
+                  Expanded(child: Text(name?.toUpperCase() ?? "", style: context.textTheme.itemNameHighDensity)),
+                  Container(
                     child: Icon(
-                  LittleLightIcons.power,
-                  size: 8,
-                  color: context.theme.achievementLayers,
-                )),
-                Text(
-                  "${definition?.activityLightLevel}",
-                  style: context.textTheme.button.copyWith(
-                    color: context.theme.achievementLayers,
+                      LittleLightIcons.power,
+                      size: 8,
+                      color: context.theme.achievementLayers,
+                    ),
                   ),
-                ),
-                SizedBox(width: 8),
-                Icon(FontAwesomeIcons.caretDown, size: 12),
-              ]),
+                  Text(
+                    "${definition?.activityLightLevel}",
+                    style: context.textTheme.button.copyWith(
+                      color: context.theme.achievementLayers,
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  const FaIcon(FontAwesomeIcons.caretDown, size: 12),
+                ],
+              ),
             ),
           ),
         ),
@@ -220,18 +232,19 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
 
   Widget buildBackground(BuildContext context, DestinyMilestoneDefinition? def) {
     return FutureBuilder<String?>(
-        future: getBackgroundImageUrl(context, def),
-        builder: (context, snapshot) {
-          if (snapshot.data == null)
-            return Container(
-              color: context.theme.surfaceLayers.layer1,
-            );
-          return QueuedNetworkImage.fromBungie(
-            snapshot.data,
-            fit: BoxFit.cover,
-            alignment: Alignment.topCenter,
+      future: getBackgroundImageUrl(context, def),
+      builder: (context, snapshot) {
+        if (snapshot.data == null)
+          return Container(
+            color: context.theme.surfaceLayers.layer1,
           );
-        });
+        return QueuedNetworkImage.fromBungie(
+          snapshot.data,
+          fit: BoxFit.cover,
+          alignment: Alignment.topCenter,
+        );
+      },
+    );
   }
 
   Widget? buildPhases(BuildContext context, DestinyMilestoneDefinition? def) {
@@ -239,7 +252,8 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
     final defActivity = def?.activities?.firstWhereOrNull((a) => a.activityHash == activityHash);
     final phases = defActivity?.phases;
     if (phases == null) return Container();
-    final milestoneActivity = milestone.activities //
+    final milestoneActivity = milestone
+        .activities //
         ?.firstWhereOrNull((element) => element.activityHash == activityHash);
     return MilestoneItemPhasesWidget(
       definitionPhases: phases,
@@ -253,27 +267,31 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
     final challenges = activity?.challenges;
     if (challenges == null || challenges.isEmpty) return Container();
     return Container(
-        margin: EdgeInsets.only(top: 2),
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer0.withValues(alpha: .8),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        padding: EdgeInsets.all(4),
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: challenges
-                .map((e) => GenericProgressBarWidget(
-                      completed: e.objective?.complete,
-                      progress: e.objective?.progress,
-                      total: e.objective?.completionValue,
-                      description: ManifestText<DestinyObjectiveDefinition>(
-                        e.objective?.objectiveHash,
-                        textExtractor: (def) {
-                          return def.progressDescription ?? def.displayProperties?.name ?? "";
-                        },
-                      ),
-                    ))
-                .toList()));
+      margin: EdgeInsets.only(top: 2),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer0.withValues(alpha: .8),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      padding: EdgeInsets.all(4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: challenges
+            .map(
+              (e) => GenericProgressBarWidget(
+                completed: e.objective?.complete,
+                progress: e.objective?.progress,
+                total: e.objective?.completionValue,
+                description: ManifestText<DestinyObjectiveDefinition>(
+                  e.objective?.objectiveHash,
+                  textExtractor: (def) {
+                    return def.progressDescription ?? def.displayProperties?.name ?? "";
+                  },
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    );
   }
 
   Widget? buildModifiers(BuildContext context, DestinyMilestoneDefinition? def) {
@@ -337,12 +355,14 @@ class MilestoneItemWidget extends StatelessWidget with ManifestConsumer {
     final rewards = milestone.rewards?.where((element) => element.entries?.isNotEmpty ?? false);
     if (rewards == null || rewards.isEmpty) return null;
     return Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: rewards //
-            .map((reward) => buildRewardCategory(context, reward))
-            .whereType<Widget>()
-            .toList());
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children:
+          rewards //
+              .map((reward) => buildRewardCategory(context, reward))
+              .whereType<Widget>()
+              .toList(),
+    );
   }
 
   Widget? buildRewardCategory(BuildContext context, DestinyMilestoneRewardCategory reward) {

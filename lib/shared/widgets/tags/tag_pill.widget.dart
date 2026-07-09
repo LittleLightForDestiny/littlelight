@@ -68,40 +68,47 @@ class TagPillWidget extends StatelessWidget {
   }
 
   Widget buildRemoveButton(BuildContext context) {
-    return Stack(children: [
-      Container(
+    return Stack(
+      children: [
+        Container(
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(_tagIconSize), color: context.theme.onSurfaceLayers.layer0),
+            borderRadius: BorderRadius.circular(_tagIconSize),
+            color: context.theme.onSurfaceLayers.layer0,
+          ),
           width: _tagIconSize,
           height: _tagIconSize,
           alignment: Alignment.center,
           child: CenterIconWorkaround(
-            FontAwesomeIcons.solidCircleXmark,
+            FontAwesomeIcons.solidCircleXmark.data,
             size: _tagIconSize - 4,
             color: context.theme.errorLayers.layer0,
-          )),
-      Positioned.fill(
-          child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onRemove,
-          customBorder: CircleBorder(),
+          ),
         ),
-      )),
-    ]);
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onRemove,
+              customBorder: CircleBorder(),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildLabel(BuildContext context) {
     final style = context.textTheme.body.copyWith(color: foreground);
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: _tagLabelPadding),
-        child: Text(
-          getTagName(context).toUpperCase(),
-          softWrap: false,
-          maxLines: 1,
-          overflow: TextOverflow.fade,
-          style: style,
-        ));
+      padding: EdgeInsets.symmetric(horizontal: _tagLabelPadding),
+      child: Text(
+        getTagName(context).toUpperCase(),
+        softWrap: false,
+        maxLines: 1,
+        overflow: TextOverflow.fade,
+        style: style,
+      ),
+    );
   }
 
   String getTagName(BuildContext context) {
@@ -115,10 +122,11 @@ class TagPillWidget extends StatelessWidget {
     final icon = this.icon;
     if (icon == null) return Container();
     return Container(
-        alignment: Alignment.center,
-        width: _tagIconSize,
-        height: _tagIconSize,
-        child: CenterIconWorkaround(icon, color: foreground, size: _tagIconSize * .9));
+      alignment: Alignment.center,
+      width: _tagIconSize,
+      height: _tagIconSize,
+      child: CenterIconWorkaround(icon, color: foreground, size: _tagIconSize * .9),
+    );
   }
 
   Widget buildBg(BuildContext context, Widget contents) {
@@ -129,12 +137,13 @@ class TagPillWidget extends StatelessWidget {
         side: BorderSide(color: foreground ?? Colors.transparent, width: 1),
       ),
       child: InkWell(
-          onTap: onTap,
-          customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_tagIconSize)),
-          child: Container(
-            padding: EdgeInsets.all(4),
-            child: contents,
-          )),
+        onTap: onTap,
+        customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_tagIconSize)),
+        child: Container(
+          padding: EdgeInsets.all(4),
+          child: contents,
+        ),
+      ),
     );
   }
 }

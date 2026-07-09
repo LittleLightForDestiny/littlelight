@@ -42,47 +42,50 @@ class DuplicatedItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: <Widget>[
-      Positioned.fill(
-        child: buildEmblemBackground(context),
-      ),
-      buildContent(context),
-    ]);
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: buildEmblemBackground(context),
+        ),
+        buildContent(context),
+      ],
+    );
   }
 
   Widget buildContent(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
     return Container(
-        padding: EdgeInsets.all(_padding),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [buildEmblemIcon(context), buildMainInfo(context)],
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                buildModsAndTags(context),
-                if (definition?.isArmor ?? false) buildStats(context, definition),
-                if (definition?.isWeapon ?? false) buildWeaponPerks(context, definition),
-              ],
-            ),
-          ],
-        ));
+      padding: EdgeInsets.all(_padding),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [buildEmblemIcon(context), buildMainInfo(context)],
+          ),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              buildModsAndTags(context),
+              if (definition?.isArmor ?? false) buildStats(context, definition),
+              if (definition?.isWeapon ?? false) buildWeaponPerks(context, definition),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildMainInfo(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(item.itemHash);
     return Container(
-        child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: <Widget>[
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
           Row(
             children: [
               if (definition?.isArmor ?? false) buildTotalStats(context, definition),
@@ -91,7 +94,9 @@ class DuplicatedItemWidget extends StatelessWidget {
           ),
           if (definition?.isArmor ?? false) buildArmorMainInfo(context, definition),
           if (definition?.isWeapon ?? false) buildWeaponMainInfo(context, definition),
-        ]));
+        ],
+      ),
+    );
   }
 
   Widget buildWeaponMods(BuildContext context) {
@@ -100,39 +105,41 @@ class DuplicatedItemWidget extends StatelessWidget {
     if (definition == null) return Container();
     if (!definition.isWeapon) return Container();
     return FutureBuilder<int?>(
-        future: getModsSocketCategory(manifest, definition),
-        builder: (context, snapshot) {
-          final categoryHash = snapshot.data;
-          if (categoryHash == null) return Container();
-          return Container(
-            margin: EdgeInsets.only(top: 4),
-            alignment: Alignment.bottomRight,
-            child: InventoryItemMods(
-              item,
-              categoryHash: categoryHash,
-              plugSize: 24,
-            ),
-          );
-        });
+      future: getModsSocketCategory(manifest, definition),
+      builder: (context, snapshot) {
+        final categoryHash = snapshot.data;
+        if (categoryHash == null) return Container();
+        return Container(
+          margin: EdgeInsets.only(top: 4),
+          alignment: Alignment.bottomRight,
+          child: InventoryItemMods(
+            item,
+            categoryHash: categoryHash,
+            plugSize: 24,
+          ),
+        );
+      },
+    );
   }
 
   Widget buildWeaponPerks(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final manifest = context.read<ManifestService>();
     if (definition == null) return Container();
     return FutureBuilder<int?>(
-        future: getPerksSocketCategory(manifest, definition),
-        builder: (context, snapshot) {
-          final categoryHash = snapshot.data;
-          if (categoryHash == null) return Container();
-          return Container(
-            alignment: Alignment.bottomRight,
-            child: InventoryItemPerks(
-              item,
-              includeUnequipped: true,
-              categoryHash: categoryHash,
-            ),
-          );
-        });
+      future: getPerksSocketCategory(manifest, definition),
+      builder: (context, snapshot) {
+        final categoryHash = snapshot.data;
+        if (categoryHash == null) return Container();
+        return Container(
+          alignment: Alignment.bottomRight,
+          child: InventoryItemPerks(
+            item,
+            includeUnequipped: true,
+            categoryHash: categoryHash,
+          ),
+        );
+      },
+    );
   }
 
   Widget buildWeaponMainInfo(BuildContext context, DestinyInventoryItemDefinition? definition) {
@@ -204,34 +211,36 @@ class DuplicatedItemWidget extends StatelessWidget {
 
   Widget buildStats(BuildContext context, DestinyInventoryItemDefinition? definition) {
     return SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: const NeverScrollableScrollPhysics(),
-        child: InventoryItemStats(
-          item,
-        ));
+      scrollDirection: Axis.horizontal,
+      physics: const NeverScrollableScrollPhysics(),
+      child: InventoryItemStats(
+        item,
+      ),
+    );
   }
 
   Widget buildEnergyCapacity(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final manifest = context.read<ManifestService>();
     if (definition == null) return Container();
     return FutureBuilder<DestinyEnergyCapacityEntry?>(
-        future: getEnergyCapacity(manifest, item, definition),
-        builder: (context, snapshot) {
-          final capacity = snapshot.data;
-          if (capacity == null) return Container();
-          final energyLevel = capacity.capacityValue ?? 0;
-          final textStyle = context.textTheme.itemPrimaryStatHighDensity;
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(width: 20, child: Image.asset('assets/imgs/energy-type-icon.png')),
-              Text(
-                "$energyLevel",
-                style: textStyle,
-              ),
-            ],
-          );
-        });
+      future: getEnergyCapacity(manifest, item, definition),
+      builder: (context, snapshot) {
+        final capacity = snapshot.data;
+        if (capacity == null) return Container();
+        final energyLevel = capacity.capacityValue ?? 0;
+        final textStyle = context.textTheme.itemPrimaryStatHighDensity;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(width: 20, child: Image.asset('assets/imgs/energy-type-icon.png')),
+            Text(
+              "$energyLevel",
+              style: textStyle,
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget buildCharacterName(BuildContext context) {
@@ -245,16 +254,18 @@ class DuplicatedItemWidget extends StatelessWidget {
         textExtractor: (def) => def.genderedClassNamesByGenderHash?["${character.character.genderHash}"],
       );
 
-      return Row(children: [
-        characterName,
-        if (item.bucketHash == InventoryBucket.lostItems)
-          Container(
-            height: _tagIconSize,
-            width: _tagIconSize,
-            child: PostmasterIconWidget(),
-            margin: EdgeInsets.only(left: 2),
-          )
-      ]);
+      return Row(
+        children: [
+          characterName,
+          if (item.bucketHash == InventoryBucket.lostItems)
+            Container(
+              height: _tagIconSize,
+              width: _tagIconSize,
+              child: PostmasterIconWidget(),
+              margin: EdgeInsets.only(left: 2),
+            ),
+        ],
+      );
     }
 
     if (item.bucketHash == InventoryBucket.general) {
@@ -314,26 +325,29 @@ class DuplicatedItemWidget extends StatelessWidget {
   }
 
   Widget buildModsAndTags(BuildContext context) => Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          buildItemTags(context),
-          buildWishlistTags(context),
-          buildWeaponMods(context),
-        ],
-      );
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      buildItemTags(context),
+      buildWishlistTags(context),
+      buildWeaponMods(context),
+    ],
+  );
 
   Widget buildItemTags(BuildContext context) {
     final notes = context.watch<ItemNotesBloc>();
     final tags = notes.tagsFor(item.itemHash, item.instanceId);
     if (tags == null || tags.isEmpty) return Container();
     return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: tags
-            .map((e) => TagIconWidget.fromTag(
-                  e,
-                  size: _tagIconSize,
-                ))
-            .toList());
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: tags
+          .map(
+            (e) => TagIconWidget.fromTag(
+              e,
+              size: _tagIconSize,
+            ),
+          )
+          .toList(),
+    );
   }
 
   Widget buildWishlistTags(BuildContext context) {
@@ -351,13 +365,14 @@ class DuplicatedItemWidget extends StatelessWidget {
             child: WishlistBadgesWidget(wishlistTags, size: _tagIconSize),
           ),
         Container(
-            margin: EdgeInsets.only(right: 4),
-            width: _tagIconSize,
-            height: _tagIconSize,
-            child: CenterIconWorkaround(
-              FontAwesomeIcons.lock,
-              size: _tagIconSize * .7,
-            )),
+          margin: EdgeInsets.only(right: 4),
+          width: _tagIconSize,
+          height: _tagIconSize,
+          child: CenterIconWorkaround(
+            FontAwesomeIcons.lock.data,
+            size: _tagIconSize * .7,
+          ),
+        ),
       ],
     );
   }

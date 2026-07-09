@@ -39,11 +39,12 @@ class CharacterContextMenu extends BaseOverlayWidget {
     return Stack(
       children: [
         Positioned(
-            bottom: sourceBottom + kToolbarHeight + viewPadding.bottom,
-            left: 0,
-            top: 0,
-            right: sourceRight,
-            child: buildMenuItems(context)),
+          bottom: sourceBottom + kToolbarHeight + viewPadding.bottom,
+          left: 0,
+          top: 0,
+          right: sourceRight,
+          child: buildMenuItems(context),
+        ),
         Positioned(
           left: sourceLeft,
           height: kToolbarHeight,
@@ -69,9 +70,10 @@ class CharacterContextMenu extends BaseOverlayWidget {
         child: Stack(
           children: [
             Positioned.fill(
-                child: GestureDetector(
-              onTap: () => Navigator.of(context).pop(),
-            )),
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+              ),
+            ),
             Container(
               constraints: BoxConstraints(maxWidth: 544),
               child: Column(
@@ -81,26 +83,29 @@ class CharacterContextMenu extends BaseOverlayWidget {
                   buildGrindOptimizer(context),
                   buildPostmasterOptions(context),
                   IntrinsicHeight(
-                    child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                      Expanded(child: buildUtilitiesMenu(context)),
-                      SizedBox(
-                        width: 4,
-                      ),
-                      Expanded(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            buildSearchButton(context),
-                            Container(height: 4),
-                            buildCharacterSelect(context),
-                          ],
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(child: buildUtilitiesMenu(context)),
+                        SizedBox(
+                          width: 4,
                         ),
-                      ),
-                    ]),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              buildSearchButton(context),
+                              Container(height: 4),
+                              buildCharacterSelect(context),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ].whereType<Widget>().toList(),
               ),
-            )
+            ),
           ],
         ),
       ),
@@ -123,13 +128,15 @@ class CharacterContextMenu extends BaseOverlayWidget {
   Widget buildSearchButton(BuildContext context) {
     return ElevatedButton(
       style: ButtonStyle(visualDensity: VisualDensity.standard),
-      child: Row(children: [
-        Icon(FontAwesomeIcons.magnifyingGlass, size: 16),
-        SizedBox(
-          width: 4,
-        ),
-        Text("Search".translate(context).toUpperCase()),
-      ]),
+      child: Row(
+        children: [
+          const FaIcon(FontAwesomeIcons.magnifyingGlass, size: 16),
+          SizedBox(
+            width: 4,
+          ),
+          Text("Search".translate(context).toUpperCase()),
+        ],
+      ),
       onPressed: bloc.onSearchTap,
     );
   }
@@ -146,10 +153,11 @@ class CharacterContextMenu extends BaseOverlayWidget {
     final character = state.character;
     if (character == null) return null;
     return MenuBox(
-        child: CharacterGrindOptimizerWidget(
-      character: character,
-      onClose: () => Navigator.of(context).pop(),
-    ));
+      child: CharacterGrindOptimizerWidget(
+        character: character,
+        onClose: () => Navigator.of(context).pop(),
+      ),
+    );
   }
 
   Widget? buildEquipLoadout(BuildContext context) {
@@ -167,8 +175,8 @@ class CharacterContextMenu extends BaseOverlayWidget {
   }
 
   Widget buildCharacterSelect(BuildContext context) => CharacterVerticalTabMenuWidget(
-        state.characters ?? [],
-        charactersTabController,
-        onSelect: (_) => Navigator.of(context).pop(),
-      );
+    state.characters ?? [],
+    charactersTabController,
+    onSelect: (_) => Navigator.of(context).pop(),
+  );
 }

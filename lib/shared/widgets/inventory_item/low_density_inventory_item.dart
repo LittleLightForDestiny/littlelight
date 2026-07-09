@@ -49,15 +49,17 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   Widget buildWithDefinition(BuildContext context, DestinyInventoryItemDefinition? definition) {
     final badges = buildWishlistCornerBadges(context, definition);
     return RepaintBoundary(
-        child: ClipRRect(
-            child: Stack(
-      fit: StackFit.expand,
-      children: [
-        Positioned.fill(child: buildItemIcon(context, definition)),
-        if (badges != null) Positioned.fill(child: badges),
-        Positioned(left: 2, bottom: 2, right: 2, top: 2, child: buildItemInfo(context, definition)),
-      ],
-    )));
+      child: ClipRRect(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            Positioned.fill(child: buildItemIcon(context, definition)),
+            if (badges != null) Positioned.fill(child: badges),
+            Positioned(left: 2, bottom: 2, right: 2, top: 2, child: buildItemInfo(context, definition)),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildItemIcon(BuildContext context, DestinyInventoryItemDefinition? definition) {
@@ -77,24 +79,27 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
           builder: (context, snapshot) {
             final imgUrl = snapshot.data?.displayProperties?.icon;
             if (imgUrl == null) return Container();
-            return Stack(children: [
-              Positioned.fill(
-                child: CustomPaint(
-                  painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1),
+            return Stack(
+              children: [
+                Positioned.fill(
+                  child: CustomPaint(
+                    painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1),
+                  ),
                 ),
-              ),
-              Positioned.fill(
-                child: Container(
+                Positioned.fill(
+                  child: Container(
                     padding: const EdgeInsets.all(2),
                     child: CustomPaint(
                       painter: DiamondShapePainter.color(subclassColor),
-                    )),
-              ),
-              Container(
-                padding: const EdgeInsets.all(2),
-                child: QueuedNetworkImage.fromBungie(imgUrl),
-              ),
-            ]);
+                    ),
+                  ),
+                ),
+                Container(
+                  padding: const EdgeInsets.all(2),
+                  child: QueuedNetworkImage.fromBungie(imgUrl),
+                ),
+              ],
+            );
           },
         ),
       ),
@@ -157,20 +162,22 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
       Padding(
         padding: const EdgeInsets.only(right: 6),
         child: Transform.translate(
-            offset: Offset(0, 1),
-            child: Icon(
-              ammoType?.icon,
-              color: ammoType?.color,
-              size: textStyle.fontSize,
-            )),
+          offset: Offset(0, 1),
+          child: Icon(
+            ammoType?.icon,
+            color: ammoType?.color,
+            size: textStyle.fontSize,
+          ),
+        ),
       ),
       Flexible(
-          child: Text(
-        "$powerLevel",
-        style: textStyle.copyWith(color: damageColor),
-        overflow: TextOverflow.fade,
-        softWrap: false,
-      )),
+        child: Text(
+          "$powerLevel",
+          style: textStyle.copyWith(color: damageColor),
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
+      ),
     ]);
   }
 
@@ -181,54 +188,57 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
       Padding(
         padding: const EdgeInsets.only(right: 2),
         child: FutureBuilder<DestinyEnergyCapacityEntry?>(
-            future: getEnergyCapacity(manifest, item, definition),
-            builder: (context, snapshot) {
-              final capacity = snapshot.data;
-              if (capacity == null) return Container();
-              final energyLevel = capacity.capacityValue ?? 0;
-              final textStyle = context.textTheme.itemPrimaryStatLowDensity;
-              return IntrinsicHeight(
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    Text(
-                      "$energyLevel",
-                      style: textStyle.copyWith(color: context.theme.onSurfaceLayers.layer1),
-                    ),
-                    Container(
-                      margin: EdgeInsets.all(2).copyWith(right: 0),
-                      color: context.theme.onSurfaceLayers,
-                      width: .5,
-                    ),
-                  ],
-                ),
-              );
-            }),
-      ),
-      Flexible(
-          child: Text(
-        "$powerLevel",
-        style: textStyle,
-        overflow: TextOverflow.fade,
-        softWrap: false,
-      )),
-    ]);
-  }
-
-  Widget buildGhostPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
-    return buildInfoContainer(context, [
-      FutureBuilder<DestinyEnergyCapacityEntry?>(
           future: getEnergyCapacity(manifest, item, definition),
           builder: (context, snapshot) {
             final capacity = snapshot.data;
             if (capacity == null) return Container();
             final energyLevel = capacity.capacityValue ?? 0;
             final textStyle = context.textTheme.itemPrimaryStatLowDensity;
-            return Text(
-              "$energyLevel",
-              style: textStyle,
+            return IntrinsicHeight(
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Text(
+                    "$energyLevel",
+                    style: textStyle.copyWith(color: context.theme.onSurfaceLayers.layer1),
+                  ),
+                  Container(
+                    margin: EdgeInsets.all(2).copyWith(right: 0),
+                    color: context.theme.onSurfaceLayers,
+                    width: .5,
+                  ),
+                ],
+              ),
             );
-          }),
+          },
+        ),
+      ),
+      Flexible(
+        child: Text(
+          "$powerLevel",
+          style: textStyle,
+          overflow: TextOverflow.fade,
+          softWrap: false,
+        ),
+      ),
+    ]);
+  }
+
+  Widget buildGhostPrimaryStat(BuildContext context, DestinyInventoryItemDefinition definition) {
+    return buildInfoContainer(context, [
+      FutureBuilder<DestinyEnergyCapacityEntry?>(
+        future: getEnergyCapacity(manifest, item, definition),
+        builder: (context, snapshot) {
+          final capacity = snapshot.data;
+          if (capacity == null) return Container();
+          final energyLevel = capacity.capacityValue ?? 0;
+          final textStyle = context.textTheme.itemPrimaryStatLowDensity;
+          return Text(
+            "$energyLevel",
+            style: textStyle,
+          );
+        },
+      ),
     ]);
   }
 
@@ -241,7 +251,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
           objectiveHashes,
           objectives: item.objectives?.objectives,
         ),
-      )
+      ),
     ]);
   }
 
@@ -284,7 +294,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
       height: _tagIconSize,
       width: _tagIconSize,
       child: Icon(
-        FontAwesomeIcons.lock,
+        FontAwesomeIcons.lock.data,
         size: _tagIconSize - 2,
         color: definition?.inventory?.tierType?.getTextColor(context),
       ),
@@ -299,25 +309,27 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
   }
 
   Widget? buildCraftedLevel(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final craftableObjectives =
-        context.select<CraftablesHelperBloc, List<DestinyObjectiveProgress>?>((p) => p.getItemCraftedObjectives(item));
+    final craftableObjectives = context.select<CraftablesHelperBloc, List<DestinyObjectiveProgress>?>(
+      (p) => p.getItemCraftedObjectives(item),
+    );
     final level = craftableObjectives?.elementAtOrNull(1)?.progress;
     if (level == null) return null;
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer1,
-          border: Border.all(color: context.theme.highlightedObjectiveLayers),
-          borderRadius: BorderRadius.circular(4),
+      padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer1,
+        border: Border.all(color: context.theme.highlightedObjectiveLayers),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      margin: EdgeInsets.symmetric(horizontal: 1),
+      child: Text(
+        "Lv{level}".translate(context, replace: {"level": " $level"}),
+        style: context.textTheme.itemPrimaryStatLowDensity.copyWith(
+          color: context.theme.highlightedObjectiveLayers.layer1,
+          height: 1,
         ),
-        margin: EdgeInsets.symmetric(horizontal: 1),
-        child: Text(
-          "Lv{level}".translate(context, replace: {"level": " $level"}),
-          style: context.textTheme.itemPrimaryStatLowDensity.copyWith(
-            color: context.theme.highlightedObjectiveLayers.layer1,
-            height: 1,
-          ),
-        ));
+      ),
+    );
   }
 
   Widget? buildPatternProgress(BuildContext context, DestinyInventoryItemDefinition? definition) {
@@ -325,27 +337,29 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
     final itemHash = definition?.hash;
     if (itemHash == null) return null;
     if (recipeHash == null || recipeHash == 0) return null;
-    final patternProgress =
-        context.select<CraftablesHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
+    final patternProgress = context.select<CraftablesHelperBloc, DestinyRecordComponent?>(
+      (p) => p.getPatternProgressRecord(itemHash),
+    );
     if (patternProgress == null) return null;
     final progress = patternProgress.objectives?.firstOrNull?.progress;
     final total = patternProgress.objectives?.firstOrNull?.completionValue;
     if (total == null || progress == null) return null;
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer1,
-          border: Border.all(color: context.theme.highlightedObjectiveLayers),
-          borderRadius: BorderRadius.circular(4),
+      padding: EdgeInsets.symmetric(vertical: 1, horizontal: 2),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer1,
+        border: Border.all(color: context.theme.highlightedObjectiveLayers),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      margin: EdgeInsets.symmetric(horizontal: 1),
+      child: Text(
+        "$progress/$total",
+        style: context.textTheme.itemPrimaryStatLowDensity.copyWith(
+          color: context.theme.highlightedObjectiveLayers.layer1,
+          height: 1,
         ),
-        margin: EdgeInsets.symmetric(horizontal: 1),
-        child: Text(
-          "$progress/$total",
-          style: context.textTheme.itemPrimaryStatLowDensity.copyWith(
-            color: context.theme.highlightedObjectiveLayers.layer1,
-            height: 1,
-          ),
-        ));
+      ),
+    );
   }
 
   Widget? buildWishlistCornerBadges(BuildContext context, DestinyInventoryItemDefinition? definition) {
@@ -406,12 +420,13 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
           ),
         ),
         Flexible(
-            child: Text(
-          "$powerLevel",
-          style: textStyle.copyWith(color: damageColor),
-          overflow: TextOverflow.fade,
-          softWrap: false,
-        )),
+          child: Text(
+            "$powerLevel",
+            style: textStyle.copyWith(color: damageColor),
+            overflow: TextOverflow.fade,
+            softWrap: false,
+          ),
+        ),
       ],
     );
   }
@@ -426,7 +441,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
         style: textStyle,
         softWrap: false,
         textAlign: TextAlign.right,
-      )
+      ),
     ]);
   }
 
@@ -445,7 +460,7 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
         style: textStyle,
         softWrap: false,
         textAlign: TextAlign.right,
-      )
+      ),
     ]);
   }
 
@@ -472,15 +487,16 @@ class LowDensityInventoryItem extends StatelessWidget with WishlistsConsumer, Ma
     final level = itemLevel * 10 + quality;
     final textStyle = context.textTheme.itemPrimaryStatLowDensity;
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: context.theme.surfaceLayers.layer0,
-        ),
-        child: Text(
-          "$level",
-          style: textStyle,
-        ));
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: context.theme.surfaceLayers.layer0,
+      ),
+      child: Text(
+        "$level",
+        style: textStyle,
+      ),
+    );
   }
 
   Widget? buildTotalStats(BuildContext context, DestinyInventoryItemDefinition? definition) {

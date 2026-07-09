@@ -50,13 +50,15 @@ class DetailsItemCoverPlugInfoWidget extends StatelessWidget {
       color: context.theme.surfaceLayers,
       width: 550 * pixelSize,
       alignment: Alignment.topCenter,
-      child: Column(children: [
-        buildHeader(context, selectedPlug),
-        Container(
-          padding: EdgeInsets.all(8 * pixelSize),
-          child: buildContent(context, selectedPlug),
-        ),
-      ]),
+      child: Column(
+        children: [
+          buildHeader(context, selectedPlug),
+          Container(
+            padding: EdgeInsets.all(8 * pixelSize),
+            child: buildContent(context, selectedPlug),
+          ),
+        ],
+      ),
     );
   }
 
@@ -79,41 +81,43 @@ class DetailsItemCoverPlugInfoWidget extends StatelessWidget {
               plugHash,
               noIconPlaceholder: Container(),
               placeholder: DefaultLoadingShimmer(
-                  child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(64),
-                  color: Colors.white,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(64),
+                    color: Colors.white,
+                  ),
                 ),
-              )),
+              ),
             ),
           ),
           SizedBox(width: 16 * pixelSize),
           Expanded(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ManifestText<DestinyInventoryItemDefinition>(
-                plugHash,
-                style: context.textTheme.title.copyWith(fontSize: 24 * pixelSize),
-                uppercase: true,
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-                softWrap: false,
-              ),
-              SizedBox(height: 2 * pixelSize),
-              ManifestText<DestinyInventoryItemDefinition>(
-                plugHash,
-                style: context.textTheme.body.copyWith(fontSize: 18 * pixelSize),
-                uppercase: true,
-                textExtractor: (def) => def.itemTypeDisplayName,
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-                softWrap: false,
-              ),
-            ],
-          )),
-          if (canFavorite) buildFavoriteButton(context, plugHash)
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ManifestText<DestinyInventoryItemDefinition>(
+                  plugHash,
+                  style: context.textTheme.title.copyWith(fontSize: 24 * pixelSize),
+                  uppercase: true,
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                  softWrap: false,
+                ),
+                SizedBox(height: 2 * pixelSize),
+                ManifestText<DestinyInventoryItemDefinition>(
+                  plugHash,
+                  style: context.textTheme.body.copyWith(fontSize: 18 * pixelSize),
+                  uppercase: true,
+                  textExtractor: (def) => def.itemTypeDisplayName,
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                  softWrap: false,
+                ),
+              ],
+            ),
+          ),
+          if (canFavorite) buildFavoriteButton(context, plugHash),
         ],
       ),
     );
@@ -123,52 +127,57 @@ class DetailsItemCoverPlugInfoWidget extends StatelessWidget {
     final state = context.watch<SocketControllerBloc>();
     final isFavorite = state.isFavoritePlug(plugHash);
     return Material(
-        color: Colors.transparent,
-        child: InkWell(
-          customBorder: CircleBorder(),
-          onTap: () {
-            context.read<SocketControllerBloc>().setFavoritePlug(plugHash, !isFavorite);
-          },
-          child: Container(
-            width: _perkIconSize * pixelSize,
-            height: _perkIconSize * pixelSize,
-            child: Icon(
-              isFavorite ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart,
-              size: 28 * pixelSize,
-            ),
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: CircleBorder(),
+        onTap: () {
+          context.read<SocketControllerBloc>().setFavoritePlug(plugHash, !isFavorite);
+        },
+        child: Container(
+          width: _perkIconSize * pixelSize,
+          height: _perkIconSize * pixelSize,
+          child: Icon(
+            isFavorite ? FontAwesomeIcons.solidHeart.data : FontAwesomeIcons.heart.data,
+            size: 28 * pixelSize,
           ),
-        ));
+        ),
+      ),
+    );
   }
 
-  Widget buildContent(BuildContext context, int plugHash) =>
-      Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        buildDescription(context, plugHash),
-        buildWishlistInfo(context, plugHash),
-        buildEnergyCost(context, plugHash),
-        buildSandBoxPerks(context, plugHash),
-        buildStats(context),
-        buildApplyButton(context, plugHash),
-      ]);
+  Widget buildContent(BuildContext context, int plugHash) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      buildDescription(context, plugHash),
+      buildWishlistInfo(context, plugHash),
+      buildEnergyCost(context, plugHash),
+      buildSandBoxPerks(context, plugHash),
+      buildStats(context),
+      buildApplyButton(context, plugHash),
+    ],
+  );
 
   Widget buildInfoContainer(BuildContext context, Widget child) => Container(
-      decoration: BoxDecoration(
-        color: context.theme.surfaceLayers.layer1,
-        borderRadius: BorderRadius.circular(4 * pixelSize),
-      ),
-      padding: EdgeInsets.all(8 * pixelSize),
-      margin: EdgeInsets.only(top: 8 * pixelSize),
-      child: child);
+    decoration: BoxDecoration(
+      color: context.theme.surfaceLayers.layer1,
+      borderRadius: BorderRadius.circular(4 * pixelSize),
+    ),
+    padding: EdgeInsets.all(8 * pixelSize),
+    margin: EdgeInsets.only(top: 8 * pixelSize),
+    child: child,
+  );
 
   Widget buildDescription(BuildContext context, int plugHash) {
     final definition = context.definition<DestinyInventoryItemDefinition>(plugHash);
     final description = definition?.displayProperties?.description;
     if (description == null || description.isEmpty) return Container();
     return Container(
-        margin: EdgeInsets.all(8 * pixelSize),
-        child: Text(
-          description,
-          style: context.textTheme.body.copyWith(fontSize: 18 * pixelSize),
-        ));
+      margin: EdgeInsets.all(8 * pixelSize),
+      child: Text(
+        description,
+        style: context.textTheme.body.copyWith(fontSize: 18 * pixelSize),
+      ),
+    );
   }
 
   Widget buildEnergyCost(BuildContext context, int plugHash) {
@@ -192,8 +201,10 @@ class DetailsItemCoverPlugInfoWidget extends StatelessWidget {
           Container(width: 32 * pixelSize, child: Image.asset('assets/imgs/energy-type-icon.png')),
           Container(
             padding: EdgeInsets.symmetric(horizontal: 16 * pixelSize),
-            child:
-                Text("$value", style: context.textTheme.itemPrimaryStatHighDensity.copyWith(fontSize: 48 * pixelSize)),
+            child: Text(
+              "$value",
+              style: context.textTheme.itemPrimaryStatHighDensity.copyWith(fontSize: 48 * pixelSize),
+            ),
           ),
           Text(
             text,
@@ -206,8 +217,10 @@ class DetailsItemCoverPlugInfoWidget extends StatelessWidget {
 
   Widget buildSandBoxPerks(BuildContext context, int plugHash) {
     final definition = context.definition<DestinyInventoryItemDefinition>(plugHash);
-    final perks =
-        definition?.perks?.map((perk) => buildSandBoxPerk(context, plugHash, perk)).whereType<Widget>().toList();
+    final perks = definition?.perks
+        ?.map((perk) => buildSandBoxPerk(context, plugHash, perk))
+        .whereType<Widget>()
+        .toList();
     if (perks == null) return Container();
     if (perks.isEmpty) return Container();
     return buildInfoContainer(
@@ -233,28 +246,30 @@ class DetailsItemCoverPlugInfoWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-              width: _perkIconSize * pixelSize,
-              height: _perkIconSize * pixelSize,
-              child: ManifestImageWidget<DestinySandboxPerkDefinition>(perk.perkHash)),
+            width: _perkIconSize * pixelSize,
+            height: _perkIconSize * pixelSize,
+            child: ManifestImageWidget<DestinySandboxPerkDefinition>(perk.perkHash),
+          ),
           SizedBox(width: 8 * pixelSize),
           Expanded(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ManifestText<DestinySandboxPerkDefinition>(
-                perk.perkHash,
-                style: context.textTheme.highlight.copyWith(fontSize: 18 * pixelSize),
-              ),
-              SizedBox(
-                height: 2,
-              ),
-              ManifestText<DestinySandboxPerkDefinition>(
-                perk.perkHash,
-                style: context.textTheme.body.copyWith(fontSize: 18 * pixelSize),
-                textExtractor: (def) => def.displayProperties?.description,
-              ),
-            ],
-          )),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ManifestText<DestinySandboxPerkDefinition>(
+                  perk.perkHash,
+                  style: context.textTheme.highlight.copyWith(fontSize: 18 * pixelSize),
+                ),
+                SizedBox(
+                  height: 2,
+                ),
+                ManifestText<DestinySandboxPerkDefinition>(
+                  perk.perkHash,
+                  style: context.textTheme.body.copyWith(fontSize: 18 * pixelSize),
+                  textExtractor: (def) => def.displayProperties?.description,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

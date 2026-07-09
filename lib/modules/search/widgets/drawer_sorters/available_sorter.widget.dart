@@ -36,7 +36,7 @@ class AvailableSorterWidget extends StatelessWidget {
             padding: EdgeInsets.all(8),
             child: Row(
               children: [
-                buildOptionButton(context, context.theme.primaryLayers.layer1, FontAwesomeIcons.plus),
+                buildOptionButton(context, context.theme.primaryLayers.layer1, FontAwesomeIcons.plus.data),
                 SizedBox(width: 8),
                 Expanded(
                   child: DefaultTextStyle(
