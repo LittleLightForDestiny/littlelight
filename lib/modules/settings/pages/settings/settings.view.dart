@@ -290,22 +290,29 @@ class SettingsView extends StatelessWidget {
       padding: EdgeInsets.all(4).copyWith(left: 8),
       margin: EdgeInsets.only(top: 4),
       decoration: BoxDecoration(color: context.theme.surfaceLayers.layer2, borderRadius: BorderRadius.circular(4)),
-      child: Row(
-        children: [
-          Expanded(child: label),
-          buildScreenAreaRadioSelector(
-            context,
-            ScrollAreaType.Characters,
-            value,
-            () => onChange(ScrollAreaType.Characters),
-          ),
-          buildScreenAreaRadioSelector(
-            context,
-            ScrollAreaType.Sections,
-            value,
-            () => onChange(ScrollAreaType.Sections),
-          ),
-        ],
+      child: RadioGroup<ScrollAreaType>(
+        groupValue: value,
+        onChanged: (value) {
+          if (value == null) return;
+          onChange(value);
+        },
+        child: Row(
+          children: [
+            Expanded(child: label),
+            buildScreenAreaRadioSelector(
+              context,
+              ScrollAreaType.Characters,
+              value,
+              () => onChange(ScrollAreaType.Characters),
+            ),
+            buildScreenAreaRadioSelector(
+              context,
+              ScrollAreaType.Sections,
+              value,
+              () => onChange(ScrollAreaType.Sections),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -326,7 +333,7 @@ class SettingsView extends StatelessWidget {
           padding: EdgeInsets.only(right: 8),
           child: Row(
             children: [
-              Radio(groupValue: selectedValue, value: value, onChanged: null),
+              Radio(value: value),
               Text(
                 value.label(context),
                 style: context.textTheme.highlight.copyWith(
