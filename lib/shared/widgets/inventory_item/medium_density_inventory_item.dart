@@ -561,28 +561,22 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
     final ammoType = definition.equippingBlock?.ammoType;
     final breakerType = IntrinsicBreakerUtils.getBreakerType(context, definition);
     return Container(
-        height: 20,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            if (breakerType != null)
-              Padding(
-                padding: const EdgeInsets.only(right: 2),
-                child: Icon(breakerType.icon, size: 12),
-              ),
+      height: 20,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          if (breakerType != null)
             Padding(
-              padding: const EdgeInsets.only(right: 6),
-              child: Icon(
-                ammoType?.icon,
-                color: ammoType?.color,
-                size: textStyle.fontSize,
-              ),
+              padding: const EdgeInsets.only(right: 2),
+              child: Icon(breakerType.icon, size: 12),
             ),
-            Text(
-              "$powerLevel",
-              style: textStyle.copyWith(color: damageColor),
-              softWrap: false,
+          Padding(
+            padding: const EdgeInsets.only(right: 6),
+            child: Icon(
+              ammoType?.icon,
+              color: ammoType?.color,
+              size: textStyle.fontSize,
             ),
           ),
           Text(
