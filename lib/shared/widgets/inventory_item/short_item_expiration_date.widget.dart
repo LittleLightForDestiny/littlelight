@@ -48,8 +48,9 @@ class ShortExpiryDateWidget extends StatelessWidget {
     final warningColor = context.theme.errorLayers.layer3.mix(context.theme.surfaceLayers, 30);
     final warningTextColor = context.theme.errorLayers.layer3.mix(context.theme.onSurfaceLayers, 30);
 
-    final style = (this.style ?? context.textTheme.caption)
-        .copyWith(color: warning ? context.theme.onSurfaceLayers : warningTextColor);
+    final style = (this.style ?? context.textTheme.caption).copyWith(
+      color: warning ? context.theme.onSurfaceLayers : warningTextColor,
+    );
     final bgColor = warning ? warningColor : context.theme.surfaceLayers.layer1;
     final field = Text(
       text,

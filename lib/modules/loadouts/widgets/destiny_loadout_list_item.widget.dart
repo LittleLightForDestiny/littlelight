@@ -80,7 +80,12 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
         ),
       ),
       padding: EdgeInsets.symmetric(horizontal: 8),
-      child: Row(children: [Expanded(child: buildLoadoutName(context)), buildLoadoutIcon(context)]),
+      child: Row(
+        children: [
+          Expanded(child: buildLoadoutName(context)),
+          buildLoadoutIcon(context),
+        ],
+      ),
     );
   }
 
@@ -95,7 +100,7 @@ class DestinyLoadoutListItemWidget extends StatelessWidget {
   Widget buildLoadoutIcon(BuildContext context) {
     final iconDef = context.definition<DestinyLoadoutIconDefinition>(loadout.loadout.iconHash);
     if (iconDef == null) {
-      return Container(width: 24, height: 24, child: Icon(FontAwesomeIcons.squarePlus, size: 18));
+      return Container(width: 24, height: 24, child: const FaIcon(FontAwesomeIcons.squarePlus, size: 18));
     }
     return Container(width: 24, height: 24, child: QueuedNetworkImage.fromBungie(iconDef.iconImagePath));
   }

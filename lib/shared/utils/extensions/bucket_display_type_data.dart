@@ -18,7 +18,7 @@ extension BucketDisplayTypeData on BucketDisplayType {
   IconData get equippableIcon {
     switch (this) {
       case BucketDisplayType.Hidden:
-        return FontAwesomeIcons.eyeSlash;
+        return FontAwesomeIcons.eyeSlash.data;
       case BucketDisplayType.OnlyEquipped:
         return LittleLightIcons.icon_display_options_equipped_only;
       case BucketDisplayType.Large:
@@ -33,7 +33,7 @@ extension BucketDisplayTypeData on BucketDisplayType {
   IconData get nonEquippableIcon {
     switch (this) {
       case BucketDisplayType.Hidden:
-        return FontAwesomeIcons.eyeSlash;
+        return FontAwesomeIcons.eyeSlash.data;
       case BucketDisplayType.OnlyEquipped:
         return LittleLightIcons.icon_display_options_equipped_only;
       case BucketDisplayType.Large:

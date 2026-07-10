@@ -31,13 +31,14 @@ class DetailsPlugStatsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer1,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        margin: EdgeInsets.only(top: 4),
-        padding: EdgeInsets.all(4),
-        child: buildTable(context));
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer1,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      margin: EdgeInsets.only(top: 4),
+      padding: EdgeInsets.all(4),
+      child: buildTable(context),
+    );
   }
 
   Widget buildTable(BuildContext context) {
@@ -61,46 +62,50 @@ class DetailsPlugStatsWidget extends StatelessWidget {
       children: [
         Container(),
         Container(
+          alignment: Alignment.center,
+          child: Container(
+            width: plugIconSize,
+            height: plugIconSize,
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(selectedPlugHash),
+          ),
+        ),
+        if (!omitComparison)
+          Container(
             alignment: Alignment.center,
             child: Container(
               width: plugIconSize,
               height: plugIconSize,
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(selectedPlugHash),
-            )),
-        if (!omitComparison)
-          Container(
-              alignment: Alignment.center,
-              child: Container(
-                width: plugIconSize,
-                height: plugIconSize,
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(equippedPlugHash),
-              )),
-        if (!omitComparison) Icon(FontAwesomeIcons.plusMinus, size: comparisonIconSize),
+              child: ManifestImageWidget<DestinyInventoryItemDefinition>(equippedPlugHash),
+            ),
+          ),
+        if (!omitComparison) FaIcon(FontAwesomeIcons.plusMinus, size: comparisonIconSize),
       ],
     );
   }
 
   TableRow buildStatRow(BuildContext context, StatComparison stat) {
-    return TableRow(children: [
-      ManifestText<DestinyStatDefinition>(
-        stat.statHash,
-        textAlign: TextAlign.end,
-        softWrap: false,
-        overflow: TextOverflow.fade,
-        style: context.textTheme.body.copyWith(fontSize: fontSize),
-      ),
-      buildStatValue(context, stat.selected, stat.selectedDiffType),
-      if (!omitComparison) buildStatValue(context, stat.equipped, stat.equippedDiffType),
-      if (!omitComparison) buildStatValue(context, stat.diff, stat.diffType),
-    ]);
+    return TableRow(
+      children: [
+        ManifestText<DestinyStatDefinition>(
+          stat.statHash,
+          textAlign: TextAlign.end,
+          softWrap: false,
+          overflow: TextOverflow.fade,
+          style: context.textTheme.body.copyWith(fontSize: fontSize),
+        ),
+        buildStatValue(context, stat.selected, stat.selectedDiffType),
+        if (!omitComparison) buildStatValue(context, stat.equipped, stat.equippedDiffType),
+        if (!omitComparison) buildStatValue(context, stat.diff, stat.diffType),
+      ],
+    );
   }
 
   Widget buildStatValue(BuildContext context, int value, StatDifferenceType diffType) {
     final color = diffType == StatDifferenceType.Neutral
         ? context.theme.onSurfaceLayers.layer0
         : diffType == StatDifferenceType.Positive
-            ? context.theme.successLayers.layer3
-            : context.theme.errorLayers.layer3;
+        ? context.theme.successLayers.layer3
+        : context.theme.errorLayers.layer3;
     final text = value > 0 ? "+$value" : "$value";
     return Text(
       text,

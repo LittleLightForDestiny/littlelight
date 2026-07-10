@@ -80,26 +80,29 @@ abstract class BasePersistentNotificationWidget<T extends BasePersistentNotifica
   }
 
   Widget buildCloseButton(BuildContext context, T notification) {
-    return Stack(children: [
-      Container(
-        alignment: Alignment.center,
-        width: 32,
-        height: 32,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(32),
-          border: Border.all(width: 2, color: context.theme.onSurfaceLayers),
-          color: context.theme.errorLayers.layer0.mix(context.theme.onSurfaceLayers.layer0, 20),
+    return Stack(
+      children: [
+        Container(
+          alignment: Alignment.center,
+          width: 32,
+          height: 32,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(32),
+            border: Border.all(width: 2, color: context.theme.onSurfaceLayers),
+            color: context.theme.errorLayers.layer0.mix(context.theme.onSurfaceLayers.layer0, 20),
+          ),
+          child: CenterIconWorkaround(FontAwesomeIcons.xmark.data, size: 20, color: context.theme.onSurfaceLayers),
         ),
-        child: CenterIconWorkaround(FontAwesomeIcons.xmark, size: 20, color: context.theme.onSurfaceLayers),
-      ),
-      Positioned.fill(
-        child: Material(
+        Positioned.fill(
+          child: Material(
             color: Colors.transparent,
             child: InkWell(
               customBorder: CircleBorder(),
               onTap: () => this.notification.close(),
-            )),
-      ),
-    ]);
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

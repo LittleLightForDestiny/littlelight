@@ -6,67 +6,68 @@ publish_to: none
 version: 2.2.4+2002004
 
 environment:
-  sdk: ^3.7.2
-  flutter: ^3.32.7
+  sdk: ^3.12.2
+  flutter: ^3.44.5
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_localizations:
     sdk: flutter
-  tinycolor2: ^3.0.1
-  shared_preferences: ^2.2.3
-  archive: ^4.0.7
-  sqflite: ^2.3.3+1
-  path_provider: ^2.1.5
-  font_awesome_flutter: ^10.8.0
-  bungie_api: 13.21.0
-  shimmer: ^3.0.0
-  timeago: ^3.6.1
 
-  firebase_analytics: ^11.0.1
-  flutter_dotenv: ^5.1.0
-  url_launcher: ^6.3.0
-  wakelock_plus: ^1.2.5
-  flutter_advanced_switch: ^3.1.0
-  flutter_switch: ^0.3.2
-  logger: ^2.3.0
-
-  package_info_plus: ^8.0.0
-
-  device_info_plus: ^11.4.0
-
-  cached_network_image: ^3.3.1
-  in_app_review: ^2.0.10
-
-  flutter_linkify: ^6.0.0
-
-  bubble: ^1.2.1
-
-  get_it: ^7.7.0
-  provider: ^6.1.2
-  flutter_phoenix: ^1.1.1
-  json_annotation: ^4.9.0
-
-  app_links: ^6.4.1
+  # native bridges
+  device_info_plus: ^13.2.0
+  package_info_plus: ^10.2.0 
+  wakelock_plus: ^1.6.1
+  app_links: ^7.2.1
+  shared_preferences: ^2.5.5
+  sqflite: ^2.4.3
+  path_provider: ^2.1.6
+  url_launcher: ^6.3.2
+  in_app_review: ^2.0.12
   protocol_registry: ^0.0.5
-  firebase_crashlytics: ^4.0.1
+
+  # api clients
+  bungie_api:
+    path: ../bungie-api-dart
+
+  # dependency_injection
+  get_it: ^9.2.1   
+  provider: ^6.1.5+1
+
+  # configuration
+  flutter_dotenv: ^6.0.1
+
+  # analytics
+  firebase_analytics: ^12.4.3 
+  firebase_crashlytics: ^5.2.4
+  
+  # ui utils
+  tinycolor2: ^3.0.1
+  font_awesome_flutter: ^11.0.0
+  shimmer: ^3.0.0
+  timeago: ^3.7.1
+  flutter_switch: ^0.3.2
+  cached_network_image: ^3.4.1
+  flutter_linkify: ^6.0.0
+  bubble: ^1.2.1
+  
+  # utils
+  archive: ^4.0.9
+  logger: ^2.7.0
+  flutter_phoenix: ^1.1.1
+  json_annotation: ^4.12.0
+
 
 dev_dependencies:
-  build_runner: ^2.4.9
-  json_serializable: ^6.8.0
-  analyzer: ^7.4.5
-  sqflite_common_ffi: ^2.3.3
   flutter_test:
     sdk: flutter
-  msix: ^3.16.7
+  build_runner: ^2.15.1
+  json_serializable: ^6.14.0
+  analyzer: ^13.0.0
+  sqflite_common_ffi: ^2.4.2
+  msix: ^3.18.0
 
-dependency_overrides: 
-  in_app_review:
-    git:
-      url: https://github.com/LittleLightForDestiny/in_app_review
-      ref: v2.0.11
-      path: in_app_review
 
 # For information on the generic Dart part of this file, see the
 # following page: https://www.dartlang.org/tools/pub/pubspec

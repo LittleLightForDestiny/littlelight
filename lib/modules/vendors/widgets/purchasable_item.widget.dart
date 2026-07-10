@@ -20,10 +20,12 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
 
   @override
   Widget buildForeground(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    return Column(children: [
-      Container(height: 96.0, child: super.buildForeground(context, definition)),
-      Expanded(child: buildCost(context)),
-    ]);
+    return Column(
+      children: [
+        Container(height: 96.0, child: super.buildForeground(context, definition)),
+        Expanded(child: buildCost(context)),
+      ],
+    );
   }
 
   @override
@@ -52,7 +54,7 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
       return Container(
         margin: EdgeInsets.only(right: 4),
         child: Icon(
-          FontAwesomeIcons.solidCircleCheck,
+          FontAwesomeIcons.solidCircleCheck.data,
           color: definition?.inventory?.tierType?.getTextColor(context),
           size: 18,
         ),
@@ -89,12 +91,13 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
-                  Text(
-                    "Cost:".translate(context).toUpperCase(),
-                    style: context.textTheme.highlight,
-                  ),
-                  buildCostCurrencies(context),
-                ])
+                Text(
+                  "Cost:".translate(context).toUpperCase(),
+                  style: context.textTheme.highlight,
+                ),
+                buildCostCurrencies(context),
+              ],
+            )
           : null,
     );
   }
@@ -104,23 +107,25 @@ class PurchasableItemWidget extends HighDensityInventoryItem {
     if (costs == null) return Container();
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      child: Row(children: [
-        for (final c in costs)
-          Container(
-            margin: EdgeInsets.only(left: 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Container(
-                  width: 20,
-                  height: 20,
-                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(c.itemHash),
-                ),
-                Text("${c.quantity}"),
-              ],
+      child: Row(
+        children: [
+          for (final c in costs)
+            Container(
+              margin: EdgeInsets.only(left: 4),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 20,
+                    height: 20,
+                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(c.itemHash),
+                  ),
+                  Text("${c.quantity}"),
+                ],
+              ),
             ),
-          )
-      ]),
+        ],
+      ),
     );
   }
 }

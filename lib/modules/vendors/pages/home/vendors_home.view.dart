@@ -19,11 +19,7 @@ class VendorsHomeView extends StatelessWidget {
   final VendorsHomeBloc bloc;
   final VendorsHomeBloc state;
 
-  const VendorsHomeView(
-    this.bloc,
-    this.state, {
-    Key? key,
-  }) : super(key: key);
+  const VendorsHomeView(this.bloc, this.state, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,33 +35,22 @@ class VendorsHomeView extends StatelessWidget {
           body: Stack(
             children: [
               Positioned.fill(
-                child: Column(children: [
-                  SizedBox(
-                    height: viewPadding.top + kToolbarHeight + 2,
-                  ),
-                  Expanded(
-                    child: Stack(children: [
-                      Positioned.fill(child: buildTabContent(context, characterTabController)),
-                      Positioned.fill(
-                          child: CustomTabGestureDetector(
-                        controller: characterTabController,
-                      )),
-                      Positioned(
-                        left: 8,
-                        bottom: 8,
-                        right: 8,
-                        child: const NotificationsWidget(),
+                child: Column(
+                  children: [
+                    SizedBox(height: viewPadding.top + kToolbarHeight + 2),
+                    Expanded(
+                      child: Stack(
+                        children: [
+                          Positioned.fill(child: buildTabContent(context, characterTabController)),
+                          Positioned.fill(child: CustomTabGestureDetector(controller: characterTabController)),
+                          Positioned(left: 8, bottom: 8, right: 8, child: const NotificationsWidget()),
+                          Positioned(bottom: 0, left: 0, right: 0, child: const BusyIndicatorLineWidget()),
+                        ],
                       ),
-                      Positioned(
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        child: const BusyIndicatorLineWidget(),
-                      ),
-                    ]),
-                  ),
-                  SelectedItemsWidget(),
-                ]),
+                    ),
+                    SelectedItemsWidget(),
+                  ],
+                ),
               ),
               Positioned(
                 top: 0,
@@ -75,15 +60,15 @@ class VendorsHomeView extends StatelessWidget {
                 child: buildTabHeader(context, characterTabController),
               ),
               Positioned(
-                  top: 0 + viewPadding.top,
-                  right: 16,
-                  child: Row(children: [
+                top: 0 + viewPadding.top,
+                right: 16,
+                child: Row(
+                  children: [
                     buildReorderButton(context),
-                    CharacterHeaderTabMenuWidget(
-                      characters,
-                      characterTabController,
-                    ),
-                  ])),
+                    CharacterHeaderTabMenuWidget(characters, characterTabController),
+                  ],
+                ),
+              ),
               Positioned(
                 top: 0 + viewPadding.top,
                 left: 0,
@@ -107,22 +92,24 @@ class VendorsHomeView extends StatelessWidget {
 
   Widget buildReorderButton(BuildContext context) {
     return IconButton(
-        enableFeedback: false,
-        icon: state.reordering
-            ? const Icon(FontAwesomeIcons.check)
-            : Transform.rotate(angle: pi / 2, child: const Icon(FontAwesomeIcons.rightLeft)),
-        onPressed: () => bloc.toggleReordering());
+      enableFeedback: false,
+      icon: state.reordering
+          ? const FaIcon(FontAwesomeIcons.check)
+          : Transform.rotate(angle: pi / 2, child: const FaIcon(FontAwesomeIcons.rightLeft)),
+      onPressed: () => bloc.toggleReordering(),
+    );
   }
 
   Widget buildTabHeader(BuildContext context, CustomTabController characterTabController) {
     final characters = state.characters;
     if (characters == null) return buildLoadingAppBar(context);
     return CustomTabPassiveView(
-        controller: characterTabController,
-        pageBuilder: (context, index) {
-          final character = characters[index];
-          return CharacterTabHeaderWidget(character);
-        });
+      controller: characterTabController,
+      pageBuilder: (context, index) {
+        final character = characters[index];
+        return CharacterTabHeaderWidget(character);
+      },
+    );
   }
 
   Widget buildLoadingAppBar(BuildContext context) {
@@ -147,43 +134,39 @@ class VendorsHomeView extends StatelessWidget {
     final vendors = state.vendorsFor(characterId);
     if (vendors == null) return LoadingAnimWidget();
     if (state.reordering) return buildReorderList(context, characterId, vendors);
-    return VendorsListWidget(
-      vendors,
-      onTapVendor: (vendor) => bloc.openVendorDetails(characterId, vendor),
-    );
+    return VendorsListWidget(vendors, onTapVendor: (vendor) => bloc.openVendorDetails(characterId, vendor));
   }
 
   Widget buildReorderList(BuildContext context, String characterId, List<VendorData> vendors) {
     var screenPadding = MediaQuery.of(context).padding;
 
     return ReorderableList(
-        itemCount: vendors.length,
-        itemBuilder: (context, index) {
-          final vendor = vendors[index];
-          return VendorsReorderingListItemWidget(
-            vendor,
-            index,
-            key: Key("reorder_vendors_${vendor.vendor.vendorHash}"),
-          );
-        },
-        itemExtent: 60,
-        padding: const EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-        onReorder: (oldIndex, newIndex) => bloc.reorderVendors(characterId, oldIndex, newIndex));
+      itemCount: vendors.length,
+      itemBuilder: (context, index) {
+        final vendor = vendors[index];
+        return VendorsReorderingListItemWidget(vendor, index, key: Key("reorder_vendors_${vendor.vendor.vendorHash}"));
+      },
+      itemExtent: 60,
+      padding: const EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+      onReorderItem: (oldIndex, newIndex) => bloc.reorderVendors(characterId, oldIndex, newIndex),
+    );
   }
 
   Widget buildHandle(BuildContext context, int index) {
     return ReorderableDragStartListener(
-        index: index,
-        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))));
+      index: index,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Container(color: Colors.transparent, child: const Icon(Icons.menu)),
+      ),
+    );
   }
 
   Widget buildTabPanGestureDetector(BuildContext context, CustomTabController tabController) {
     return Stack(
       children: [
         IgnorePointer(child: Container(color: Colors.red.withValues(alpha: .3))),
-        CustomTabGestureDetector(
-          controller: tabController,
-        ),
+        CustomTabGestureDetector(controller: tabController),
       ],
     );
   }

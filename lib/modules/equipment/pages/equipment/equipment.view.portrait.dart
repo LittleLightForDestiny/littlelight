@@ -49,52 +49,59 @@ class EquipmentPortraitView extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Column(children: [
-              SizedBox(
-                height: viewPadding.top + kToolbarHeight + 2,
-              ),
-              Expanded(
-                child: Stack(children: [
-                  Positioned.fill(child: buildTabContent(context)),
-                  Positioned.fill(
-                    child: buildScrollGestureDetectors(context),
-                  ),
-                  Positioned.fill(
-                    child: buildScrollIndicators(context),
-                  ),
-                  Positioned(
-                    left: 8,
-                    bottom: 8,
-                    right: 8,
-                    child: const NotificationsWidget(),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: const BusyIndicatorLineWidget(),
-                  ),
-                ]),
-              ),
-              SelectedItemsWidget(),
-              Container(
-                height: kToolbarHeight + viewPadding.bottom,
-                decoration: BoxDecoration(
-                    color: context.theme.surfaceLayers,
-                    border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3))),
-                child: Stack(children: [
-                  Row(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: viewPadding.top + kToolbarHeight + 2,
+                ),
+                Expanded(
+                  child: Stack(
                     children: [
-                      EquipmentTypeTabMenuWidget(typeTabController),
-                      Expanded(
-                        child: buildCharacterContextMenuButton(context),
+                      Positioned.fill(child: buildTabContent(context)),
+                      Positioned.fill(
+                        child: buildScrollGestureDetectors(context),
+                      ),
+                      Positioned.fill(
+                        child: buildScrollIndicators(context),
+                      ),
+                      Positioned(
+                        left: 8,
+                        bottom: 8,
+                        right: 8,
+                        child: const NotificationsWidget(),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: const BusyIndicatorLineWidget(),
                       ),
                     ],
                   ),
-                  Positioned(bottom: 0, left: 0, right: 0, child: BusyIndicatorBottomGradientWidget()),
-                ]),
-              ),
-            ]),
+                ),
+                SelectedItemsWidget(),
+                Container(
+                  height: kToolbarHeight + viewPadding.bottom,
+                  decoration: BoxDecoration(
+                    color: context.theme.surfaceLayers,
+                    border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3)),
+                  ),
+                  child: Stack(
+                    children: [
+                      Row(
+                        children: [
+                          EquipmentTypeTabMenuWidget(typeTabController),
+                          Expanded(
+                            child: buildCharacterContextMenuButton(context),
+                          ),
+                        ],
+                      ),
+                      Positioned(bottom: 0, left: 0, right: 0, child: BusyIndicatorBottomGradientWidget()),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           Positioned(
             top: 0,
@@ -104,16 +111,19 @@ class EquipmentPortraitView extends StatelessWidget {
             child: buildTabHeader(context),
           ),
           Positioned(
-              top: 0 + viewPadding.top,
-              right: 8,
-              child: Row(children: [
+            top: 0 + viewPadding.top,
+            right: 8,
+            child: Row(
+              children: [
                 buildSearchButton(context),
                 CharacterHeaderTabMenuWidget(
                   characters,
                   characterTabController,
                   vaultItemCount: state.vaultItemCount,
-                )
-              ])),
+                ),
+              ],
+            ),
+          ),
           Positioned(
             top: 0 + viewPadding.top,
             left: 0,
@@ -137,12 +147,13 @@ class EquipmentPortraitView extends StatelessWidget {
     final characters = state.characters;
     if (characters == null) return buildLoadingAppBar(context);
     return CustomTabPassiveView(
-        controller: characterTabController,
-        pageBuilder: (context, index) {
-          final character = characters[index];
-          if (character != null) return CharacterTabHeaderWidget(character);
-          return VaultTabHeaderWidget();
-        });
+      controller: characterTabController,
+      pageBuilder: (context, index) {
+        final character = characters[index];
+        if (character != null) return CharacterTabHeaderWidget(character);
+        return VaultTabHeaderWidget();
+      },
+    );
   }
 
   Widget buildLoadingAppBar(BuildContext context) {
@@ -157,14 +168,15 @@ class EquipmentPortraitView extends StatelessWidget {
       pageBuilder: (context, index) {
         final character = characters[index];
         return CustomTabPassiveView(
-            controller: typeTabController,
-            pageBuilder: (context, index) {
-              final tab = EquipmentBucketGroup.values[index];
-              if (character != null) {
-                return buildCharacterTabContent(context, tab, character);
-              }
-              return buildVaultTabContent(context, tab);
-            });
+          controller: typeTabController,
+          pageBuilder: (context, index) {
+            final tab = EquipmentBucketGroup.values[index];
+            if (character != null) {
+              return buildCharacterTabContent(context, tab, character);
+            }
+            return buildVaultTabContent(context, tab);
+          },
+        );
       },
     );
   }
@@ -173,11 +185,13 @@ class EquipmentPortraitView extends StatelessWidget {
     final bucketHashes = tab.bucketHashes;
     final currencies = state.relevantCurrencies;
     final buckets = bucketHashes
-        .map((h) => EquipmentCharacterBucketContent(
-              h,
-              equipped: state.getEquippedItem(character, h),
-              unequipped: state.getUnequippedItems(character, h) ?? [],
-            ))
+        .map(
+          (h) => EquipmentCharacterBucketContent(
+            h,
+            equipped: state.getEquippedItem(character, h),
+            unequipped: state.getUnequippedItems(character, h) ?? [],
+          ),
+        )
         .toList();
     return EquipmentCharacterTabContentWidget(
       character,
@@ -221,19 +235,23 @@ class EquipmentPortraitView extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Container(
-              padding: EdgeInsets.only(bottom: viewPadding.bottom),
-              child: CurrentCharacterTabIndicator(
-                characters,
-                characterTabController,
-              )),
+            padding: EdgeInsets.only(bottom: viewPadding.bottom),
+            child: CurrentCharacterTabIndicator(
+              characters,
+              characterTabController,
+            ),
+          ),
           Positioned.fill(
-              child: Material(
-            color: Colors.transparent,
-            key: CharacterContextMenu.menuButtonKey,
-            child: InkWell(onTap: () {
-              bloc.openContextMenu(characterTabController, typeTabController);
-            }),
-          ))
+            child: Material(
+              color: Colors.transparent,
+              key: CharacterContextMenu.menuButtonKey,
+              child: InkWell(
+                onTap: () {
+                  bloc.openContextMenu(characterTabController, typeTabController);
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -243,19 +261,21 @@ class EquipmentPortraitView extends StatelessWidget {
     BuildContext context,
   ) {
     return AnimatedBuilder(
-        animation: typeTabController,
-        builder: (context, child) => AnimatedBuilder(
-            animation: characterTabController,
-            builder: (context, child) => AnimatedOpacity(
-                  duration: _animationDuration,
-                  opacity: typeTabController.isDragging || characterTabController.isDragging ? 1 : 0,
-                  child: DividerIndicatorOverlay(
-                    activeTypes: {
-                      ScrollAreaType.Characters: characterTabController.isDragging,
-                      ScrollAreaType.Sections: typeTabController.isDragging,
-                    },
-                  ),
-                )));
+      animation: typeTabController,
+      builder: (context, child) => AnimatedBuilder(
+        animation: characterTabController,
+        builder: (context, child) => AnimatedOpacity(
+          duration: _animationDuration,
+          opacity: typeTabController.isDragging || characterTabController.isDragging ? 1 : 0,
+          child: DividerIndicatorOverlay(
+            activeTypes: {
+              ScrollAreaType.Characters: characterTabController.isDragging,
+              ScrollAreaType.Sections: typeTabController.isDragging,
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildScrollGestureDetectors(
@@ -268,22 +288,26 @@ class EquipmentPortraitView extends StatelessWidget {
   }
 
   Widget buildSearchButton(BuildContext context) {
-    return Stack(children: [
-      Container(
-        width: kToolbarHeight,
-        height: kToolbarHeight,
-        child: Icon(FontAwesomeIcons.magnifyingGlass),
-      ),
-      Positioned.fill(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(onTap: () {
-            final currentBucketGroup = EquipmentBucketGroup.values[typeTabController.index];
-            final currentClassType = state.characters?[characterTabController.index]?.character.classType;
-            bloc.openSearch(currentBucketGroup, currentClassType);
-          }),
+    return Stack(
+      children: [
+        Container(
+          width: kToolbarHeight,
+          height: kToolbarHeight,
+          child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
         ),
-      ),
-    ]);
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                final currentBucketGroup = EquipmentBucketGroup.values[typeTabController.index];
+                final currentClassType = state.characters?[characterTabController.index]?.character.classType;
+                bloc.openSearch(currentBucketGroup, currentClassType);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

@@ -46,7 +46,6 @@ build/
 **/android/.keys
 **/android/**/.cxx
 
-
 # iOS/XCode related
 **/ios/**/*.mode1v3
 **/ios/**/*.mode2v3
@@ -83,7 +82,6 @@ build/
 !**/ios/**/default.perspectivev3
 !/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
 
-
 #fastlane
 fastlane/report.xml
 fastlane/*.html
@@ -95,3 +93,6 @@ fastlane/*.html
 
 #keys
 /**/.keys
+
+# FVM Version Cache
+.fvm/

@@ -17,22 +17,25 @@ class SelectTagsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        constraints: BoxConstraints(maxHeight: context.mediaQuery.size.height * .8),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Flexible(
-                child: SingleChildScrollView(
-                    child: Column(
-              children: [
-                buildRemoveTags(context),
-                buildAddTags(context),
-              ],
-            ))),
-            buildAction(context),
-          ],
-        ));
+      constraints: BoxConstraints(maxHeight: context.mediaQuery.size.height * .8),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                children: [
+                  buildRemoveTags(context),
+                  buildAddTags(context),
+                ],
+              ),
+            ),
+          ),
+          buildAction(context),
+        ],
+      ),
+    );
   }
 
   Widget buildRemoveTags(BuildContext context) {
@@ -48,7 +51,7 @@ class SelectTagsView extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8),
-          ...tagsToRemove.map((t) => buildTag(context, t, remove: true))
+          ...tagsToRemove.map((t) => buildTag(context, t, remove: true)),
         ],
       ),
     );
@@ -67,7 +70,7 @@ class SelectTagsView extends StatelessWidget {
             ),
           ),
           SizedBox(height: 8),
-          ...tagsToAdd.map((t) => buildTag(context, t))
+          ...tagsToAdd.map((t) => buildTag(context, t)),
         ],
       ),
     );
@@ -96,7 +99,7 @@ class SelectTagsView extends StatelessWidget {
   Widget buildEditButton(BuildContext context, ItemNotesTag tag) {
     return buildButton(
       context,
-      FontAwesomeIcons.solidPenToSquare,
+      FontAwesomeIcons.solidPenToSquare.data,
       context.theme.primaryLayers,
       onTap: () => bloc.edit(tag),
     );
@@ -105,7 +108,7 @@ class SelectTagsView extends StatelessWidget {
   Widget buildDeleteButton(BuildContext context, ItemNotesTag tag) {
     return buildButton(
       context,
-      FontAwesomeIcons.trash,
+      FontAwesomeIcons.trash.data,
       context.theme.errorLayers,
       onTap: () => bloc.delete(tag),
     );
@@ -114,29 +117,31 @@ class SelectTagsView extends StatelessWidget {
   Widget buildButton(BuildContext context, IconData icon, Color color, {VoidCallback? onTap}) {
     return Container(
       margin: EdgeInsets.only(left: 4),
-      child: Stack(children: [
-        Container(
-          width: 32,
-          height: 32,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(32),
-            color: color,
-          ),
-          child: Icon(
-            icon,
-            size: 16,
-          ),
-        ),
-        Positioned.fill(
-          child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              customBorder: CircleBorder(),
-              onTap: onTap,
+      child: Stack(
+        children: [
+          Container(
+            width: 32,
+            height: 32,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(32),
+              color: color,
+            ),
+            child: Icon(
+              icon,
+              size: 16,
             ),
           ),
-        ),
-      ]),
+          Positioned.fill(
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                customBorder: CircleBorder(),
+                onTap: onTap,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -144,26 +149,27 @@ class SelectTagsView extends StatelessWidget {
     return Container(
       color: context.theme.surfaceLayers.layer3,
       child: SafeArea(
-          minimum: EdgeInsets.all(12),
-          top: false,
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: context.theme.errorLayers),
-                  onPressed: bloc.cancel,
-                  child: Text("Cancel".translate(context)),
-                ),
+        minimum: EdgeInsets.all(12),
+        top: false,
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: context.theme.errorLayers),
+                onPressed: bloc.cancel,
+                child: Text("Cancel".translate(context)),
               ),
-              SizedBox(width: 8),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: bloc.create,
-                  child: Text("Create".translate(context)),
-                ),
-              )
-            ],
-          )),
+            ),
+            SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: bloc.create,
+                child: Text("Create".translate(context)),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

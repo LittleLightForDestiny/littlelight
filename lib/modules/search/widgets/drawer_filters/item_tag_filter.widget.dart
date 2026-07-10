@@ -25,21 +25,25 @@ class ItemTagFilterWidget extends BaseDrawerFilterWidget<ItemTagFilterOptions> {
     final availableTags = allTags.where((t) => availableValues.contains(t.tagId));
     final showNone = availableValues.contains(null);
     return Column(
-      children: availableTags
+      children:
+          availableTags
               .map(
                 (tag) => FilterButtonWidget(
-                  Row(children: [
-                    Icon(
-                      tag.iconData,
-                      color: tag.foregroundColor,
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
+                  Row(
+                    children: [
+                      Icon(
+                        tag.iconData,
+                        color: tag.foregroundColor,
+                      ),
+                      SizedBox(width: 8),
+                      Expanded(
                         child: Text(
-                      (tag.custom ? tag.name : tag.name.translate(context)).toUpperCase(),
-                      style: TextStyle(inherit: true, color: tag.foregroundColor),
-                    )),
-                  ]),
+                          (tag.custom ? tag.name : tag.name.translate(context)).toUpperCase(),
+                          style: TextStyle(inherit: true, color: tag.foregroundColor),
+                        ),
+                      ),
+                    ],
+                  ),
                   background: Container(color: tag.backgroundColor),
                   selected: values.contains(tag.tagId),
                   onTap: () => updateOption(context, data, tag.tagId, false),
@@ -50,18 +54,21 @@ class ItemTagFilterWidget extends BaseDrawerFilterWidget<ItemTagFilterOptions> {
           [
             if (showNone)
               FilterButtonWidget(
-                Row(children: [
-                  Icon(
-                    FontAwesomeIcons.ban,
-                    color: context.theme.onSurfaceLayers.layer1,
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
+                Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.ban,
+                      color: context.theme.onSurfaceLayers.layer1,
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
                       child: Text(
-                    "None".translate(context).toUpperCase(),
-                    style: TextStyle(inherit: true, color: context.theme.onSurfaceLayers.layer1),
-                  )),
-                ]),
+                        "None".translate(context).toUpperCase(),
+                        style: TextStyle(inherit: true, color: context.theme.onSurfaceLayers.layer1),
+                      ),
+                    ),
+                  ],
+                ),
                 selected: values.contains(null),
                 onTap: () => updateOption(context, data, null, false),
                 onLongPress: () => updateOption(context, data, null, true),
@@ -72,10 +79,11 @@ class ItemTagFilterWidget extends BaseDrawerFilterWidget<ItemTagFilterOptions> {
 
   Widget buildIcon(BuildContext context, DamageType type) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: Icon(
-          type.icon,
-          color: type.getColorLayer(context).layer3,
-        ));
+      padding: EdgeInsets.all(4),
+      child: Icon(
+        type.icon,
+        color: type.getColorLayer(context).layer3,
+      ),
+    );
   }
 }

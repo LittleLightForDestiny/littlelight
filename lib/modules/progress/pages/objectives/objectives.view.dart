@@ -24,39 +24,29 @@ class ObjectivesView extends StatelessWidget {
   final ObjectivesBloc bloc;
   final ObjectivesBloc state;
 
-  const ObjectivesView(
-    this.bloc,
-    this.state, {
-    Key? key,
-  }) : super(key: key);
+  const ObjectivesView(this.bloc, this.state, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          leading: IconButton(
-            enableFeedback: false,
-            icon: const Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
-          ),
-          centerTitle: false,
-          actions: [
-            buildSmallItemOption(context),
-            buildLargeItemOption(context),
-            buildReorderButton(context),
-          ],
-          title: Text("Objectives".translate(context))),
-      body: Stack(children: [
-        state.reordering ? buildReorderingBody(context) : buildBody(context),
-        Positioned(
-          bottom: 0,
-          left: 0,
-          right: 0,
-          child: buildNotifications(context),
+        leading: IconButton(
+          enableFeedback: false,
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
         ),
-      ]),
+        centerTitle: false,
+        actions: [buildSmallItemOption(context), buildLargeItemOption(context), buildReorderButton(context)],
+        title: Text("Objectives".translate(context)),
+      ),
+      body: Stack(
+        children: [
+          state.reordering ? buildReorderingBody(context) : buildBody(context),
+          Positioned(bottom: 0, left: 0, right: 0, child: buildNotifications(context)),
+        ],
+      ),
     );
   }
 
@@ -67,27 +57,26 @@ class ObjectivesView extends StatelessWidget {
     }
     if (objectives.isEmpty) {
       return Container(
-          padding: EdgeInsets.all(4),
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Text(
-                  "You aren't tracking any objectives yet. Add one from Triumphs or Pursuits.".translate(context),
-                  textAlign: TextAlign.center,
-                ),
-              ]));
+        padding: EdgeInsets.all(4),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Text(
+              "You aren't tracking any objectives yet. Add one from Triumphs or Pursuits.".translate(context),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      );
     }
     return MultiSectionScrollView(
       [
         IntrinsicHeightScrollSection(
-            itemBuilder: (context, index) => buildItem(context, objectives[index]),
-            itemCount: objectives.length,
-            itemsPerRow: context.mediaQuery.responsiveValue(
-              1,
-              tablet: 2,
-              desktop: 3,
-            )),
+          itemBuilder: (context, index) => buildItem(context, objectives[index]),
+          itemCount: objectives.length,
+          itemsPerRow: context.mediaQuery.responsiveValue(1, tablet: 2, desktop: 3),
+        ),
       ],
       mainAxisSpacing: 2,
       crossAxisSpacing: 2,
@@ -100,53 +89,20 @@ class ObjectivesView extends StatelessWidget {
     switch (objective.type) {
       case TrackedObjectiveType.Triumph:
         final record = state.getRecord(objective);
-        if (useSmall)
-          return buildButton(
-            context,
-            objective,
-            RecordItemWidget(
-              objective.hash,
-              progress: record,
-            ),
-          );
-        return buildButton(
-          context,
-          objective,
-          ObjectiveTrackingRecordItemWidget(
-            objective.hash,
-            progress: record,
-          ),
-        );
+        if (useSmall) return buildButton(context, objective, RecordItemWidget(objective.hash, progress: record));
+        return buildButton(context, objective, ObjectiveTrackingRecordItemWidget(objective.hash, progress: record));
       case TrackedObjectiveType.Item:
         final item = state.getItem(objective);
         if (item == null) return Container();
-        if (useSmall)
-          return buildButton(
-            context,
-            objective,
-            HighDensityInventoryItem(item),
-          );
-        return buildButton(
-          context,
-          objective,
-          ObjectiveTrackingBountyItemWidget(item),
-        );
+        if (useSmall) return buildButton(context, objective, HighDensityInventoryItem(item));
+        return buildButton(context, objective, ObjectiveTrackingBountyItemWidget(item));
       case TrackedObjectiveType.Plug:
         return Text("plug ${objective.hash}");
       case TrackedObjectiveType.Questline:
         final item = state.getItem(objective);
         if (item == null) return Container();
-        if (useSmall)
-          return buildButton(
-            context,
-            objective,
-            HighDensityInventoryItem(item),
-          );
-        return buildButton(
-          context,
-          objective,
-          ObjectiveTrackingQuestlineItemWidget(item),
-        );
+        if (useSmall) return buildButton(context, objective, HighDensityInventoryItem(item));
+        return buildButton(context, objective, ObjectiveTrackingQuestlineItemWidget(item));
     }
   }
 
@@ -157,9 +113,7 @@ class ObjectivesView extends StatelessWidget {
         Positioned.fill(
           child: Material(
             color: Colors.transparent,
-            child: InkWell(
-              onTap: () => bloc.openDetails(objective),
-            ),
+            child: InkWell(onTap: () => bloc.openDetails(objective)),
           ),
         ),
       ],
@@ -170,78 +124,68 @@ class ObjectivesView extends StatelessWidget {
     final hasBottomPadding = context.mediaQuery.viewPadding.bottom > 0;
     return Column(
       children: [
-        Container(
-          padding: EdgeInsets.all(8),
-          child: NotificationsWidget(),
-        ),
+        Container(padding: EdgeInsets.all(8), child: NotificationsWidget()),
         hasBottomPadding ? BusyIndicatorBottomGradientWidget() : BusyIndicatorLineWidget(),
       ],
     );
   }
 
   Widget buildReorderButton(BuildContext context) => buildIconButton(
-        context,
-        state.reordering
-            ? Icon(FontAwesomeIcons.check)
-            : Transform.rotate(angle: pi / 2, child: const Icon(FontAwesomeIcons.rightLeft)),
-        onTap: () => bloc.toggleReordering(),
-      );
+    context,
+    state.reordering
+        ? const FaIcon(FontAwesomeIcons.check)
+        : Transform.rotate(angle: pi / 2, child: const FaIcon(FontAwesomeIcons.rightLeft)),
+    onTap: () => bloc.toggleReordering(),
+  );
 
   Widget buildReorderingBody(BuildContext context) {
     var screenPadding = MediaQuery.of(context).padding;
 
     return ReorderableList(
-        itemCount: state.objectives?.length ?? 0,
-        itemBuilder: (context, index) {
-          return buildSortItem(context, index);
-        },
-        itemExtent: 72,
-        padding: const EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-        onReorder: (oldIndex, newIndex) => bloc.reorderObjectives(oldIndex, newIndex));
+      itemCount: state.objectives?.length ?? 0,
+      itemBuilder: (context, index) {
+        return buildSortItem(context, index);
+      },
+      itemExtent: 72,
+      padding: const EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+      onReorderItem: (oldIndex, newIndex) => bloc.reorderObjectives(oldIndex, newIndex),
+    );
   }
 
   Widget buildSortItem(BuildContext context, int index) {
     final objective = state.objectives?[index];
     if (objective == null) return Container();
     return Container(
-        key: Key("objective-tracking-${index}"),
-        margin: const EdgeInsets.symmetric(vertical: 4),
-        color: Colors.transparent,
-        child: ObjectiveTrackingReorderingItemWidget(index, objective, item: state.getItem(objective)));
+      key: Key("objective-tracking-${index}"),
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      color: Colors.transparent,
+      child: ObjectiveTrackingReorderingItemWidget(index, objective, item: state.getItem(objective)),
+    );
   }
 
   Widget buildSmallItemOption(BuildContext context) => buildIconButton(
-        context,
-        Icon(LittleLightIcons.icon_display_options_list),
-        selected: state.viewMode == ObjectiveViewMode.Small,
-        onTap: () => bloc.viewMode = ObjectiveViewMode.Small,
-      );
+    context,
+    Icon(LittleLightIcons.icon_display_options_list),
+    selected: state.viewMode == ObjectiveViewMode.Small,
+    onTap: () => bloc.viewMode = ObjectiveViewMode.Small,
+  );
 
   Widget buildLargeItemOption(BuildContext context) => buildIconButton(
-        context,
-        Icon(LittleLightIcons.icon_display_options_details),
-        selected: state.viewMode == ObjectiveViewMode.Large,
-        onTap: () => bloc.viewMode = ObjectiveViewMode.Large,
-      );
+    context,
+    Icon(LittleLightIcons.icon_display_options_details),
+    selected: state.viewMode == ObjectiveViewMode.Large,
+    onTap: () => bloc.viewMode = ObjectiveViewMode.Large,
+  );
 
-  Widget buildIconButton(
-    BuildContext context,
-    Widget icon, {
-    bool selected = false,
-    VoidCallback? onTap,
-  }) =>
-      Material(
-        color: selected ? context.theme.secondarySurfaceLayers.layer3 : Colors.transparent,
-        child: InkWell(
-          enableFeedback: false,
-          child: AspectRatio(
-            aspectRatio: 1,
-            child: Container(
-              padding: EdgeInsets.all(8),
-              child: icon,
-            ),
-          ),
-          onTap: onTap,
-        ),
-      );
+  Widget buildIconButton(BuildContext context, Widget icon, {bool selected = false, VoidCallback? onTap}) => Material(
+    color: selected ? context.theme.secondarySurfaceLayers.layer3 : Colors.transparent,
+    child: InkWell(
+      enableFeedback: false,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Container(padding: EdgeInsets.all(8), child: icon),
+      ),
+      onTap: onTap,
+    ),
+  );
 }

@@ -59,58 +59,67 @@ class ProgressView extends StatelessWidget {
             body: Stack(
               children: [
                 Positioned.fill(
-                  child: Column(children: [
-                    SizedBox(
-                      height: viewPadding.top + kToolbarHeight + 2,
-                    ),
-                    Expanded(
-                      child: Stack(children: [
-                        Positioned.fill(child: buildTabContent(context, characterTabController, typeTabController)),
-                        Positioned.fill(
-                            child: buildScrollGestureDetectors(
-                          context,
-                          characterTabController,
-                          typeTabController,
-                        )),
-                        Positioned.fill(
-                            child: buildScrollIndicators(
-                          context,
-                          characterTabController,
-                          typeTabController,
-                        )),
-                        Positioned(
-                          left: 8,
-                          bottom: 8,
-                          right: 8,
-                          child: const NotificationsWidget(),
-                        ),
-                        Positioned(
-                          bottom: 0,
-                          left: 0,
-                          right: 0,
-                          child: const BusyIndicatorLineWidget(),
-                        ),
-                      ]),
-                    ),
-                    SelectedItemsWidget(),
-                    Container(
-                      height: kToolbarHeight + viewPadding.bottom,
-                      decoration: BoxDecoration(
-                          color: context.theme.surfaceLayers,
-                          border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3))),
-                      child: Stack(children: [
-                        Row(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: viewPadding.top + kToolbarHeight + 2,
+                      ),
+                      Expanded(
+                        child: Stack(
                           children: [
-                            ProgressTypeTabMenuWidget(typeTabController),
-                            Expanded(
-                              child: buildCharacterContextMenuButton(context, characterTabController),
+                            Positioned.fill(child: buildTabContent(context, characterTabController, typeTabController)),
+                            Positioned.fill(
+                              child: buildScrollGestureDetectors(
+                                context,
+                                characterTabController,
+                                typeTabController,
+                              ),
+                            ),
+                            Positioned.fill(
+                              child: buildScrollIndicators(
+                                context,
+                                characterTabController,
+                                typeTabController,
+                              ),
+                            ),
+                            Positioned(
+                              left: 8,
+                              bottom: 8,
+                              right: 8,
+                              child: const NotificationsWidget(),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: const BusyIndicatorLineWidget(),
                             ),
                           ],
                         ),
-                        Positioned(bottom: 0, left: 0, right: 0, child: BusyIndicatorBottomGradientWidget()),
-                      ]),
-                    ),
-                  ]),
+                      ),
+                      SelectedItemsWidget(),
+                      Container(
+                        height: kToolbarHeight + viewPadding.bottom,
+                        decoration: BoxDecoration(
+                          color: context.theme.surfaceLayers,
+                          border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3)),
+                        ),
+                        child: Stack(
+                          children: [
+                            Row(
+                              children: [
+                                ProgressTypeTabMenuWidget(typeTabController),
+                                Expanded(
+                                  child: buildCharacterContextMenuButton(context, characterTabController),
+                                ),
+                              ],
+                            ),
+                            Positioned(bottom: 0, left: 0, right: 0, child: BusyIndicatorBottomGradientWidget()),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 Positioned(
                   top: 0,
@@ -158,11 +167,12 @@ class ProgressView extends StatelessWidget {
     final characters = state.characters;
     if (characters == null) return buildLoadingAppBar(context);
     return CustomTabPassiveView(
-        controller: characterTabController,
-        pageBuilder: (context, index) {
-          final character = characters[index];
-          return CharacterTabHeaderWidget(character);
-        });
+      controller: characterTabController,
+      pageBuilder: (context, index) {
+        final character = characters[index];
+        return CharacterTabHeaderWidget(character);
+      },
+    );
   }
 
   Widget buildLoadingAppBar(BuildContext context) {
@@ -170,7 +180,10 @@ class ProgressView extends StatelessWidget {
   }
 
   Widget buildTabContent(
-      BuildContext context, CustomTabController characterTabController, CustomTabController typeTabController) {
+    BuildContext context,
+    CustomTabController characterTabController,
+    CustomTabController typeTabController,
+  ) {
     final characters = state.characters;
     if (characters == null) return Container();
     return CustomTabPassiveView(
@@ -178,11 +191,12 @@ class ProgressView extends StatelessWidget {
       pageBuilder: (context, index) {
         final character = characters[index];
         return CustomTabPassiveView(
-            controller: typeTabController,
-            pageBuilder: (context, index) {
-              final tab = ProgressTab.values[index];
-              return buildCharacterTabContent(context, tab, character);
-            });
+          controller: typeTabController,
+          pageBuilder: (context, index) {
+            final tab = ProgressTab.values[index];
+            return buildCharacterTabContent(context, tab, character);
+          },
+        );
       },
     );
   }
@@ -213,7 +227,8 @@ class ProgressView extends StatelessWidget {
   Widget buildPursuitsTabContent(BuildContext context, ProgressTab tab, DestinyCharacterInfo character) {
     final questCategories = state.pursuitCategoriesFor(character);
     final currencies = state.relevantCurrencies;
-    final quests = questCategories
+    final quests =
+        questCategories
             ?.map((h) => QuestsCharacterContent(h, items: state.getQuestsForCategory(character, h) ?? []))
             .toList() ??
         [];
@@ -245,19 +260,23 @@ class ProgressView extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Container(
-              padding: EdgeInsets.only(bottom: viewPadding.bottom),
-              child: CurrentCharacterTabIndicator(
-                characters,
-                characterTabController,
-              )),
+            padding: EdgeInsets.only(bottom: viewPadding.bottom),
+            child: CurrentCharacterTabIndicator(
+              characters,
+              characterTabController,
+            ),
+          ),
           Positioned.fill(
-              key: CharacterContextMenu.menuButtonKey,
-              child: Material(
-                color: Colors.transparent,
-                child: InkWell(onTap: () {
+            key: CharacterContextMenu.menuButtonKey,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                onTap: () {
                   bloc.openContextMenu(characterTabController);
-                }),
-              ))
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -269,19 +288,21 @@ class ProgressView extends StatelessWidget {
     CustomTabController typeTabController,
   ) {
     return AnimatedBuilder(
-        animation: typeTabController,
-        builder: (context, child) => AnimatedBuilder(
-            animation: characterTabController,
-            builder: (context, child) => AnimatedOpacity(
-                  duration: _animationDuration,
-                  opacity: typeTabController.isDragging || characterTabController.isDragging ? 1 : 0,
-                  child: DividerIndicatorOverlay(
-                    activeTypes: {
-                      ScrollAreaType.Characters: characterTabController.isDragging,
-                      ScrollAreaType.Sections: typeTabController.isDragging,
-                    },
-                  ),
-                )));
+      animation: typeTabController,
+      builder: (context, child) => AnimatedBuilder(
+        animation: characterTabController,
+        builder: (context, child) => AnimatedOpacity(
+          duration: _animationDuration,
+          opacity: typeTabController.isDragging || characterTabController.isDragging ? 1 : 0,
+          child: DividerIndicatorOverlay(
+            activeTypes: {
+              ScrollAreaType.Characters: characterTabController.isDragging,
+              ScrollAreaType.Sections: typeTabController.isDragging,
+            },
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildScrollGestureDetectors(
@@ -296,20 +317,24 @@ class ProgressView extends StatelessWidget {
   }
 
   Widget buildSearchButton(BuildContext context) {
-    return Stack(children: [
-      Container(
-        width: kToolbarHeight,
-        height: kToolbarHeight,
-        child: Icon(FontAwesomeIcons.magnifyingGlass),
-      ),
-      Positioned.fill(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(onTap: () {
-            bloc.openSearch();
-          }),
+    return Stack(
+      children: [
+        Container(
+          width: kToolbarHeight,
+          height: kToolbarHeight,
+          child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
         ),
-      ),
-    ]);
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                bloc.openSearch();
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

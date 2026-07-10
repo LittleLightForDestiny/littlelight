@@ -27,10 +27,11 @@ class MilestoneItemRewardsCategoryWidget extends StatelessWidget {
         style: context.textTheme.button,
       ),
       content: Row(
-        children: entries //
-            .map((entry) => buildRewardEntry(context, entry))
-            .whereType<Widget>()
-            .toList(),
+        children:
+            entries //
+                .map((entry) => buildRewardEntry(context, entry))
+                .whereType<Widget>()
+                .toList(),
       ),
       onTap: onTap,
     );
@@ -41,9 +42,11 @@ class MilestoneItemRewardsCategoryWidget extends StatelessWidget {
     final items = entryDef?.items;
     if (items == null || items.isEmpty) return null;
     return Row(
-        children: items //
-            .map((item) => buildRewardItem(context, item: item, entry: entry))
-            .toList());
+      children:
+          items //
+              .map((item) => buildRewardItem(context, item: item, entry: entry))
+              .toList(),
+    );
   }
 
   Widget buildRewardItem(
@@ -52,12 +55,14 @@ class MilestoneItemRewardsCategoryWidget extends StatelessWidget {
     required DestinyItemQuantity item,
   }) {
     return Opacity(
-        opacity: (entry.earned ?? false) ? 1 : .6,
-        child: Container(
-          width: 24,
-          height: 24,
-          margin: EdgeInsets.only(right: 4),
-          child: Stack(clipBehavior: Clip.none, children: [
+      opacity: (entry.earned ?? false) ? 1 : .6,
+      child: Container(
+        width: 24,
+        height: 24,
+        margin: EdgeInsets.only(right: 4),
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
             ManifestImageWidget<DestinyInventoryItemDefinition>(item.itemHash),
             if (entry.redeemed ?? false)
               Positioned(
@@ -70,13 +75,15 @@ class MilestoneItemRewardsCategoryWidget extends StatelessWidget {
                     color: context.theme.upgradeLayers.layer0,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
+                  child: const FaIcon(
                     FontAwesomeIcons.check,
                     size: 8,
                   ),
                 ),
               ),
-          ]),
-        ));
+          ],
+        ),
+      ),
+    );
   }
 }

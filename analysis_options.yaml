@@ -27,3 +27,7 @@ linter:
 
 # Additional information about this file can be found at
 # https://dart.dev/guides/language/analysis-options
+
+formatter:
+  trailing_commas: preserve  # Restores manual control over line breaks via commas
+  page_width: 120            # Optional: Expands the maximum line wrap threshold

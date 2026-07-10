@@ -38,16 +38,15 @@ abstract class BaseActiveNotificationWidget<T extends ActionNotification> extend
     return AnimatedSize(
       key: Key("animated size $id"),
       duration: _animationDuration,
-      child:
-          notification.dismissAnimationFinished
-              ? Container()
-              : AnimatedSlide(
-                key: Key("animated transfer slide $id"),
-                duration: _animationDuration,
-                curve: Easing.legacyAccelerate,
-                offset: Offset(notification.shouldPlayDismissAnimation ? 1.5 : 0, 0),
-                child: Container(padding: const EdgeInsets.only(bottom: 4), child: child),
-              ),
+      child: notification.dismissAnimationFinished
+          ? Container()
+          : AnimatedSlide(
+              key: Key("animated transfer slide $id"),
+              duration: _animationDuration,
+              curve: Easing.legacyAccelerate,
+              offset: Offset(notification.shouldPlayDismissAnimation ? 1.5 : 0, 0),
+              child: Container(padding: const EdgeInsets.only(bottom: 4), child: child),
+            ),
     );
   }
 
@@ -65,17 +64,18 @@ abstract class BaseActiveNotificationWidget<T extends ActionNotification> extend
           mainAxisSize: MainAxisSize.min,
           children: [
             if (transferProgress != null)
-              Flexible(child: Container(child: transferProgress, padding: EdgeInsets.only(right: 8))),
+              Flexible(
+                child: Container(child: transferProgress, padding: EdgeInsets.only(right: 8)),
+              ),
             SizedBox(width: _iconSize, height: _iconSize, child: buildIcon(context)),
             AnimatedSize(
               duration: _animationDuration,
-              child:
-                  notification.finishedWithSuccess
-                      ? Container(
-                        padding: const EdgeInsets.only(left: 8),
-                        child: Icon(FontAwesomeIcons.squareCheck, size: 24, color: context.theme.successLayers),
-                      )
-                      : Container(),
+              child: notification.finishedWithSuccess
+                  ? Container(
+                      padding: const EdgeInsets.only(left: 8),
+                      child: FaIcon(FontAwesomeIcons.squareCheck, size: 24, color: context.theme.successLayers),
+                    )
+                  : Container(),
             ),
           ],
         ),
@@ -84,10 +84,9 @@ abstract class BaseActiveNotificationWidget<T extends ActionNotification> extend
           Container(
             margin: const EdgeInsets.only(top: 8),
             child: Column(
-              children:
-                  notification.errorMessages
-                      .map((message) => Text(message, style: context.textTheme.body, textAlign: TextAlign.end))
-                      .toList(),
+              children: notification.errorMessages
+                  .map((message) => Text(message, style: context.textTheme.body, textAlign: TextAlign.end))
+                  .toList(),
             ),
           ),
       ],
@@ -109,7 +108,9 @@ abstract class BaseActiveNotificationWidget<T extends ActionNotification> extend
     }
 
     return DefaultLoadingShimmer(
-      child: Container(decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8))),
+      child: Container(
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(8)),
+      ),
     );
   }
 

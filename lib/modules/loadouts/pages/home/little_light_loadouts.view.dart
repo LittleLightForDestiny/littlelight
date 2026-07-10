@@ -14,10 +14,7 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 class LittleLightLoadoutsView extends StatelessWidget {
   final LittleLightLoadoutsBloc bloc;
   final LittleLightLoadoutsBloc state;
-  const LittleLightLoadoutsView({
-    required this.bloc,
-    required this.state,
-  });
+  const LittleLightLoadoutsView({required this.bloc, required this.state});
 
   @override
   Widget build(BuildContext context) {
@@ -32,51 +29,50 @@ class LittleLightLoadoutsView extends StatelessWidget {
     var screenPadding = MediaQuery.of(context).padding;
 
     return ReorderableList(
-        itemCount: state.loadouts?.length ?? 0,
-        itemBuilder: (context, index) {
-          return buildSortItem(context, index);
-        },
-        itemExtent: 56,
-        padding: const EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-        onReorder: (oldIndex, newIndex) => bloc.reorderLoadouts(oldIndex, newIndex));
+      itemCount: state.loadouts?.length ?? 0,
+      itemBuilder: (context, index) {
+        return buildSortItem(context, index);
+      },
+      itemExtent: 56,
+      padding: const EdgeInsets.all(8).copyWith(left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+      onReorderItem: (oldIndex, newIndex) => bloc.reorderLoadouts(oldIndex, newIndex),
+    );
   }
 
   Widget buildHandle(BuildContext context, int index) {
     return ReorderableDragStartListener(
-        index: index,
-        child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))));
+      index: index,
+      child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))),
+    );
   }
 
   Widget buildSortItem(BuildContext context, int index) {
     final loadout = state.loadouts?[index];
     if (loadout == null) return Container();
     return Container(
-        key: Key("loadout-${loadout.loadoutId}"),
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        color: Colors.transparent,
-        child: Stack(
-          children: <Widget>[
-            loadout.emblemHash != null
-                ? Positioned.fill(
-                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                    loadout.emblemHash,
-                    urlExtractor: (def) => def.secondarySpecial,
-                    fit: BoxFit.cover,
-                  ))
-                : Container(),
-            Row(
-              children: <Widget>[
-                buildHandle(context, index),
-                Expanded(
-                  child: Text(
-                    loadout.name,
-                    style: const TextStyle(fontWeight: FontWeight.bold),
-                  ),
-                )
-              ],
-            )
-          ],
-        ));
+      key: Key("loadout-${loadout.loadoutId}"),
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      color: Colors.transparent,
+      child: Stack(
+        children: <Widget>[
+          loadout.emblemHash != null
+              ? Positioned.fill(
+                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                  loadout.emblemHash,
+                  urlExtractor: (def) => def.secondarySpecial,
+                  fit: BoxFit.cover,
+                ),
+              )
+              : Container(),
+          Row(
+            children: <Widget>[
+              buildHandle(context, index),
+              Expanded(child: Text(loadout.name, style: const TextStyle(fontWeight: FontWeight.bold))),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildLoadoutsList(BuildContext context) {
@@ -87,43 +83,36 @@ class LittleLightLoadoutsView extends StatelessWidget {
     if (state.isEmpty) {
       return buildNoLoadoutsBody(context);
     }
-    return MultiSectionScrollView(
-      [
-        IntrinsicHeightScrollSection(
-          itemBuilder: buildLoadout,
-          itemsPerRow: MediaQueryHelper(context).responsiveValue<int>(1, tablet: 2, desktop: 3),
-          itemCount: loadouts.length,
-        ),
-      ],
-      padding: EdgeInsets.all(4),
-    );
+    return MultiSectionScrollView([
+      IntrinsicHeightScrollSection(
+        itemBuilder: buildLoadout,
+        itemsPerRow: MediaQueryHelper(context).responsiveValue<int>(1, tablet: 2, desktop: 3),
+        itemCount: loadouts.length,
+      ),
+    ], padding: EdgeInsets.all(4));
   }
 
   Widget buildNoLoadoutsBody(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              Text(
-                "You have no loadouts yet. Create your first one.".translate(context).toUpperCase(),
-                textAlign: TextAlign.center,
-              ),
-              Container(height: 16),
-              ElevatedButton(
-                onPressed: bloc.createNew,
-                child: Text("Create Loadout".translate(context)),
-              )
-            ]));
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            "You have no loadouts yet. Create your first one.".translate(context).toUpperCase(),
+            textAlign: TextAlign.center,
+          ),
+          Container(height: 16),
+          ElevatedButton(onPressed: bloc.createNew, child: Text("Create Loadout".translate(context))),
+        ],
+      ),
+    );
   }
 
   Widget buildLoadout(BuildContext context, int index) {
     final loadout = state.loadouts?[index];
     if (loadout == null) return Container();
-    return LoadoutListItemWidget(
-      loadout,
-      onAction: (action) => bloc.onItemAction(action, loadout),
-    );
+    return LoadoutListItemWidget(loadout, onAction: (action) => bloc.onItemAction(action, loadout));
   }
 }
