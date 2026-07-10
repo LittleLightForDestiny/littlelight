@@ -535,12 +535,11 @@ packages:
   in_app_review:
     dependency: "direct main"
     description:
-      path: in_app_review
-      ref: "v2.0.11"
-      resolved-ref: b8c06c44b8a610f063495337757316cb04e987d9
-      url: "https://github.com/LittleLightForDestiny/in_app_review"
-    source: git
-    version: "2.0.10"
+      name: in_app_review
+      sha256: "364db0c160b37fe7fad9cdaa18f968473924b17368869010af902760421b6bf8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.12"
   in_app_review_platform_interface:
     dependency: transitive
     description:
