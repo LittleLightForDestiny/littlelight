@@ -1,10 +1,13 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     id("com.android.application")
     id("dev.flutter.flutter-gradle-plugin")
     id("com.google.gms.google-services")
 }
 
-val localProperties = java.util.Properties()
+val localProperties = Properties()
 val localPropertiesFile = rootProject.file("local.properties")
 if (localPropertiesFile.exists()) {
     localPropertiesFile.reader(Charsets.UTF_8).use { reader ->
@@ -16,11 +19,11 @@ val flutterVersionCode = localProperties.getProperty("flutter.versionCode") ?: "
 val flutterVersionName = localProperties.getProperty("flutter.versionName") ?: "1.0"
 val appId = localProperties.getProperty("applicationid") ?: "me.markezine.luzinha"
 
-val keystoreProperties = java.util.Properties()
+val keystoreProperties = Properties()
 val keystorePropertiesFile = rootProject.file(".keys/release.properties")
 val keyAvailable = keystorePropertiesFile.exists()
 if (keyAvailable) {
-    java.io.FileInputStream(keystorePropertiesFile).use { stream ->
+    FileInputStream(keystorePropertiesFile).use { stream ->
         keystoreProperties.load(stream)
     }
 }
