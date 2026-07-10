@@ -143,15 +143,16 @@ class ModIconWidget extends StatelessWidget {
               ),
               child: Container(
                 decoration: BoxDecoration(
-                    color: context.theme.onSurfaceLayers.layer0,
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(
-                      color: context.theme.errorLayers.layer0,
-                      width: 1.5,
-                    )),
+                  color: context.theme.onSurfaceLayers.layer0,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: context.theme.errorLayers.layer0,
+                    width: 1.5,
+                  ),
+                ),
                 padding: const EdgeInsets.all(4),
                 child: Icon(
-                  FontAwesomeIcons.solidHeart,
+                  FontAwesomeIcons.solidHeart.data,
                   size: 16,
                   color: context.theme.errorLayers.layer3,
                 ),
@@ -168,11 +169,12 @@ class ModIconWidget extends StatelessWidget {
     if (badgeURL == null || badgeURL.isEmpty) return null;
     return Positioned.fill(
       child: Container(
-          padding: const EdgeInsets.all(2),
-          child: QueuedNetworkImage.fromBungie(
-            badgeURL,
-            fit: BoxFit.fill,
-          )),
+        padding: const EdgeInsets.all(2),
+        child: QueuedNetworkImage.fromBungie(
+          badgeURL,
+          fit: BoxFit.fill,
+        ),
+      ),
     );
   }
 

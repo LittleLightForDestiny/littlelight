@@ -137,26 +137,25 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
   ScrollableSection get appInfoSliver => FixedHeightScrollSection(
     112.0,
     itemCount: 1,
-    itemBuilder:
-        (context, _) => Row(
-          children: <Widget>[
-            Container(
-              width: 96,
-              height: 96,
-              padding: const EdgeInsets.only(right: 8),
-              child: Image.asset('assets/imgs/app_icon.png'),
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text("$appName v$packageVersion", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                ],
-              ),
-            ),
-          ],
+    itemBuilder: (context, _) => Row(
+      children: <Widget>[
+        Container(
+          width: 96,
+          height: 96,
+          padding: const EdgeInsets.only(right: 8),
+          child: Image.asset('assets/imgs/app_icon.png'),
         ),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text("$appName v$packageVersion", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+            ],
+          ),
+        ),
+      ],
+    ),
   );
 
   ScrollableSection headerSliver(Widget title) =>
@@ -165,17 +164,17 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
   ScrollableSection get contactInfoSliver {
     final actions = [
       AboutScreenAction(
-        icon: FontAwesomeIcons.bluesky,
+        icon: FontAwesomeIcons.bluesky.data,
         label: const Text("Bluesky"),
         url: "https://bsky.app/profile/littlelight.club",
       ),
       AboutScreenAction(
-        icon: FontAwesomeIcons.discord,
+        icon: FontAwesomeIcons.discord.data,
         label: Text("Discord".translate(context)),
         url: "https://discord.gg/ztdFGGz",
       ),
       AboutScreenAction(
-        icon: FontAwesomeIcons.github,
+        icon: FontAwesomeIcons.github.data,
         color: context.theme.errorLayers,
         label: Text("Issues".translate(context)),
         url: "https://discord.gg/ztdFGGz",
@@ -199,7 +198,7 @@ class _AboutScreenState extends State<AboutScreen> with StorageConsumer, LittleL
       if (isMobile)
         AboutScreenAction(
           color: isIOS ? const Color.fromARGB(255, 22, 147, 245) : const Color.fromARGB(255, 49, 159, 185),
-          icon: isIOS ? FontAwesomeIcons.appStoreIos : FontAwesomeIcons.googlePlay,
+          icon: isIOS ? FontAwesomeIcons.appStoreIos.data : FontAwesomeIcons.googlePlay.data,
           label: Text("Rate it".translate(context).toUpperCase()),
           type: AboutScreenActionType.Rate,
         ),

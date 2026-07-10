@@ -73,41 +73,43 @@ class DetailsPlugInfoWidget extends StatelessWidget {
               plugHash,
               noIconPlaceholder: Container(),
               placeholder: DefaultLoadingShimmer(
-                  child: Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(64),
-                  color: Colors.white,
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(64),
+                    color: Colors.white,
+                  ),
                 ),
-              )),
+              ),
             ),
           ),
           SizedBox(width: 8),
           Expanded(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              ManifestText<DestinyInventoryItemDefinition>(
-                plugHash,
-                style: context.textTheme.title,
-                uppercase: true,
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-                softWrap: false,
-              ),
-              SizedBox(height: 2),
-              ManifestText<DestinyInventoryItemDefinition>(
-                plugHash,
-                style: context.textTheme.body,
-                uppercase: true,
-                textExtractor: (def) => def.itemTypeDisplayName,
-                overflow: TextOverflow.fade,
-                maxLines: 1,
-                softWrap: false,
-              ),
-            ],
-          )),
-          if (canFavorite) buildFavoriteButton(context, plugHash)
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                ManifestText<DestinyInventoryItemDefinition>(
+                  plugHash,
+                  style: context.textTheme.title,
+                  uppercase: true,
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                  softWrap: false,
+                ),
+                SizedBox(height: 2),
+                ManifestText<DestinyInventoryItemDefinition>(
+                  plugHash,
+                  style: context.textTheme.body,
+                  uppercase: true,
+                  textExtractor: (def) => def.itemTypeDisplayName,
+                  overflow: TextOverflow.fade,
+                  maxLines: 1,
+                  softWrap: false,
+                ),
+              ],
+            ),
+          ),
+          if (canFavorite) buildFavoriteButton(context, plugHash),
         ],
       ),
     );
@@ -117,54 +119,59 @@ class DetailsPlugInfoWidget extends StatelessWidget {
     final state = context.watch<SocketControllerBloc>();
     final isFavorite = state.isFavoritePlug(plugHash);
     return Material(
-        color: Colors.transparent,
-        child: InkWell(
-          customBorder: CircleBorder(),
-          onTap: () {
-            context.read<SocketControllerBloc>().setFavoritePlug(plugHash, !isFavorite);
-          },
-          child: Container(
-            width: _perkIconSize,
-            height: _perkIconSize,
-            child: Icon(isFavorite ? FontAwesomeIcons.solidHeart : FontAwesomeIcons.heart),
-          ),
-        ));
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: CircleBorder(),
+        onTap: () {
+          context.read<SocketControllerBloc>().setFavoritePlug(plugHash, !isFavorite);
+        },
+        child: Container(
+          width: _perkIconSize,
+          height: _perkIconSize,
+          child: Icon(isFavorite ? FontAwesomeIcons.solidHeart.data : FontAwesomeIcons.heart.data),
+        ),
+      ),
+    );
   }
 
-  Widget buildContent(BuildContext context, int plugHash) =>
-      Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        buildDescription(context, plugHash),
-        buildWishlistInfo(context, plugHash),
-        buildEnergyCost(context, plugHash),
-        buildSandBoxPerks(context, plugHash),
-        buildStats(context),
-        buildObjectives(context, plugHash),
-        buildCommunityInsights(context, plugHash),
-        buildResourceCost(context, plugHash),
-        buildWeaponLevelRequired(context, plugHash),
-        buildApplyButton(context, plugHash),
-        buildUnavailable(context, plugHash),
-      ]);
+  Widget buildContent(BuildContext context, int plugHash) => Column(
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
+      buildDescription(context, plugHash),
+      buildWishlistInfo(context, plugHash),
+      buildEnergyCost(context, plugHash),
+      buildSandBoxPerks(context, plugHash),
+      buildStats(context),
+      buildObjectives(context, plugHash),
+      buildCommunityInsights(context, plugHash),
+      buildResourceCost(context, plugHash),
+      buildWeaponLevelRequired(context, plugHash),
+      buildApplyButton(context, plugHash),
+      buildUnavailable(context, plugHash),
+    ],
+  );
 
   Widget buildInfoContainer(BuildContext context, Widget child) => Container(
-      decoration: BoxDecoration(
-        color: context.theme.surfaceLayers.layer1,
-        borderRadius: BorderRadius.circular(4),
-      ),
-      padding: EdgeInsets.all(4),
-      margin: EdgeInsets.only(top: 4),
-      child: child);
+    decoration: BoxDecoration(
+      color: context.theme.surfaceLayers.layer1,
+      borderRadius: BorderRadius.circular(4),
+    ),
+    padding: EdgeInsets.all(4),
+    margin: EdgeInsets.only(top: 4),
+    child: child,
+  );
 
   Widget buildDescription(BuildContext context, int plugHash) {
     final definition = context.definition<DestinyInventoryItemDefinition>(plugHash);
     final description = definition?.displayProperties?.description;
     if (description == null || description.isEmpty) return Container();
     return Container(
-        margin: EdgeInsets.all(8),
-        child: Text(
-          description,
-          style: context.textTheme.body,
-        ));
+      margin: EdgeInsets.all(8),
+      child: Text(
+        description,
+        style: context.textTheme.body,
+      ),
+    );
   }
 
   Widget buildEnergyCost(BuildContext context, int plugHash) {
@@ -201,8 +208,10 @@ class DetailsPlugInfoWidget extends StatelessWidget {
 
   Widget buildSandBoxPerks(BuildContext context, int plugHash) {
     final definition = context.definition<DestinyInventoryItemDefinition>(plugHash);
-    final perks =
-        definition?.perks?.map((perk) => buildSandBoxPerk(context, plugHash, perk)).whereType<Widget>().toList();
+    final perks = definition?.perks
+        ?.map((perk) => buildSandBoxPerk(context, plugHash, perk))
+        .whereType<Widget>()
+        .toList();
     if (perks == null) return Container();
     if (perks.isEmpty) return Container();
     return buildInfoContainer(
@@ -228,28 +237,30 @@ class DetailsPlugInfoWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-              width: _perkIconSize,
-              height: _perkIconSize,
-              child: ManifestImageWidget<DestinySandboxPerkDefinition>(perk.perkHash)),
+            width: _perkIconSize,
+            height: _perkIconSize,
+            child: ManifestImageWidget<DestinySandboxPerkDefinition>(perk.perkHash),
+          ),
           SizedBox(width: 4),
           Expanded(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              ManifestText<DestinySandboxPerkDefinition>(
-                perk.perkHash,
-                style: context.textTheme.highlight,
-              ),
-              SizedBox(
-                height: 2,
-              ),
-              ManifestText<DestinySandboxPerkDefinition>(
-                perk.perkHash,
-                style: context.textTheme.body,
-                textExtractor: (def) => def.displayProperties?.description,
-              ),
-            ],
-          )),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                ManifestText<DestinySandboxPerkDefinition>(
+                  perk.perkHash,
+                  style: context.textTheme.highlight,
+                ),
+                SizedBox(
+                  height: 2,
+                ),
+                ManifestText<DestinySandboxPerkDefinition>(
+                  perk.perkHash,
+                  style: context.textTheme.body,
+                  textExtractor: (def) => def.displayProperties?.description,
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -328,11 +339,13 @@ class DetailsPlugInfoWidget extends StatelessWidget {
         color: context.theme.surfaceLayers.layer1,
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Row(children: [
-        Container(width: 18, height: 18, child: Image.asset("assets/imgs/deepsight.png")),
-        SizedBox(width: 6),
-        Text(weaponLevelRequired, style: context.textTheme.caption),
-      ]),
+      child: Row(
+        children: [
+          Container(width: 18, height: 18, child: Image.asset("assets/imgs/deepsight.png")),
+          SizedBox(width: 6),
+          Text(weaponLevelRequired, style: context.textTheme.caption),
+        ],
+      ),
     );
   }
 
@@ -344,27 +357,36 @@ class DetailsPlugInfoWidget extends StatelessWidget {
     final hasEnoughEnergyFor = state.hasEnoughEnergyFor(socketIndex, plugHash);
     if (canRollOn && hasEnoughEnergyFor) return Container();
     return Container(
-        margin: EdgeInsets.only(top: 4),
-        padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer1,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Column(children: [
+      margin: EdgeInsets.only(top: 4),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer1,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        children: [
           if (!canRollOn)
-            Row(children: [
-              Icon(Icons.warning_amber, color: context.theme.achievementLayers.layer1, size: 20),
-              SizedBox(width: 4),
-              Text(context.translate("This perk is currently unavailable on this item."),
-                  style: context.textTheme.caption),
-            ]),
+            Row(
+              children: [
+                Icon(Icons.warning_amber, color: context.theme.achievementLayers.layer1, size: 20),
+                SizedBox(width: 4),
+                Text(
+                  context.translate("This perk is currently unavailable on this item."),
+                  style: context.textTheme.caption,
+                ),
+              ],
+            ),
           if (!hasEnoughEnergyFor)
-            Row(children: [
-              Icon(Icons.warning_amber, color: context.theme.achievementLayers.layer1, size: 20),
-              SizedBox(width: 4),
-              Text(context.translate("There is not enough energy for this perk."), style: context.textTheme.caption),
-            ])
-        ]));
+            Row(
+              children: [
+                Icon(Icons.warning_amber, color: context.theme.achievementLayers.layer1, size: 20),
+                SizedBox(width: 4),
+                Text(context.translate("There is not enough energy for this perk."), style: context.textTheme.caption),
+              ],
+            ),
+        ],
+      ),
+    );
   }
 
   Widget buildCommunityInsights(BuildContext context, int plugHash) {

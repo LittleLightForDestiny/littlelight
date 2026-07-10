@@ -32,65 +32,61 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
 
   Widget buildWishlistsRootContent(BuildContext context) {
     return SingleChildScrollView(
-        child: Container(
-            padding: const EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                buildWishlists(context),
-                buildFolders(context),
-              ],
-            )));
+      child: Container(
+        padding: const EdgeInsets.all(8) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [buildWishlists(context), buildFolders(context)],
+        ),
+      ),
+    );
   }
 
   Widget buildWishlistsFolderContent(BuildContext context) {
     return Container(
-        child: Column(children: [
-      buildFolderHeader(context),
-      Expanded(
-          child: SingleChildScrollView(
-              child: Container(
-                  child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+      child: Column(
         children: [
-          buildWishlists(context),
-          buildFolders(context),
+          buildFolderHeader(context),
+          Expanded(
+            child: SingleChildScrollView(
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [buildWishlists(context), buildFolders(context)],
+                ),
+              ),
+            ),
+          ),
         ],
-      ))))
-    ]));
+      ),
+    );
   }
 
   Widget buildFolderHeader(BuildContext context) {
     final folder = context.watch<AddWishlistsBloc>().currentFolder;
     return Container(
-        margin: const EdgeInsets.only(top: 8, bottom: 16),
-        child: Row(
-          children: [
-            BackButton(
-              onPressed: () {
-                context.read<AddWishlistsBloc>().goToRoot();
-              },
-            ),
-            Container(
-              width: 8,
-            ),
-            Expanded(
-                child: Column(
+      margin: const EdgeInsets.only(top: 8, bottom: 16),
+      child: Row(
+        children: [
+          BackButton(
+            onPressed: () {
+              context.read<AddWishlistsBloc>().goToRoot();
+            },
+          ),
+          Container(width: 8),
+          Expanded(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  folder!.name!,
-                  style: context.textTheme.button,
-                ),
+                Text(folder!.name!, style: context.textTheme.button),
                 Container(height: 4),
-                Text(
-                  folder.description!,
-                  style: context.textTheme.caption,
-                ),
+                Text(folder.description!, style: context.textTheme.caption),
               ],
-            ))
-          ],
-        ));
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildWishlists(BuildContext context) {
@@ -121,37 +117,34 @@ class AddCommunityWishlistFormState extends State<AddCommunityWishlistForm> with
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: Material(
-          borderRadius: BorderRadius.circular(8),
-          color: context.theme.surfaceLayers.layer1,
-          child: InkWell(
-              onTap: () {
-                context.read<AddWishlistsBloc>().goToFolder(folder);
-              },
-              child: Container(
-                padding: const EdgeInsets.all(8),
-                child: Row(
-                  children: [
-                    Container(
-                        padding: const EdgeInsets.all(8).copyWith(right: 16),
-                        child: const Icon(FontAwesomeIcons.solidFolder)),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Text(
-                            folder.name ?? "",
-                            style: context.textTheme.button,
-                          ),
-                          Text(
-                            folder.description ?? "",
-                            style: context.textTheme.body,
-                          ),
-                        ],
-                      ),
-                    )
-                  ],
+        borderRadius: BorderRadius.circular(8),
+        color: context.theme.surfaceLayers.layer1,
+        child: InkWell(
+          onTap: () {
+            context.read<AddWishlistsBloc>().goToFolder(folder);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(8).copyWith(right: 16),
+                  child: const FaIcon(FontAwesomeIcons.solidFolder),
                 ),
-              ))),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Text(folder.name ?? "", style: context.textTheme.button),
+                      Text(folder.description ?? "", style: context.textTheme.body),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 

@@ -47,51 +47,58 @@ class EquipmentLandscapeView extends StatelessWidget {
       body: Stack(
         children: [
           Positioned.fill(
-            child: Column(children: [
-              SizedBox(
-                height: viewPadding.top + kToolbarHeight + 2,
-              ),
-              Expanded(
-                child: Stack(children: [
-                  Positioned.fill(child: buildTabContent(context)),
-                  Positioned.fill(
-                    child: buildScrollGestureDetectors(
-                      context,
-                      characterTabController,
-                    ),
-                  ),
-                  Positioned(
-                    left: 8,
-                    bottom: 8,
-                    right: 8,
-                    child: const NotificationsWidget(),
-                  ),
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    right: 0,
-                    child: const BusyIndicatorLineWidget(),
-                  ),
-                ]),
-              ),
-              SelectedItemsWidget(),
-              Container(
-                height: kToolbarHeight + viewPadding.bottom,
-                decoration: BoxDecoration(
-                    color: context.theme.surfaceLayers,
-                    border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3))),
-                child: Stack(children: [
-                  Row(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: viewPadding.top + kToolbarHeight + 2,
+                ),
+                Expanded(
+                  child: Stack(
                     children: [
-                      Expanded(
-                        child: buildCharacterContextMenuButton(context),
+                      Positioned.fill(child: buildTabContent(context)),
+                      Positioned.fill(
+                        child: buildScrollGestureDetectors(
+                          context,
+                          characterTabController,
+                        ),
+                      ),
+                      Positioned(
+                        left: 8,
+                        bottom: 8,
+                        right: 8,
+                        child: const NotificationsWidget(),
+                      ),
+                      Positioned(
+                        bottom: 0,
+                        left: 0,
+                        right: 0,
+                        child: const BusyIndicatorLineWidget(),
                       ),
                     ],
                   ),
-                  Positioned(bottom: 0, left: 0, right: 0, child: BusyIndicatorBottomGradientWidget()),
-                ]),
-              ),
-            ]),
+                ),
+                SelectedItemsWidget(),
+                Container(
+                  height: kToolbarHeight + viewPadding.bottom,
+                  decoration: BoxDecoration(
+                    color: context.theme.surfaceLayers,
+                    border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3)),
+                  ),
+                  child: Stack(
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: buildCharacterContextMenuButton(context),
+                          ),
+                        ],
+                      ),
+                      Positioned(bottom: 0, left: 0, right: 0, child: BusyIndicatorBottomGradientWidget()),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
           Positioned(
             top: 0,
@@ -110,7 +117,7 @@ class EquipmentLandscapeView extends StatelessWidget {
                   characters,
                   characterTabController,
                   vaultItemCount: state.vaultItemCount,
-                )
+                ),
               ],
             ),
           ),
@@ -137,12 +144,13 @@ class EquipmentLandscapeView extends StatelessWidget {
     final characters = state.characters;
     if (characters == null) return buildLoadingAppBar(context);
     return CustomTabPassiveView(
-        controller: characterTabController,
-        pageBuilder: (context, index) {
-          final character = characters[index];
-          if (character != null) return CharacterTabHeaderWidget(character);
-          return VaultTabHeaderWidget();
-        });
+      controller: characterTabController,
+      pageBuilder: (context, index) {
+        final character = characters[index];
+        if (character != null) return CharacterTabHeaderWidget(character);
+        return VaultTabHeaderWidget();
+      },
+    );
   }
 
   Widget buildLoadingAppBar(BuildContext context) {
@@ -166,15 +174,17 @@ class EquipmentLandscapeView extends StatelessWidget {
 
   Widget buildCharacterTabContent(BuildContext context, DestinyCharacterInfo character) {
     final currencies = state.relevantCurrencies;
-    final buckets = Map<int, EquipmentCharacterBucketContent>.fromIterable(_bucketHashes,
-        key: (bucketHash) => bucketHash,
-        value: (bucketHash) {
-          return EquipmentCharacterBucketContent(
-            bucketHash,
-            equipped: state.getEquippedItem(character, bucketHash),
-            unequipped: state.getUnequippedItems(character, bucketHash) ?? [],
-          );
-        });
+    final buckets = Map<int, EquipmentCharacterBucketContent>.fromIterable(
+      _bucketHashes,
+      key: (bucketHash) => bucketHash,
+      value: (bucketHash) {
+        return EquipmentCharacterBucketContent(
+          bucketHash,
+          equipped: state.getEquippedItem(character, bucketHash),
+          unequipped: state.getUnequippedItems(character, bucketHash) ?? [],
+        );
+      },
+    );
     return EquipmentCharacterLandscapeTabContentWidget(
       character,
       buckets: buckets,
@@ -214,19 +224,23 @@ class EquipmentLandscapeView extends StatelessWidget {
         fit: StackFit.expand,
         children: [
           Container(
-              padding: EdgeInsets.only(bottom: viewPadding.bottom),
-              child: CurrentCharacterTabIndicator(
-                characters,
-                characterTabController,
-              )),
+            padding: EdgeInsets.only(bottom: viewPadding.bottom),
+            child: CurrentCharacterTabIndicator(
+              characters,
+              characterTabController,
+            ),
+          ),
           Positioned.fill(
-              child: Material(
-            color: Colors.transparent,
-            key: CharacterContextMenu.menuButtonKey,
-            child: InkWell(onTap: () {
-              bloc.openContextMenu(characterTabController, null);
-            }),
-          ))
+            child: Material(
+              color: Colors.transparent,
+              key: CharacterContextMenu.menuButtonKey,
+              child: InkWell(
+                onTap: () {
+                  bloc.openContextMenu(characterTabController, null);
+                },
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -242,22 +256,26 @@ class EquipmentLandscapeView extends StatelessWidget {
   }
 
   Widget buildSearchButton(BuildContext context) {
-    return Stack(children: [
-      Container(
-        width: kToolbarHeight,
-        height: kToolbarHeight,
-        child: Icon(FontAwesomeIcons.magnifyingGlass),
-      ),
-      Positioned.fill(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(onTap: () {
-            final currentBucketGroup = EquipmentBucketGroup.Weapons;
-            final currentClassType = state.characters?[characterTabController.index]?.character.classType;
-            bloc.openSearch(currentBucketGroup, currentClassType);
-          }),
+    return Stack(
+      children: [
+        Container(
+          width: kToolbarHeight,
+          height: kToolbarHeight,
+          child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
         ),
-      ),
-    ]);
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                final currentBucketGroup = EquipmentBucketGroup.Weapons;
+                final currentClassType = state.characters?[characterTabController.index]?.character.classType;
+                bloc.openSearch(currentBucketGroup, currentClassType);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

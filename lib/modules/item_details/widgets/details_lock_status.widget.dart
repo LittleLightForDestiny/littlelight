@@ -22,7 +22,7 @@ class DetailsLockStatusWidget extends StatelessWidget {
       ),
       child: Row(
         children: <Widget>[
-          Icon(locked ? FontAwesomeIcons.lock : FontAwesomeIcons.unlock, size: 14),
+          Icon(locked ? FontAwesomeIcons.lock.data : FontAwesomeIcons.unlock.data, size: 14),
           Container(
             width: 4,
           ),
@@ -48,7 +48,7 @@ class DetailsLockStatusWidget extends StatelessWidget {
                 : () {
                     onChange?.call(!locked);
                   },
-          )
+          ),
         ],
       ),
     );

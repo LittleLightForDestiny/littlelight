@@ -23,7 +23,10 @@ class PlatformData {
 
       case BungieMembershipType.TigerPsn:
         return PlatformData(
-            "Playstation Network", LittleLightIcons.platform_playstation, const Color.fromARGB(255, 0, 55, 145));
+          "Playstation Network",
+          LittleLightIcons.platform_playstation,
+          const Color.fromARGB(255, 0, 55, 145),
+        );
 
       case BungieMembershipType.TigerBlizzard:
         return PlatformData("Battle.net", LittleLightIcons.platform_blizzard, const Color.fromARGB(255, 0, 180, 255));
@@ -35,7 +38,7 @@ class PlatformData {
         return PlatformData("Stadia", LittleLightIcons.platform_stadia, const Color.fromARGB(255, 205, 38, 64));
 
       case BungieMembershipType.TigerEgs:
-        return PlatformData("Epic Games", FontAwesomeIcons.e, const Color.fromARGB(255, 93, 194, 30));
+        return PlatformData("Epic Games", FontAwesomeIcons.e.data, const Color.fromARGB(255, 93, 194, 30));
 
       default:
         return PlatformData("Unknown", Icons.not_interested, Colors.black);

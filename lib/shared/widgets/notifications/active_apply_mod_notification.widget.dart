@@ -55,7 +55,7 @@ class ActiveApplyPlugsNotificationWidget extends BaseActiveNotificationWidget<Ap
           ),
           if ([PlugStatus.Fail, PlugStatus.Success].contains(status))
             Icon(
-              status == PlugStatus.Success ? FontAwesomeIcons.check : FontAwesomeIcons.xmark,
+              status == PlugStatus.Success ? FontAwesomeIcons.check.data : FontAwesomeIcons.xmark.data,
               color: status.getColor(context),
             ),
         ],

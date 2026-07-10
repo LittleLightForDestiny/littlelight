@@ -54,13 +54,13 @@ extension WishlistTagData on WishlistTag {
       case WishlistTag.Bungie:
         return LittleLightIcons.bungie;
       case WishlistTag.Trash:
-        return FontAwesomeIcons.trash;
+        return FontAwesomeIcons.trash.data;
       case WishlistTag.Mouse:
-        return FontAwesomeIcons.computerMouse;
+        return FontAwesomeIcons.computerMouse.data;
       case WishlistTag.Controller:
-        return FontAwesomeIcons.gamepad;
+        return FontAwesomeIcons.gamepad.data;
       case WishlistTag.UnknownEnumValue:
-        return FontAwesomeIcons.question;
+        return FontAwesomeIcons.question.data;
     }
   }
 

@@ -125,24 +125,26 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     final theme = context.theme;
     final assetPath = isExotic ? "assets/imgs/masterwork-top-exotic.png" : "assets/imgs/masterwork-top.png";
     final borderColor = isExotic ? theme.achievementLayers.layer2 : theme.achievementLayers.layer1;
-    return Stack(children: [
-      Container(
-        color: definition?.inventory?.tierType?.getColor(context),
-        height: _titleBarHeight,
-        foregroundDecoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              width: 2,
-              color: borderColor,
+    return Stack(
+      children: [
+        Container(
+          color: definition?.inventory?.tierType?.getColor(context),
+          height: _titleBarHeight,
+          foregroundDecoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                width: 2,
+                color: borderColor,
+              ),
+            ),
+            image: DecorationImage(
+              image: ExactAssetImage(assetPath),
+              repeat: ImageRepeat.repeatX,
             ),
           ),
-          image: DecorationImage(
-            image: ExactAssetImage(assetPath),
-            repeat: ImageRepeat.repeatX,
-          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget buildMainBackground(BuildContext context, DestinyInventoryItemDefinition? definition) {
@@ -209,12 +211,14 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
           width: 4,
         ),
         Expanded(
-          child: Column(children: [
-            buildTitleBarContents(context, definition),
-            Expanded(
-              child: buildMainContent(context, definition),
-            )
-          ]),
+          child: Column(
+            children: [
+              buildTitleBarContents(context, definition),
+              Expanded(
+                child: buildMainContent(context, definition),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -226,13 +230,14 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AspectRatio(
-            aspectRatio: 1,
-            child: FutureBuilder<DestinyInventoryItemDefinition?>(
-              future: getSubclassSuperPlugItem(manifest, item, definition),
-              builder: (context, snapshot) {
-                final imgUrl = snapshot.data?.displayProperties?.icon;
-                if (imgUrl == null) return Container();
-                return Stack(children: [
+          aspectRatio: 1,
+          child: FutureBuilder<DestinyInventoryItemDefinition?>(
+            future: getSubclassSuperPlugItem(manifest, item, definition),
+            builder: (context, snapshot) {
+              final imgUrl = snapshot.data?.displayProperties?.icon;
+              if (imgUrl == null) return Container();
+              return Stack(
+                children: [
                   Positioned.fill(
                     child: CustomPaint(
                       painter: DiamondShapePainter.color(context.theme.onSurfaceLayers.layer1),
@@ -240,24 +245,29 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
                   ),
                   Positioned.fill(
                     child: Container(
-                        padding: const EdgeInsets.all(2),
-                        child: CustomPaint(
-                          painter: DiamondShapePainter.color(subclassColor),
-                        )),
+                      padding: const EdgeInsets.all(2),
+                      child: CustomPaint(
+                        painter: DiamondShapePainter.color(subclassColor),
+                      ),
+                    ),
                   ),
                   Container(
                     padding: const EdgeInsets.all(2),
                     child: QueuedNetworkImage.fromBungie(imgUrl),
                   ),
-                ]);
-              },
-            )),
+                ],
+              );
+            },
+          ),
+        ),
         Expanded(
-          child: Column(children: [
-            buildTitleBarContents(context, definition),
-            Expanded(child: Container()),
-            buildMainContent(context, definition),
-          ]),
+          child: Column(
+            children: [
+              buildTitleBarContents(context, definition),
+              Expanded(child: Container()),
+              buildMainContent(context, definition),
+            ],
+          ),
         ),
       ],
     );
@@ -349,8 +359,9 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   }
 
   Widget? buildCraftLevel(BuildContext context, DestinyInventoryItemDefinition? definition) {
-    final craftableObjectives =
-        context.select<CraftablesHelperBloc, List<DestinyObjectiveProgress>?>((p) => p.getItemCraftedObjectives(item));
+    final craftableObjectives = context.select<CraftablesHelperBloc, List<DestinyObjectiveProgress>?>(
+      (p) => p.getItemCraftedObjectives(item),
+    );
     final level = craftableObjectives?.elementAtOrNull(1)?.progress;
     if (level == null) return null;
     return Container(
@@ -361,16 +372,18 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         borderRadius: BorderRadius.circular(4),
       ),
       margin: EdgeInsets.only(right: 4),
-      child: Row(children: [
-        Text(
-          "Lv{level}".translate(context, replace: {"level": " $level"}),
-          style: context.textTheme.caption.copyWith(
-            color: context.theme.highlightedObjectiveLayers.layer1,
-            height: 1,
-            fontWeight: FontWeight.bold,
+      child: Row(
+        children: [
+          Text(
+            "Lv{level}".translate(context, replace: {"level": " $level"}),
+            style: context.textTheme.caption.copyWith(
+              color: context.theme.highlightedObjectiveLayers.layer1,
+              height: 1,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        )
-      ]),
+        ],
+      ),
     );
   }
 
@@ -379,8 +392,9 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     final itemHash = definition?.hash;
     if (itemHash == null) return null;
     if (recipeHash == null || recipeHash == 0) return null;
-    final patternProgress =
-        context.select<CraftablesHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
+    final patternProgress = context.select<CraftablesHelperBloc, DestinyRecordComponent?>(
+      (p) => p.getPatternProgressRecord(itemHash),
+    );
     if (patternProgress == null) return null;
     final progress = patternProgress.objectives?.firstOrNull?.progress;
     final total = patternProgress.objectives?.firstOrNull?.completionValue;
@@ -392,17 +406,19 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         borderRadius: BorderRadius.circular(4),
       ),
       margin: EdgeInsets.only(right: 4),
-      child: Row(children: [
-        Container(margin: EdgeInsets.only(right: 4), width: 10, child: Image.asset("assets/imgs/deepsight.png")),
-        Text(
-          "$progress / $total",
-          style: context.textTheme.caption.copyWith(
-            color: context.theme.highlightedObjectiveLayers.layer1,
-            height: 1,
-            fontWeight: FontWeight.bold,
+      child: Row(
+        children: [
+          Container(margin: EdgeInsets.only(right: 4), width: 10, child: Image.asset("assets/imgs/deepsight.png")),
+          Text(
+            "$progress / $total",
+            style: context.textTheme.caption.copyWith(
+              color: context.theme.highlightedObjectiveLayers.layer1,
+              height: 1,
+              fontWeight: FontWeight.bold,
+            ),
           ),
-        )
-      ]),
+        ],
+      ),
     );
   }
 
@@ -413,7 +429,7 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     return Container(
       margin: const EdgeInsets.only(right: 4),
       child: Icon(
-        FontAwesomeIcons.lock,
+        FontAwesomeIcons.lock.data,
         size: style.fontSize,
         color: definition?.inventory?.tierType?.getTextColor(context),
       ),
@@ -559,71 +575,77 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   Widget buildWeaponMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
       padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
-      child: Column(children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: buildItemTypeName(context, definition)),
-            buildWeaponMainInfo(context, definition),
-          ],
-        ),
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: buildPerks(context, definition)),
-              buildMods(context, definition),
+              Expanded(child: buildItemTypeName(context, definition)),
+              buildWeaponMainInfo(context, definition),
             ],
           ),
-        ),
-      ]),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(child: buildPerks(context, definition)),
+                buildMods(context, definition),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildArmorMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
       padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
-      child: Column(children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: buildItemTypeName(context, definition)),
-            buildArmorMainInfo(context, definition),
-          ],
-        ),
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: buildStats(context, definition)),
-              buildMods(context, definition),
+              Expanded(child: buildItemTypeName(context, definition)),
+              buildArmorMainInfo(context, definition),
             ],
           ),
-        ),
-      ]),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(child: buildStats(context, definition)),
+                buildMods(context, definition),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
   Widget buildGhostMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
       padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
-      child: Column(children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: buildItemTypeName(context, definition)),
-            buildGhostMainInfo(context, definition),
-          ],
-        ),
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              buildMods(context, definition),
+              Expanded(child: buildItemTypeName(context, definition)),
+              buildGhostMainInfo(context, definition),
             ],
           ),
-        ),
-      ]),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                buildMods(context, definition),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -634,13 +656,14 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
-              child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: buildItemTypeName(context, definition)),
-              buildExpirationDate(context, definition),
-            ],
-          )),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: buildItemTypeName(context, definition)),
+                buildExpirationDate(context, definition),
+              ],
+            ),
+          ),
           buildObjectiveProgress(context, definition),
         ],
       ),
@@ -650,24 +673,26 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
   Widget buildDefaultMainContent(BuildContext context, DestinyInventoryItemDefinition definition) {
     return Container(
       padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
-      child: Column(children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: buildItemTypeName(context, definition)),
-            buildPrimaryStat(context, definition),
-          ],
-        ),
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(child: buildPerks(context, definition)),
-              buildMods(context, definition),
+              Expanded(child: buildItemTypeName(context, definition)),
+              buildPrimaryStat(context, definition),
             ],
           ),
-        ),
-      ]),
+          Expanded(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(child: buildPerks(context, definition)),
+                buildMods(context, definition),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -749,17 +774,20 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               const SizedBox(
-                  width: 18,
-                  height: 18,
-                  child: ProfileIconWidget(
-                    borderWidth: .5,
-                  )),
+                width: 18,
+                height: 18,
+                child: ProfileIconWidget(
+                  borderWidth: .5,
+                ),
+              ),
               Container(width: 4),
               Text("$inventoryCount", style: style),
               Container(width: 4),
               if (inventoryStackCount > 1)
-                Text("($inventoryStackCount)",
-                    style: style.copyWith(color: context.theme.highlightedObjectiveLayers.layer0)),
+                Text(
+                  "($inventoryStackCount)",
+                  style: style.copyWith(color: context.theme.highlightedObjectiveLayers.layer0),
+                ),
             ],
           ),
         Container(height: 2),
@@ -767,11 +795,12 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             const SizedBox(
-                width: 18,
-                height: 18,
-                child: VaultIconWidget(
-                  borderWidth: .5,
-                )),
+              width: 18,
+              height: 18,
+              child: VaultIconWidget(
+                borderWidth: .5,
+              ),
+            ),
             Container(width: 4),
             Text("$vaultCount", style: style),
             Container(width: 4),
@@ -926,32 +955,34 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
 
   Widget buildEnergyCapacity(BuildContext context, DestinyInventoryItemDefinition definition) {
     return FutureBuilder<DestinyEnergyCapacityEntry?>(
-        future: getEnergyCapacity(manifest, item, definition),
-        builder: (context, snapshot) {
-          final capacity = snapshot.data;
-          if (capacity == null) return Container();
-          final energyLevel = capacity.capacityValue ?? 0;
-          final textStyle = context.textTheme.itemPrimaryStatHighDensity;
-          return Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(width: 20, child: Image.asset('assets/imgs/energy-type-icon.png')),
-              Text(
-                "$energyLevel",
-                style: textStyle,
-              ),
-            ],
-          );
-        });
+      future: getEnergyCapacity(manifest, item, definition),
+      builder: (context, snapshot) {
+        final capacity = snapshot.data;
+        if (capacity == null) return Container();
+        final energyLevel = capacity.capacityValue ?? 0;
+        final textStyle = context.textTheme.itemPrimaryStatHighDensity;
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(width: 20, child: Image.asset('assets/imgs/energy-type-icon.png')),
+            Text(
+              "$energyLevel",
+              style: textStyle,
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget buildPerks(BuildContext context, DestinyInventoryItemDefinition definition) {
     return FutureBuilder<int?>(
-        future: getPerksSocketCategory(manifest, definition),
-        builder: (context, snapshot) {
-          final categoryHash = snapshot.data;
-          if (categoryHash == null) return Container();
-          return Stack(children: [
+      future: getPerksSocketCategory(manifest, definition),
+      builder: (context, snapshot) {
+        final categoryHash = snapshot.data;
+        if (categoryHash == null) return Container();
+        return Stack(
+          children: [
             Positioned(
               left: 0,
               bottom: 0,
@@ -961,23 +992,26 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
                   categoryHash: categoryHash,
                 ),
               ),
-            )
-          ]);
-        });
+            ),
+          ],
+        );
+      },
+    );
   }
 
   Widget buildMods(BuildContext context, DestinyInventoryItemDefinition definition) {
     return FutureBuilder<int?>(
-        future: getModsSocketCategory(manifest, definition),
-        builder: (context, snapshot) {
-          final categoryHash = snapshot.data;
-          if (categoryHash == null) return Container();
-          return InventoryItemMods(
-            item,
-            categoryHash: categoryHash,
-            plugMargin: const EdgeInsets.only(left: 1),
-          );
-        });
+      future: getModsSocketCategory(manifest, definition),
+      builder: (context, snapshot) {
+        final categoryHash = snapshot.data;
+        if (categoryHash == null) return Container();
+        return InventoryItemMods(
+          item,
+          categoryHash: categoryHash,
+          plugMargin: const EdgeInsets.only(left: 1),
+        );
+      },
+    );
   }
 
   Widget buildObjectiveProgress(BuildContext context, DestinyInventoryItemDefinition? definition) {
@@ -985,8 +1019,9 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     if (objectiveHashes == null || objectiveHashes.isEmpty) return Container();
     if (objectiveHashes.length == 1) {
       final objectiveHash = objectiveHashes.first;
-      final objective =
-          item.objectives?.objectives?.firstWhereOrNull((objective) => objective.objectiveHash == objectiveHash);
+      final objective = item.objectives?.objectives?.firstWhereOrNull(
+        (objective) => objective.objectiveHash == objectiveHash,
+      );
       return ObjectiveWidget(
         objectiveHash,
         objective: objective,
@@ -995,8 +1030,9 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
     }
     return Row(
       children: objectiveHashes.map((objectiveHash) {
-        final objective =
-            item.objectives?.objectives?.firstWhereOrNull((objective) => objective.objectiveHash == objectiveHash);
+        final objective = item.objectives?.objectives?.firstWhereOrNull(
+          (objective) => objective.objectiveHash == objectiveHash,
+        );
         return Expanded(
           child: Container(
             margin: EdgeInsets.symmetric(horizontal: 2),
@@ -1012,63 +1048,69 @@ class HighDensityInventoryItem extends StatelessWidget with WishlistsConsumer, M
 
   Widget buildSubclassMods(BuildContext context, DestinyInventoryItemDefinition definition) {
     return FutureBuilder<List<DestinySocketCategoryDefinition>?>(
-        future: getSubclassModsSocketCategory(manifest, definition),
-        builder: (context, snapshot) {
-          final categories = snapshot.data;
-          if (categories == null) return Container();
-          return Container(
-              height: 42,
-              child: Stack(
-                children: [
-                  Positioned(
-                    bottom: 0,
-                    left: 0,
-                    child: Row(
-                        children: categories //
-                            .map((c) {
-                              final hash = c.hash;
-                              if (hash == null) return null;
-                              final categoryName = c.displayProperties?.name?.toUpperCase();
-                              return Container(
-                                color: Colors.black.withValues(alpha: .5),
-                                margin: const EdgeInsets.only(right: 4),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    if (categoryName != null)
-                                      Container(
-                                        padding: const EdgeInsets.only(bottom: 2),
-                                        child: Text(
-                                          categoryName,
-                                          style: const TextStyle(fontSize: 9),
-                                        ),
+      future: getSubclassModsSocketCategory(manifest, definition),
+      builder: (context, snapshot) {
+        final categories = snapshot.data;
+        if (categories == null) return Container();
+        return Container(
+          height: 42,
+          child: Stack(
+            children: [
+              Positioned(
+                bottom: 0,
+                left: 0,
+                child: Row(
+                  children:
+                      categories //
+                          .map((c) {
+                            final hash = c.hash;
+                            if (hash == null) return null;
+                            final categoryName = c.displayProperties?.name?.toUpperCase();
+                            return Container(
+                              color: Colors.black.withValues(alpha: .5),
+                              margin: const EdgeInsets.only(right: 4),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (categoryName != null)
+                                    Container(
+                                      padding: const EdgeInsets.only(bottom: 2),
+                                      child: Text(
+                                        categoryName,
+                                        style: const TextStyle(fontSize: 9),
                                       ),
-                                    InventoryItemMods(
-                                      item,
-                                      plugSize: 24,
-                                      categoryHash: c.hash ?? 0,
                                     ),
-                                  ],
-                                ),
-                              );
-                            })
-                            .whereType<Widget>()
-                            .toList()),
-                  )
-                ],
-              ));
-        });
+                                  InventoryItemMods(
+                                    item,
+                                    plugSize: 24,
+                                    categoryHash: c.hash ?? 0,
+                                  ),
+                                ],
+                              ),
+                            );
+                          })
+                          .whereType<Widget>()
+                          .toList(),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   Widget buildStats(BuildContext context, DestinyInventoryItemDefinition definition) {
-    return Stack(children: [
-      Positioned(
-        left: 0,
-        bottom: 0,
-        child: InventoryItemStats(
-          item,
+    return Stack(
+      children: [
+        Positioned(
+          left: 0,
+          bottom: 0,
+          child: InventoryItemStats(
+            item,
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }

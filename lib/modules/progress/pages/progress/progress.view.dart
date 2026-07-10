@@ -55,19 +55,39 @@ class ProgressView extends StatelessWidget {
                 Positioned.fill(
                   child: Column(
                     children: [
-                      SizedBox(height: viewPadding.top + kToolbarHeight + 2),
+                      SizedBox(
+                        height: viewPadding.top + kToolbarHeight + 2,
+                      ),
                       Expanded(
                         child: Stack(
                           children: [
                             Positioned.fill(child: buildTabContent(context, characterTabController, typeTabController)),
                             Positioned.fill(
-                              child: buildScrollGestureDetectors(context, characterTabController, typeTabController),
+                              child: buildScrollGestureDetectors(
+                                context,
+                                characterTabController,
+                                typeTabController,
+                              ),
                             ),
                             Positioned.fill(
-                              child: buildScrollIndicators(context, characterTabController, typeTabController),
+                              child: buildScrollIndicators(
+                                context,
+                                characterTabController,
+                                typeTabController,
+                              ),
                             ),
-                            Positioned(left: 8, bottom: 8, right: 8, child: const NotificationsWidget()),
-                            Positioned(bottom: 0, left: 0, right: 0, child: const BusyIndicatorLineWidget()),
+                            Positioned(
+                              left: 8,
+                              bottom: 8,
+                              right: 8,
+                              child: const NotificationsWidget(),
+                            ),
+                            Positioned(
+                              bottom: 0,
+                              left: 0,
+                              right: 0,
+                              child: const BusyIndicatorLineWidget(),
+                            ),
                           ],
                         ),
                       ),
@@ -83,7 +103,9 @@ class ProgressView extends StatelessWidget {
                             Row(
                               children: [
                                 ProgressTypeTabMenuWidget(typeTabController),
-                                Expanded(child: buildCharacterContextMenuButton(context, characterTabController)),
+                                Expanded(
+                                  child: buildCharacterContextMenuButton(context, characterTabController),
+                                ),
                               ],
                             ),
                             Positioned(bottom: 0, left: 0, right: 0, child: BusyIndicatorBottomGradientWidget()),
@@ -232,7 +254,10 @@ class ProgressView extends StatelessWidget {
         children: [
           Container(
             padding: EdgeInsets.only(bottom: viewPadding.bottom),
-            child: CurrentCharacterTabIndicator(characters, characterTabController),
+            child: CurrentCharacterTabIndicator(
+              characters,
+              characterTabController,
+            ),
           ),
           Positioned.fill(
             key: CharacterContextMenu.menuButtonKey,
@@ -287,7 +312,11 @@ class ProgressView extends StatelessWidget {
   Widget buildSearchButton(BuildContext context) {
     return Stack(
       children: [
-        Container(width: kToolbarHeight, height: kToolbarHeight, child: Icon(FontAwesomeIcons.magnifyingGlass)),
+        Container(
+          width: kToolbarHeight,
+          height: kToolbarHeight,
+          child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
+        ),
         Positioned.fill(
           child: Material(
             color: Colors.transparent,

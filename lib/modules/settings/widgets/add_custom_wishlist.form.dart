@@ -37,45 +37,51 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
-        padding: const EdgeInsets.all(16) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
+      padding: const EdgeInsets.all(16) + MediaQuery.of(context).viewPadding.copyWith(top: 0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
           buildInfo(context),
-          Container(
-            height: 16,
+          Container(height: 16),
+          buildTextField(
+            context,
+            "URL",
+            maxLength: null,
+            onInput: () {
+              setState(() {});
+            },
           ),
-          buildTextField(context, "URL", maxLength: null, onInput: () {
-            setState(() {});
-          }),
           Container(height: 16),
           ElevatedButton(
             onPressed: isURLValid ? () => loadWishlist() : null,
             child: Text("Load wishlist".translate(context)),
           ),
-          Container(
-            height: 8,
-          ),
+          Container(height: 8),
           if (loadingError) buildErrorMessage(),
           if (wishlistFile != null) buildWishlistInfoFields(),
-        ]));
+        ],
+      ),
+    );
   }
 
   Widget buildErrorMessage() {
     return Container(
-      decoration: BoxDecoration(
-        color: context.theme.errorLayers,
-        borderRadius: BorderRadius.circular(8),
-      ),
+      decoration: BoxDecoration(color: context.theme.errorLayers, borderRadius: BorderRadius.circular(8)),
       padding: const EdgeInsets.all(8),
-      child: Row(children: [
-        Container(
-          padding: const EdgeInsets.only(right: 16),
-          child: const Icon(FontAwesomeIcons.circleExclamation),
-        ),
-        Expanded(
+      child: Row(
+        children: [
+          Container(
+            padding: const EdgeInsets.only(right: 16),
+            child: const FaIcon(FontAwesomeIcons.circleExclamation),
+          ),
+          Expanded(
             child: Text(
-                "Error loading wishlist file. Please make sure you're pointing to a raw json file using the Little Light wishlist format"
-                    .translate(context)))
-      ]),
+              "Error loading wishlist file. Please make sure you're pointing to a raw json file using the Little Light wishlist format"
+                  .translate(context),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -83,16 +89,21 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        buildTextField(context, "Name",
-            maxLength: 50,
-            initialValue: wishlistFile?.name ?? wishlistFile?.url?.split('/').last ?? "Untitled Wishlist"),
-        buildTextField(context, "Description",
-            maxLength: 300, multiline: true, initialValue: wishlistFile?.description ?? ""),
-        Container(height: 16),
-        ElevatedButton(
-          onPressed: () => addWishlist(),
-          child: Text("Add Wishlist".translate(context)),
+        buildTextField(
+          context,
+          "Name",
+          maxLength: 50,
+          initialValue: wishlistFile?.name ?? wishlistFile?.url?.split('/').last ?? "Untitled Wishlist",
         ),
+        buildTextField(
+          context,
+          "Description",
+          maxLength: 300,
+          multiline: true,
+          initialValue: wishlistFile?.description ?? "",
+        ),
+        Container(height: 16),
+        ElevatedButton(onPressed: () => addWishlist(), child: Text("Add Wishlist".translate(context))),
       ],
     );
   }
@@ -102,8 +113,10 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
   void loadWishlist() async {
     final url = urlController?.text;
     if (url == null) return;
-    final validWishlist =
-        await Navigator.push(context, BusyDialogRoute(context, awaitFuture: wishlistsService.loadWishlistFromUrl(url)));
+    final validWishlist = await Navigator.push(
+      context,
+      BusyDialogRoute(context, awaitFuture: wishlistsService.loadWishlistFromUrl(url)),
+    );
     wishlistFile = validWishlist;
     loadingError = wishlistFile == null;
     fieldControllers["Name"]?.text = wishlistFile?.name ?? "";
@@ -130,17 +143,13 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
     return Column(
       children: [
         Text("To create your own wishlists, please check:".translate(context), textAlign: TextAlign.center),
-        Container(
-          height: 8,
-        ),
+        Container(height: 8),
         Linkify(
           text: "https://wishlists.littlelight.club",
           linkStyle: TextStyle(color: context.theme.onSurfaceLayers.layer0),
           onOpen: onLinkClick,
         ),
-        Container(
-          height: 8,
-        ),
+        Container(height: 8),
         Text(
           "To use these wishlists on Little Light, you will need to export them as json and publish it somewhere (github.com for example), and then paste the url to raw file on the field below:"
               .translate(context),
@@ -150,13 +159,17 @@ class _AddCustomWishlistFormState extends State<AddCustomWishlistForm> with Wish
     );
   }
 
-  Widget buildTextField(BuildContext context, String label,
-      {String? initialValue, int? maxLength = 50, bool multiline = false, void Function()? onInput}) {
+  Widget buildTextField(
+    BuildContext context,
+    String label, {
+    String? initialValue,
+    int? maxLength = 50,
+    bool multiline = false,
+    void Function()? onInput,
+  }) {
     var controller = fieldControllers[label];
     if (controller == null) {
-      controller = fieldControllers[label] = TextEditingController(
-        text: initialValue,
-      );
+      controller = fieldControllers[label] = TextEditingController(text: initialValue);
       if (onInput != null) {
         controller.addListener(() {
           onInput();

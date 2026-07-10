@@ -23,12 +23,13 @@ class DetailsItemTagsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Item Tags".translate(context).toUpperCase()),
-          persistenceID: 'item tags',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Item Tags".translate(context).toUpperCase()),
+        persistenceID: 'item tags',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -52,18 +53,20 @@ class DetailsItemTagsWidget extends StatelessWidget {
     final tags = this.tags;
     if (tags == null) return [];
     return tags
-        .map((t) => TagPillWidget.fromTag(
-              t,
-              onRemove: () => onRemoveTag?.call(t),
-            ))
+        .map(
+          (t) => TagPillWidget.fromTag(
+            t,
+            onRemove: () => onRemoveTag?.call(t),
+          ),
+        )
         .toList();
   }
 
   Widget buildAddTagButton(BuildContext context) => TagPillWidget(
-        icon: FontAwesomeIcons.circlePlus,
-        tagName: "Add Tag".translate(context),
-        background: context.theme.primaryLayers.layer0,
-        foreground: context.theme.onSurfaceLayers.layer0,
-        onTap: onAddTap,
-      );
+    icon: FontAwesomeIcons.circlePlus.data,
+    tagName: "Add Tag".translate(context),
+    background: context.theme.primaryLayers.layer0,
+    foreground: context.theme.onSurfaceLayers.layer0,
+    onTap: onAddTap,
+  );
 }

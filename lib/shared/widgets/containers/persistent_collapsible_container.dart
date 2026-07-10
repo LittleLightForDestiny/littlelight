@@ -34,14 +34,17 @@ class PersistentCollapsibleContainer extends StatelessWidget {
 
   Widget buildHeader(BuildContext context, bool visible) {
     return HeaderWidget(
-        child: Row(children: [
-      Expanded(child: title),
-      buildToggleButton(context, visible),
-    ]));
+      child: Row(
+        children: [
+          Expanded(child: title),
+          buildToggleButton(context, visible),
+        ],
+      ),
+    );
   }
 
   Widget buildToggleButton(BuildContext context, bool visible) {
-    final icon = visible ? FontAwesomeIcons.solidSquareMinus : FontAwesomeIcons.solidSquarePlus;
+    final icon = visible ? FontAwesomeIcons.solidSquareMinus.data : FontAwesomeIcons.solidSquarePlus.data;
     return Stack(
       children: [
         Icon(
@@ -63,16 +66,17 @@ class PersistentCollapsibleContainer extends StatelessWidget {
 
   Widget buildContent(BuildContext context, bool opened) {
     return ClipRect(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: AnimatedAlign(
-          duration: _animationDuration,
-          alignment: Alignment.center,
-          child: Container(
-            constraints: BoxConstraints(minWidth: double.infinity),
-            padding: EdgeInsets.only(top: headerSpacing),
-            child: content,
-          ),
-          heightFactor: opened ? 1 : 0,
-        ));
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      child: AnimatedAlign(
+        duration: _animationDuration,
+        alignment: Alignment.center,
+        child: Container(
+          constraints: BoxConstraints(minWidth: double.infinity),
+          padding: EdgeInsets.only(top: headerSpacing),
+          child: content,
+        ),
+        heightFactor: opened ? 1 : 0,
+      ),
+    );
   }
 }

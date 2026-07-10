@@ -25,22 +25,25 @@ class WishlistTagsFilterWidget extends BaseDrawerFilterWidget<WishlistTagFilterO
     final availableTags = allTags.where((t) => availableValues.contains(t));
     final showNone = availableValues.contains(null);
     return Column(
-      children: availableTags
+      children:
+          availableTags
               .map(
                 (tag) => FilterButtonWidget(
-                  Row(children: [
-                    Icon(
-                      tag.getIcon(context),
-                      color: tag.getForegroundColor(context),
-                    ),
-                    SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        tag.name,
-                        style: TextStyle(color: tag.getForegroundColor(context)),
+                  Row(
+                    children: [
+                      Icon(
+                        tag.getIcon(context),
+                        color: tag.getForegroundColor(context),
                       ),
-                    ),
-                  ]),
+                      SizedBox(width: 8),
+                      Expanded(
+                        child: Text(
+                          tag.name,
+                          style: TextStyle(color: tag.getForegroundColor(context)),
+                        ),
+                      ),
+                    ],
+                  ),
                   background: Container(color: tag.getColor(context)),
                   selected: values.contains(tag),
                   onTap: () => updateOption(context, data, tag, false),
@@ -51,18 +54,21 @@ class WishlistTagsFilterWidget extends BaseDrawerFilterWidget<WishlistTagFilterO
           [
             if (showNone)
               FilterButtonWidget(
-                Row(children: [
-                  Icon(
-                    FontAwesomeIcons.ban,
-                    color: context.theme.onSurfaceLayers.layer1,
-                  ),
-                  SizedBox(width: 8),
-                  Expanded(
+                Row(
+                  children: [
+                    FaIcon(
+                      FontAwesomeIcons.ban,
+                      color: context.theme.onSurfaceLayers.layer1,
+                    ),
+                    SizedBox(width: 8),
+                    Expanded(
                       child: Text(
-                    "None".translate(context).toUpperCase(),
-                    style: TextStyle(inherit: true, color: context.theme.onSurfaceLayers.layer1),
-                  )),
-                ]),
+                        "None".translate(context).toUpperCase(),
+                        style: TextStyle(inherit: true, color: context.theme.onSurfaceLayers.layer1),
+                      ),
+                    ),
+                  ],
+                ),
                 selected: values.contains(null),
                 onTap: () => updateOption(context, data, null, false),
                 onLongPress: () => updateOption(context, data, null, true),
@@ -73,10 +79,11 @@ class WishlistTagsFilterWidget extends BaseDrawerFilterWidget<WishlistTagFilterO
 
   Widget buildIcon(BuildContext context, DamageType type) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: Icon(
-          type.icon,
-          color: type.getColorLayer(context).layer3,
-        ));
+      padding: EdgeInsets.all(4),
+      child: Icon(
+        type.icon,
+        color: type.getColorLayer(context).layer3,
+      ),
+    );
   }
 }
