@@ -28,8 +28,7 @@ dependencies:
   protocol_registry: ^0.0.5
 
   # api clients
-  bungie_api:
-    path: ../bungie-api-dart
+  bungie_api: 14.0.0
 
   # dependency_injection
   get_it: ^9.2.1   

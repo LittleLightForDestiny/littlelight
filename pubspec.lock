@@ -148,9 +148,10 @@ packages:
   bungie_api:
     dependency: "direct main"
     description:
-      path: "../bungie-api-dart"
-      relative: true
-    source: path
+      name: bungie_api
+      sha256: b05bdd54867a61fcabf9a0708a1079a8fc694deb1e1903e890c8921ee52dac71
+      url: "https://pub.dev"
+    source: hosted
     version: "14.0.0"
   cached_network_image:
     dependency: "direct main"
