@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:bungie_api/enums/destiny_breaker_type.dart';
 
 part 'game_data.g.dart';
 
@@ -22,6 +23,30 @@ class ReputationRanks {
   }
 }
 
+class BreakerMapConverter implements JsonConverter<Map<int, DestinyBreakerType>, Map<String, dynamic>> {
+  const BreakerMapConverter();
+
+  @override
+  Map<int, DestinyBreakerType> fromJson(Map<String, dynamic> json) {
+    return json.map(
+      (key, value) => MapEntry(
+        int.parse(key),
+        DestinyBreakerType.values[value as int],
+      ),
+    );
+  }
+
+  @override
+  Map<String, int> toJson(Map<int, DestinyBreakerType> object) {
+    return object.map(
+      (key, value) => MapEntry(
+        key.toString(),
+        value.index,
+      ),
+    );
+  }
+}
+
 @JsonSerializable()
 class GameData {
   int softCap;
@@ -34,6 +59,8 @@ class GameData {
   List<int>? cosmeticSocketCategories;
   List<String>? craftingSocketCategories;
   List<String>? deepsightSocketCategories;
+  @BreakerMapConverter()
+  Map<int, DestinyBreakerType>? weaponsMissingBreakerType;
 
   GameData(
       {required this.softCap,
@@ -43,7 +70,8 @@ class GameData {
       this.raidPhases,
       this.cosmeticSocketCategories,
       this.craftingSocketCategories,
-      this.deepsightSocketCategories});
+      this.deepsightSocketCategories,
+      this.weaponsMissingBreakerType});
 
   factory GameData.fromJson(dynamic json) {
     return _$GameDataFromJson(json);

@@ -29,19 +29,18 @@ class QuestsCharacterContent {
   final int? categoryHash;
   final List<DestinyItemInfo> items;
 
-  QuestsCharacterContent(
-    this.categoryHash, {
-    required this.items,
-  });
+  QuestsCharacterContent(this.categoryHash, {required this.items});
 }
 
 const _characterInfoHeight = 128.0;
 const _bountyCategoryHash = 1784235469;
+const _orderInventoryBucketHash = 635141261;
 
 class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestConsumer {
   final DestinyCharacterInfo character;
   final List<QuestsCharacterContent> quests;
   final List<DestinyItemInfo>? bounties;
+  final List<DestinyItemInfo>? orders;
   final List<DestinyItemComponent>? currencies;
   final Key? scrollViewKey;
 
@@ -52,6 +51,7 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
     Key? key,
     required this.quests,
     required this.bounties,
+    required this.orders,
     this.currencies,
     this.scrollViewKey,
   }) : super(key: key);
@@ -64,21 +64,29 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
         [
           FixedHeightScrollSection(
             _characterInfoHeight,
-            itemBuilder: (context, _) => CharacterInfoWidget(
-              character,
-              currencies: currencies,
-            ),
+            itemBuilder: (context, _) => CharacterInfoWidget(character, currencies: currencies),
           ),
-          ...buildBountiesSections(context, constraints),
-          for (final q in quests) ...buildQuestSections(context, q, constraints)
+          ...buildBountiesSections(
+            context,
+            constraints,
+            this.orders,
+            ManifestText<DestinyInventoryBucketDefinition>(_orderInventoryBucketHash),
+            "orders",
+          ),
+          ...buildBountiesSections(
+            context,
+            constraints,
+            this.bounties,
+            ManifestText<DestinyItemCategoryDefinition>(_bountyCategoryHash),
+            "bounties",
+          ),
+          for (final q in quests) ...buildQuestSections(context, q, constraints),
         ],
         crossAxisSpacing: 0,
         mainAxisSpacing: 0,
-        padding: const EdgeInsets.all(8).copyWith(top: 0) +
-            EdgeInsets.only(
-              left: context.mediaQuery.padding.left,
-              right: context.mediaQuery.padding.right,
-            ),
+        padding:
+            const EdgeInsets.all(8).copyWith(top: 0) +
+            EdgeInsets.only(left: context.mediaQuery.padding.left, right: context.mediaQuery.padding.right),
         scrollViewKey: scrollViewKey,
       ),
     );
@@ -87,13 +95,15 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
   List<ScrollableSection> buildBountiesSections(
     BuildContext context,
     BoxConstraints constraints,
+    List<DestinyItemInfo>? items,
+    Widget title,
+    String sectionId,
   ) {
-    final items = this.bounties;
     if (items == null || items.isEmpty) return [];
     final defaultDisplayType = BucketDisplayType.Small;
-    final sectionId = 'bounties';
-    final displayType =
-        sectionOptionsState(context).getDisplayTypeForItemSection(sectionId, defaultValue: defaultDisplayType);
+    final displayType = sectionOptionsState(
+      context,
+    ).getDisplayTypeForItemSection(sectionId, defaultValue: defaultDisplayType);
     final unequippedDensity = displayType.unequippedDensity;
     final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final unequippedCount = (items.length / idealCount).ceil() * idealCount;
@@ -105,20 +115,13 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
         itemBuilder: (_, __) => ItemSectionHeaderWidget(
           globalKey: context.getGlobalKeyFor(key),
           sectionIdentifier: sectionId,
-          title: ManifestText<DestinyItemCategoryDefinition>(_bountyCategoryHash),
+          title: title,
           defaultType: defaultDisplayType,
           availableOptions: _pursuitDisplayOptions,
           canEquip: false,
         ),
       ),
-      if (unequippedDensity != null)
-        buildItemSection(
-          context,
-          items,
-          unequippedDensity,
-          idealCount,
-          unequippedCount,
-        ),
+      if (unequippedDensity != null) buildItemSection(context, items, unequippedDensity, idealCount, unequippedCount),
     ].whereType<ScrollableSection>().toList();
   }
 
@@ -131,10 +134,9 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
     final categoryHash = bucketContent.categoryHash;
     final defaultDisplayType = BucketDisplayType.Large;
     final sectionId = 'quest ${categoryHash}';
-    final displayType = sectionOptionsState(context).getDisplayTypeForItemSection(
-      sectionId,
-      defaultValue: defaultDisplayType,
-    );
+    final displayType = sectionOptionsState(
+      context,
+    ).getDisplayTypeForItemSection(sectionId, defaultValue: defaultDisplayType);
     final unequippedDensity = displayType.unequippedDensity;
     final idealCount = unequippedDensity?.getIdealCount(constraints.maxWidth) ?? 5;
     final unequippedCount = (items.length / idealCount).ceil() * idealCount;
@@ -148,22 +150,13 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
           sectionIdentifier: sectionId,
           title: categoryHash != null
               ? ManifestText<DestinyTraitDefinition>(categoryHash)
-              : ManifestText<DestinyInventoryBucketDefinition>(
-                  items.first.bucketHash,
-                ),
+              : ManifestText<DestinyInventoryBucketDefinition>(items.first.bucketHash),
           defaultType: defaultDisplayType,
           availableOptions: _pursuitDisplayOptions,
           canEquip: false,
         ),
       ),
-      if (unequippedDensity != null)
-        buildItemSection(
-          context,
-          items,
-          unequippedDensity,
-          idealCount,
-          unequippedCount,
-        ),
+      if (unequippedDensity != null) buildItemSection(context, items, unequippedDensity, idealCount, unequippedCount),
     ].whereType<ScrollableSection>().toList();
   }
 
@@ -186,9 +179,7 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
             return buildItem(items[index], density);
           }
 
-          return EmptyItem(
-            density: density,
-          );
+          return EmptyItem(density: density);
         },
       );
     }
@@ -203,9 +194,7 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
             return buildItem(items[index], density);
           }
 
-          return EmptyItem(
-            density: density,
-          );
+          return EmptyItem(density: density);
         },
       );
     }
@@ -214,10 +203,7 @@ class PursuitsCharacterTabContentWidget extends StatelessWidget with ManifestCon
 
   Widget buildItem(DestinyItemInfo item, InventoryItemWidgetDensity density) {
     return InteractiveItemWrapper(
-      InventoryItemWidget(
-        item,
-        density: density,
-      ),
+      InventoryItemWidget(item, density: density),
       item: item,
       density: density,
     );

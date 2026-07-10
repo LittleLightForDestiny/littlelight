@@ -42,7 +42,7 @@ class TranslatedLookupMessages implements LookupMessages {
   @override
   String months(int months) => "{months} months".translate(bloc, replace: {"months": "$months"});
   @override
-  String aboutAYear(int year) => "{months} months".translate(bloc, replace: {"months": "$months"});
+  String aboutAYear(int months) => "{months} months".translate(bloc, replace: {"months": "$months"});
   @override
   String years(int years) => "{years} years".translate(bloc, replace: {"years": "$years"});
   @override

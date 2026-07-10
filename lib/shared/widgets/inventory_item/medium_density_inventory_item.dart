@@ -24,6 +24,8 @@ import 'package:little_light/widgets/common/manifest_image.widget.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:tinycolor2/tinycolor2.dart';
+import 'package:little_light/utils/intrinsic_breaker_utils.dart';
+import 'package:little_light/shared/utils/extensions/breaker_type_data.dart';
 
 import 'inventory_item_icon.dart';
 import 'inventory_item_mods.dart';
@@ -557,18 +559,30 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
     final powerLevel = item.primaryStatValue;
     final textStyle = context.textTheme.itemPrimaryStatMediumDensity;
     final ammoType = definition.equippingBlock?.ammoType;
+    final breakerType = IntrinsicBreakerUtils.getBreakerType(context, definition);
     return Container(
-      height: 20,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(right: 6),
-            child: Icon(
-              ammoType?.icon,
-              color: ammoType?.color,
-              size: textStyle.fontSize,
+        height: 20,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            if (breakerType != null)
+              Padding(
+                padding: const EdgeInsets.only(right: 2),
+                child: Icon(breakerType.icon, size: 12),
+              ),
+            Padding(
+              padding: const EdgeInsets.only(right: 6),
+              child: Icon(
+                ammoType?.icon,
+                color: ammoType?.color,
+                size: textStyle.fontSize,
+              ),
+            ),
+            Text(
+              "$powerLevel",
+              style: textStyle.copyWith(color: damageColor),
+              softWrap: false,
             ),
           ),
           Text(

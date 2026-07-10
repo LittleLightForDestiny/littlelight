@@ -36,11 +36,13 @@ extension DestinyInventoryItemDefinitionHelper on DestinyInventoryItemDefinition
 
   bool get isQuestStep =>
       this.itemType == DestinyItemType.QuestStep || //
-      inventory?.bucketTypeHash == InventoryBucket.pursuits;
+      inventory?.bucketTypeHash == InventoryBucket.pursuits || //
+      inventory?.bucketTypeHash == InventoryBucket.orders;
 
   bool get isEngram =>
       itemType == DestinyItemType.Engram || //
-      inventory?.bucketTypeHash == InventoryBucket.engrams;
+      inventory?.bucketTypeHash == InventoryBucket.engrams || //
+      uiItemDisplayStyle == "ui_display_style_engram";
 }
 
 extension DestinytemInfoHelpers on DestinyItemInfo {

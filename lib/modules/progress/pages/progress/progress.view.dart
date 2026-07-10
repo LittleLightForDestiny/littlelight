@@ -35,13 +35,7 @@ class ProgressView extends StatelessWidget {
   final MilestonesBloc milestonesState;
   final RanksBloc ranksState;
 
-  const ProgressView(
-    this.bloc,
-    this.state,
-    this.milestonesState,
-    this.ranksState, {
-    Key? key,
-  }) : super(key: key);
+  const ProgressView(this.bloc, this.state, this.milestonesState, this.ranksState, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -134,10 +128,7 @@ class ProgressView extends StatelessWidget {
                   child: Row(
                     children: [
                       buildSearchButton(context),
-                      CharacterHeaderTabMenuWidget(
-                        characters,
-                        characterTabController,
-                      ),
+                      CharacterHeaderTabMenuWidget(characters, characterTabController),
                     ],
                   ),
                 ),
@@ -233,11 +224,13 @@ class ProgressView extends StatelessWidget {
             .toList() ??
         [];
     final bounties = state.bountiesFor(character);
+    final orders = state.ordersFor(character);
     return PursuitsCharacterTabContentWidget(
       character,
       scrollViewKey: PageStorageKey("character_tab_${tab.name}_${character.characterId}"),
       bounties: bounties,
       quests: quests,
+      orders: orders,
       currencies: currencies,
     );
   }

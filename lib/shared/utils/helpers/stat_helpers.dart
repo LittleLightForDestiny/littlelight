@@ -181,7 +181,7 @@ List<StatValues>? calculateStats(
       masterworkStatIndexes.add(index);
     else if (plugCategory.contains('.tuning.mods'))
       tuningStatIndexes.add(index);
-    else
+    else if (plugCategory != 'crafting.plugs.weapons.mods.enhancers')
       otherStatIndexes.add(index);
   }
   final socketIndexes = [...armorStatIndexes, ...masterworkStatIndexes, ...tuningStatIndexes, ...otherStatIndexes];
@@ -256,11 +256,10 @@ List<DestinyItemInvestmentStatDefinition>? getAvailableStats(
   scaledStatHashes.addAll(requiredAvailableStatHashes ?? []);
   for (final statHash in scaledStatHashes) {
     if (stats.where((s) => s.statTypeHash == statHash).isEmpty) {
-      var newStat =
-          DestinyItemInvestmentStatDefinition()
-            ..statTypeHash = statHash
-            ..value = 0
-            ..isConditionallyActive = false;
+      var newStat = DestinyItemInvestmentStatDefinition()
+        ..statTypeHash = statHash
+        ..value = 0
+        ..isConditionallyActive = false;
       stats.add(newStat);
     }
   }
@@ -292,23 +291,12 @@ List<StatComparison> comparePlugStats(
   Map<int, DestinyInventoryItemDefinition>? plugDefinitions, {
   List<int>? requiredAvailableStatHashes,
 }) {
-  final baseHashes = basePlugHashes.map(
-    (key, value) => MapEntry(
-      key,
-      key == socketIndex ? null : value,
-    ),
-  );
+  final baseHashes = basePlugHashes.map((key, value) => MapEntry(key, key == socketIndex ? null : value));
   final equippedHashes = basePlugHashes.map(
-    (key, value) => MapEntry(
-      key,
-      key == socketIndex ? equippedPlugHash : value,
-    ),
+    (key, value) => MapEntry(key, key == socketIndex ? equippedPlugHash : value),
   );
   final selectedHashes = basePlugHashes.map(
-    (key, value) => MapEntry(
-      key,
-      key == socketIndex ? selectedPlugHash : value,
-    ),
+    (key, value) => MapEntry(key, key == socketIndex ? selectedPlugHash : value),
   );
   final equippedValues = calculateStats(
     baseHashes,
@@ -337,16 +325,14 @@ List<StatComparison> comparePlugStats(
   for (final statHash in statHashes) {
     final equippedStat = equippedValues?.firstWhereOrNull((element) => element.statHash == statHash);
     final selectedStat = selectedValues?.firstWhereOrNull((element) => element.statHash == statHash);
-    final equippedValue =
-        equippedStat == null
-            ? 0
-            : (equippedStat.selected + equippedStat.selectedMasterwork) -
-                (equippedStat.equipped + equippedStat.equippedMasterwork);
-    final selectedValue =
-        selectedStat == null
-            ? 0
-            : (selectedStat.selected + selectedStat.selectedMasterwork) -
-                (selectedStat.equipped + selectedStat.equippedMasterwork);
+    final equippedValue = equippedStat == null
+        ? 0
+        : (equippedStat.selected + equippedStat.selectedMasterwork) -
+              (equippedStat.equipped + equippedStat.equippedMasterwork);
+    final selectedValue = selectedStat == null
+        ? 0
+        : (selectedStat.selected + selectedStat.selectedMasterwork) -
+              (selectedStat.equipped + selectedStat.equippedMasterwork);
     final rawEquipped =
         ((equippedStat?.rawSelected ?? 0) + (equippedStat?.rawSelectedMasterwork ?? 0)) -
         ((equippedStat?.rawEquipped ?? 0) + (equippedStat?.rawEquippedMasterwork ?? 0));
@@ -354,12 +340,11 @@ List<StatComparison> comparePlugStats(
         ((selectedStat?.rawSelected ?? 0) + (selectedStat?.rawSelectedMasterwork ?? 0)) -
         ((selectedStat?.rawEquipped ?? 0) + (selectedStat?.rawEquippedMasterwork ?? 0));
 
-    final diffType =
-        rawSelected == rawEquipped
-            ? StatDifferenceType.Neutral
-            : rawSelected > rawEquipped
-            ? StatDifferenceType.Positive
-            : StatDifferenceType.Negative;
+    final diffType = rawSelected == rawEquipped
+        ? StatDifferenceType.Neutral
+        : rawSelected > rawEquipped
+        ? StatDifferenceType.Positive
+        : StatDifferenceType.Negative;
 
     final comparison = StatComparison(
       statHash: statHash,

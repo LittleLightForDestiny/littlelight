@@ -5,6 +5,7 @@ import 'package:bungie_api/enums/destiny_energy_type.dart';
 import 'package:flutter/material.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/widgets/icon_fonts/littlelight_icons.dart';
+import 'package:bungie_api/enums/destiny_breaker_type.dart';
 
 export '../shared/utils/extensions/element_type_data.dart';
 
@@ -167,6 +168,19 @@ class DestinyData {
       case DestinyEnergyType.Stasis:
         return 998798867;
 
+      default:
+        return null;
+    }
+  }
+
+  static IconData? getBreakerTypeIcon(DestinyBreakerType breakerType) {
+    switch (breakerType) {
+      case DestinyBreakerType.ShieldPiercing:
+        return LittleLightIcons.pierce;
+      case DestinyBreakerType.Disruption:
+        return LittleLightIcons.overload;
+      case DestinyBreakerType.Stagger:
+        return LittleLightIcons.stagger;
       default:
         return null;
     }

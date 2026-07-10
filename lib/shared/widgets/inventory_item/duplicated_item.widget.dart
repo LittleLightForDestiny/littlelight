@@ -27,6 +27,8 @@ import 'package:provider/provider.dart';
 import 'inventory_item_perks.dart';
 import 'inventory_item_stats.dart';
 import 'utils/get_energy_capacity.dart';
+import 'package:tinycolor2/src/extensions.dart';
+import 'package:little_light/shared/widgets/shapes/diamond_shape.dart';
 
 const _expectedItemSize = Size(172.0, 120.0);
 const _padding = 4.0;
@@ -44,10 +46,9 @@ class DuplicatedItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        Positioned.fill(
-          child: buildEmblemBackground(context),
-        ),
+        Positioned.fill(child: buildEmblemBackground(context)),
         buildContent(context),
+        Positioned(top: 4, left: _emblemIconSize + 6, child: buildGearTier(context)),
       ],
     );
   }
@@ -374,6 +375,35 @@ class DuplicatedItemWidget extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+
+  Widget buildGearTier(BuildContext context) {
+    final gearTier = item.gearTier ?? 0;
+    if (gearTier <= 1) return SizedBox.shrink();
+    final iconColor = switch (gearTier) {
+      4 => context.theme.tierLayers.superior.lighten(45),
+      5 => context.theme.tierLayers.exotic.lighten(20),
+      _ => context.theme.onSurfaceLayers.layer0,
+    };
+    const diamondSize = 7.0;
+    return Container(
+      padding: const EdgeInsets.all(2),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer0,
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        spacing: 1.0,
+        children: [
+          for (int i = 0; i < gearTier; i++)
+            CustomPaint(
+              size: const Size(diamondSize, diamondSize),
+              painter: DiamondShapePainter.color(iconColor),
+            ),
+        ],
+      ),
     );
   }
 }

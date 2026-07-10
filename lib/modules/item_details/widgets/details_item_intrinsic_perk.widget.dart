@@ -9,6 +9,9 @@ import 'package:little_light/shared/widgets/sockets/perk_icon.widget.dart';
 import 'package:little_light/widgets/common/manifest_text.widget.dart';
 import 'package:provider/provider.dart';
 import 'package:little_light/shared/widgets/integrations/clarity/clarity_plug_info.widget.dart';
+import 'package:little_light/utils/intrinsic_breaker_utils.dart';
+import 'package:little_light/shared/utils/extensions/breaker_type_data.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 
 class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
   final DestinyItemSocketCategoryDefinition category;
@@ -51,6 +54,8 @@ class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
     final itemHash = state.itemHash;
     if (itemHash == null) return Container();
     if (state.isEquipped(socketIndex, plugHash) == false) return Container();
+    final itemDef = context.definition<DestinyInventoryItemDefinition>(itemHash);
+    final breakerType = IntrinsicBreakerUtils.getBreakerType(context, itemDef, plugHash: plugHash);
     return Column(children: <Widget>[
       Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -82,7 +87,12 @@ class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
                 style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
               ),
             ],
-          ))
+          )),
+          if (breakerType?.icon != null)
+            Padding(
+              padding: const EdgeInsets.only(left: 16, top: (64 - 32) / 2),
+              child: Icon(breakerType?.icon, size: 32),
+            ),
         ],
       ),
       Container(height: 4),

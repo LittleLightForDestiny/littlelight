@@ -29,6 +29,7 @@ abstract class InventoryBucket {
   static const int clanBanners = 4292445962;
   static const int engrams = 375726501;
   static const int pursuits = 1345459588;
+  static const int orders = 635141261;
 
   static const int artifact = 1506418338;
 
@@ -49,32 +50,15 @@ abstract class InventoryBucket {
 
   static const armorBucketHashes = [helmet, gauntlets, chestArmor, legArmor, classArmor];
 
-  static const weaponBucketHashes = [
-    kineticWeapons,
-    energyWeapons,
-    powerWeapons,
-  ];
+  static const weaponBucketHashes = [kineticWeapons, energyWeapons, powerWeapons];
 
-  static const flairBucketHashes = [
-    ghost,
-    vehicle,
-    ships,
-    emblems,
-  ];
+  static const flairBucketHashes = [ghost, vehicle, ships, emblems];
 
-  static const inventoryBucketHashes = [
-    consumables,
-    modifications,
-  ];
+  static const inventoryBucketHashes = [consumables, modifications];
 
   static const pursuitBucketHashes = [pursuits];
 
   static const List<int> exoticWeaponBlockBuckets = weaponBucketHashes;
 
-  static const List<int> exoticArmorBlockBuckets = [
-    helmet,
-    gauntlets,
-    chestArmor,
-    legArmor,
-  ];
+  static const List<int> exoticArmorBlockBuckets = [helmet, gauntlets, chestArmor, legArmor];
 }

@@ -15,6 +15,8 @@ import 'package:little_light/shared/utils/extensions/tier_type_data.dart';
 import 'package:little_light/utils/color_utils.dart';
 import 'package:little_light/widgets/common/queued_network_image.widget.dart';
 import 'package:little_light/core/blocs/profile/craftables_helper.bloc.dart';
+import 'package:little_light/utils/intrinsic_breaker_utils.dart';
+import 'package:little_light/shared/utils/extensions/breaker_type_data.dart';
 
 const _titleBarHeight = 32.0;
 const _iconWidth = 96.0;
@@ -188,9 +190,15 @@ class CollectibleItemWidget extends StatelessWidget {
     final damageType = genericItem?.damageType;
     final damageColor = damageType?.getColorLayer(context).layer2;
     final ammoType = definition.equippingBlock?.ammoType;
+    final breakerType = IntrinsicBreakerUtils.getBreakerType(context, definition);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
+        if (breakerType != null)
+          Padding(
+            padding: EdgeInsets.only(right: 6),
+            child: Icon(breakerType.icon, size: _primaryStatIconsSize),
+          ),
         Padding(
           padding: const EdgeInsets.only(right: 12),
           child: Icon(
