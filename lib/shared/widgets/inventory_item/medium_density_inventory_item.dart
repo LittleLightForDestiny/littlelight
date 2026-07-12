@@ -571,12 +571,16 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
               padding: const EdgeInsets.only(right: 2),
               child: Icon(breakerType.icon, size: 12),
             ),
-          Padding(
-            padding: const EdgeInsets.only(right: 6),
-            child: Icon(
-              ammoType?.icon,
-              color: ammoType?.color,
-              size: textStyle.fontSize,
+          SizedBox(
+            width: 14,
+            height: 12,
+            child: ClipRect(
+              child: Transform.translate(
+                offset: const Offset(-6, -4),
+                child: Icon(ammoType?.icon,
+                color: ammoType?.color,
+                size: (textStyle.fontSize ?? 16.0) + 4),
+              ),
             ),
           ),
           Text(
