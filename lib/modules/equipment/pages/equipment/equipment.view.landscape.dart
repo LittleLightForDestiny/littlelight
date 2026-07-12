@@ -259,6 +259,8 @@ class EquipmentLandscapeView extends StatelessWidget {
     return Stack(
       children: [
         Container(
+          padding: const EdgeInsets.only(right: 8),
+          alignment: Alignment.centerRight,
           width: kToolbarHeight,
           height: kToolbarHeight,
           child: const FaIcon(FontAwesomeIcons.magnifyingGlass),
