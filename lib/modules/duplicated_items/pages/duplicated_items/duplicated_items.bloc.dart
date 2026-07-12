@@ -54,14 +54,14 @@ class DuplicatedItemsBloc extends ChangeNotifier {
   bool loaded = false;
 
   DuplicatedItemsBloc(BuildContext this.context)
-      : profileBloc = context.read<ProfileBloc>(),
-        itemNotesBloc = context.read<ItemNotesBloc>(),
-        manifest = context.read<ManifestService>(),
-        filterBloc = context.read<SearchFilterBloc>(),
-        sorterBloc = context.read<SearchSorterBloc>(),
-        selectionBloc = context.read<SelectionBloc>(),
-        userSettingsBloc = context.read<UserSettingsBloc>(),
-        super() {
+    : profileBloc = context.read<ProfileBloc>(),
+      itemNotesBloc = context.read<ItemNotesBloc>(),
+      manifest = context.read<ManifestService>(),
+      filterBloc = context.read<SearchFilterBloc>(),
+      sorterBloc = context.read<SearchSorterBloc>(),
+      selectionBloc = context.read<SelectionBloc>(),
+      userSettingsBloc = context.read<UserSettingsBloc>(),
+      super() {
     _init();
   }
 
@@ -95,20 +95,21 @@ class DuplicatedItemsBloc extends ChangeNotifier {
 
   _update() async {
     final instancedItems = profileBloc.allInstancedItems;
-    final sortedItems = await sorterBloc.sort(instancedItems);
-    final hashes = sortedItems.map((e) => e.itemHash).whereType<int>().toSet();
+    final hashes = instancedItems.map((e) => e.itemHash).whereType<int>().toSet();
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
+    final sortedDefs = defs.values.whereType<DestinyInventoryItemDefinition>().toList()
+      ..sort((a, b) => (a.displayProperties?.name ?? '').compareTo(b.displayProperties?.name ?? ''));
     final map = <int, Map<int, List<DestinyItemInfo>>>{};
     final genericItems = _genericItems ??= {};
     final flatItemList = <DestinyItemInfo>[];
-    for (final itemHash in hashes) {
-      final def = defs[itemHash];
-      final bucketHash = def?.inventory?.bucketTypeHash;
+    for (final def in sortedDefs) {
+      final itemHash = def.hash ?? 0;
+      final bucketHash = def.inventory?.bucketTypeHash;
       if (bucketHash == null) continue;
       final bucketHashMap = map[bucketHash] ??= {};
-      final items = sortedItems.where((i) => i.itemHash == itemHash);
+      final items = instancedItems.where((i) => i.itemHash == itemHash);
       if (items.length <= 1) continue;
-      if (def != null) genericItems[itemHash] ??= DefinitionItemInfo.fromDefinition(def);
+      genericItems[itemHash] ??= DefinitionItemInfo.fromDefinition(def);
       flatItemList.addAll(items);
       bucketHashMap[itemHash] = items.toList();
     }
