@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/models/wishlist_index.dart';
-import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
-import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
 
-class SelectWishlistNotifier
-    with ChangeNotifier, LittleLightDataConsumer, WishlistsConsumer {
-  final BuildContext context;
+class SelectWishlistBloc extends ChangeNotifier {
+  final WishlistsService _wishlistsService;
+  final LittleLightDataBloc _littleLightData;
 
   WishlistFolder? _wishlistsIndexRoot;
   WishlistFolder? get wishlistsIndex => _wishlistsIndexRoot;
@@ -14,10 +14,14 @@ class SelectWishlistNotifier
   bool get isRootFolder => wishlistsIndex == currentFolder;
   final Set<String> _selectedFiles = <String>{};
 
-  SelectWishlistNotifier(this.context);
+  SelectWishlistBloc({
+    required LittleLightDataBloc littleLightData,
+    required WishlistsService wishlistsService,
+  }) : this._littleLightData = littleLightData,
+       this._wishlistsService = wishlistsService;
 
   void getFeaturedWishlists() async {
-    final index = await littleLightData.getFeaturedWishlists();
+    final index = await _littleLightData.getFeaturedWishlists();
     index.files?.shuffle();
     index.folders?.shuffle();
     _wishlistsIndexRoot = index;
@@ -51,7 +55,7 @@ class SelectWishlistNotifier
     notifyListeners();
   }
 
-  _getSelectedWishlists([WishlistFolder? folder]) {
+  List<WishlistFile> _getSelectedWishlists([WishlistFolder? folder]) {
     folder ??= _wishlistsIndexRoot;
     final wishlists = <WishlistFile>[];
     final folders = folder?.folders ?? [];
@@ -59,13 +63,12 @@ class SelectWishlistNotifier
       wishlists.addAll(_getSelectedWishlists(f));
     }
     final files = folder?.files ?? [];
-    wishlists
-        .addAll(files.where((element) => _selectedFiles.contains(element.url)));
+    wishlists.addAll(files.where((element) => _selectedFiles.contains(element.url)));
     return wishlists;
   }
 
   Future<void> saveSelections() async {
     final wishlists = _getSelectedWishlists();
-    await wishlistsService.setWishlists(wishlists);
+    await _wishlistsService.setWishlists(wishlists);
   }
 }

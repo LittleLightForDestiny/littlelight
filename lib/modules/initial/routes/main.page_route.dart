@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../pages/main/initial.page.dart';
+import '../pages/initial/initial.page.dart';
 
 class MainPageRoute extends MaterialPageRoute {
   MainPageRoute()
-      : super(
-          builder: (context) => const InitialPageContianer(),
-        );
+    : super(
+        builder: (context) => const InitialPageContainer(),
+      );
 }

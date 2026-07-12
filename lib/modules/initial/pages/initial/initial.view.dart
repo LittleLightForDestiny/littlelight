@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:little_light/pages/initial/subpages/authorization_request.subpage.dart';
-import 'package:little_light/pages/initial/subpages/download_manifest_progress.subpage.dart';
-import 'package:little_light/pages/initial/subpages/error.subpage.dart';
-import 'package:little_light/pages/initial/subpages/select_language.subpage.dart';
-import 'package:little_light/pages/initial/subpages/select_membership.subpage.dart';
-import 'package:little_light/pages/initial/subpages/select_wishlists.subpage.dart';
+import 'package:little_light/modules/initial/widgets/authorization_request.subpage.dart';
+import 'package:little_light/modules/initial/widgets/download_manifest_progress.subpage.dart';
+import 'package:little_light/modules/initial/widgets/error.subpage.dart';
+import 'package:little_light/modules/initial/widgets/select_language.subpage.dart';
+import 'package:little_light/modules/initial/widgets/select_membership.subpage.dart';
+import 'package:little_light/modules/initial/widgets/select_wishlists.subpage.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -20,15 +20,16 @@ class InitialView extends StatefulWidget {
 class InitialViewState extends State<InitialView> {
   @override
   Widget build(BuildContext context) => Scaffold(
-        body: Container(
-            decoration: const BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage("assets/imgs/background.jpg"),
-                fit: BoxFit.cover,
-              ),
-            ),
-            child: Center(child: buildContent(context))),
-      );
+    body: Container(
+      decoration: const BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("assets/imgs/background.jpg"),
+          fit: BoxFit.cover,
+        ),
+      ),
+      child: Center(child: buildContent(context)),
+    ),
+  );
 
   Widget buildContent(BuildContext context) {
     final controller = Provider.of<InitialPageStateNotifier>(context);

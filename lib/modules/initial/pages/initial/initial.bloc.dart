@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
+import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
@@ -10,21 +11,19 @@ import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/exceptions/network_error.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
+import 'package:little_light/modules/initial/blocs/manifest_downloader.bloc.dart';
 import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
 import 'package:little_light/pages/initial/errors/init_services.error.dart';
 import 'package:little_light/pages/initial/errors/initial_page_base.error.dart';
 import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
 import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
-import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
 import 'package:little_light/pages/main.screen.dart';
-import 'package:little_light/services/analytics/analytics.consumer.dart';
-import 'package:little_light/services/auth/auth.consumer.dart';
-import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
-import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
-import 'package:little_light/services/littlelight/wishlists.consumer.dart';
-import 'package:little_light/services/manifest/manifest.consumer.dart';
+import 'package:little_light/services/analytics/analytics.service.dart';
+import 'package:little_light/services/auth/auth.service.dart';
+import 'package:little_light/services/littlelight/wishlists.service.dart';
+import 'package:little_light/services/manifest/manifest.service.dart';
 import 'package:little_light/services/setup.dart';
-import 'package:little_light/services/storage/storage.consumer.dart';
+import 'package:little_light/services/storage/global_storage.service.dart';
 import 'package:provider/provider.dart';
 
 enum InitialPagePhase {
@@ -37,17 +36,15 @@ enum InitialPagePhase {
   EnsureCache,
 }
 
-class InitialPageStateNotifier
-    with
-        ChangeNotifier,
-        ManifestConsumer,
-        AuthConsumer,
-        LittleLightDataConsumer,
-        WishlistsConsumer,
-        AnalyticsConsumer,
-        StorageConsumer,
-        BungieApiConsumer {
+class InitialPageStateNotifier extends ChangeNotifier {
+  final ManifestService _manifest;
+  final AuthService _auth;
   final OfflineModeBloc _offlineModeBloc;
+  final LittleLightDataBloc _littleLightData;
+  final WishlistsService _wishlistsService;
+  final AnalyticsService _analytics;
+  final GlobalStorage _globalStorage;
+  final BuildContext _context;
 
   InitialPagePhase _phase = InitialPagePhase.Loading;
   InitialPagePhase get phase => _phase;
@@ -60,9 +57,26 @@ class InitialPageStateNotifier
 
   bool get forceReauth => true;
 
-  final BuildContext _context;
+  InitialPageStateNotifier(
+    this._context, {
+    required AuthService auth,
+    required OfflineModeBloc offlineModeBloc,
+    required ManifestService manifest,
+    required LittleLightDataBloc littleLightData,
+    required WishlistsService wishlistsService,
+    required AnalyticsService analytics,
+    required GlobalStorage globalStorage,
+  }) : _offlineModeBloc = offlineModeBloc,
+       this._manifest = manifest,
+       this._auth = auth,
+       this._littleLightData = littleLightData,
+       this._wishlistsService = wishlistsService,
+       this._analytics = analytics,
+       this._globalStorage = globalStorage {
+    _init();
+  }
 
-  InitialPageStateNotifier(this._context) : _offlineModeBloc = _context.read<OfflineModeBloc>() {
+  void _init() {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark),
     );
@@ -78,7 +92,7 @@ class InitialPageStateNotifier
       await initServices(_context);
     } catch (e, stackTrace) {
       logger.error("initServicesError", error: e, stack: stackTrace);
-      analytics.registerNonFatal(e, stackTrace);
+      _analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
       return;
@@ -102,14 +116,14 @@ class InitialPageStateNotifier
       if (code == null) {
         throw NotAuthorizedException("No Authorization code");
       }
-      await auth.addAccount(code);
+      await _auth.addAccount(code);
     } on InvalidMembershipException catch (e, stackTrace) {
-      analytics.registerNonFatal(e, stackTrace);
+      _analytics.registerNonFatal(e, stackTrace);
       _error = InvalidMembershipError();
       notifyListeners();
       return;
     } catch (e, stackTrace) {
-      analytics.registerNonFatal(e, stackTrace);
+      _analytics.registerNonFatal(e, stackTrace);
       _error = AuthorizationFailedError();
       notifyListeners();
       return;
@@ -142,7 +156,7 @@ class InitialPageStateNotifier
     _phase = InitialPagePhase.ManifestDownload;
     notifyListeners();
 
-    final downloader = _context.read<ManifestDownloaderNotifier>();
+    final downloader = _context.read<ManifestDownloaderBloc>();
     downloader.addListener(_manifestDownloadListener);
     downloader.downloadManifest(true);
   }
@@ -157,7 +171,7 @@ class InitialPageStateNotifier
     notifyListeners();
 
     try {
-      final needsUpdate = await manifest.needsUpdate();
+      final needsUpdate = await _manifest.needsUpdate();
       if (!needsUpdate) {
         manifestDownloaded();
         return;
@@ -170,13 +184,13 @@ class InitialPageStateNotifier
     _loading = false;
 
     notifyListeners();
-    final downloader = _context.read<ManifestDownloaderNotifier>();
+    final downloader = _context.read<ManifestDownloaderBloc>();
     downloader.addListener(_manifestDownloadListener);
     downloader.downloadManifest();
   }
 
   void _manifestDownloadListener() {
-    final downloader = _context.read<ManifestDownloaderNotifier>();
+    final downloader = _context.read<ManifestDownloaderBloc>();
     if (downloader.error) {
       downloader.removeListener(_manifestDownloadListener);
       _error = ManifestDownloadError();
@@ -197,7 +211,7 @@ class InitialPageStateNotifier
     _loading = true;
     notifyListeners();
 
-    final accounts = auth.accountIDs;
+    final accounts = _auth.accountIDs;
 
     if ((accounts?.length ?? 0) > 0) {
       accountsChecked();
@@ -217,8 +231,8 @@ class InitialPageStateNotifier
     _loading = true;
     notifyListeners();
 
-    final accountID = auth.currentAccountID;
-    final membershipID = auth.currentMembershipID;
+    final accountID = _auth.currentAccountID;
+    final membershipID = _auth.currentMembershipID;
     if (accountID != null && membershipID != null) {
       membershipSelected();
       return;
@@ -232,9 +246,9 @@ class InitialPageStateNotifier
   void membershipSelected() async {
     BungieNetToken? token;
     try {
-      token = await auth.getCurrentToken();
+      token = await _auth.getCurrentToken();
     } catch (e, stackTrace) {
-      analytics.registerNonFatal(e, stackTrace);
+      _analytics.registerNonFatal(e, stackTrace);
     }
     if (token != null) {
       _checkWishlist();
@@ -248,14 +262,14 @@ class InitialPageStateNotifier
   Future<void> _checkWishlist() async {
     _loading = true;
     notifyListeners();
-    final wishlists = await wishlistsService.getWishlists();
+    final wishlists = await _wishlistsService.getWishlists();
 
     if (wishlists != null) {
       wishlistsSelected();
       return;
     }
 
-    await littleLightData.getFeaturedWishlists();
+    await _littleLightData.getFeaturedWishlists();
 
     _phase = InitialPagePhase.WishlistsSelect;
     _loading = false;
@@ -273,17 +287,17 @@ class InitialPageStateNotifier
       await initPostLoadingServices(_context);
     } catch (e, stackTrace) {
       logger.error("initPostLoadingServicesError", error: e, stack: stackTrace);
-      analytics.registerNonFatal(e, stackTrace);
+      _analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
       return;
     }
 
     try {
-      await wishlistsService.checkForUpdates();
+      await _wishlistsService.checkForUpdates();
     } catch (e, stackTrace) {
       logger.error("non breaking error", error: e, stack: stackTrace);
-      analytics.registerNonFatal(e, stackTrace);
+      _analytics.registerNonFatal(e, stackTrace);
     }
 
     final profile = _context.read<ProfileBloc>();
@@ -306,7 +320,7 @@ class InitialPageStateNotifier
   }
 
   void clearDataAndRestart() async {
-    await globalStorage.purge();
+    await _globalStorage.purge();
     Phoenix.rebirth(_context);
   }
 

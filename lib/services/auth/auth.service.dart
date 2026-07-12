@@ -1,22 +1,21 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/helpers/bungie_net_token.dart';
-import 'package:bungie_api/helpers/oauth.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
+import 'package:flutter_web_auth_2/flutter_web_auth_2.dart';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
+import 'package:little_light/exceptions/not_authorized.exception.dart';
 import 'package:little_light/services/app_config/app_config.consumer.dart';
 import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
 import 'package:little_light/services/storage/export.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 setupAuthService() async {
   GetIt.I.registerSingleton<AuthService>(AuthService._internal());
@@ -33,9 +32,43 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
     _accountIDs = await globalStorage.accountIDs ?? <String>{};
   }
 
+  void runOAuth(bool forceReauth) async {
+    final url = getOAuthUrl(
+      clientId: appConfig.clientId,
+      languageCode: getInjectedLanguageService().currentLanguage,
+      reauth: forceReauth,
+    );
+    final result = await FlutterWebAuth2.authenticate(
+      url: url,
+      callbackUrlScheme: "luzinha",
+    );
+    final code = Uri.parse(result).queryParameters['code'];
+    if (code == null) throw NotAuthorizedException('No code returned');
+    await addAccount(code);
+  }
+
+  @Deprecated('Use runOAuth insted')
   void openBungieLogin(bool forceReauth) async {
-    var browser = BungieAuthBrowser();
-    OAuth.openOAuth(browser, appConfig.clientId, getInjectedLanguageService().currentLanguage, forceReauth);
+    final url = getOAuthUrl(
+      clientId: appConfig.clientId,
+      languageCode: getInjectedLanguageService().currentLanguage,
+      reauth: forceReauth,
+    );
+    final result = await FlutterWebAuth2.authenticate(
+      url: url,
+      callbackUrlScheme: "luzinha",
+    );
+    final code = Uri.parse(result).queryParameters['code'];
+    if (code == null) throw NotAuthorizedException('No code returned');
+    await addAccount(code);
+  }
+
+  String getOAuthUrl({required String clientId, required String languageCode, required bool reauth}) {
+    String url = 'https://www.bungie.net/$languageCode/OAuth/Authorize?client_id=$clientId&response_type=code';
+    if (reauth) {
+      url = '$url&reauth=true';
+    }
+    return url;
   }
 
   Future<UserMembershipData> addAccount(String authorizationCode) async {
@@ -53,8 +86,11 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
     List<GroupUserInfoCard> validMemberships = <GroupUserInfoCard>[];
     for (final membership in memberships) {
       try {
-        final profile = await bungieAPI
-            .getProfile([DestinyComponentType.Characters], membership.membershipId!, membership.membershipType!);
+        final profile = await bungieAPI.getProfile(
+          [DestinyComponentType.Characters],
+          membership.membershipId!,
+          membership.membershipType!,
+        );
         if (profile?.characters?.data?.isNotEmpty ?? false) {
           validMemberships.add(membership);
         }
@@ -195,23 +231,10 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
   Future<GroupUserInfoCard?> getMembership() async {
     if (_currentMembership == null) {
       final membershipData = await currentAccountStorage.getMembershipData();
-      _currentMembership =
-          membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == currentMembershipID);
+      _currentMembership = membershipData?.destinyMemberships?.firstWhereOrNull(
+        (m) => m.membershipId == currentMembershipID,
+      );
     }
     return _currentMembership;
-  }
-}
-
-class BungieAuthBrowser implements OAuthBrowser {
-  BungieAuthBrowser() : super();
-
-  @override
-  dynamic open(String url) async {
-    final uri = Uri.parse(url);
-    LaunchMode launchMode = LaunchMode.platformDefault;
-    if (Platform.isAndroid) {
-      launchMode = LaunchMode.externalApplication;
-    }
-    await launchUrl(uri, mode: launchMode);
   }
 }
