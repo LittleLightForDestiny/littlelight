@@ -4,9 +4,9 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/models/wishlist_index.dart';
-import 'package:little_light/modules/initial/pages/main/initial.bloc.dart';
-import 'package:little_light/pages/initial/notifiers/select_wishlists.notifier.dart';
-import 'package:little_light/pages/initial/subpages/subpage_base.dart';
+import 'package:little_light/modules/initial/pages/initial/initial.bloc.dart';
+import 'package:little_light/modules/initial/blocs/select_wishlists.bloc.dart';
+import 'package:little_light/modules/initial/widgets/subpage_base.dart';
 import 'package:provider/provider.dart';
 
 class SelectWishlistsSubPage extends StatefulWidget {
@@ -20,7 +20,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
   @override
   void initState() {
     super.initState();
-    context.read<SelectWishlistNotifier>().getFeaturedWishlists();
+    context.read<SelectWishlistBloc>().getFeaturedWishlists();
   }
 
   @override
@@ -40,7 +40,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
   );
 
   Widget buildWishlistsContent(BuildContext context) {
-    final root = context.watch<SelectWishlistNotifier>().isRootFolder;
+    final root = context.watch<SelectWishlistBloc>().isRootFolder;
     if (root) {
       return buildWishlistsRootContent(context);
     }
@@ -48,7 +48,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
   }
 
   Widget buildProceedButton(BuildContext context) {
-    final count = context.watch<SelectWishlistNotifier>().selectedCount;
+    final count = context.watch<SelectWishlistBloc>().selectedCount;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -64,7 +64,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
         ),
         ElevatedButton(
           onPressed: () async {
-            await context.read<SelectWishlistNotifier>().saveSelections();
+            await context.read<SelectWishlistBloc>().saveSelections();
             context.read<InitialPageStateNotifier>().wishlistsSelected();
           },
           child: Text(
@@ -118,14 +118,14 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
   }
 
   Widget buildFolderHeader(BuildContext context) {
-    final folder = context.watch<SelectWishlistNotifier>().currentFolder;
+    final folder = context.watch<SelectWishlistBloc>().currentFolder;
     return Container(
       margin: const EdgeInsets.only(top: 8, bottom: 16),
       child: Row(
         children: [
           BackButton(
             onPressed: () {
-              context.read<SelectWishlistNotifier>().goToRoot();
+              context.read<SelectWishlistBloc>().goToRoot();
             },
           ),
           Container(
@@ -179,21 +179,21 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
   }
 
   Widget buildWishlists(BuildContext context) {
-    final currentFolder = context.watch<SelectWishlistNotifier>().currentFolder;
+    final currentFolder = context.watch<SelectWishlistBloc>().currentFolder;
     final files = currentFolder?.files;
     if (files == null) return Container();
     return Column(children: files.map((f) => buildWishlistFile(context, f)).toList());
   }
 
   Widget buildFolders(BuildContext context) {
-    final currentFolder = context.watch<SelectWishlistNotifier>().currentFolder;
+    final currentFolder = context.watch<SelectWishlistBloc>().currentFolder;
     final folders = currentFolder?.folders;
     if (folders == null) return Container();
     return Column(children: folders.map((f) => buildWishlistFolder(context, f)).toList());
   }
 
   Widget buildWishlistFile(BuildContext context, WishlistFile file) {
-    bool checked = context.watch<SelectWishlistNotifier>().isChecked(file);
+    bool checked = context.watch<SelectWishlistBloc>().isChecked(file);
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       child: Material(
@@ -201,7 +201,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
         color: context.theme.secondarySurfaceLayers.layer1,
         child: InkWell(
           onTap: () {
-            context.read<SelectWishlistNotifier>().toggleChecked(file);
+            context.read<SelectWishlistBloc>().toggleChecked(file);
           },
           child: Container(
             padding: const EdgeInsets.all(8),
@@ -242,7 +242,7 @@ class SelectWishlistsSubPageState extends SubpageBaseState<SelectWishlistsSubPag
         color: context.theme.secondarySurfaceLayers.layer1,
         child: InkWell(
           onTap: () {
-            context.read<SelectWishlistNotifier>().goToFolder(folder);
+            context.read<SelectWishlistBloc>().goToFolder(folder);
           },
           child: Container(
             padding: const EdgeInsets.all(8),

@@ -2,6 +2,7 @@ import 'package:bungie_api/groupsv2.dart';
 import 'package:bungie_api/user.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
 import 'package:little_light/modules/settings/pages/settings/settings.page_route.dart';
@@ -40,9 +41,11 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
 
   @override
   Widget build(BuildContext context) {
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      buildAccounts(),
-      settingsItem(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        buildAccounts(),
+        settingsItem(
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -50,23 +53,40 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
               Container(width: 4),
               const Icon(Icons.logout, size: 16),
             ],
-          ), onTap: () async {
-        final context = this.context;
-        final account = accounts?.firstWhere((element) => element.bungieNetUser?.membershipId == auth.currentAccountID);
-        if (account == null) return;
-        Navigator.of(context).pop();
-        await Navigator.push(context, LogoutDialogRoute(context, account: account));
-      }),
-      settingsItem(Text("Add account".translate(context)), onTap: () {
-        auth.openBungieLogin(true);
-      }),
-      settingsItem(Text("Change Language".translate(context)), onTap: () {
-        pushRoute(context, LanguagesPageRoute());
-      }),
-      settingsItem(Text("Settings".translate(context)), onTap: () {
-        Navigator.of(context).push(SettingsPageRoute());
-      })
-    ]);
+          ),
+          onTap: () async {
+            final context = this.context;
+            final account = accounts?.firstWhere(
+              (element) => element.bungieNetUser?.membershipId == auth.currentAccountID,
+            );
+            if (account == null) return;
+            Navigator.of(context).pop();
+            await Navigator.push(context, LogoutDialogRoute(context, account: account));
+          },
+        ),
+        settingsItem(
+          Text("Add account".translate(context)),
+          onTap: () async {
+            try {
+              await auth.runOAuth(true);
+              Phoenix.rebirth(context);
+            } catch (_) {}
+          },
+        ),
+        settingsItem(
+          Text("Change Language".translate(context)),
+          onTap: () {
+            pushRoute(context, LanguagesPageRoute());
+          },
+        ),
+        settingsItem(
+          Text("Settings".translate(context)),
+          onTap: () {
+            Navigator.of(context).push(SettingsPageRoute());
+          },
+        ),
+      ],
+    );
   }
 
   void pushRoute(BuildContext context, MaterialPageRoute route) {
@@ -77,19 +97,22 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
   Widget settingsItem(Widget child, {void Function()? onTap}) {
     return Material(
       child: InkWell(
-          onTap: onTap,
-          child: Container(
-            alignment: Alignment.centerRight,
-            decoration:
-                BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: context.theme.surfaceLayers.layer1))),
-            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-            child: DefaultTextStyle(style: context.textTheme.button, child: child),
-          )),
+        onTap: onTap,
+        child: Container(
+          alignment: Alignment.centerRight,
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(width: 1, color: context.theme.surfaceLayers.layer1)),
+          ),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          child: DefaultTextStyle(style: context.textTheme.button, child: child),
+        ),
+      ),
     );
   }
 
   Widget buildAccounts() {
-    final availableMemberships = accounts?.where((account) {
+    final availableMemberships =
+        accounts?.where((account) {
           final membershipCount =
               account.destinyMemberships?.where((m) => m.membershipId != auth.currentMembershipID).length ?? 0;
           return membershipCount > 0;
@@ -100,16 +123,19 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
 
     return Container(
       padding: const EdgeInsets.all(8),
-      decoration:
-          BoxDecoration(border: Border(bottom: BorderSide(width: 1, color: context.theme.surfaceLayers.layer1))),
+      decoration: BoxDecoration(
+        border: Border(bottom: BorderSide(width: 1, color: context.theme.surfaceLayers.layer1)),
+      ),
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-                padding: const EdgeInsets.all(8),
-                alignment: Alignment.centerRight,
-                child: Text("Change account".translate(context), style: context.textTheme.subtitle))
-          ].followedBy(accounts!.map((m) => buildAccount(m))).toList()),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(8),
+            alignment: Alignment.centerRight,
+            child: Text("Change account".translate(context), style: context.textTheme.subtitle),
+          ),
+        ].followedBy(accounts!.map((m) => buildAccount(m))).toList(),
+      ),
     );
   }
 
@@ -120,40 +146,49 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
         account.destinyMemberships?.where((m) => m.membershipId != auth.currentMembershipID).length ?? 0;
     if (availableMembershipCount == 0) return Container();
     final pictureUrl = BungieApiService.url(profilePicturePath);
-    return Column(children: [
-      Container(
-        decoration: BoxDecoration(
+    return Column(
+      children: [
+        Container(
+          decoration: BoxDecoration(
             color: context.theme.surfaceLayers.layer2,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(8))),
-        padding: const EdgeInsets.all(8),
-        child: Row(children: [
-          SizedBox(
-            width: 24,
-            height: 24,
-            child: pictureUrl != null ? QueuedNetworkImage(imageUrl: pictureUrl) : null,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(8)),
           ),
-          Container(
-            width: 8,
+          padding: const EdgeInsets.all(8),
+          child: Row(
+            children: [
+              SizedBox(
+                width: 24,
+                height: 24,
+                child: pictureUrl != null ? QueuedNetworkImage(imageUrl: pictureUrl) : null,
+              ),
+              Container(
+                width: 8,
+              ),
+              Text(displayName),
+            ],
           ),
-          Text(displayName),
-        ]),
-      ),
-      Container(
+        ),
+        Container(
           margin: const EdgeInsets.only(bottom: 8),
           decoration: BoxDecoration(
-              border: Border.all(color: context.theme.surfaceLayers.layer2, width: 2),
-              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8))),
+            border: Border.all(color: context.theme.surfaceLayers.layer2, width: 2),
+            borderRadius: const BorderRadius.vertical(bottom: Radius.circular(8)),
+          ),
           padding: const EdgeInsets.all(8).copyWith(bottom: 0),
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [buildMainMembership(account), buildOtherMemberships(account)])),
-    ]);
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [buildMainMembership(account), buildOtherMemberships(account)],
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildMainMembership(UserMembershipData account) {
     if (account.primaryMembershipId == null) return Container();
-    final membership =
-        account.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == account.primaryMembershipId);
+    final membership = account.destinyMemberships?.firstWhereOrNull(
+      (m) => m.membershipId == account.primaryMembershipId,
+    );
     if (membership == null) return Container();
     return buildMembership(account, membership, crossSave: true);
   }
@@ -177,16 +212,17 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
         color: platform?.color,
         borderRadius: const BorderRadius.all(Radius.circular(8)),
         child: InkWell(
-            borderRadius: const BorderRadius.all(Radius.circular(8)),
-            onTap: () {
-              final accountID = account.bungieNetUser?.membershipId;
-              final membershipID = membership.membershipId;
-              if (accountID == null || membershipID == null) return;
-              auth.changeMembership(context, membershipID, accountID);
-            },
-            child: Container(
-              padding: const EdgeInsets.all(8),
-              child: Row(children: [
+          borderRadius: const BorderRadius.all(Radius.circular(8)),
+          onTap: () {
+            final accountID = account.bungieNetUser?.membershipId;
+            final membershipID = membership.membershipId;
+            if (accountID == null || membershipID == null) return;
+            auth.changeMembership(context, membershipID, accountID);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: [
                 platform?.icon != null ? Icon(platform?.icon) : Container(),
                 Container(
                   width: 8,
@@ -194,17 +230,26 @@ class _SideMenuSettingsWidgetState extends State<SideMenuSettingsWidget> with Au
                 Expanded(child: Text(displayName ?? "")),
                 if (crossSave && membership.applicableMembershipTypes != null)
                   Row(
-                      children: membership.applicableMembershipTypes
-                              ?.map((m) => Container(
-                                  padding: const EdgeInsets.all(4),
-                                  margin: const EdgeInsets.only(left: 2),
-                                  decoration: BoxDecoration(
-                                      color: m.data.color, borderRadius: const BorderRadius.all(Radius.circular(8))),
-                                  child: Icon(m.data.icon, size: 18)))
-                              .toList() ??
-                          [])
-              ]),
-            )),
+                    children:
+                        membership.applicableMembershipTypes
+                            ?.map(
+                              (m) => Container(
+                                padding: const EdgeInsets.all(4),
+                                margin: const EdgeInsets.only(left: 2),
+                                decoration: BoxDecoration(
+                                  color: m.data.color,
+                                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                ),
+                                child: Icon(m.data.icon, size: 18),
+                              ),
+                            )
+                            .toList() ??
+                        [],
+                  ),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }

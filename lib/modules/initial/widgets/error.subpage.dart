@@ -3,11 +3,11 @@ import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/modules/initial/pages/main/initial.bloc.dart';
+import 'package:little_light/modules/initial/pages/initial/initial.bloc.dart';
 import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
 import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
 import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
-import 'package:little_light/pages/initial/subpages/subpage_base.dart';
+import 'package:little_light/modules/initial/widgets/subpage_base.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher_string.dart';
@@ -154,7 +154,10 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
   );
 
   Widget get openBungieLoginOption => ElevatedButton(
-    onPressed: () => auth.openBungieLogin(false),
+    onPressed: () async {
+      await auth.runOAuth(false);
+      Phoenix.rebirth(context);
+    },
     child: Text("Authorize with Bungie.net".translate(context)),
   );
 

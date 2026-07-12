@@ -15,7 +15,7 @@ import 'package:little_light/pages/initial/errors/init_services.error.dart';
 import 'package:little_light/pages/initial/errors/initial_page_base.error.dart';
 import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
 import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
-import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
+import 'package:little_light/modules/initial/blocs/manifest_downloader.bloc.dart';
 import 'package:little_light/pages/main.screen.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
@@ -37,9 +37,8 @@ enum InitialPagePhase {
   EnsureCache,
 }
 
-class InitialPageStateNotifier
+class InitialPageStateNotifier extends ChangeNotifier
     with
-        ChangeNotifier,
         ManifestConsumer,
         AuthConsumer,
         LittleLightDataConsumer,
@@ -63,6 +62,10 @@ class InitialPageStateNotifier
   final BuildContext _context;
 
   InitialPageStateNotifier(this._context) : _offlineModeBloc = _context.read<OfflineModeBloc>() {
+    _init();
+  }
+
+  void _init() {
     SystemChrome.setSystemUIOverlayStyle(
       const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarBrightness: Brightness.dark),
     );
@@ -142,7 +145,7 @@ class InitialPageStateNotifier
     _phase = InitialPagePhase.ManifestDownload;
     notifyListeners();
 
-    final downloader = _context.read<ManifestDownloaderNotifier>();
+    final downloader = _context.read<ManifestDownloaderBloc>();
     downloader.addListener(_manifestDownloadListener);
     downloader.downloadManifest(true);
   }
@@ -170,13 +173,13 @@ class InitialPageStateNotifier
     _loading = false;
 
     notifyListeners();
-    final downloader = _context.read<ManifestDownloaderNotifier>();
+    final downloader = _context.read<ManifestDownloaderBloc>();
     downloader.addListener(_manifestDownloadListener);
     downloader.downloadManifest();
   }
 
   void _manifestDownloadListener() {
-    final downloader = _context.read<ManifestDownloaderNotifier>();
+    final downloader = _context.read<ManifestDownloaderBloc>();
     if (downloader.error) {
       downloader.removeListener(_manifestDownloadListener);
       _error = ManifestDownloadError();
@@ -187,6 +190,20 @@ class InitialPageStateNotifier
       downloader.removeListener(_manifestDownloadListener);
       manifestDownloaded();
     }
+  }
+
+  void openOAuth() async {
+    try {
+      _loading = true;
+      notifyListeners();
+      await auth.runOAuth(forceReauth);
+    } catch (e) {
+      _loading = false;
+      _error = AuthorizationFailedError();
+      notifyListeners();
+      return;
+    }
+    _checkAccounts();
   }
 
   void manifestDownloaded() {

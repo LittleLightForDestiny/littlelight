@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
 import 'package:little_light/core/theme/littlelight.theme.dart';
-import 'package:little_light/pages/initial/notifiers/manifest_downloader.notifier.dart';
-import 'package:little_light/pages/initial/subpages/subpage_base.dart';
+import 'package:little_light/modules/initial/blocs/manifest_downloader.bloc.dart';
+import 'package:little_light/modules/initial/widgets/subpage_base.dart';
 import 'package:provider/provider.dart';
 
 class DownloadManifestProgressSubPage extends StatefulWidget {
@@ -20,19 +20,20 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
 
   @override
   Widget buildTitle(BuildContext context) => Text(
-        "Download Database".translate(context),
-      );
+    "Download Database".translate(context),
+  );
 
-  bool get downloading => !context.watch<ManifestDownloaderNotifier>().finishedDownloading;
+  bool get downloading => !context.watch<ManifestDownloaderBloc>().finishedDownloading;
 
-  double get progress => context.watch<ManifestDownloaderNotifier>().downloadProgress;
-  int get totalDownloadSize => context.watch<ManifestDownloaderNotifier>().totalDownloadSize;
-  int get downloadedSize => context.watch<ManifestDownloaderNotifier>().downloadedSize;
+  double get progress => context.watch<ManifestDownloaderBloc>().downloadProgress;
+  int get totalDownloadSize => context.watch<ManifestDownloaderBloc>().totalDownloadSize;
+  int get downloadedSize => context.watch<ManifestDownloaderBloc>().downloadedSize;
 
   @override
   Widget buildContent(BuildContext context) => Container(
-      constraints: const BoxConstraints(maxWidth: 400),
-      child: Column(children: [
+    constraints: const BoxConstraints(maxWidth: 400),
+    child: Column(
+      children: [
         LinearProgressIndicator(
           backgroundColor: context.theme.surfaceLayers.layer3,
           value: downloading ? progress : null,
@@ -46,8 +47,10 @@ class DownloadManifestProgressSubPageState extends SubpageBaseState<DownloadMani
                     key: const Key("downloading"),
                   )
                 : Text("Uncompressing".translate(context), key: const Key("unzipping")),
-            Text("$downloadedSize/${totalDownloadSize}KB")
+            Text("$downloadedSize/${totalDownloadSize}KB"),
           ],
-        )
-      ]));
+        ),
+      ],
+    ),
+  );
 }

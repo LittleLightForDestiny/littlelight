@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:little_light/core/blocs/language/language.consumer.dart';
-import 'package:little_light/modules/initial/pages/main/initial.bloc.dart';
-import 'package:little_light/pages/initial/subpages/subpage_base.dart';
+import 'package:little_light/modules/initial/pages/initial/initial.bloc.dart';
+import 'package:little_light/modules/initial/widgets/subpage_base.dart';
 import 'package:little_light/services/auth/auth.consumer.dart';
 import 'package:provider/provider.dart';
 
@@ -22,23 +22,27 @@ class AuthorizationRequestSubPageState extends SubpageBaseState<AuthorizationReq
 
   @override
   Widget buildTitle(BuildContext context) => Text(
-        "Login".translate(context),
-      );
+    "Login".translate(context),
+  );
 
   @override
   Widget buildContent(BuildContext context) => Container(
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
         Padding(
-            padding: const EdgeInsets.all(8).copyWith(bottom: 24),
-            child: forceReauth
-                ? Text("Authorize with Bungie.net to use inventory management features".translate(context))
-                : Text(
-                    "Please re-authorize Little Light to keep using inventory management features".translate(context))),
+          padding: const EdgeInsets.all(8).copyWith(bottom: 24),
+          child: forceReauth
+              ? Text("Authorize with Bungie.net to use inventory management features".translate(context))
+              : Text("Please re-authorize Little Light to keep using inventory management features".translate(context)),
+        ),
         ElevatedButton(
           onPressed: () {
-            auth.openBungieLogin(forceReauth);
+            context.read<InitialPageStateNotifier>().openOAuth();
           },
           child: Text("Authorize with Bungie.net".translate(context)),
         ),
-      ]));
+      ],
+    ),
+  );
 }
