@@ -1,3 +1,7 @@
+## [2.2.5] - 2026-07-12
+
+- Small improvements for Monuments of Triumph
+
 ## [2.2.4] - 2025-09-05
 
 * minor fixes

@@ -1,1 +1,1 @@
-* minor fixes
+- Small improvements for Monuments of Triumph
