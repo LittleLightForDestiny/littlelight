@@ -38,7 +38,7 @@ class AuthorizationRequestSubPageState extends SubpageBaseState<AuthorizationReq
         ),
         ElevatedButton(
           onPressed: () {
-            auth.openBungieLogin(forceReauth);
+            context.read<InitialPageStateNotifier>().openOAuth();
           },
           child: Text("Authorize with Bungie.net".translate(context)),
         ),

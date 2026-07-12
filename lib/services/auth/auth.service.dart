@@ -32,23 +32,7 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
     _accountIDs = await globalStorage.accountIDs ?? <String>{};
   }
 
-  void runOAuth(bool forceReauth) async {
-    final url = getOAuthUrl(
-      clientId: appConfig.clientId,
-      languageCode: getInjectedLanguageService().currentLanguage,
-      reauth: forceReauth,
-    );
-    final result = await FlutterWebAuth2.authenticate(
-      url: url,
-      callbackUrlScheme: "luzinha",
-    );
-    final code = Uri.parse(result).queryParameters['code'];
-    if (code == null) throw NotAuthorizedException('No code returned');
-    await addAccount(code);
-  }
-
-  @Deprecated('Use runOAuth insted')
-  void openBungieLogin(bool forceReauth) async {
+  Future<void> runOAuth(bool forceReauth) async {
     final url = getOAuthUrl(
       clientId: appConfig.clientId,
       languageCode: getInjectedLanguageService().currentLanguage,

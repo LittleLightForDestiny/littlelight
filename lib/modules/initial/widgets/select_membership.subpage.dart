@@ -60,7 +60,7 @@ class SelectMembershipSubPageState extends SubpageBaseState<SelectMembershipSubP
         ),
         ElevatedButton(
           onPressed: () {
-            auth.openBungieLogin(true);
+            context.read<InitialPageStateNotifier>().openOAuth();
           },
           child: Text(
             "Add account".translate(context),

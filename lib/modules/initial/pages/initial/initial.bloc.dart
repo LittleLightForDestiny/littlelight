@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_phoenix/flutter_phoenix.dart';
 import 'package:little_light/core/blocs/language/language.bloc.dart';
-import 'package:little_light/core/blocs/littlelight_data/littlelight_data.bloc.dart';
 import 'package:little_light/core/blocs/offline_mode/offline_mode.bloc.dart';
 import 'package:little_light/core/blocs/profile/profile.bloc.dart';
 import 'package:little_light/core/routes/login_route.dart';
@@ -11,19 +10,21 @@ import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/exceptions/invalid_membership.exception.dart';
 import 'package:little_light/exceptions/network_error.exception.dart';
 import 'package:little_light/exceptions/not_authorized.exception.dart';
-import 'package:little_light/modules/initial/blocs/manifest_downloader.bloc.dart';
 import 'package:little_light/pages/initial/errors/authorization_failed.error.dart';
 import 'package:little_light/pages/initial/errors/init_services.error.dart';
 import 'package:little_light/pages/initial/errors/initial_page_base.error.dart';
 import 'package:little_light/pages/initial/errors/invalid_membership.error.dart';
 import 'package:little_light/pages/initial/errors/manifest_download.error.dart';
+import 'package:little_light/modules/initial/blocs/manifest_downloader.bloc.dart';
 import 'package:little_light/pages/main.screen.dart';
-import 'package:little_light/services/analytics/analytics.service.dart';
-import 'package:little_light/services/auth/auth.service.dart';
-import 'package:little_light/services/littlelight/wishlists.service.dart';
-import 'package:little_light/services/manifest/manifest.service.dart';
+import 'package:little_light/services/analytics/analytics.consumer.dart';
+import 'package:little_light/services/auth/auth.consumer.dart';
+import 'package:little_light/services/bungie_api/bungie_api.consumer.dart';
+import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
+import 'package:little_light/services/littlelight/wishlists.consumer.dart';
+import 'package:little_light/services/manifest/manifest.consumer.dart';
 import 'package:little_light/services/setup.dart';
-import 'package:little_light/services/storage/global_storage.service.dart';
+import 'package:little_light/services/storage/storage.consumer.dart';
 import 'package:provider/provider.dart';
 
 enum InitialPagePhase {
@@ -36,15 +37,16 @@ enum InitialPagePhase {
   EnsureCache,
 }
 
-class InitialPageStateNotifier extends ChangeNotifier {
-  final ManifestService _manifest;
-  final AuthService _auth;
+class InitialPageStateNotifier extends ChangeNotifier
+    with
+        ManifestConsumer,
+        AuthConsumer,
+        LittleLightDataConsumer,
+        WishlistsConsumer,
+        AnalyticsConsumer,
+        StorageConsumer,
+        BungieApiConsumer {
   final OfflineModeBloc _offlineModeBloc;
-  final LittleLightDataBloc _littleLightData;
-  final WishlistsService _wishlistsService;
-  final AnalyticsService _analytics;
-  final GlobalStorage _globalStorage;
-  final BuildContext _context;
 
   InitialPagePhase _phase = InitialPagePhase.Loading;
   InitialPagePhase get phase => _phase;
@@ -57,22 +59,9 @@ class InitialPageStateNotifier extends ChangeNotifier {
 
   bool get forceReauth => true;
 
-  InitialPageStateNotifier(
-    this._context, {
-    required AuthService auth,
-    required OfflineModeBloc offlineModeBloc,
-    required ManifestService manifest,
-    required LittleLightDataBloc littleLightData,
-    required WishlistsService wishlistsService,
-    required AnalyticsService analytics,
-    required GlobalStorage globalStorage,
-  }) : _offlineModeBloc = offlineModeBloc,
-       this._manifest = manifest,
-       this._auth = auth,
-       this._littleLightData = littleLightData,
-       this._wishlistsService = wishlistsService,
-       this._analytics = analytics,
-       this._globalStorage = globalStorage {
+  final BuildContext _context;
+
+  InitialPageStateNotifier(this._context) : _offlineModeBloc = _context.read<OfflineModeBloc>() {
     _init();
   }
 
@@ -92,7 +81,7 @@ class InitialPageStateNotifier extends ChangeNotifier {
       await initServices(_context);
     } catch (e, stackTrace) {
       logger.error("initServicesError", error: e, stack: stackTrace);
-      _analytics.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
       return;
@@ -116,14 +105,14 @@ class InitialPageStateNotifier extends ChangeNotifier {
       if (code == null) {
         throw NotAuthorizedException("No Authorization code");
       }
-      await _auth.addAccount(code);
+      await auth.addAccount(code);
     } on InvalidMembershipException catch (e, stackTrace) {
-      _analytics.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
       _error = InvalidMembershipError();
       notifyListeners();
       return;
     } catch (e, stackTrace) {
-      _analytics.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
       _error = AuthorizationFailedError();
       notifyListeners();
       return;
@@ -171,7 +160,7 @@ class InitialPageStateNotifier extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final needsUpdate = await _manifest.needsUpdate();
+      final needsUpdate = await manifest.needsUpdate();
       if (!needsUpdate) {
         manifestDownloaded();
         return;
@@ -203,6 +192,20 @@ class InitialPageStateNotifier extends ChangeNotifier {
     }
   }
 
+  void openOAuth() async {
+    try {
+      _loading = true;
+      notifyListeners();
+      await auth.runOAuth(forceReauth);
+    } catch (e) {
+      _loading = false;
+      _error = AuthorizationFailedError();
+      notifyListeners();
+      return;
+    }
+    _checkAccounts();
+  }
+
   void manifestDownloaded() {
     _checkAccounts();
   }
@@ -211,7 +214,7 @@ class InitialPageStateNotifier extends ChangeNotifier {
     _loading = true;
     notifyListeners();
 
-    final accounts = _auth.accountIDs;
+    final accounts = auth.accountIDs;
 
     if ((accounts?.length ?? 0) > 0) {
       accountsChecked();
@@ -231,8 +234,8 @@ class InitialPageStateNotifier extends ChangeNotifier {
     _loading = true;
     notifyListeners();
 
-    final accountID = _auth.currentAccountID;
-    final membershipID = _auth.currentMembershipID;
+    final accountID = auth.currentAccountID;
+    final membershipID = auth.currentMembershipID;
     if (accountID != null && membershipID != null) {
       membershipSelected();
       return;
@@ -246,9 +249,9 @@ class InitialPageStateNotifier extends ChangeNotifier {
   void membershipSelected() async {
     BungieNetToken? token;
     try {
-      token = await _auth.getCurrentToken();
+      token = await auth.getCurrentToken();
     } catch (e, stackTrace) {
-      _analytics.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
     }
     if (token != null) {
       _checkWishlist();
@@ -262,14 +265,14 @@ class InitialPageStateNotifier extends ChangeNotifier {
   Future<void> _checkWishlist() async {
     _loading = true;
     notifyListeners();
-    final wishlists = await _wishlistsService.getWishlists();
+    final wishlists = await wishlistsService.getWishlists();
 
     if (wishlists != null) {
       wishlistsSelected();
       return;
     }
 
-    await _littleLightData.getFeaturedWishlists();
+    await littleLightData.getFeaturedWishlists();
 
     _phase = InitialPagePhase.WishlistsSelect;
     _loading = false;
@@ -287,17 +290,17 @@ class InitialPageStateNotifier extends ChangeNotifier {
       await initPostLoadingServices(_context);
     } catch (e, stackTrace) {
       logger.error("initPostLoadingServicesError", error: e, stack: stackTrace);
-      _analytics.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
       _error = InitServicesError();
       notifyListeners();
       return;
     }
 
     try {
-      await _wishlistsService.checkForUpdates();
+      await wishlistsService.checkForUpdates();
     } catch (e, stackTrace) {
       logger.error("non breaking error", error: e, stack: stackTrace);
-      _analytics.registerNonFatal(e, stackTrace);
+      analytics.registerNonFatal(e, stackTrace);
     }
 
     final profile = _context.read<ProfileBloc>();
@@ -320,7 +323,7 @@ class InitialPageStateNotifier extends ChangeNotifier {
   }
 
   void clearDataAndRestart() async {
-    await _globalStorage.purge();
+    await globalStorage.purge();
     Phoenix.rebirth(_context);
   }
 

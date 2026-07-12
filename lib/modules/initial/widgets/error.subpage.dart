@@ -154,7 +154,10 @@ class StartupErrorSubPageState extends SubpageBaseState<StartupErrorSubPage> wit
   );
 
   Widget get openBungieLoginOption => ElevatedButton(
-    onPressed: () => auth.openBungieLogin(false),
+    onPressed: () async {
+      await auth.runOAuth(false);
+      Phoenix.rebirth(context);
+    },
     child: Text("Authorize with Bungie.net".translate(context)),
   );
 

@@ -16,11 +16,12 @@ import 'package:provider/provider.dart';
 
 class BungieApiExceptionDialogRoute extends DialogRoute<void> {
   BungieApiExceptionDialogRoute(BuildContext context, {required BungieApiException error})
-      : super(
-            context: context,
-            builder: (context) => BungieApiExceptionDialog(),
-            settings: RouteSettings(arguments: error),
-            barrierDismissible: false);
+    : super(
+        context: context,
+        builder: (context) => BungieApiExceptionDialog(),
+        settings: RouteSettings(arguments: error),
+        barrierDismissible: false,
+      );
 }
 
 extension on BuildContext {
@@ -71,7 +72,10 @@ class BungieApiExceptionDialog extends LittleLightBaseDialog with AuthConsumer, 
         TextButton(
           child: Text("Reauthenticate with Bungie".translate(context).toUpperCase()),
           onPressed: () async {
-            auth.openBungieLogin(true);
+            try {
+              await auth.runOAuth(true);
+              Phoenix.rebirth(context);
+            } catch (_) {}
           },
         ),
         TextButton(

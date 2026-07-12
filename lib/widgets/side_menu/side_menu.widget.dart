@@ -59,49 +59,95 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: context.theme.surfaceLayers.layer1,
-        width: 280,
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, mainAxisSize: MainAxisSize.max, children: [
+      color: context.theme.surfaceLayers.layer1,
+      width: 280,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        mainAxisSize: MainAxisSize.max,
+        children: [
           Expanded(
-              child: ListView(
-            padding: const EdgeInsets.all(0),
-            children: <Widget>[
-              profileInfo(context),
-              menuItem(context, Text("Equipment".translate(context)), onTap: () {
-                open(context, const EquipmentPage());
-              }),
-              menuItem(context, Text("Progress".translate(context)), onTap: () {
-                open(context, ProgressPage());
-              }),
-              menuItem(context, Text("Objectives".translate(context)), onTap: () {
-                open(context, ObjectivesPage());
-              }),
-              menuItem(context, Text("Loadouts".translate(context)), onTap: () {
-                open(context, LoadoutsHomePage());
-              }),
-              menuItem(context, Text("Vendors".translate(context)), onTap: () {
-                open(context, VendorsHomePage());
-              }),
-              menuItem(context, Text("Collections".translate(context)), onTap: () {
-                open(context, CollectionsHomePage());
-              }),
-              menuItem(context, Text("Triumphs".translate(context)), onTap: () {
-                open(context, TriumphsHomePage());
-              }),
-              menuItem(context, Text("Duplicated Items".translate(context)), onTap: () {
-                open(context, DuplicatedItemsPage());
-              }),
-              menuItem(context, Text("About".translate(context)), onTap: () {
-                open(context, AboutScreen());
-              }),
-              if (kDebugMode)
-                menuItem(context, Text("Dev Tools".translate(context)), onTap: () {
-                  open(context, DevToolsPage());
-                }),
-              Container(height: MediaQuery.of(context).viewPadding.bottom)
-            ],
-          )),
-        ]));
+            child: ListView(
+              padding: const EdgeInsets.all(0),
+              children: <Widget>[
+                profileInfo(context),
+                menuItem(
+                  context,
+                  Text("Equipment".translate(context)),
+                  onTap: () {
+                    open(context, const EquipmentPage());
+                  },
+                ),
+                menuItem(
+                  context,
+                  Text("Progress".translate(context)),
+                  onTap: () {
+                    open(context, ProgressPage());
+                  },
+                ),
+                menuItem(
+                  context,
+                  Text("Objectives".translate(context)),
+                  onTap: () {
+                    open(context, ObjectivesPage());
+                  },
+                ),
+                menuItem(
+                  context,
+                  Text("Loadouts".translate(context)),
+                  onTap: () {
+                    open(context, LoadoutsHomePage());
+                  },
+                ),
+                menuItem(
+                  context,
+                  Text("Vendors".translate(context)),
+                  onTap: () {
+                    open(context, VendorsHomePage());
+                  },
+                ),
+                menuItem(
+                  context,
+                  Text("Collections".translate(context)),
+                  onTap: () {
+                    open(context, CollectionsHomePage());
+                  },
+                ),
+                menuItem(
+                  context,
+                  Text("Triumphs".translate(context)),
+                  onTap: () {
+                    open(context, TriumphsHomePage());
+                  },
+                ),
+                menuItem(
+                  context,
+                  Text("Duplicated Items".translate(context)),
+                  onTap: () {
+                    open(context, DuplicatedItemsPage());
+                  },
+                ),
+                menuItem(
+                  context,
+                  Text("About".translate(context)),
+                  onTap: () {
+                    open(context, AboutScreen());
+                  },
+                ),
+                if (kDebugMode)
+                  menuItem(
+                    context,
+                    Text("Dev Tools".translate(context)),
+                    onTap: () {
+                      open(context, DevToolsPage());
+                    },
+                  ),
+                Container(height: MediaQuery.of(context).viewPadding.bottom),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget profileInfo(BuildContext context) {
@@ -111,42 +157,52 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
   Widget membershipButton(BuildContext context, GeneralUser bungieNetUser, GroupUserInfoCard membership) {
     var plat = PlatformData.getPlatform(membership.membershipType ?? BungieMembershipType.ProtectedInvalidEnumValue);
     return Container(
-        color: context.theme.secondarySurfaceLayers.layer1,
-        padding: const EdgeInsets.all(8).copyWith(bottom: 0),
-        child: Material(
-            color: plat.color,
-            borderRadius: BorderRadius.circular(4),
-            child: InkWell(
-                onTap: () {
-                  auth.setCurrentMembershipID(membership.membershipId, bungieNetUser.membershipId);
-                  Phoenix.rebirth(context);
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(8),
-                  margin: const EdgeInsets.symmetric(horizontal: 8),
-                  alignment: Alignment.centerRight,
-                  child: Row(mainAxisSize: MainAxisSize.min, children: [
-                    Text(
-                      membership.displayName ?? "",
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                    Container(width: 4),
-                    Icon(plat.icon)
-                  ]),
-                ))));
+      color: context.theme.secondarySurfaceLayers.layer1,
+      padding: const EdgeInsets.all(8).copyWith(bottom: 0),
+      child: Material(
+        color: plat.color,
+        borderRadius: BorderRadius.circular(4),
+        child: InkWell(
+          onTap: () {
+            auth.setCurrentMembershipID(membership.membershipId, bungieNetUser.membershipId);
+            Phoenix.rebirth(context);
+          },
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            alignment: Alignment.centerRight,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  membership.displayName ?? "",
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Container(width: 4),
+                Icon(plat.icon),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget menuItem(BuildContext context, Widget label, {VoidCallback? onTap}) {
     return Material(
-        color: Colors.transparent,
-        child: InkWell(
-            onTap: onTap,
-            child: Container(
-                alignment: Alignment.centerRight,
-                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
-                decoration:
-                    BoxDecoration(border: Border(bottom: BorderSide(color: context.theme.surfaceLayers.layer2))),
-                child: label)));
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          alignment: Alignment.centerRight,
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+          decoration: BoxDecoration(
+            border: Border(bottom: BorderSide(color: context.theme.surfaceLayers.layer2)),
+          ),
+          child: label,
+        ),
+      ),
+    );
   }
 
   void open(BuildContext context, Widget screen) {
@@ -160,7 +216,10 @@ class SideMenuWidgetState extends State<SideMenuWidget> with AuthConsumer {
   }
 
   void addAccount(BuildContext context) async {
-    auth.openBungieLogin(true);
+    try {
+      await auth.runOAuth(true);
+      Phoenix.rebirth(context);
+    } catch (_) {}
   }
 
   void changeLanguage(BuildContext context) {
