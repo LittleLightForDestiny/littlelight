@@ -135,9 +135,6 @@ jobs:
       - name: Download pub dependencies
         run: flutter pub get
 
-      - name: Workaround for wrong xcode version
-        run: sudo xcode-select --switch /Applications/Xcode_16.4.app
-
       - name: Build iOS via Flutter
         run: flutter build ios --no-codesign --release
 
