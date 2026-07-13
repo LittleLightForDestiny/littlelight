@@ -85,7 +85,7 @@ jobs:
           fi
 
       - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Updating pubspec and changelogs to version ${{steps.variables.outputs.version}}
           commit_user_name: LittleLightBot

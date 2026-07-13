@@ -52,7 +52,7 @@ jobs:
         run: flutter format --line-length 120 --fix ./lib
 
       - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Code formatting
           commit_user_name: LittleLightBot

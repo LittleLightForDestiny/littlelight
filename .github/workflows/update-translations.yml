@@ -41,7 +41,7 @@ jobs:
         working-directory: translations
 
       - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           repository: translations
           commit_message: Updating translation maps
