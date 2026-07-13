@@ -33,7 +33,7 @@ jobs:
 
       - name: Cache pub dependencies
         if: steps.changed-lib.outputs.changed == 'true'
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: ${{ env.FLUTTER_HOME }}/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}

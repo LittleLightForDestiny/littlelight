@@ -68,7 +68,7 @@ jobs:
           echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
       - name: Cache pub dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: ${{ env.FLUTTER_HOME }}/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}

@@ -86,7 +86,7 @@ jobs:
           echo '${{ secrets.ANDROID_GOOGLE_SERVICES_JSON }}' > android/app/google-services.json
 
       - name: Cache pub dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: ${{ env.FLUTTER_HOME }}/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
@@ -130,7 +130,7 @@ jobs:
         run: flutter build appbundle
 
       - name: Cache bundle dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
