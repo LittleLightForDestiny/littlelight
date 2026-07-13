@@ -1,3 +1,7 @@
+## [2.2.8] - 2026-07-13
+
+- Small improvements for Monuments of Triumph
+
 ## [2.2.7] - 2026-07-13
 
 - Small improvements for Monuments of Triumph
