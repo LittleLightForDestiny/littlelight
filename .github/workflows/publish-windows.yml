@@ -95,7 +95,7 @@ jobs:
           path: ${{ github.workspace }}/build/windows/x64/runner/Release
 
       - name: Upload build to Github Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         if: steps.variables.outputs.version != ''
         with:
           tag_name: ${{ steps.variable.outputs.version }}
