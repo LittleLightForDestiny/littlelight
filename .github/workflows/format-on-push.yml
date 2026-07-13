@@ -10,7 +10,7 @@ jobs:
     if: github.event.pull_request.head.repo.fork == false
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           token: ${{ secrets.BOT_PAT }}
           ref: ${{ github.head_ref }}
@@ -33,7 +33,7 @@ jobs:
 
       - name: Cache pub dependencies
         if: steps.changed-lib.outputs.changed == 'true'
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: ${{ env.FLUTTER_HOME }}/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
@@ -52,7 +52,7 @@ jobs:
         run: flutter format --line-length 120 --fix ./lib
 
       - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Code formatting
           commit_user_name: LittleLightBot

@@ -78,7 +78,7 @@ jobs:
           fi
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           ref: ${{ steps.variables.outputs.head_ref }}
 
@@ -88,13 +88,13 @@ jobs:
 
       - name: Download Appstore Connect key
         id: app_store_connect_key
-        uses: timheuer/base64-to-file@v1.1
+        uses: timheuer/base64-to-file@v2
         with:
           fileName: appstore_connect_key.p8
           encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
 
       - name: Cache bundle dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: vendor/bundle
           key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
@@ -126,7 +126,7 @@ jobs:
           echo "${{ secrets.IOS_GOOGLE_SERVICE_INFO_PLIST }}" > ios/Runner/GoogleService-Info.plist
 
       - name: Cache pub dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: ${{ env.FLUTTER_HOME }}/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
@@ -134,9 +134,6 @@ jobs:
 
       - name: Download pub dependencies
         run: flutter pub get
-
-      - name: Workaround for wrong xcode version
-        run: sudo xcode-select --switch /Applications/Xcode_16.4.app
 
       - name: Build iOS via Flutter
         run: flutter build ios --no-codesign --release

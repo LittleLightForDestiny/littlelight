@@ -33,7 +33,7 @@ jobs:
       track: ${{ steps.variables.track }}
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v5
         with:
           token: ${{ secrets.BOT_PAT }}
           ref: main
@@ -54,9 +54,9 @@ jobs:
             echo "changelog=${CHANGELOG}" >> $GITHUB_OUTPUT
           fi
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "14"
+          node-version: "22.22.0"
           cache: "npm"
           cache-dependency-path: .github/workflows/scripts/package-lock.json
 
@@ -85,7 +85,7 @@ jobs:
           fi
 
       - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: Updating pubspec and changelogs to version ${{steps.variables.outputs.version}}
           commit_user_name: LittleLightBot

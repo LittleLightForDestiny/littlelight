@@ -15,20 +15,20 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           ref: ${{ github.head_ref }}
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           path: translations
           repository: LittleLightForDestiny/LittleLightTranslations
           token: ${{ secrets.BOT_PAT }}
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "14"
+          node-version: "22.22.0"
           cache: "npm"
           cache-dependency-path: translations/package-lock.json
 
@@ -41,7 +41,7 @@ jobs:
         working-directory: translations
 
       - name: Push changes
-        uses: stefanzweifel/git-auto-commit-action@v4
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           repository: translations
           commit_message: Updating translation maps

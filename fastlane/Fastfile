@@ -170,7 +170,6 @@ platform :mac do
     end
     match(
       type: "appstore",
-      additional_cert_types: "mac_installer_distribution",
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
       git_url: ENV["MATCH_GIT_URL"],
     )

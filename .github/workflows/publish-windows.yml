@@ -52,7 +52,7 @@ jobs:
           fi
 
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v5
         with:
           ref: ${{ steps.variables.outputs.head_ref }}
 
@@ -68,7 +68,7 @@ jobs:
           echo "${{ secrets.FLUTTER_DOTENV }}" > assets/_env
 
       - name: Cache pub dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v6
         with:
           path: ${{ env.FLUTTER_HOME }}/.pub-cache
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
@@ -81,7 +81,7 @@ jobs:
         run: flutter build windows --release
 
       - name: Upload build to workflow run
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: LittleLight-windows
           path: ${{ github.workspace }}/build/windows/x64/runner/Release
@@ -95,14 +95,14 @@ jobs:
           path: ${{ github.workspace }}/build/windows/x64/runner/Release
 
       - name: Upload build to Github Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v3
         if: steps.variables.outputs.version != ''
         with:
           tag_name: ${{ steps.variable.outputs.version }}
           files: "LittleLight-windows-${{ steps.variables.outputs.version }}.zip"
       
       - name: Setup MS Store Developer CLI
-        uses: microsoft/setup-msstore-cli@v1
+        uses: microsoft/microsoft-store-apppublisher@v1.2
 
       - name: Configure MS Store credentials
         run: msstore reconfigure --tenantId ${{ secrets.AZURE_AD_TENANT_ID }} --clientId ${{ secrets.AZURE_AD_CLIENT_ID }} --clientSecret ${{ secrets.AZURE_AD_CLIENT_SECRET }} --sellerId ${{ secrets.MS_STORE_SELLER_ID }}
