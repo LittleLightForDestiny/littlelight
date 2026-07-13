@@ -173,6 +173,12 @@ platform :mac do
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
       git_url: ENV["MATCH_GIT_URL"],
     )
+    match(
+      type: "mac_installer_distribution", 
+      platform: "macos", 
+      readonly: true, 
+      skip_provisioning_profiles: true
+    )
     update_project_provisioning(
       xcodeproj: "macos/Runner.xcodeproj",
       profile: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_profile-path"],
