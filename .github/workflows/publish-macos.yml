@@ -114,7 +114,8 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: "3.32.7"
+          channel: stable
+          flutter-version-file: pubspec.yaml
 
       - name: Create assets/_env
         run: |
@@ -131,15 +132,8 @@ jobs:
           key: ${{ runner.os }}-pub-${{ hashFiles('**/pubspec.lock') }}
           restore-keys: ${{ runner.os }}-pub-
 
-      - name: Delete Podfile.lock
-        run: rm macos/Podfile.lock
-
       - name: Download pub dependencies
         run: flutter pub get
-
-      - name: Pod repo update
-        working-directory: macos
-        run: pod install --repo-update
 
       - name: Build MacOS via Flutter
         run: flutter build macos --release
