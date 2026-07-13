@@ -170,18 +170,14 @@ platform :mac do
     end
     match(
       type: "appstore",
-      app_identifier: ENV["APPLE_APP_IDENTIFIER"],
-      git_url: ENV["MATCH_GIT_URL"],
+      platform: "macos",
+      readonly: true,
     )
     match(
       type: "mac_installer_distribution", 
       platform: "macos",
-    )
-    update_project_provisioning(
-      xcodeproj: "macos/Runner.xcodeproj",
-      profile: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_profile-path"],
-      build_configuration: "Release",
-      code_signing_identity: "Apple Distribution"
+      readonly: true,
+      skip_provisioning_profiles: true
     )
     build_mac_app(
       workspace: "macos/Runner.xcworkspace",
@@ -189,7 +185,14 @@ platform :mac do
       output_directory:"build/macos",
       output_name: "littlelight",
       export_method: "app-store",
-      export_team_id: ENV["APPLE_TEAM_ID"]
+      export_team_id: ENV["APPLE_TEAM_ID"],
+      export_options: {
+        signingStyle: "manual",
+        teamID: ENV["APPLE_TEAM_ID"],    
+        provisioningProfiles: {
+          "me.markezine.luzinha" => "match AppStore me.markezine.luzinha macos"
+        }
+      }
     )
   end
 
