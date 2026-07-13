@@ -88,7 +88,7 @@ jobs:
 
       - name: Download Appstore Connect key
         id: app_store_connect_key
-        uses: timheuer/base64-to-file@v1.1
+        uses: timheuer/base64-to-file@v2
         with:
           fileName: appstore_connect_key.p8
           encodedString: ${{ secrets.APPSTORE_CONNECT_KEY_BASE64 }}
