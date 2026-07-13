@@ -418,7 +418,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = me.markezine.luzinha.RunnerTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "c1a890a5-d961-42fd-9b7c-c4fdad4f61bf";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore me.markezine.luzinha macos";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore me.markezine.luzinha";
 				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/littlelight.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/littlelight";
 			};
@@ -676,7 +676,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "c1a890a5-d961-42fd-9b7c-c4fdad4f61bf";
-				PROVISIONING_PROFILE_SPECIFIER = "match AppStore me.markezine.luzinha macos";
+				PROVISIONING_PROFILE_SPECIFIER = "match AppStore me.markezine.luzinha";
 			};
 			name = Release;
 		};
