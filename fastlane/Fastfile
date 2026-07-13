@@ -173,10 +173,6 @@ platform :mac do
       app_identifier: ENV["APPLE_APP_IDENTIFIER"],
       git_url: ENV["MATCH_GIT_URL"],
     )
-    update_project_team(
-      path: "macos/Runner.xcodeproj",
-      teamid: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_team-id"]
-    )
     update_project_provisioning(
       xcodeproj: "macos/Runner.xcodeproj",
       profile: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_profile-path"],
@@ -188,8 +184,8 @@ platform :mac do
       scheme: "Runner",
       output_directory:"build/macos",
       output_name: "littlelight",
-      export_method: "app-store",
-      export_team_id: ENV["sigh_#{ENV["APPLE_APP_IDENTIFIER"]}_appstore_macos_team-id"]
+      export_method: "mac-application",
+      export_team_id: ENV["APPLE_TEAM_ID"]
     )
   end
 
