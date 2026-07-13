@@ -184,7 +184,7 @@ platform :mac do
       scheme: "Runner",
       output_directory:"build/macos",
       output_name: "littlelight",
-      export_method: "mac-application",
+      export_method: "app-store",
       export_team_id: ENV["APPLE_TEAM_ID"]
     )
   end
