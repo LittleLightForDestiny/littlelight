@@ -175,9 +175,7 @@ platform :mac do
     )
     match(
       type: "mac_installer_distribution", 
-      platform: "macos", 
-      readonly: true, 
-      skip_provisioning_profiles: true
+      platform: "macos",
     )
     update_project_provisioning(
       xcodeproj: "macos/Runner.xcodeproj",
