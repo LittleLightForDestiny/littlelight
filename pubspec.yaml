@@ -26,8 +26,8 @@ dependencies:
   url_launcher: ^6.3.2
   in_app_review: ^2.0.12
   protocol_registry: ^0.0.5
-  flutter_web_auth_2: ^5.0.3
-  desktop_webview_window: ^0.3.0
+  flutter_web_auth_2: ^5.0.2
+  desktop_webview_window: ^0.2.3
 
   # api clients
   bungie_api: 14.0.0
