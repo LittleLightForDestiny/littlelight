@@ -39,11 +39,12 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
       languageCode: getInjectedLanguageService().currentLanguage,
       reauth: forceReauth,
     );
+    final useWebview = !Platform.isWindows;
     final result = await FlutterWebAuth2.authenticate(
       url: url,
       callbackUrlScheme: "luzinha",
       options: FlutterWebAuth2Options(
-        useWebview: Platform.isWindows,
+        useWebview: useWebview,
       ),
     );
     final code = Uri.parse(result).queryParameters['code'];
