@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:bungie_api/destiny2.dart';
 import 'package:bungie_api/groupsv2.dart';
@@ -39,13 +38,9 @@ class AuthService with StorageConsumer, AppConfigConsumer, BungieApiConsumer {
       languageCode: getInjectedLanguageService().currentLanguage,
       reauth: forceReauth,
     );
-    final useWebview = !Platform.isWindows;
     final result = await FlutterWebAuth2.authenticate(
       url: url,
       callbackUrlScheme: "luzinha",
-      options: FlutterWebAuth2Options(
-        useWebview: useWebview,
-      ),
     );
     final code = Uri.parse(result).queryParameters['code'];
     if (code == null) throw NotAuthorizedException('No code returned');
