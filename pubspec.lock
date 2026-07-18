@@ -274,7 +274,7 @@ packages:
     source: hosted
     version: "0.7.14"
   desktop_webview_window:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: desktop_webview_window
       sha256: b6fdae2cbf9571879b1761c12f27facaf82e22d0bdc74d049907c2a09a432957
