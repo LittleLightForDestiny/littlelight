@@ -1082,6 +1082,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.5.0"
+  sqlite3_library_windows:
+    dependency: "direct main"
+    description:
+      name: sqlite3_library_windows
+      sha256: "1620d0e4763994895b0bb29217f798fd18fbb2f36ff6cac569ca03a19fae54d4"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.1.0+1"
   stack_trace:
     dependency: transitive
     description:

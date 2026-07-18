@@ -58,6 +58,7 @@ dependencies:
   logger: ^2.7.0
   flutter_phoenix: ^1.1.1
   json_annotation: ^4.12.0
+  sqlite3_library_windows: ^2.1.0+1
 
 
 dev_dependencies:
