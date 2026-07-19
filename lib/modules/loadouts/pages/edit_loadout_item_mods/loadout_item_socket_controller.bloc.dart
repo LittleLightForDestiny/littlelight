@@ -12,9 +12,7 @@ class LoadoutItemSocketControllerBloc extends SocketControllerBloc<LoadoutItemIn
   @protected
   LoadoutItemInfo? item;
 
-  LoadoutItemSocketControllerBloc(BuildContext context)
-      : _profileBloc = context.read<ProfileBloc>(),
-        super(context);
+  LoadoutItemSocketControllerBloc(BuildContext context) : _profileBloc = context.read<ProfileBloc>(), super(context);
 
   @override
   Future<void> init(LoadoutItemInfo item) async {

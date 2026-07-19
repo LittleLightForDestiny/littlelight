@@ -42,25 +42,35 @@ class CollectibleItemWidget extends StatelessWidget {
     final items = this.items;
     final selected = items != null && items.isNotEmpty && items.every((i) => selection.isItemSelected(i));
     return Opacity(
-        opacity: isUnlocked ? 1 : .7,
-        child: Container(
-            decoration: BoxDecoration(
-                border: Border.all(color: context.theme.surfaceLayers.layer3, width: 1),
-                gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
-                  context.theme.onSurfaceLayers.withValues(alpha: .05),
-                  context.theme.onSurfaceLayers.withValues(alpha: .1),
-                  context.theme.onSurfaceLayers.withValues(alpha: .03),
-                  context.theme.onSurfaceLayers.withValues(alpha: .1)
-                ])),
-            child: Stack(children: [
-              buildItem(context),
-              Positioned.fill(
-                  child: InteractiveItemWrapper(
+      opacity: isUnlocked ? 1 : .7,
+      child: Container(
+        decoration: BoxDecoration(
+          border: Border.all(color: context.theme.surfaceLayers.layer3, width: 1),
+          gradient: LinearGradient(
+            begin: const Alignment(0, 0),
+            end: const Alignment(1, 2),
+            colors: [
+              context.theme.onSurfaceLayers.withValues(alpha: .05),
+              context.theme.onSurfaceLayers.withValues(alpha: .1),
+              context.theme.onSurfaceLayers.withValues(alpha: .03),
+              context.theme.onSurfaceLayers.withValues(alpha: .1),
+            ],
+          ),
+        ),
+        child: Stack(
+          children: [
+            buildItem(context),
+            Positioned.fill(
+              child: InteractiveItemWrapper(
                 Container(),
                 item: genericItem,
                 overrideSelection: selected,
-              )),
-            ])));
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildItem(BuildContext context) {
@@ -73,16 +83,18 @@ class CollectibleItemWidget extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Row(children: [
-            buildIcon(context, itemDefinition),
-            Container(
-              alignment: Alignment.center,
-              child: Text(
-                collectibleDefinition?.displayProperties?.name ?? "Redacted".translate(context),
-                style: context.textTheme.itemNameHighDensity,
+          Row(
+            children: [
+              buildIcon(context, itemDefinition),
+              Container(
+                alignment: Alignment.center,
+                child: Text(
+                  collectibleDefinition?.displayProperties?.name ?? "Redacted".translate(context),
+                  style: context.textTheme.itemNameHighDensity,
+                ),
               ),
-            ),
-          ]),
+            ],
+          ),
           Positioned(right: 0, top: 4, child: buildUnavailable(context)),
         ],
       ),
@@ -135,12 +147,14 @@ class CollectibleItemWidget extends StatelessWidget {
       children: [
         buildIcon(context, definition),
         Expanded(
-          child: Column(children: [
-            buildTitleBarContents(context, definition),
-            Expanded(
-              child: buildMainContent(context, definition),
-            )
-          ]),
+          child: Column(
+            children: [
+              buildTitleBarContents(context, definition),
+              Expanded(
+                child: buildMainContent(context, definition),
+              ),
+            ],
+          ),
         ),
       ],
     );
@@ -151,16 +165,17 @@ class CollectibleItemWidget extends StatelessWidget {
     final sourceString = collectibleDef?.sourceString ?? "";
     return Container(
       padding: const EdgeInsets.only(top: 4, right: 4, bottom: 4),
-      child: Column(children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Expanded(child: buildItemTypeName(context, definition)),
-            if (definition.isWeapon) buildWeaponMainInfo(context, definition),
-          ],
-        ),
-        Expanded(
-          child: Container(
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: buildItemTypeName(context, definition)),
+              if (definition.isWeapon) buildWeaponMainInfo(context, definition),
+            ],
+          ),
+          Expanded(
+            child: Container(
               padding: const EdgeInsets.only(bottom: 4),
               alignment: Alignment.bottomLeft,
               child: Text(
@@ -169,9 +184,11 @@ class CollectibleItemWidget extends StatelessWidget {
                 style: context.textTheme.caption,
                 maxLines: 2,
                 overflow: TextOverflow.ellipsis,
-              )),
-        ),
-      ]),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -223,27 +240,30 @@ class CollectibleItemWidget extends StatelessWidget {
       iconImage = collectibleDefinition?.displayProperties?.icon;
     }
     return Container(
-        padding: const EdgeInsets.all(4),
-        margin: const EdgeInsets.only(right: 4),
-        width: _iconWidth,
-        height: _iconWidth,
-        child: AspectRatio(
-          aspectRatio: 1,
-          child: Container(
-              decoration: BoxDecoration(
-                  border: Border.all(
-                color: context.theme.onSurfaceLayers.layer1,
-                width: 2,
-              )),
-              child: Stack(
-                fit: StackFit.expand,
-                children: [
-                  Container(color: context.theme.surfaceLayers.layer0),
-                  QueuedNetworkImage.fromBungie(iconImage, fit: BoxFit.cover),
-                  buildSeasonOverlay(context, itemDefinition),
-                ],
-              )),
-        ));
+      padding: const EdgeInsets.all(4),
+      margin: const EdgeInsets.only(right: 4),
+      width: _iconWidth,
+      height: _iconWidth,
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: context.theme.onSurfaceLayers.layer1,
+              width: 2,
+            ),
+          ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Container(color: context.theme.surfaceLayers.layer0),
+              QueuedNetworkImage.fromBungie(iconImage, fit: BoxFit.cover),
+              buildSeasonOverlay(context, itemDefinition),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildSeasonOverlay(BuildContext context, DestinyInventoryItemDefinition? definition) {
@@ -299,8 +319,9 @@ class CollectibleItemWidget extends StatelessWidget {
     final itemHash = definition.hash;
     if (itemHash == null) return null;
     if (recipeHash == null || recipeHash == 0) return null;
-    final patternProgress =
-        context.select<CraftablesHelperBloc, DestinyRecordComponent?>((p) => p.getPatternProgressRecord(itemHash));
+    final patternProgress = context.select<CraftablesHelperBloc, DestinyRecordComponent?>(
+      (p) => p.getPatternProgressRecord(itemHash),
+    );
     if (patternProgress == null) return null;
     final progress = patternProgress.objectives?.firstOrNull?.progress;
     final total = patternProgress.objectives?.firstOrNull?.completionValue;
@@ -312,17 +333,23 @@ class CollectibleItemWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       margin: EdgeInsets.only(right: 6),
-      child: Row(children: [
-        Container(margin: const EdgeInsets.only(right: 4), width: 10, child: Image.asset("assets/imgs/deepsight.png")),
-        Text(
-          "$progress / $total",
-          style: context.textTheme.caption.copyWith(
-            color: context.theme.highlightedObjectiveLayers.layer1,
-            height: 1,
-            fontWeight: FontWeight.bold,
+      child: Row(
+        children: [
+          Container(
+            margin: const EdgeInsets.only(right: 4),
+            width: 10,
+            child: Image.asset("assets/imgs/deepsight.png"),
           ),
-        )
-      ]),
+          Text(
+            "$progress / $total",
+            style: context.textTheme.caption.copyWith(
+              color: context.theme.highlightedObjectiveLayers.layer1,
+              height: 1,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -355,10 +382,11 @@ class CollectibleItemWidget extends StatelessWidget {
     final def = context.read<ProfileBloc>().getProfileCollectible(collectibleHash);
     if (def?.state?.contains(DestinyCollectibleState.Invisible) ?? false) {
       return Container(
-          margin: const EdgeInsets.only(right: 4),
-          width: _titleBarIconsSize,
-          height: _titleBarIconsSize, //
-          child: Icon(Icons.block, color: context.theme.highlightedObjectiveLayers));
+        margin: const EdgeInsets.only(right: 4),
+        width: _titleBarIconsSize,
+        height: _titleBarIconsSize, //
+        child: Icon(Icons.block, color: context.theme.highlightedObjectiveLayers),
+      );
     }
     return Container();
   }

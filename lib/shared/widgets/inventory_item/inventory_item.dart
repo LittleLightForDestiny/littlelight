@@ -56,16 +56,17 @@ class InventoryItemWidget extends StatelessWidget {
     final hash = item.itemHash;
     final itemInstanceId = item.instanceId;
     return LayoutBuilder(
-        key: Key("$hash $itemInstanceId"),
-        builder: (context, constraints) {
-          if (constraints.maxWidth > InventoryItemWidgetDensity.High.idealWidth) {
-            return buildWithDensity(context, InventoryItemWidgetDensity.High);
-          }
-          if (constraints.maxWidth > InventoryItemWidgetDensity.Medium.idealWidth) {
-            return buildWithDensity(context, InventoryItemWidgetDensity.Medium);
-          }
-          return buildWithDensity(context, InventoryItemWidgetDensity.Low);
-        });
+      key: Key("$hash $itemInstanceId"),
+      builder: (context, constraints) {
+        if (constraints.maxWidth > InventoryItemWidgetDensity.High.idealWidth) {
+          return buildWithDensity(context, InventoryItemWidgetDensity.High);
+        }
+        if (constraints.maxWidth > InventoryItemWidgetDensity.Medium.idealWidth) {
+          return buildWithDensity(context, InventoryItemWidgetDensity.Medium);
+        }
+        return buildWithDensity(context, InventoryItemWidgetDensity.Low);
+      },
+    );
   }
 
   Widget buildWithDensity(BuildContext context, InventoryItemWidgetDensity density) {

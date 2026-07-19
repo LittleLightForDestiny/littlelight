@@ -18,11 +18,12 @@ class CreateDestinyLoadoutFromEquippedPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (context) => CreateDestinyLoadoutFromEquippedBloc(
-                  context,
-                  characterId: characterId,
-                  loadoutIndex: loadoutIndex,
-                ))
+          create: (context) => CreateDestinyLoadoutFromEquippedBloc(
+            context,
+            characterId: characterId,
+            loadoutIndex: loadoutIndex,
+          ),
+        ),
       ],
       builder: (context, _) => CreateDestinyLoadoutFromEquippedView(
         bloc: context.read<CreateDestinyLoadoutFromEquippedBloc>(),

@@ -70,39 +70,36 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
     final numberFormatter = NumberFormat.decimalPattern(context.currentLanguage);
     return Wrap(
       alignment: WrapAlignment.end,
-      children:
-          currencies
-              .map(
-                (e) => Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children:
-                      [
-                        Container(
-                          child: ManifestImageWidget<DestinyInventoryItemDefinition>(e.itemHash),
-                          width: 16,
-                          height: 16,
-                        ),
-                        Container(
-                          width: 4,
-                        ),
-                        Text(numberFormatter.format(e.quantity)),
-                        Container(width: 8),
-                      ].toList(),
+      children: currencies
+          .map(
+            (e) => Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(e.itemHash),
+                  width: 16,
+                  height: 16,
                 ),
-              )
-              .toList(),
+                Container(
+                  width: 4,
+                ),
+                Text(numberFormatter.format(e.quantity)),
+                Container(width: 8),
+              ].toList(),
+            ),
+          )
+          .toList(),
     );
   }
 
   Widget buildCharacterDetails(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children:
-          [
-            buildClassName(context),
-            SizedBox(height: 2),
-            buildRaceName(context),
-          ].whereType<Widget>().toList(),
+      children: [
+        buildClassName(context),
+        SizedBox(height: 2),
+        buildRaceName(context),
+      ].whereType<Widget>().toList(),
     );
   }
 
@@ -136,12 +133,11 @@ class CharacterInfoWidget extends StatelessWidget with DestinySettingsConsumer {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.end,
-        children:
-            [
-              buildSeasonalRank(context),
-              SizedBox(width: 4),
-              buildSeasonalRankProgress(context),
-            ].whereType<Widget>().toList(),
+        children: [
+          buildSeasonalRank(context),
+          SizedBox(width: 4),
+          buildSeasonalRankProgress(context),
+        ].whereType<Widget>().toList(),
       ),
     );
   }

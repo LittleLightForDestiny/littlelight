@@ -28,12 +28,11 @@ class NotificationsWidget extends StatelessWidget {
     return RepaintBoundary(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
-        children:
-            [
-              buildSubjects(context),
-              buildMainContainer(context),
-              buildPersistentNotifications(context),
-            ].whereType<Widget>().toList(),
+        children: [
+          buildSubjects(context),
+          buildMainContainer(context),
+          buildPersistentNotifications(context),
+        ].whereType<Widget>().toList(),
       ),
     );
   }
@@ -43,10 +42,9 @@ class NotificationsWidget extends StatelessWidget {
       clipBehavior: Clip.antiAlias,
       duration: const Duration(milliseconds: 500),
       decoration: BoxDecoration(
-        color:
-            _state(context).actionIs<BaseErrorNotification>()
-                ? context.theme.errorLayers.layer0
-                : context.theme.surfaceLayers.layer2,
+        color: _state(context).actionIs<BaseErrorNotification>()
+            ? context.theme.errorLayers.layer0
+            : context.theme.surfaceLayers.layer2,
         borderRadius: BorderRadius.circular(16),
       ),
       child: Row(

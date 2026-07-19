@@ -17,9 +17,9 @@ class WishlistFileItem extends SettingsOptionWidget {
     VoidCallback? this.onAdd,
     VoidCallback? this.onRemove,
   }) : super(
-          file.name ?? "",
-          Text(file.description ?? ""),
-        );
+         file.name ?? "",
+         Text(file.description ?? ""),
+       );
 
   @override
   Widget? buildTrailing(BuildContext context) {

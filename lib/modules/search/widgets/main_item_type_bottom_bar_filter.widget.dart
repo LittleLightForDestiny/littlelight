@@ -28,18 +28,23 @@ class MainItemTypeBottomBarFilterWidget extends BaseFilterWidget<MainItemTypeFil
     return Container(
       height: bottomPadding + kToolbarHeight,
       decoration: BoxDecoration(
-          color: context.theme.surfaceLayers,
-          border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3))),
+        color: context.theme.surfaceLayers,
+        border: Border(top: BorderSide(width: .5, color: context.theme.surfaceLayers.layer3)),
+      ),
       child: Row(
-          children: EquipmentBucketGroup.values //
-              .map((type) => buildButton(
-                    context,
-                    type: type,
-                    selected: data.value.contains(type),
-                    onTap: () => updateOption(context, data, type, false),
-                    onHold: () => updateOption(context, data, type, true),
-                  ))
-              .toList()),
+        children: EquipmentBucketGroup
+            .values //
+            .map(
+              (type) => buildButton(
+                context,
+                type: type,
+                selected: data.value.contains(type),
+                onTap: () => updateOption(context, data, type, false),
+                onHold: () => updateOption(context, data, type, true),
+              ),
+            )
+            .toList(),
+      ),
     );
   }
 
@@ -51,33 +56,35 @@ class MainItemTypeBottomBarFilterWidget extends BaseFilterWidget<MainItemTypeFil
     required VoidCallback onHold,
   }) {
     final mq = MediaQuery.of(context);
-    return Stack(children: [
-      Positioned.fill(child: buildSelectedBackground(context, selected)),
-      Container(
-        width: iconWidth,
-        padding: const EdgeInsets.all(4) + EdgeInsets.only(bottom: mq.viewPadding.bottom),
-        child: AnimatedOpacity(
-          duration: _animationDuration,
-          opacity: selected ? 1 : .7,
-          child: buildIcon(context, type),
-        ),
-      ),
-      Positioned(
-        child: buildSelectedIndicator(context, selected),
-        top: 0,
-        left: 0,
-        right: 0,
-      ),
-      Positioned.fill(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: onTap,
-            onLongPress: onHold,
+    return Stack(
+      children: [
+        Positioned.fill(child: buildSelectedBackground(context, selected)),
+        Container(
+          width: iconWidth,
+          padding: const EdgeInsets.all(4) + EdgeInsets.only(bottom: mq.viewPadding.bottom),
+          child: AnimatedOpacity(
+            duration: _animationDuration,
+            opacity: selected ? 1 : .7,
+            child: buildIcon(context, type),
           ),
         ),
-      ),
-    ]);
+        Positioned(
+          child: buildSelectedIndicator(context, selected),
+          top: 0,
+          left: 0,
+          right: 0,
+        ),
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onTap,
+              onLongPress: onHold,
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildIcon(BuildContext context, EquipmentBucketGroup type) {
@@ -106,13 +113,14 @@ class MainItemTypeBottomBarFilterWidget extends BaseFilterWidget<MainItemTypeFil
       opacity: selected ? 1 : 0,
       child: Container(
         decoration: BoxDecoration(
-            gradient: LinearGradient(
-          colors: [
-            context.theme.surfaceLayers.layer2,
-            context.theme.surfaceLayers.layer2.withValues(alpha: 0),
-          ],
-          end: Alignment.bottomCenter,
-        )),
+          gradient: LinearGradient(
+            colors: [
+              context.theme.surfaceLayers.layer2,
+              context.theme.surfaceLayers.layer2.withValues(alpha: 0),
+            ],
+            end: Alignment.bottomCenter,
+          ),
+        ),
       ),
     );
   }

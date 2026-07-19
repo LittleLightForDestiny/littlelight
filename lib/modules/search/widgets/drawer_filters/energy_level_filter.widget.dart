@@ -17,19 +17,23 @@ class EnergyLevelFilterWidget extends BaseDrawerFilterWidget<EnergyLevelFilterOp
     return Column(
       children: [
         FilterRangeSliderWidget(
-            min: value.min,
-            max: value.max,
-            availableMin: available.min,
-            availableMax: available.max,
-            onChange: (range) {
-              update(
-                  context,
-                  EnergyLevelFilterOptions(EnergyLevelConstraints(
-                    min: range.start.toInt(),
-                    max: range.end.toInt(),
-                    includeEnergylessItems: data.value.includeEnergylessItems,
-                  )));
-            }),
+          min: value.min,
+          max: value.max,
+          availableMin: available.min,
+          availableMax: available.max,
+          onChange: (range) {
+            update(
+              context,
+              EnergyLevelFilterOptions(
+                EnergyLevelConstraints(
+                  min: range.start.toInt(),
+                  max: range.end.toInt(),
+                  includeEnergylessItems: data.value.includeEnergylessItems,
+                ),
+              ),
+            );
+          },
+        ),
       ],
     );
   }

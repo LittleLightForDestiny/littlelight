@@ -22,13 +22,15 @@ class DefinitionItemDetailsPage extends StatelessWidget {
         ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
         ChangeNotifierProvider<SocketControllerBloc>(create: (context) => DefinitionItemSocketControllerBloc(context)),
         ChangeNotifierProvider<ItemDetailsBloc>(create: (context) => DefinitionItemDetailsBloc(context, itemHash)),
-        Provider<ItemInteractionHandlerBloc>(create: (context) {
-          final bloc = context.read<ItemDetailsBloc>();
-          return ItemInteractionHandlerBloc(
-            onTap: (item) => item is InventoryItemInfo ? bloc.onDuplicateItemTap(item) : null,
-            onHold: (item) => item is InventoryItemInfo ? bloc.onDuplicateItemHold(item) : null,
-          );
-        }),
+        Provider<ItemInteractionHandlerBloc>(
+          create: (context) {
+            final bloc = context.read<ItemDetailsBloc>();
+            return ItemInteractionHandlerBloc(
+              onTap: (item) => item is InventoryItemInfo ? bloc.onDuplicateItemTap(item) : null,
+              onHold: (item) => item is InventoryItemInfo ? bloc.onDuplicateItemHold(item) : null,
+            );
+          },
+        ),
       ],
       builder: (context, _) => DefinitionItemDetailsView(
         context.read<ItemDetailsBloc>(),

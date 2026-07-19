@@ -9,13 +9,16 @@ class LittleLightWishlistParser implements WishlistBaseParser {
     final json = jsonDecode(content);
     final sourceWishlist = LittleLightWishlist.fromJson(json);
     return sourceWishlist.data
-        .map((sourceBuild) => ParsedWishlistBuild(
+        .map(
+          (sourceBuild) => ParsedWishlistBuild(
             hash: sourceBuild.hash,
             name: sourceBuild.name,
             description: sourceBuild.description,
             plugs: parsePlugs(sourceBuild.plugs),
             tags: parseTags(sourceBuild.tags),
-            originalWishlist: sourceBuild.originalWishlist))
+            originalWishlist: sourceBuild.originalWishlist,
+          ),
+        )
         .toList();
   }
 

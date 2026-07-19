@@ -10,8 +10,8 @@ class DeleteTagBloc extends ChangeNotifier {
   ItemNotesTag _tag;
 
   DeleteTagBloc(this._context, ItemNotesTag this._tag)
-      : this._itemNotesBloc = _context.read<ItemNotesBloc>(),
-        super() {}
+    : this._itemNotesBloc = _context.read<ItemNotesBloc>(),
+      super() {}
 
   ItemNotesTag get tag => _tag;
 

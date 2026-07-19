@@ -17,7 +17,7 @@ abstract class BaseTriumphsView extends BasePresentationNodeView {
           if (rootNodeHash == null) return;
           bloc.openSearch(rootNodeHash);
         },
-      )
+      ),
     ];
   }
 }

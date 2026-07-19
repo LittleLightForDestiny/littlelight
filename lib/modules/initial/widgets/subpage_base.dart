@@ -28,40 +28,51 @@ abstract class SubpageBaseState<T extends StatefulWidget> extends State<T> {
       width: open ? 4 : 0,
     );
     return Container(
-        constraints: BoxConstraints(maxWidth: maxWidth),
-        padding: EdgeInsets.only(
-          top: mq.viewPadding.top,
-          bottom: mq.viewPadding.bottom,
+      constraints: BoxConstraints(maxWidth: maxWidth),
+      padding: EdgeInsets.only(
+        top: mq.viewPadding.top,
+        bottom: mq.viewPadding.bottom,
+      ),
+      child: AnimatedContainer(
+        decoration: BoxDecoration(
+          color: open ? context.theme.surfaceLayers : context.theme.onSurfaceLayers,
+          border: Border(
+            left: showHorizontalBorders ? borderSide : BorderSide.none,
+            right: showHorizontalBorders ? borderSide : BorderSide.none,
+            bottom: borderSide,
+          ),
         ),
-        child: AnimatedContainer(
-            decoration: BoxDecoration(
-                color: open ? context.theme.surfaceLayers : context.theme.onSurfaceLayers,
-                border: Border(
-                    left: showHorizontalBorders ? borderSide : BorderSide.none,
-                    right: showHorizontalBorders ? borderSide : BorderSide.none,
-                    bottom: borderSide)),
-            duration: const Duration(milliseconds: 300),
-            constraints: BoxConstraints(maxHeight: open ? mq.size.height : 1),
-            child: SingleChildScrollView(
-                physics: const NeverScrollableScrollPhysics(),
-                child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-                  Container(
-                    color: context.theme.surfaceLayers.layer3,
-                    padding: const EdgeInsets.all(8).add(EdgeInsets.only(
+        duration: const Duration(milliseconds: 300),
+        constraints: BoxConstraints(maxHeight: open ? mq.size.height : 1),
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Container(
+                color: context.theme.surfaceLayers.layer3,
+                padding: const EdgeInsets.all(8).add(
+                  EdgeInsets.only(
+                    left: mq.viewPadding.left,
+                    right: mq.viewPadding.right,
+                  ),
+                ),
+                child: DefaultTextStyle(style: titleStyle, child: buildTitle(context)),
+              ),
+              Container(
+                padding:
+                    EdgeInsets.all(showHorizontalBorders ? 16 : 8) +
+                    EdgeInsets.only(
                       left: mq.viewPadding.left,
                       right: mq.viewPadding.right,
-                    )),
-                    child: DefaultTextStyle(style: titleStyle, child: buildTitle(context)),
-                  ),
-                  Container(
-                    padding: EdgeInsets.all(showHorizontalBorders ? 16 : 8) +
-                        EdgeInsets.only(
-                          left: mq.viewPadding.left,
-                          right: mq.viewPadding.right,
-                        ),
-                    child: buildContent(context),
-                  ),
-                ]))));
+                    ),
+                child: buildContent(context),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildTitle(BuildContext context);

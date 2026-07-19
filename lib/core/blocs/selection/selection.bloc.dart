@@ -42,10 +42,10 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
   final BuildContext _context;
 
   factory SelectionBloc(BuildContext context) => SelectionBloc._(
-        context,
-        context.read<ProfileBloc>(),
-        context.read<InventoryBloc>(),
-      );
+    context,
+    context.read<ProfileBloc>(),
+    context.read<InventoryBloc>(),
+  );
 
   SelectionBloc._(this._context, this._profile, this._inventory) {
     _profile.addListener(_internalUpdate);
@@ -95,8 +95,10 @@ class SelectionBloc extends ChangeNotifier with ManifestConsumer {
 
   void unselectItems(List<DestinyItemInfo> items) {
     for (final i in items) {
-      _selectedIdentifers.removeWhere((element) =>
-          element.instanceId == i.instanceId && element.stackIndex == i.stackIndex && element.itemHash == i.itemHash);
+      _selectedIdentifers.removeWhere(
+        (element) =>
+            element.instanceId == i.instanceId && element.stackIndex == i.stackIndex && element.itemHash == i.itemHash,
+      );
     }
     _internalUpdate();
   }

@@ -51,8 +51,8 @@ class VendorDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
     this.state, {
     this.minHeight = 50,
     this.maxHeight = 200,
-  })  : lastUpdated = DateTime.now(),
-        super();
+  }) : lastUpdated = DateTime.now(),
+       super();
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -122,7 +122,11 @@ class VendorDetailsCoverDelegate extends SliverPersistentHeaderDelegate {
     double opacity = expandRatio;
 
     return Positioned(
-        top: 0, bottom: 0, width: width, child: Opacity(opacity: opacity, child: buildBackgroundImage(context)));
+      top: 0,
+      bottom: 0,
+      width: width,
+      child: Opacity(opacity: opacity, child: buildBackgroundImage(context)),
+    );
   }
 
   Widget buildBackgroundImage(BuildContext context) {
@@ -159,16 +163,17 @@ class VendorDetailsCoverContents extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        color: context.theme.surfaceLayers.layer0,
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            buildBackground(context, expandRatio),
-            buildNameBar(context, expandRatio),
-            buildIcon(context, expandRatio),
-            buildBackButton(context, expandRatio),
-          ],
-        ));
+      color: context.theme.surfaceLayers.layer0,
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          buildBackground(context, expandRatio),
+          buildNameBar(context, expandRatio),
+          buildIcon(context, expandRatio),
+          buildBackButton(context, expandRatio),
+        ],
+      ),
+    );
   }
 
   Widget buildNameBar(BuildContext context, double expandRatio) {
@@ -230,7 +235,11 @@ class VendorDetailsCoverContents extends StatelessWidget {
     double opacity = expandRatio;
 
     return Positioned(
-        top: 0, bottom: 0, width: width, child: Opacity(opacity: opacity, child: buildBackgroundImage(context)));
+      top: 0,
+      bottom: 0,
+      width: width,
+      child: Opacity(opacity: opacity, child: buildBackgroundImage(context)),
+    );
   }
 
   Widget buildBackgroundImage(BuildContext context) {

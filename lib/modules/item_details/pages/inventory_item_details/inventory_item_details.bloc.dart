@@ -352,15 +352,12 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
     final itemSetDef = await _manifestBloc.getDefinition<DestinyEquipableItemSetDefinition>(itemSetHash);
     final setItems = itemSetDef?.setItems;
     if (setItems == null) return;
-    final itemSetCount =
-        _profileBloc.allInstancedItems
-            .where((e) {
-              final isEquipped = e.isEquipped ?? false;
-              final isOnCharacter = e.characterId == characterId;
-              if (!isEquipped || !isOnCharacter) return false;
-              return setItems.contains(e.itemHash);
-            })
-            .length;
+    final itemSetCount = _profileBloc.allInstancedItems.where((e) {
+      final isEquipped = e.isEquipped ?? false;
+      final isOnCharacter = e.characterId == characterId;
+      if (!isEquipped || !isOnCharacter) return false;
+      return setItems.contains(e.itemHash);
+    }).length;
     _itemSetCount = itemSetCount;
   }
 
@@ -368,5 +365,4 @@ class InventoryItemDetailsBloc extends ItemDetailsBloc {
 
   @override
   int? get itemSetCount => _itemSetCount;
-
 }

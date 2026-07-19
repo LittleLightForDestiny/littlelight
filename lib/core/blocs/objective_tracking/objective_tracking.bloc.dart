@@ -21,17 +21,24 @@ class ObjectiveTrackingBloc extends ChangeNotifier with StorageConsumer {
     notifyListeners();
   }
 
-  void changeTrackingStatus(TrackedObjectiveType type, int? hash,
-      {String? instanceId, String? characterId, bool track = true}) {
+  void changeTrackingStatus(
+    TrackedObjectiveType type,
+    int? hash, {
+    String? instanceId,
+    String? characterId,
+    bool track = true,
+  }) {
     final isTracking = this.isTracked(type, hash, instanceId: instanceId, characterId: characterId);
     if (track == isTracking) return;
     if (track) {
-      _trackedObjectives?.add(TrackedObjective(
-        type: type,
-        hash: hash,
-        instanceId: instanceId,
-        characterId: characterId,
-      ));
+      _trackedObjectives?.add(
+        TrackedObjective(
+          type: type,
+          hash: hash,
+          instanceId: instanceId,
+          characterId: characterId,
+        ),
+      );
     } else {
       _trackedObjectives?.removeWhere(
         (element) => //

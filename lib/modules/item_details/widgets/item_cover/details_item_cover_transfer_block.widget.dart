@@ -79,11 +79,13 @@ class DetailsItemCoverTransferBlockWidget extends StatelessWidget {
             alignment: alignment,
             padding: EdgeInsets.all(4 * pixelSize),
             decoration: BoxDecoration(
-                border: Border(
-                    bottom: BorderSide(
-              color: context.theme.onSurfaceLayers,
-              width: 1 * pixelSize,
-            ))),
+              border: Border(
+                bottom: BorderSide(
+                  color: context.theme.onSurfaceLayers,
+                  width: 1 * pixelSize,
+                ),
+              ),
+            ),
             child: Text(
               title.toUpperCase(),
               style: context.textTheme.caption.copyWith(fontSize: 18 * pixelSize),
@@ -93,10 +95,11 @@ class DetailsItemCoverTransferBlockWidget extends StatelessWidget {
             alignment: alignment,
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              children: destinations //
-                  .map((c) => buildCharacterIcon(context, c, action))
-                  .whereType<Widget>()
-                  .toList(),
+              children:
+                  destinations //
+                      .map((c) => buildCharacterIcon(context, c, action))
+                      .whereType<Widget>()
+                      .toList(),
             ),
           ),
         ],

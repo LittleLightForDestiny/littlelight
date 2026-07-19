@@ -17,9 +17,11 @@ class VendorDetailsPage extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => VendorDetailsBloc(context, this.characterId, this.vendorHash)),
         Provider(
-          create: (context) => ItemInteractionHandlerBloc(onTap: (item) {
-            if (item is VendorItemInfo) context.read<VendorDetailsBloc>().openItem(item);
-          }),
+          create: (context) => ItemInteractionHandlerBloc(
+            onTap: (item) {
+              if (item is VendorItemInfo) context.read<VendorDetailsBloc>().openItem(item);
+            },
+          ),
         ),
       ],
       builder: (context, _) => VendorDetailsView(

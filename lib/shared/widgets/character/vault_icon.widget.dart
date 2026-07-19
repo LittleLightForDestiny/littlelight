@@ -25,19 +25,20 @@ class VaultIconWidget extends BaseCharacterIconWidget {
     if (!isAlmostFull) return null;
     return [
       Positioned(
-          right: borderWidth * 2,
-          bottom: borderWidth * 2,
-          child: Container(
-            padding: EdgeInsets.all(2).copyWith(bottom: 0),
-            decoration: BoxDecoration(
-              color: context.theme.highlightedObjectiveLayers,
-              borderRadius: BorderRadius.circular(4),
-            ),
-            child: Text(
-              "$itemCount",
-              style: context.textTheme.highlight.copyWith(height: 1),
-            ),
-          ))
+        right: borderWidth * 2,
+        bottom: borderWidth * 2,
+        child: Container(
+          padding: EdgeInsets.all(2).copyWith(bottom: 0),
+          decoration: BoxDecoration(
+            color: context.theme.highlightedObjectiveLayers,
+            borderRadius: BorderRadius.circular(4),
+          ),
+          child: Text(
+            "$itemCount",
+            style: context.textTheme.highlight.copyWith(height: 1),
+          ),
+        ),
+      ),
     ];
   }
 }

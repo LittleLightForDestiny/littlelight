@@ -30,10 +30,12 @@ class DetailsItemCoverStatsWidget extends StatelessWidget {
     final stats = state.stats;
     if (stats == null) return [];
     return stats
-        .map((value) => DetailsItemCoverStatWidget(
-              modValues: value,
-              pixelSize: pixelSize,
-            ))
+        .map(
+          (value) => DetailsItemCoverStatWidget(
+            modValues: value,
+            pixelSize: pixelSize,
+          ),
+        )
         .toList();
   }
 

@@ -26,12 +26,13 @@ class DetailsRecordProgressWidget extends StatelessWidget {
     final intervalObjectives = definition?.intervalInfo?.intervalObjectives;
     if (intervalObjectives == null) return Container();
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Progress".translate(context).toUpperCase()),
-          persistenceID: 'record progress',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Progress".translate(context).toUpperCase()),
+        persistenceID: 'record progress',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -46,11 +47,13 @@ class DetailsRecordProgressWidget extends StatelessWidget {
     }
     return Column(
       children: charactersProgress
-          .map((e) => buildSingleProgress(
-                context,
-                record: e.value,
-                characterId: e.key,
-              ))
+          .map(
+            (e) => buildSingleProgress(
+              context,
+              record: e.value,
+              characterId: e.key,
+            ),
+          )
           .toList(),
     );
   }

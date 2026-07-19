@@ -74,8 +74,10 @@ class EquipmentVaultTabContentWidget extends StatelessWidget with ManifestConsum
               ),
               ...buckets
                   .map<List<ScrollableSection>>(
-                      (e) => buildBucketSections(context, e, constraints, defs[e.bucketHash])) //
-                  .fold<List<ScrollableSection>>([], (list, element) => list + element).toList()
+                    (e) => buildBucketSections(context, e, constraints, defs[e.bucketHash]),
+                  ) //
+                  .fold<List<ScrollableSection>>([], (list, element) => list + element)
+                  .toList(),
             ],
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,

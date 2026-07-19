@@ -16,7 +16,7 @@ class LoadoutItemIndex {
   final String name;
 
   Map<int, LoadoutIndexSlot> slots = {
-    for (var e in loadoutGenericBucketHashes + loadoutClassSpecificBucketHashes) e: LoadoutIndexSlot()
+    for (var e in loadoutGenericBucketHashes + loadoutClassSpecificBucketHashes) e: LoadoutIndexSlot(),
   };
 
   LoadoutItemIndex(this.name, {this.loadoutId, this.emblemHash});

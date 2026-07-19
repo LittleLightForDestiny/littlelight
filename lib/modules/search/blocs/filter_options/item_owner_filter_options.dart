@@ -11,8 +11,7 @@ class ItemOwnerValues {
     this.profile = false,
   }) : this.characters = characters ?? {};
 
-  ItemOwnerValues clone() => ItemOwnerValues(
-      characters: characters.toSet(), vault: vault, profile: profile);
+  ItemOwnerValues clone() => ItemOwnerValues(characters: characters.toSet(), vault: vault, profile: profile);
 
   bool get isEmpty => length == 0;
   int get length => characters.length + (vault ? 1 : 0) + (profile ? 1 : 0);
@@ -25,8 +24,8 @@ class ItemOwnerValues {
 
 class ItemOwnerFilterOptions extends BaseFilterOptions<ItemOwnerValues> {
   ItemOwnerFilterOptions(ItemOwnerValues availableValues)
-      : super(
-          availableValues.clone(),
-          availableValues: availableValues,
-        );
+    : super(
+        availableValues.clone(),
+        availableValues: availableValues,
+      );
 }

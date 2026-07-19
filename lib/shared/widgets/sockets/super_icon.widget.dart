@@ -65,19 +65,21 @@ class SuperIconWidget extends StatelessWidget {
                   ),
                   Positioned.fill(
                     child: Container(
-                        padding: const EdgeInsets.all(2),
-                        child: CustomPaint(
-                          key: Key("background_$selected"),
-                          painter: selected
-                              ? DiamondShapePainter.color(subclassColor)
-                              : equipped
-                                  ? DiamondShapePainter.color(subclassColor.mix(context.theme.surfaceLayers, 50))
-                                  : DiamondShapePainter.color(context.theme.surfaceLayers),
-                        )),
+                      padding: const EdgeInsets.all(2),
+                      child: CustomPaint(
+                        key: Key("background_$selected"),
+                        painter: selected
+                            ? DiamondShapePainter.color(subclassColor)
+                            : equipped
+                            ? DiamondShapePainter.color(subclassColor.mix(context.theme.surfaceLayers, 50))
+                            : DiamondShapePainter.color(context.theme.surfaceLayers),
+                      ),
+                    ),
                   ),
                   Padding(
-                      padding: EdgeInsets.all(intrinsic ? 0 : 4 * scale),
-                      child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash)),
+                    padding: EdgeInsets.all(intrinsic ? 0 : 4 * scale),
+                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugItemHash),
+                  ),
                   Material(
                     color: Colors.transparent,
                     child: InkWell(

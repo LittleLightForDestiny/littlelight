@@ -36,19 +36,27 @@ class PresentationNodeItemWidget extends StatelessWidget {
     final completed = progress?.getProgress(definition?.scope)?.isComplete ?? false;
     final color = completed ? context.completedColor : context.inProgressColor;
     return Container(
-        decoration: BoxDecoration(
-            border: Border.all(color: color.withValues(alpha: .6), width: 1),
-            gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
-              color.withValues(alpha: .05),
-              color.withValues(alpha: .1),
-              color.withValues(alpha: .03),
-              color.withValues(alpha: .1)
-            ])),
-        child: Stack(children: [
+      decoration: BoxDecoration(
+        border: Border.all(color: color.withValues(alpha: .6), width: 1),
+        gradient: LinearGradient(
+          begin: const Alignment(0, 0),
+          end: const Alignment(1, 2),
+          colors: [
+            color.withValues(alpha: .05),
+            color.withValues(alpha: .1),
+            color.withValues(alpha: .03),
+            color.withValues(alpha: .1),
+          ],
+        ),
+      ),
+      child: Stack(
+        children: [
           Row(children: buildContent(context, definition)),
           Positioned(bottom: 0, left: 0, right: 0, child: buildProgressBar(context)),
-          MaterialButton(child: Container(), onPressed: onTap)
-        ]));
+          MaterialButton(child: Container(), onPressed: onTap),
+        ],
+      ),
+    );
   }
 
   Widget buildProgressBar(BuildContext context) {
@@ -63,7 +71,9 @@ class PresentationNodeItemWidget extends StatelessWidget {
       color: color.withValues(alpha: .4),
       alignment: Alignment.centerLeft,
       child: FractionallySizedBox(
-          widthFactor: progressValue / completionValue, child: Container(color: color.withValues(alpha: .7))),
+        widthFactor: progressValue / completionValue,
+        child: Container(color: color.withValues(alpha: .7)),
+      ),
     );
   }
 
@@ -78,7 +88,9 @@ class PresentationNodeItemWidget extends StatelessWidget {
                       padding: const EdgeInsets.all(8),
                       child: QueuedNetworkImage(
                         imageUrl: BungieApiService.url(definition?.displayProperties?.icon)!,
-                      )))
+                      ),
+                    ),
+            )
           : Container(width: 20),
       buildName(context),
       Container(
@@ -97,8 +109,9 @@ class PresentationNodeItemWidget extends StatelessWidget {
     if (definition?.scope == DestinyScope.Character && progressCharacters != null) {
       return Column(
         mainAxisSize: MainAxisSize.min,
-        children:
-            progressCharacters.entries.map((e) => buildSingleCount(context, e.value, characterId: e.key)).toList(),
+        children: progressCharacters.entries
+            .map((e) => buildSingleCount(context, e.value, characterId: e.key))
+            .toList(),
       );
     }
     return Container();
@@ -112,36 +125,41 @@ class PresentationNodeItemWidget extends StatelessWidget {
     final icon = character?.character.classType?.icon;
     return Container(
       margin: EdgeInsets.symmetric(vertical: 1),
-      child: Stack(children: [
-        if (character != null)
-          Positioned.fill(
+      child: Stack(
+        children: [
+          if (character != null)
+            Positioned.fill(
               child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-              character.character.emblemHash,
-              urlExtractor: (def) => def.secondarySpecial,
-              fit: BoxFit.cover,
-            ),
-          )),
-        Container(
-          padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
-          child: Row(children: [
-            if (icon != null)
-              Container(
-                width: 16,
-                height: 16,
-                margin: EdgeInsets.only(right: 4),
-                child: CenterIconWorkaround(icon, size: 16, color: color),
+                borderRadius: BorderRadius.circular(4),
+                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                  character.character.emblemHash,
+                  urlExtractor: (def) => def.secondarySpecial,
+                  fit: BoxFit.cover,
+                ),
               ),
-            (completionValue) > 0
-                ? Text(
-                    "${progress?.progressValue}/${progress?.completionValue}",
-                    style: context.textTheme.highlight.copyWith(color: color),
-                  )
-                : Container()
-          ]),
-        )
-      ]),
+            ),
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 4),
+            child: Row(
+              children: [
+                if (icon != null)
+                  Container(
+                    width: 16,
+                    height: 16,
+                    margin: EdgeInsets.only(right: 4),
+                    child: CenterIconWorkaround(icon, size: 16, color: color),
+                  ),
+                (completionValue) > 0
+                    ? Text(
+                        "${progress?.progressValue}/${progress?.completionValue}",
+                        style: context.textTheme.highlight.copyWith(color: color),
+                      )
+                    : Container(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 

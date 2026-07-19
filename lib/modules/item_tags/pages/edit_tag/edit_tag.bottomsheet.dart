@@ -14,7 +14,9 @@ class EditTagBottomSheet extends BaseBottomSheet<int> {
     final isNew = tag == null;
     return Text(
       isNew
-          ? "Create tag".translate(context).toUpperCase() //
+          ? "Create tag"
+                .translate(context)
+                .toUpperCase() //
           : "Edit tag".translate(context).toUpperCase(),
     );
   }

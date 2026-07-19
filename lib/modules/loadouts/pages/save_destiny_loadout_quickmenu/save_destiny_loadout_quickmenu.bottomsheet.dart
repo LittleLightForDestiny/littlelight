@@ -13,10 +13,13 @@ class SaveDestinyLoadoutBottomsheet extends BaseBottomSheet<void> {
 
   @override
   Widget buildContainer(BuildContext context, BuildCallback builder) {
-    return MultiProvider(providers: [
-      ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
-      ChangeNotifierProvider(create: (context) => SaveDestinyLoadoutQuickmenuBloc(context, character)),
-    ], builder: (context, child) => builder(context));
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
+        ChangeNotifierProvider(create: (context) => SaveDestinyLoadoutQuickmenuBloc(context, character)),
+      ],
+      builder: (context, child) => builder(context),
+    );
   }
 
   @override

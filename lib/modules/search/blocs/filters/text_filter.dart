@@ -55,7 +55,8 @@ class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer
     final sockets = item.sockets;
     final reusablePlugs = item.reusablePlugs;
     final socketPlugHashes = sockets?.map((s) => s.plugHash).toList() ?? <int>[];
-    final reusablePlugHashes = reusablePlugs?.values.fold<List<int>>(<int>[], (hashes, plug) {
+    final reusablePlugHashes =
+        reusablePlugs?.values.fold<List<int>>(<int>[], (hashes, plug) {
           final plugHashes = plug
               .map((e) => e.plugItemHash) //
               .whereType<int>()
@@ -71,7 +72,9 @@ class TextFilter extends BaseItemFilter<TextFilterOptions> with ManifestConsumer
       return removeDiacritics(plugDef?.displayProperties?.name?.toLowerCase().trim() ?? "");
     });
 
-    final wishlistBuildNotes = wishlistsService.getWishlistBuildNotes(itemHash: hash, reusablePlugs: reusablePlugs).map(
+    final wishlistBuildNotes = wishlistsService
+        .getWishlistBuildNotes(itemHash: hash, reusablePlugs: reusablePlugs)
+        .map(
           (e) => e.toLowerCase(),
         );
 

@@ -39,14 +39,16 @@ class ItemSectionHeaderWidget extends StatelessWidget {
   }
 
   Widget buildTrailing(BuildContext context) {
-    return Row(children: [
-      BucketDisplayOptionsSelector(
-        sectionIdentifier,
-        defaultType: this.defaultType,
-        availableOptions: this.availableOptions,
-        globalKey: globalKey,
-      ),
-      if (trailing != null) Container(padding: EdgeInsets.only(left: 8), child: trailing),
-    ]);
+    return Row(
+      children: [
+        BucketDisplayOptionsSelector(
+          sectionIdentifier,
+          defaultType: this.defaultType,
+          availableOptions: this.availableOptions,
+          globalKey: globalKey,
+        ),
+        if (trailing != null) Container(padding: EdgeInsets.only(left: 8), child: trailing),
+      ],
+    );
   }
 }

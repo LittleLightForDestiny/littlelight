@@ -10,29 +10,34 @@ class DetailsItemCoverPersistentCollapsibleContainer extends PersistentCollapsib
     required String persistenceID,
     this.pixelSize = 1,
   }) : super(
-          title: title,
-          content: content,
-          persistenceID: persistenceID,
-        );
+         title: title,
+         content: content,
+         persistenceID: persistenceID,
+       );
 
   @override
   Widget buildHeader(BuildContext context, bool visible) {
     return Container(
       padding: EdgeInsets.all(4 * pixelSize),
       decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-        color: context.theme.onSurfaceLayers,
-        width: 1 * pixelSize,
-      ))),
-      child: Row(children: [
-        Expanded(
+        border: Border(
+          bottom: BorderSide(
+            color: context.theme.onSurfaceLayers,
+            width: 1 * pixelSize,
+          ),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
             child: DefaultTextStyle(
-          child: title,
-          style: context.textTheme.caption.copyWith(fontSize: 18 * pixelSize),
-        )),
-        buildToggleButton(context, visible),
-      ]),
+              child: title,
+              style: context.textTheme.caption.copyWith(fontSize: 18 * pixelSize),
+            ),
+          ),
+          buildToggleButton(context, visible),
+        ],
+      ),
     );
   }
 

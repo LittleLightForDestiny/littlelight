@@ -28,8 +28,8 @@ class SettingsBloc extends ChangeNotifier with WishlistsConsumer {
   List<WishlistFile>? wishlists;
 
   SettingsBloc(BuildContext this.context)
-      : this._userSetttingsBloc = context.read<UserSettingsBloc>(),
-        this._itemNotesBloc = context.read<ItemNotesBloc>() {
+    : this._userSetttingsBloc = context.read<UserSettingsBloc>(),
+      this._itemNotesBloc = context.read<ItemNotesBloc>() {
     _init();
   }
 

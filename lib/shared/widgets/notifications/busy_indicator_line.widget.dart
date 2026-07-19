@@ -19,17 +19,18 @@ class BusyIndicatorLineWidget extends StatelessWidget {
     final isError = _state(context).actionIs<BaseErrorNotification>();
     final visible = isBusy || isError;
     return RepaintBoundary(
-        child: IgnorePointer(
-      child: AnimatedOpacity(
-        opacity: visible ? 1 : 0,
-        duration: _animationDuration,
-        child: AnimatedContainer(
+      child: IgnorePointer(
+        child: AnimatedOpacity(
+          opacity: visible ? 1 : 0,
           duration: _animationDuration,
-          height: height,
-          color: isError ? context.theme.errorLayers.layer0 : context.theme.surfaceLayers.layer2,
-          child: DefaultLoadingShimmer(enabled: visible),
+          child: AnimatedContainer(
+            duration: _animationDuration,
+            height: height,
+            color: isError ? context.theme.errorLayers.layer0 : context.theme.surfaceLayers.layer2,
+            child: DefaultLoadingShimmer(enabled: visible),
+          ),
         ),
       ),
-    ));
+    );
   }
 }

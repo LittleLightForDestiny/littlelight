@@ -13,8 +13,8 @@ extension ObjectiveViewModeToString on ObjectiveViewMode {
 
 extension StringToObjectiveViewMode on String {
   ObjectiveViewMode? get asObjectiveViewMode => ObjectiveViewMode.values.firstWhereOrNull(
-        (element) => element.name.toLowerCase() == this.toLowerCase(),
-      );
+    (element) => element.name.toLowerCase() == this.toLowerCase(),
+  );
 }
 
 enum TrackedObjectiveType {
@@ -25,7 +25,7 @@ enum TrackedObjectiveType {
   @JsonValue('plug')
   Plug,
   @JsonValue('questline')
-  Questline
+  Questline,
 }
 
 @JsonSerializable()

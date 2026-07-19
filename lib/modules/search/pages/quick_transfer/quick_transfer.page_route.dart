@@ -24,12 +24,14 @@ class QuickTransferPageRoute extends MaterialPageRoute {
     required int bucketHash,
     required String? characterId,
   }) : super(
-            settings: RouteSettings(
-                arguments: QuickTransferPageRouteArguments(
-              bucketHash: bucketHash,
-              characterId: characterId,
-            )),
-            builder: (context) {
-              return QuickTransferPage();
-            });
+         settings: RouteSettings(
+           arguments: QuickTransferPageRouteArguments(
+             bucketHash: bucketHash,
+             characterId: characterId,
+           ),
+         ),
+         builder: (context) {
+           return QuickTransferPage();
+         },
+       );
 }

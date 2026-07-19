@@ -24,20 +24,25 @@ class DeleteDestinyLoadoutView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-      Flexible(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              buildMessage(context),
-              buildPreview(context),
-            ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  buildMessage(context),
+                  buildPreview(context),
+                ],
+              ),
+            ),
           ),
-        ),
+          buildActions(context),
+        ],
       ),
-      buildActions(context),
-    ]));
+    );
   }
 
   Widget buildMessage(BuildContext context) {
@@ -59,40 +64,44 @@ class DeleteDestinyLoadoutView extends StatelessWidget {
     return Container(
       color: context.theme.surfaceLayers.layer3,
       child: SafeArea(
-          minimum: EdgeInsets.all(12),
-          top: false,
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: !bloc.busy ? bloc.cancel : null,
-                  child: Text("No".translate(context)),
-                ),
+        minimum: EdgeInsets.all(12),
+        top: false,
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: !bloc.busy ? bloc.cancel : null,
+                child: Text("No".translate(context)),
               ),
-              SizedBox(width: 8),
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: context.theme.errorLayers, disabledBackgroundColor: context.theme.errorLayers),
-                  onPressed: !bloc.busy ? bloc.delete : null,
-                  child: Text("Yes".translate(context)),
+            ),
+            SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: context.theme.errorLayers,
+                  disabledBackgroundColor: context.theme.errorLayers,
                 ),
-              )
-            ],
-          )),
+                onPressed: !bloc.busy ? bloc.delete : null,
+                child: Text("Yes".translate(context)),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget buildPreview(BuildContext context) {
     final loadout = bloc.loadout;
     return Container(
-        alignment: Alignment.center,
-        child: Container(
-          width: LoadoutListItemWidget.maxWidth,
-          padding: EdgeInsets.all(8),
-          child: IntrinsicHeight(
-            child: Container(child: DestinyLoadoutListItemWidget(loadout)),
-          ),
-        ));
+      alignment: Alignment.center,
+      child: Container(
+        width: LoadoutListItemWidget.maxWidth,
+        padding: EdgeInsets.all(8),
+        child: IntrinsicHeight(
+          child: Container(child: DestinyLoadoutListItemWidget(loadout)),
+        ),
+      ),
+    );
   }
 }

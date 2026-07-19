@@ -27,8 +27,10 @@ class ItemSubtypeFilter extends BaseItemFilter<ItemSubtypeFilterOptions> with Ma
   Future<void> addValues(List<DestinyItemInfo> items) async {
     final hashes = items.map((i) => i.itemHash);
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
-    final categoryHashes =
-        defs.values.map((d) => d.itemCategoryHashes).fold(<int>[], (t, v) => t + (v ?? [])).whereType<int>();
+    final categoryHashes = defs.values
+        .map((d) => d.itemCategoryHashes)
+        .fold(<int>[], (t, v) => t + (v ?? []))
+        .whereType<int>();
     final categoryDefs = await manifest.getDefinitions<DestinyItemCategoryDefinition>(categoryHashes);
     for (final category in categoryDefs.values) {
       final subtype = category.grantDestinySubType ?? DestinyItemSubType.None;

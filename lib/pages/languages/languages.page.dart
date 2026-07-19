@@ -54,14 +54,15 @@ class _LanguagesPageState extends State<LanguagesPage> {
       color: context.theme.secondarySurfaceLayers.layer1,
       padding: const EdgeInsets.all(8).copyWith(bottom: bottomPadding + 8),
       child: ElevatedButton(
-          onPressed: () {
-            languageService.selectedLanguage = selectedLanguage;
-            Phoenix.rebirth(context);
-          },
-          child: Text(
-            "Change Language".translate(context, languageCode: selectedLanguage),
-            key: Key("button_$selectedLanguage"),
-          )),
+        onPressed: () {
+          languageService.selectedLanguage = selectedLanguage;
+          Phoenix.rebirth(context);
+        },
+        child: Text(
+          "Change Language".translate(context, languageCode: selectedLanguage),
+          key: Key("button_$selectedLanguage"),
+        ),
+      ),
     );
   }
 
@@ -69,12 +70,14 @@ class _LanguagesPageState extends State<LanguagesPage> {
     final languages = this.languages;
     if (languages == null) return LoadingAnimWidget();
     return SingleChildScrollView(
-        padding: const EdgeInsets.all(8) +
-            EdgeInsets.only(
-              left: context.mediaQuery.padding.left,
-              right: context.mediaQuery.padding.right,
-            ),
-        child: Column(children: languages.map((l) => buildLanguageItem(context, l)).toList()));
+      padding:
+          const EdgeInsets.all(8) +
+          EdgeInsets.only(
+            left: context.mediaQuery.padding.left,
+            right: context.mediaQuery.padding.right,
+          ),
+      child: Column(children: languages.map((l) => buildLanguageItem(context, l)).toList()),
+    );
   }
 
   Widget buildLanguageItem(BuildContext context, LanguageInfo language) {
@@ -86,33 +89,39 @@ class _LanguagesPageState extends State<LanguagesPage> {
       color = Colors.lightBlue.shade500;
     }
     return Container(
-        padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
-        child: Material(
-          color: color,
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 4),
+      child: Material(
+        color: color,
+        borderRadius: BorderRadius.circular(30),
+        child: InkWell(
           borderRadius: BorderRadius.circular(30),
-          child: InkWell(
-              borderRadius: BorderRadius.circular(30),
-              onTap: () {
-                selectedLanguage = language.code;
-                setState(() {});
-              },
-              child: Container(
-                  padding: const EdgeInsets.all(4),
-                  child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [buildLanguageInfo(context, language), buildFileInfo(context, language)]))),
-        ));
+          onTap: () {
+            selectedLanguage = language.code;
+            setState(() {});
+          },
+          child: Container(
+            padding: const EdgeInsets.all(4),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [buildLanguageInfo(context, language), buildFileInfo(context, language)],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildLanguageInfo(BuildContext context, LanguageInfo language) {
-    return Row(children: [
-      const SizedBox(width: 8, height: 40),
-      Container(width: 4),
-      Text(
-        language.name,
-        style: const TextStyle(fontWeight: FontWeight.bold),
-      )
-    ]);
+    return Row(
+      children: [
+        const SizedBox(width: 8, height: 40),
+        Container(width: 4),
+        Text(
+          language.name,
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ],
+    );
   }
 
   Widget buildFileInfo(BuildContext context, LanguageInfo language) {
@@ -120,33 +129,38 @@ class _LanguagesPageState extends State<LanguagesPage> {
     final size = sizeInKB != null ? sizeInKB / 1024 : null;
 
     var canDelete = language.code != currentLanguage && size != null;
-    return Row(children: [
-      if (size != null)
-        Text(
-          "${size.toStringAsFixed(2)} MB",
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-      Container(width: size != null ? 8 : 0),
-      !canDelete
-          ? Container()
-          : Material(
-              color: context.theme.colorScheme.error,
-              borderRadius: BorderRadius.circular(30),
-              child: InkWell(
+    return Row(
+      children: [
+        if (size != null)
+          Text(
+            "${size.toStringAsFixed(2)} MB",
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        Container(width: size != null ? 8 : 0),
+        !canDelete
+            ? Container()
+            : Material(
+                color: context.theme.colorScheme.error,
+                borderRadius: BorderRadius.circular(30),
+                child: InkWell(
                   borderRadius: BorderRadius.circular(30),
                   onTap: () async {
                     await languageService.deleteLanguage(language.code);
                     loadLanguages();
                   },
                   child: Container(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        "Delete".translate(context),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      )))),
-      Container(
-        width: !canDelete ? 0 : 4,
-      )
-    ]);
+                    padding: const EdgeInsets.all(8),
+                    child: Text(
+                      "Delete".translate(context),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                ),
+              ),
+        Container(
+          width: !canDelete ? 0 : 4,
+        ),
+      ],
+    );
   }
 }

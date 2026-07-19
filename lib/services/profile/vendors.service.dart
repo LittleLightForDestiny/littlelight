@@ -55,7 +55,10 @@ class VendorsService with StorageConsumer, BungieApiConsumer {
   }
 
   Map<String, List<DestinyItemPlugBase>>? getSaleItemReusablePerksSync(
-      String? characterId, int? vendorHash, int? index) {
+    String? characterId,
+    int? vendorHash,
+    int? index,
+  ) {
     try {
       final plugs = _vendors[characterId]?.itemComponents!["$vendorHash"]!.reusablePlugs!.data!["$index"]?.plugs;
       return plugs;
@@ -64,7 +67,10 @@ class VendorsService with StorageConsumer, BungieApiConsumer {
   }
 
   Future<Map<String, List<DestinyItemPlugBase>>?> getSaleItemReusablePerks(
-      String? characterId, int? vendorHash, int? index) async {
+    String? characterId,
+    int? vendorHash,
+    int? index,
+  ) async {
     var vendors = await (_getVendorsDataForCharacter(characterId) as FutureOr<DestinyVendorsResponse>);
     try {
       return vendors.itemComponents!["$vendorHash"]!.reusablePlugs!.data!["$index"]?.plugs;
@@ -73,7 +79,10 @@ class VendorsService with StorageConsumer, BungieApiConsumer {
   }
 
   Future<DestinyItemInstanceComponent?> getSaleItemInstanceInfo(
-      String? characterId, int? vendorHash, int? index) async {
+    String? characterId,
+    int? vendorHash,
+    int? index,
+  ) async {
     var vendors = await _getVendorsDataForCharacter(characterId);
     try {
       return vendors?.itemComponents!["$vendorHash"]!.instances!.data!["$index"];

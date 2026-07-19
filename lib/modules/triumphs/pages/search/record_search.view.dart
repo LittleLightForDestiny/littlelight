@@ -29,21 +29,23 @@ class RecordsSearchView extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context) {
-    return Column(children: [
-      Expanded(
-        child: Stack(
-          children: [
-            buildResultList(context),
-            Positioned(
-              child: buildNotifications(context),
-              bottom: 0,
-              left: 0,
-              right: 0,
-            ),
-          ],
+    return Column(
+      children: [
+        Expanded(
+          child: Stack(
+            children: [
+              buildResultList(context),
+              Positioned(
+                child: buildNotifications(context),
+                bottom: 0,
+                left: 0,
+                right: 0,
+              ),
+            ],
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget buildResultList(BuildContext context) {

@@ -3,8 +3,7 @@ import 'package:little_light/models/wishlist_index.dart';
 import 'package:little_light/services/littlelight/littlelight_data.consumer.dart';
 import 'package:little_light/services/littlelight/wishlists.consumer.dart';
 
-class AddWishlistsBloc
-    with ChangeNotifier, LittleLightDataConsumer, WishlistsConsumer {
+class AddWishlistsBloc with ChangeNotifier, LittleLightDataConsumer, WishlistsConsumer {
   final BuildContext context;
 
   List<WishlistFile>? wishlists;

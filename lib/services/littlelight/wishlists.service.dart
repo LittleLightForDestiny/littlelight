@@ -169,8 +169,10 @@ class WishlistsService extends ChangeNotifier with StorageConsumer {
     return wishlists;
   }
 
-  List<ParsedWishlistBuild> getWishlistBuilds(
-      {required int? itemHash, Map<String, List<DestinyItemPlugBase>>? reusablePlugs}) {
+  List<ParsedWishlistBuild> getWishlistBuilds({
+    required int? itemHash,
+    Map<String, List<DestinyItemPlugBase>>? reusablePlugs,
+  }) {
     if (_parsedWishlists == null) throw _notInitializedException;
     final wishlistItem = _parsedWishlists?.items[itemHash];
     if (reusablePlugs == null) {

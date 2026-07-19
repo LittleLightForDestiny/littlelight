@@ -7,26 +7,27 @@ import 'package:little_light/widgets/dialogs/littlelight.yes_no.dialog.dart';
 
 class LogoutDialogRoute extends DialogRoute<bool> {
   LogoutDialogRoute(BuildContext context, {required UserMembershipData account})
-      : super(
-          context: context,
-          settings: RouteSettings(arguments: account),
-          builder: (context) => LogoutDialog(),
-        );
+    : super(
+        context: context,
+        settings: RouteSettings(arguments: account),
+        builder: (context) => LogoutDialog(),
+      );
 }
 
 class LogoutDialog extends LittleLightYesNoDialog with AuthConsumer {
   LogoutDialog()
-      : super(
-            titleBuilder: (context) => Text("Logout".translate(context)),
-            bodyBuilder: (context) {
-              final account = ModalRoute.of(context)?.settings.arguments as UserMembershipData;
-              return Text(
-                "Are you sure you want to logout from the account {accountName}?".translate(
-                  context,
-                  replace: {"accountName": account.bungieNetUser?.uniqueName ?? ""},
-                ),
-              );
-            });
+    : super(
+        titleBuilder: (context) => Text("Logout".translate(context)),
+        bodyBuilder: (context) {
+          final account = ModalRoute.of(context)?.settings.arguments as UserMembershipData;
+          return Text(
+            "Are you sure you want to logout from the account {accountName}?".translate(
+              context,
+              replace: {"accountName": account.bungieNetUser?.uniqueName ?? ""},
+            ),
+          );
+        },
+      );
 
   @override
   void onSelect(BuildContext context, bool value) async {

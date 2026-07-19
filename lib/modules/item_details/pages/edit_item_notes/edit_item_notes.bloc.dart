@@ -16,8 +16,8 @@ class EditItemNotesBloc extends ChangeNotifier {
   String? get itemNotes => _itemNotes;
   set itemNotes(String? value) => _itemNotes = value;
   EditItemNotesBloc(this._context, this.itemHash, this.itemInstanceId)
-      : this._itemNotesBloc = _context.read<ItemNotesBloc>(),
-        super() {
+    : this._itemNotesBloc = _context.read<ItemNotesBloc>(),
+      super() {
     _init();
   }
   void _init() {

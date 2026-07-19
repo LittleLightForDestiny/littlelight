@@ -15,10 +15,11 @@ class MilestoneItemPhasesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final phases = definitionPhases;
-    final finishedPhases = profilePhases //
-        ?.map((e) => (e.complete ?? false) ? e.phaseHash : null)
-        .whereType<int>()
-        .toSet();
+    final finishedPhases =
+        profilePhases //
+            ?.map((e) => (e.complete ?? false) ? e.phaseHash : null)
+            .whereType<int>()
+            .toSet();
     return Container(
       margin: EdgeInsets.only(top: 8),
       height: 40,
@@ -35,12 +36,13 @@ class MilestoneItemPhasesWidget extends StatelessWidget {
                     final phaseHash = element.phaseHash;
                     final completed = finishedPhases?.contains(phaseHash) ?? false;
                     return Expanded(
-                        child: buildPhase(
-                      context,
-                      completed: completed,
-                      phaseHash: phaseHash,
-                      index: index,
-                    ));
+                      child: buildPhase(
+                        context,
+                        completed: completed,
+                        phaseHash: phaseHash,
+                        index: index,
+                      ),
+                    );
                   },
                 ).toList(),
               ),

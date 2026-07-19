@@ -47,17 +47,16 @@ class QuickTransferBloc extends ChangeNotifier with ManifestConsumer {
     BuildContext context, {
     int? bucketHash,
     String? characterId,
-  }) =>
-      QuickTransferBloc._(
-        context,
-        context.read<ProfileBloc>(),
-        context.read<InventoryBloc>(),
-        context.read<SearchFilterBloc>(),
-        context.read<SearchSorterBloc>(),
-        context.read<ItemNotesBloc>(),
-        bucketHash: bucketHash,
-        characterId: characterId,
-      );
+  }) => QuickTransferBloc._(
+    context,
+    context.read<ProfileBloc>(),
+    context.read<InventoryBloc>(),
+    context.read<SearchFilterBloc>(),
+    context.read<SearchSorterBloc>(),
+    context.read<ItemNotesBloc>(),
+    bucketHash: bucketHash,
+    characterId: characterId,
+  );
 
   void _init() async {
     _update();

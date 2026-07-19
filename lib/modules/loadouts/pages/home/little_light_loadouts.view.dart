@@ -42,7 +42,10 @@ class LittleLightLoadoutsView extends StatelessWidget {
   Widget buildHandle(BuildContext context, int index) {
     return ReorderableDragStartListener(
       index: index,
-      child: AspectRatio(aspectRatio: 1, child: Container(color: Colors.transparent, child: const Icon(Icons.menu))),
+      child: AspectRatio(
+        aspectRatio: 1,
+        child: Container(color: Colors.transparent, child: const Icon(Icons.menu)),
+      ),
     );
   }
 
@@ -57,17 +60,19 @@ class LittleLightLoadoutsView extends StatelessWidget {
         children: <Widget>[
           loadout.emblemHash != null
               ? Positioned.fill(
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                  loadout.emblemHash,
-                  urlExtractor: (def) => def.secondarySpecial,
-                  fit: BoxFit.cover,
-                ),
-              )
+                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    loadout.emblemHash,
+                    urlExtractor: (def) => def.secondarySpecial,
+                    fit: BoxFit.cover,
+                  ),
+                )
               : Container(),
           Row(
             children: <Widget>[
               buildHandle(context, index),
-              Expanded(child: Text(loadout.name, style: const TextStyle(fontWeight: FontWeight.bold))),
+              Expanded(
+                child: Text(loadout.name, style: const TextStyle(fontWeight: FontWeight.bold)),
+              ),
             ],
           ),
         ],

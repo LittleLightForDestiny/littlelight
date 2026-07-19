@@ -19,36 +19,45 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
   const CurrentCharacterTabIndicator(this.characters, this.controller);
 
   @override
-  Widget build(BuildContext context) => LayoutBuilder(builder: (context, constraints) {
-        final size = Size(constraints.maxWidth.clamp(_minimumWidth, _maximumWidth), constraints.maxHeight);
-        return Container(
-            padding: EdgeInsets.all(_containerPadding),
-            child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: SizedBox(
-                  child: AnimatedBuilder(
-                    animation: controller.animation,
-                    builder: (context, child) => Stack(children: [
-                      Positioned(
-                        right: 0,
-                        top: -controller.animation.value * (size.height - _containerPadding * 2),
-                        child: child ?? Container(),
-                      ),
-                    ]),
-                    child: buildCharacters(
-                        context, Size(size.width - _containerPadding * 2, size.height - _containerPadding * 2)),
+  Widget build(BuildContext context) => LayoutBuilder(
+    builder: (context, constraints) {
+      final size = Size(constraints.maxWidth.clamp(_minimumWidth, _maximumWidth), constraints.maxHeight);
+      return Container(
+        padding: EdgeInsets.all(_containerPadding),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: SizedBox(
+            child: AnimatedBuilder(
+              animation: controller.animation,
+              builder: (context, child) => Stack(
+                children: [
+                  Positioned(
+                    right: 0,
+                    top: -controller.animation.value * (size.height - _containerPadding * 2),
+                    child: child ?? Container(),
                   ),
-                )));
-      });
+                ],
+              ),
+              child: buildCharacters(
+                context,
+                Size(size.width - _containerPadding * 2, size.height - _containerPadding * 2),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  );
 
   Widget buildCharacters(BuildContext context, Size size) {
     return Column(
-        children: characters.map((c) {
-      if (c != null) {
-        return buildCharacter(context, c, size);
-      }
-      return buildVault(context, size);
-    }).toList());
+      children: characters.map((c) {
+        if (c != null) {
+          return buildCharacter(context, c, size);
+        }
+        return buildVault(context, size);
+      }).toList(),
+    );
   }
 
   Widget buildCharacter(BuildContext context, DestinyCharacterInfo character, Size size) {
@@ -90,7 +99,7 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
                     fit: BoxFit.cover,
                     alignment: Alignment.centerLeft,
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -106,11 +115,12 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
       child: Stack(
         children: [
           Positioned.fill(
-              child: Image.asset(
-            "assets/imgs/vault-secondary-special.jpg",
-            fit: BoxFit.cover,
-            alignment: Alignment.centerLeft,
-          )),
+            child: Image.asset(
+              "assets/imgs/vault-secondary-special.jpg",
+              fit: BoxFit.cover,
+              alignment: Alignment.centerLeft,
+            ),
+          ),
           Container(
             child: Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -128,13 +138,14 @@ class CurrentCharacterTabIndicator extends StatelessWidget {
                 ),
                 Container(width: 8),
                 Container(
-                    height: kToolbarHeight,
-                    padding: EdgeInsets.all(4),
-                    child: Image.asset(
-                      "assets/imgs/vault-secondary-overlay.png",
-                      fit: BoxFit.cover,
-                      alignment: Alignment.centerLeft,
-                    )),
+                  height: kToolbarHeight,
+                  padding: EdgeInsets.all(4),
+                  child: Image.asset(
+                    "assets/imgs/vault-secondary-overlay.png",
+                    fit: BoxFit.cover,
+                    alignment: Alignment.centerLeft,
+                  ),
+                ),
               ],
             ),
           ),

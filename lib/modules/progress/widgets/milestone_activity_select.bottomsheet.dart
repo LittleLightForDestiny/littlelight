@@ -25,11 +25,12 @@ class MilestoneActivitySelectBottomSheet extends BaseItemSelectionBottomSheet<in
         children: [
           Expanded(child: Text(def?.displayProperties?.name ?? "")),
           Container(
-              child: Icon(
-            LittleLightIcons.power,
-            size: 8,
-            color: context.theme.achievementLayers,
-          )),
+            child: Icon(
+              LittleLightIcons.power,
+              size: 8,
+              color: context.theme.achievementLayers,
+            ),
+          ),
           Text(
             "${def?.activityLightLevel}",
             style: context.textTheme.button.copyWith(

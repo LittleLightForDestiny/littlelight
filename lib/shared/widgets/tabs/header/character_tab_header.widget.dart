@@ -17,11 +17,11 @@ class CharacterTabHeaderWidget extends BaseTabHeaderWidget with DestinySettingsC
 
   @override
   Widget buildBackground(BuildContext context) => ManifestImageWidget<DestinyInventoryItemDefinition>(
-        character.character.emblemHash,
-        urlExtractor: ((definition) => definition.secondarySpecial),
-        fit: BoxFit.cover,
-        alignment: Alignment.center,
-      );
+    character.character.emblemHash,
+    urlExtractor: ((definition) => definition.secondarySpecial),
+    fit: BoxFit.cover,
+    alignment: Alignment.center,
+  );
 
   @override
   Widget buildIcon(BuildContext context) {
@@ -49,13 +49,14 @@ class CharacterTabHeaderWidget extends BaseTabHeaderWidget with DestinySettingsC
       child: FractionallySizedBox(
         widthFactor: completed,
         child: Shimmer.fromColors(
-            enabled: enableEyeCandy,
-            baseColor: fg,
-            period: const Duration(seconds: 2),
-            highlightColor: Colors.white,
-            child: Container(
-              color: Colors.white,
-            )),
+          enabled: enableEyeCandy,
+          baseColor: fg,
+          period: const Duration(seconds: 2),
+          highlightColor: Colors.white,
+          child: Container(
+            color: Colors.white,
+          ),
+        ),
       ),
     );
   }

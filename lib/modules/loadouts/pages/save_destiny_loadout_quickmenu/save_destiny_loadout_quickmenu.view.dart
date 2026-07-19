@@ -28,12 +28,13 @@ class SaveDestinyLoadoutQuickmenuView extends StatelessWidget {
           buildHeader(context),
           Flexible(
             child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                padding: EdgeInsets.symmetric(horizontal: 8),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [buildLoadoutList(context)],
-                )),
+              scrollDirection: Axis.vertical,
+              padding: EdgeInsets.symmetric(horizontal: 8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [buildLoadoutList(context)],
+              ),
+            ),
           ),
         ],
       ),
@@ -51,15 +52,19 @@ class SaveDestinyLoadoutQuickmenuView extends StatelessWidget {
 
   Widget buildLoadoutList(BuildContext context) {
     final destinyLoadouts = state.destinyLoadouts ?? <DestinyLoadoutInfo>[];
-    return Column(children: [
-      ...destinyLoadouts.map((loadout) => Container(
+    return Column(
+      children: [
+        ...destinyLoadouts.map(
+          (loadout) => Container(
             padding: EdgeInsets.all(4),
             child: DestinyLoadoutListItemWidget(
               loadout,
               onTap: () => bloc.saveLoadout(loadout),
               onLongPress: () => bloc.editLoadout(loadout),
             ),
-          ))
-    ]);
+          ),
+        ),
+      ],
+    );
   }
 }

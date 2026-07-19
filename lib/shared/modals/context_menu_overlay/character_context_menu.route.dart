@@ -11,25 +11,26 @@ class CharacterContextMenuModalRoute extends RawDialogRoute {
     VoidCallback? onSearchTap,
     required List<DestinyCharacterInfo?> characters,
   }) : super(
-          transitionDuration: Duration(milliseconds: 300),
-          barrierColor: Colors.transparent,
-          transitionBuilder: (context, animation, secondaryAnimation, child) => child,
-          pageBuilder: (context, animation, secondaryAnimation) => MultiProvider(
-            providers: [
-              ChangeNotifierProvider(
-                  create: (context) => CharacterContextMenuBloc(
-                        context,
-                        onSearchTap: onSearchTap,
-                        characters: characters,
-                        characterIndex: characterTabController.index,
-                      )),
-            ],
-            builder: (context, _) => CharacterContextMenu(
-              context.read<CharacterContextMenuBloc>(),
-              context.watch<CharacterContextMenuBloc>(),
-              charactersTabController: characterTabController,
-              openAnimation: animation,
-            ),
-          ),
-        );
+         transitionDuration: Duration(milliseconds: 300),
+         barrierColor: Colors.transparent,
+         transitionBuilder: (context, animation, secondaryAnimation, child) => child,
+         pageBuilder: (context, animation, secondaryAnimation) => MultiProvider(
+           providers: [
+             ChangeNotifierProvider(
+               create: (context) => CharacterContextMenuBloc(
+                 context,
+                 onSearchTap: onSearchTap,
+                 characters: characters,
+                 characterIndex: characterTabController.index,
+               ),
+             ),
+           ],
+           builder: (context, _) => CharacterContextMenu(
+             context.read<CharacterContextMenuBloc>(),
+             context.watch<CharacterContextMenuBloc>(),
+             charactersTabController: characterTabController,
+             openAnimation: animation,
+           ),
+         ),
+       );
 }

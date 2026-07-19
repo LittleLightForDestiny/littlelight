@@ -19,8 +19,8 @@ class CollectionsSubcategoryBloc extends CollectionsBloc {
   final int rootNodeHash;
 
   CollectionsSubcategoryBloc(BuildContext context, int this.rootNodeHash, {List<int>? parentNodeHashes})
-      : this._parentNodeHashes = parentNodeHashes,
-        super(context);
+    : this._parentNodeHashes = parentNodeHashes,
+      super(context);
 
   @override
   Future<void> loadDefinitions() async {
@@ -33,10 +33,13 @@ class CollectionsSubcategoryBloc extends CollectionsBloc {
   void openPresentationNode(int? presentationNodeHash, {List<int>? parentHashes}) {
     if (presentationNodeHash == null) return;
     Navigator.of(context).push(
-      CollectionsSubcategoryPageRoute(presentationNodeHash, parentNodeHashes: [
-        if (parentHashes != null) ...parentHashes,
+      CollectionsSubcategoryPageRoute(
         presentationNodeHash,
-      ]),
+        parentNodeHashes: [
+          if (parentHashes != null) ...parentHashes,
+          presentationNodeHash,
+        ],
+      ),
     );
   }
 

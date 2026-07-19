@@ -90,11 +90,11 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   bool get isBusy;
 
   SocketControllerBloc(this.context)
-      : manifest = context.read<ManifestService>(),
-        wishlists = getInjectedWishlistsService(),
-        itemNotes = context.read<ItemNotesBloc>(),
-        littlelightData = context.read<LittleLightDataBloc>(),
-        super() {
+    : manifest = context.read<ManifestService>(),
+      wishlists = getInjectedWishlistsService(),
+      itemNotes = context.read<ItemNotesBloc>(),
+      littlelightData = context.read<LittleLightDataBloc>(),
+      super() {
     _initGameData();
   }
 
@@ -264,14 +264,16 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
     if (cosmeticCategories == null) return false;
     final categories = itemDefinition?.sockets?.socketCategories;
     if (categories == null || categories.isEmpty) return false;
-    return categories.any((c) =>
-        cosmeticCategories.contains(
-          c.socketCategoryHash,
-        ) &&
-        (c.socketIndexes?.contains(
-              socketIndex,
-            ) ??
-            false));
+    return categories.any(
+      (c) =>
+          cosmeticCategories.contains(
+            c.socketCategoryHash,
+          ) &&
+          (c.socketIndexes?.contains(
+                socketIndex,
+              ) ??
+              false),
+    );
   }
 
   bool isFavoritePlug(int plugHash) {
@@ -325,8 +327,9 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
       ...selectedPlugHashes.values,
     });
 
-    final statGroupDefinition =
-        await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
+    final statGroupDefinition = await manifest.getDefinition<DestinyStatGroupDefinition>(
+      itemDefinition?.stats?.statGroupHash,
+    );
 
     _allEquippedPlugHashes = allEquippedPlugHashes;
     _allSelectedPlugHashes = selectedPlugHashes.values.whereType<int>().toSet();
@@ -387,8 +390,9 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
       equippedPlugHash,
       selectedPlugHash,
     });
-    final statGroupDefinition =
-        await manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
+    final statGroupDefinition = await manifest.getDefinition<DestinyStatGroupDefinition>(
+      itemDefinition?.stats?.statGroupHash,
+    );
     final energyCostStatHashes = await _getEnergyCostStatHashes(plugDefinitions);
     return comparePlugStats(
       selectedPlugHashes,
@@ -520,16 +524,22 @@ abstract class SocketControllerBloc<T> extends ChangeNotifier {
   Future<bool> loadCanApplyPlug(int socketIndex, int plugHash);
 
   Future<List<int>> _getEnergyCostStatHashes(Map<int, DestinyInventoryItemDefinition> plugDefs) async {
-    final costEnergyTypeHashes =
-        plugDefs.values.map((e) => e.plug?.energyCost?.energyTypeHash).whereType<int>().toSet();
-    final capacityEnergyTypeHashes =
-        plugDefs.values.map((e) => e.plug?.energyCapacity?.energyTypeHash).whereType<int>().toSet();
+    final costEnergyTypeHashes = plugDefs.values
+        .map((e) => e.plug?.energyCost?.energyTypeHash)
+        .whereType<int>()
+        .toSet();
+    final capacityEnergyTypeHashes = plugDefs.values
+        .map((e) => e.plug?.energyCapacity?.energyTypeHash)
+        .whereType<int>()
+        .toSet();
     final allEnergyTypeHashes = costEnergyTypeHashes.toList() + capacityEnergyTypeHashes.toList();
     if (allEnergyTypeHashes.isEmpty) return [];
     final energyTypeDefs = await manifest.getDefinitions<DestinyEnergyTypeDefinition>(allEnergyTypeHashes);
     final costStatHashes = costEnergyTypeHashes.map((e) => energyTypeDefs[e]?.costStatHash).whereType<int>().toSet();
-    final capacityStatHashes =
-        capacityEnergyTypeHashes.map((e) => energyTypeDefs[e]?.capacityStatHash).whereType<int>().toSet();
+    final capacityStatHashes = capacityEnergyTypeHashes
+        .map((e) => energyTypeDefs[e]?.capacityStatHash)
+        .whereType<int>()
+        .toSet();
     final statHashes = costStatHashes.toList() + capacityStatHashes.toList();
     return statHashes;
   }

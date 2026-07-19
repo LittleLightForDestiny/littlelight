@@ -27,12 +27,13 @@ class DetailsRecordObjectivesWidget extends StatelessWidget {
     final objectiveHashes = definition?.objectiveHashes;
     if (objectiveHashes == null) return Container();
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Objectives".translate(context).toUpperCase()),
-          persistenceID: 'record objectives',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Objectives".translate(context).toUpperCase()),
+        persistenceID: 'record objectives',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -47,11 +48,13 @@ class DetailsRecordObjectivesWidget extends StatelessWidget {
     }
     return Column(
       children: charactersProgress
-          .map((e) => buildSingleProgress(
-                context,
-                record: e.value,
-                characterId: e.key,
-              ))
+          .map(
+            (e) => buildSingleProgress(
+              context,
+              record: e.value,
+              characterId: e.key,
+            ),
+          )
           .toList(),
     );
   }
@@ -75,11 +78,13 @@ class DetailsRecordObjectivesWidget extends StatelessWidget {
     if (objectiveHashes == null) return Container();
     return Column(
       children: objectiveHashes
-          .mapIndexed((index, progressHash) => ObjectiveWidget(
-                progressHash,
-                objective: progressRecord?.objectives?[index],
-                placeholder: definition?.displayProperties?.name,
-              ))
+          .mapIndexed(
+            (index, progressHash) => ObjectiveWidget(
+              progressHash,
+              objective: progressRecord?.objectives?[index],
+              placeholder: definition?.displayProperties?.name,
+            ),
+          )
           .toList(),
     );
   }

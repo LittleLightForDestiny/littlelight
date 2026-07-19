@@ -6,31 +6,23 @@ part of 'd2_clarity_line_content.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ClarityLineContent _$ClarityLineContentFromJson(Map<String, dynamic> json) =>
-    ClarityLineContent(
-      title: (json['title'] as List<dynamic>?)
-          ?.map(ClarityDescription.fromJson)
-          .toList(),
-      text: json['text'] as String?,
-      classNames: (json['classNames'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e,
-              unknownValue: ClarityClassNames.Unknown))
-          .toList(),
-      formula:
-          $enumDecodeNullable(_$ClarityFormulaTypeEnumMap, json['formula']),
-      link: json['link'] as String?,
-    );
+ClarityLineContent _$ClarityLineContentFromJson(Map<String, dynamic> json) => ClarityLineContent(
+  title: (json['title'] as List<dynamic>?)?.map(ClarityDescription.fromJson).toList(),
+  text: json['text'] as String?,
+  classNames: (json['classNames'] as List<dynamic>?)
+      ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e, unknownValue: ClarityClassNames.Unknown))
+      .toList(),
+  formula: $enumDecodeNullable(_$ClarityFormulaTypeEnumMap, json['formula']),
+  link: json['link'] as String?,
+);
 
-Map<String, dynamic> _$ClarityLineContentToJson(ClarityLineContent instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'text': instance.text,
-      'formula': _$ClarityFormulaTypeEnumMap[instance.formula],
-      'link': instance.link,
-      'classNames': instance.classNames
-          ?.map((e) => _$ClarityClassNamesEnumMap[e]!)
-          .toList(),
-    };
+Map<String, dynamic> _$ClarityLineContentToJson(ClarityLineContent instance) => <String, dynamic>{
+  'title': instance.title,
+  'text': instance.text,
+  'formula': _$ClarityFormulaTypeEnumMap[instance.formula],
+  'link': instance.link,
+  'classNames': instance.classNames?.map((e) => _$ClarityClassNamesEnumMap[e]!).toList(),
+};
 
 const _$ClarityClassNamesEnumMap = {
   ClarityClassNames.Spacer: 'spacer',

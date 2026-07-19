@@ -25,37 +25,43 @@ class CharacterPostmasterOptionsWidget extends StatelessWidget {
     final postmasterItems = context.watch<CharacterContextMenuBloc>().getPostmasterItems(character.characterId);
     if (postmasterItems.isEmpty) return Container();
     return MenuBox(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      MenuBoxTitle(
-        "Postmaster".translate(context),
-        trailing: ManifestText<DestinyInventoryBucketDefinition>(
-          InventoryBucket.lostItems,
-          textExtractor: (def) => "${postmasterItems.length}/${def.itemCount}",
-          style: context.textTheme.button,
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          MenuBoxTitle(
+            "Postmaster".translate(context),
+            trailing: ManifestText<DestinyInventoryBucketDefinition>(
+              InventoryBucket.lostItems,
+              textExtractor: (def) => "${postmasterItems.length}/${def.itemCount}",
+              style: context.textTheme.button,
+            ),
+          ),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: postmasterItems
+                  .map(
+                    (e) => Container(
+                      width: 64,
+                      height: 64,
+                      margin: EdgeInsets.only(left: 2),
+                      child: LowDensityInventoryItem(e),
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+          Container(height: 4),
+          ElevatedButton(
+            style: ButtonStyle(visualDensity: VisualDensity.comfortable),
+            child: Text("Select all".translate(context).toUpperCase()),
+            onPressed: () {
+              context.read<SelectionBloc>().selectItems(postmasterItems);
+              Navigator.of(context).pop();
+            },
+          ),
+        ],
       ),
-      SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        child: Row(
-          children: postmasterItems
-              .map((e) => Container(
-                    width: 64,
-                    height: 64,
-                    margin: EdgeInsets.only(left: 2),
-                    child: LowDensityInventoryItem(e),
-                  ))
-              .toList(),
-        ),
-      ),
-      Container(height: 4),
-      ElevatedButton(
-        style: ButtonStyle(visualDensity: VisualDensity.comfortable),
-        child: Text("Select all".translate(context).toUpperCase()),
-        onPressed: () {
-          context.read<SelectionBloc>().selectItems(postmasterItems);
-          Navigator.of(context).pop();
-        },
-      ),
-    ]));
+    );
   }
 }

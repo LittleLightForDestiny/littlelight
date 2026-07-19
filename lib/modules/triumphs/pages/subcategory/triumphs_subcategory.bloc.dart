@@ -18,8 +18,8 @@ class TriumphsSubcategoryBloc extends TriumphsBloc {
   final int rootNodeHash;
 
   TriumphsSubcategoryBloc(BuildContext context, int this.rootNodeHash, {List<int>? parentNodeHashes})
-      : this._parentNodeHashes = parentNodeHashes,
-        super(context);
+    : this._parentNodeHashes = parentNodeHashes,
+      super(context);
 
   @override
   Future<void> loadDefinitions() async {
@@ -32,10 +32,13 @@ class TriumphsSubcategoryBloc extends TriumphsBloc {
   void openPresentationNode(int? presentationNodeHash, {List<int>? parentHashes}) {
     if (presentationNodeHash == null) return;
     Navigator.of(context).push(
-      TriumphsSubcategoryPageRoute(presentationNodeHash, parentNodeHashes: [
-        if (parentHashes != null) ...parentHashes,
+      TriumphsSubcategoryPageRoute(
         presentationNodeHash,
-      ]),
+        parentNodeHashes: [
+          if (parentHashes != null) ...parentHashes,
+          presentationNodeHash,
+        ],
+      ),
     );
   }
 

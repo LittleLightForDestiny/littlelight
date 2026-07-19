@@ -189,12 +189,11 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     int stackSize = 1,
   }) async {
     final sourceCharacter = _profileBloc.getCharacterById(item.characterId);
-    final sourceType =
-        item.characterId != null
-            ? TransferDestinationType.character
-            : item.bucketHash == InventoryBucket.general
-            ? TransferDestinationType.vault
-            : TransferDestinationType.profile;
+    final sourceType = item.characterId != null
+        ? TransferDestinationType.character
+        : item.bucketHash == InventoryBucket.general
+        ? TransferDestinationType.vault
+        : TransferDestinationType.profile;
     final source = TransferDestination(sourceType, character: sourceCharacter);
 
     final destinationCharacter = destination.character;
@@ -227,10 +226,9 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     final notification = _notificationsBloc.createNotification(
       TransferNotification(item: item, source: source, destination: destination),
     );
-    final transfer =
-        equip
-            ? QueuedEquip(item: item, destination: destination, notification: notification)
-            : QueuedTransfer(item: item, destination: destination, notification: notification, stackSize: stackSize);
+    final transfer = equip
+        ? QueuedEquip(item: item, destination: destination, notification: notification)
+        : QueuedTransfer(item: item, destination: destination, notification: notification, stackSize: stackSize);
     final instanceId = item.instanceId;
     if (instanceId != null) {
       instanceIdsToAvoid.add(instanceId);
@@ -821,18 +819,16 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
 
     final hashes = (toEquip + allTransferrable).map((i) => i.itemHash);
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
-    final toTransfer =
-        classType == null
-            ? allTransferrable
-            : allTransferrable.where((item) {
-              final def = defs[item.itemHash];
-              return [classType, DestinyClass.Unknown].contains(def?.classType);
-            }).toList();
+    final toTransfer = classType == null
+        ? allTransferrable
+        : allTransferrable.where((item) {
+            final def = defs[item.itemHash];
+            return [classType, DestinyClass.Unknown].contains(def?.classType);
+          }).toList();
 
-    final destination =
-        character != null
-            ? TransferDestination(TransferDestinationType.character, character: character)
-            : TransferDestination.vault();
+    final destination = character != null
+        ? TransferDestination(TransferDestinationType.character, character: character)
+        : TransferDestination.vault();
     await _transferLoadout(
       loadout,
       destination,
@@ -854,11 +850,10 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
 
     final hashes = (toEquip + allTransferrable).map((i) => i.itemHash);
     final defs = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
-    final toTransfer =
-        allTransferrable.where((item) {
-          final def = defs[item.itemHash];
-          return [classType, DestinyClass.Unknown].contains(def?.classType);
-        }).toList();
+    final toTransfer = allTransferrable.where((item) {
+      final def = defs[item.itemHash];
+      return [classType, DestinyClass.Unknown].contains(def?.classType);
+    }).toList();
     final sorter = TierTypeSorter(_context, SorterDirection.Ascending, defs);
     toEquip.sort(sorter.sort);
 
@@ -926,15 +921,14 @@ class InventoryBloc extends ChangeNotifier with ManifestConsumer {
     }
     final transferredIds = [...toTransfer, ...toEquip].map((i) => i.inventoryItem?.instanceId).whereType<String>();
 
-    final transferrableItems =
-        _profileBloc.allInstancedItems
-            .where((item) {
-              final isOnTargetCharacter = item.characterId == destination.characterId;
-              final isEquipped = item.isEquipped ?? false;
-              return isOnTargetCharacter && !isEquipped;
-            })
-            .toList()
-            .reversed;
+    final transferrableItems = _profileBloc.allInstancedItems
+        .where((item) {
+          final isOnTargetCharacter = item.characterId == destination.characterId;
+          final isEquipped = item.isEquipped ?? false;
+          return isOnTargetCharacter && !isEquipped;
+        })
+        .toList()
+        .reversed;
 
     final clearActions = <QueuedAction>[];
 

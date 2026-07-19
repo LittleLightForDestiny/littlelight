@@ -13,16 +13,17 @@ class VaultTabHeaderWidget extends BaseTabHeaderWidget with DestinySettingsConsu
 
   @override
   Widget buildBackground(BuildContext context) => Container(
-          child: Image.asset(
-        "assets/imgs/vault-secondary-special.jpg",
-        fit: BoxFit.cover,
-        alignment: Alignment.centerLeft,
-      ));
+    child: Image.asset(
+      "assets/imgs/vault-secondary-special.jpg",
+      fit: BoxFit.cover,
+      alignment: Alignment.centerLeft,
+    ),
+  );
 
   @override
   Widget buildIcon(BuildContext context) => Image.asset(
-        "assets/imgs/vault-secondary-overlay.png",
-      );
+    "assets/imgs/vault-secondary-overlay.png",
+  );
 
   @override
   Widget buildProgressBar(BuildContext context) {
@@ -43,13 +44,14 @@ class VaultTabHeaderWidget extends BaseTabHeaderWidget with DestinySettingsConsu
       child: FractionallySizedBox(
         widthFactor: completed,
         child: Shimmer.fromColors(
-            enabled: enableEyeCandy,
-            baseColor: fg,
-            period: const Duration(seconds: 2),
-            highlightColor: context.theme.onSurfaceLayers,
-            child: Container(
-              color: context.theme.onSurfaceLayers,
-            )),
+          enabled: enableEyeCandy,
+          baseColor: fg,
+          period: const Duration(seconds: 2),
+          highlightColor: context.theme.onSurfaceLayers,
+          child: Container(
+            color: context.theme.onSurfaceLayers,
+          ),
+        ),
       ),
     );
   }

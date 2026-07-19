@@ -5,7 +5,9 @@ import 'package:little_light/shared/utils/helpers/bucket_type_groups.dart';
 
 class ItemSearchPageRoute extends MaterialPageRoute {
   ItemSearchPageRoute(EquipmentBucketGroup? currentBucketGroup, DestinyClass? classType)
-      : super(builder: (context) {
+    : super(
+        builder: (context) {
           return ItemSearchPage(currentBucketGroup, classType);
-        });
+        },
+      );
 }

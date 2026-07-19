@@ -53,11 +53,11 @@ class CollectiblesSearchBloc extends ChangeNotifier {
   }
 
   CollectiblesSearchBloc(this.context, int this.rootNodeHash)
-      : manifest = context.read<ManifestService>(),
-        userSettings = context.read<UserSettingsBloc>(),
-        profile = context.read<ProfileBloc>(),
-        selection = context.read<SelectionBloc>(),
-        super() {
+    : manifest = context.read<ManifestService>(),
+      userSettings = context.read<UserSettingsBloc>(),
+      profile = context.read<ProfileBloc>(),
+      selection = context.read<SelectionBloc>(),
+      super() {
     _init();
   }
 
@@ -124,12 +124,18 @@ class CollectiblesSearchBloc extends ChangeNotifier {
 
   Future<Set<int>> loadChildrenCollectibleHashes(int nodeHash) async {
     final definition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(nodeHash);
-    final collectibleHashes = definition?.children?.collectibles //
+    final collectibleHashes =
+        definition
+            ?.children
+            ?.collectibles //
             ?.map((e) => e.collectibleHash)
             .whereType<int>()
             .toSet() ??
         <int>{};
-    final presentationNodeHashes = definition?.children?.presentationNodes //
+    final presentationNodeHashes =
+        definition
+            ?.children
+            ?.presentationNodes //
             ?.map((e) => e.presentationNodeHash)
             .whereType<int>()
             .toSet() ??

@@ -6,7 +6,9 @@ class InventoryItemDetailsPageRoute extends MaterialPageRoute {
   final InventoryItemInfo item;
 
   InventoryItemDetailsPageRoute(this.item)
-      : super(builder: (context) {
+    : super(
+        builder: (context) {
           return InventoryItemDetailsPage(item);
-        });
+        },
+      );
 }

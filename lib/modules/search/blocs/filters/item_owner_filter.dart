@@ -6,11 +6,11 @@ import 'base_item_filter.dart';
 
 class ItemOwnerFilter extends BaseItemFilter<ItemOwnerFilterOptions> {
   ItemOwnerFilter()
-      : super(
-          ItemOwnerFilterOptions(
-            ItemOwnerValues(),
-          ),
-        );
+    : super(
+        ItemOwnerFilterOptions(
+          ItemOwnerValues(),
+        ),
+      );
 
   @override
   Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {

@@ -29,7 +29,7 @@ class VendorsListWidget extends StatelessWidget {
           itemCount: vendors.length,
           itemsPerRow: context.mediaQuery.responsiveValue(1, tablet: 2, desktop: 3),
           rowAlignment: CrossAxisAlignment.stretch,
-        )
+        ),
       ],
       mainAxisSpacing: 4,
       crossAxisSpacing: 4,

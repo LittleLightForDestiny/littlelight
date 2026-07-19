@@ -38,7 +38,7 @@ class IntrinsicBreakerUtils {
   static Future<DestinyBreakerType?> getWeaponBreakerType(
     ManifestService manifest,
     LittleLightDataBloc littleLightData,
-    int? itemHash
+    int? itemHash,
   ) async {
     if (itemHash == null) return null;
     final itemDef = await manifest.getDefinition<DestinyInventoryItemDefinition>(itemHash);

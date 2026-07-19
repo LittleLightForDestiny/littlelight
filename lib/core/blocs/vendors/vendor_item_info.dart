@@ -18,13 +18,13 @@ class VendorItemInfo extends DestinyItemInfo {
     int? stackIndex,
     DestinyItemObjectivesComponent? this.objectives,
   }) : super(
-          characterId: characterId,
-          plugObjectives: plugObjectives,
-          reusablePlugs: reusablePlugs,
-          sockets: sockets,
-          stats: stats,
-          stackIndex: stackIndex,
-        );
+         characterId: characterId,
+         plugObjectives: plugObjectives,
+         reusablePlugs: reusablePlugs,
+         sockets: sockets,
+         stats: stats,
+         stackIndex: stackIndex,
+       );
 
   @override
   int? get itemHash => _item.itemHash;
@@ -84,15 +84,15 @@ class VendorItemInfo extends DestinyItemInfo {
   List<DestinyItemQuantity>? get costs => _item.costs;
 
   VendorItemInfo clone() => VendorItemInfo(
-        DestinyVendorSaleItemComponent.fromJson(_item.toJson()),
-        characterId: characterId,
-        instanceInfo: instanceInfo,
-        plugObjectives: plugObjectives,
-        reusablePlugs: reusablePlugs,
-        sockets: sockets,
-        stats: stats,
-        stackIndex: stackIndex,
-      );
+    DestinyVendorSaleItemComponent.fromJson(_item.toJson()),
+    characterId: characterId,
+    instanceInfo: instanceInfo,
+    plugObjectives: plugObjectives,
+    reusablePlugs: reusablePlugs,
+    sockets: sockets,
+    stats: stats,
+    stackIndex: stackIndex,
+  );
 
   @override
   List<int>? get tooltipNotificationIndexes => null;

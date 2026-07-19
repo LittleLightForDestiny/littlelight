@@ -6,8 +6,7 @@ extension on String {
     LanguageBloc bloc, {
     Map<String, String> replace = const {},
     String? overrideDefaultText,
-  }) =>
-      bloc.translate(this, replace: replace, overrideDefaultText: overrideDefaultText);
+  }) => bloc.translate(this, replace: replace, overrideDefaultText: overrideDefaultText);
 }
 
 class TranslatedLookupMessages implements LookupMessages {

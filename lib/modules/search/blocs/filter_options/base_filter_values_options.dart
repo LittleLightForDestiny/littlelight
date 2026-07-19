@@ -13,8 +13,7 @@ abstract class BaseFilterOptions<T> {
 
   bool get available => true;
 
-  BaseFilterOptions(this._value,
-      {required T availableValues, bool enabled = false})
-      : _availableValues = availableValues,
-        _enabled = enabled;
+  BaseFilterOptions(this._value, {required T availableValues, bool enabled = false})
+    : _availableValues = availableValues,
+      _enabled = enabled;
 }

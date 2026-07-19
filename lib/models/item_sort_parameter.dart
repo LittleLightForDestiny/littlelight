@@ -8,7 +8,7 @@ enum SorterDirection {
   @JsonValue(-1)
   Descending,
   @JsonValue(0)
-  None
+  None,
 }
 
 extension SorterDirectionAsInt on SorterDirection {
@@ -39,7 +39,7 @@ enum ItemSortParameterType {
   StatTotal,
   Stat,
   MasterworkStatus,
-  DamageType
+  DamageType,
 }
 
 @JsonSerializable()
@@ -78,7 +78,10 @@ class ItemSortParameter {
       ItemSortParameter(type: ItemSortParameterType.Name),
       ItemSortParameter(type: ItemSortParameterType.StatTotal, direction: SorterDirection.Descending, active: false),
       ItemSortParameter(
-          type: ItemSortParameterType.MasterworkStatus, direction: SorterDirection.Descending, active: false),
+        type: ItemSortParameterType.MasterworkStatus,
+        direction: SorterDirection.Descending,
+        active: false,
+      ),
       ItemSortParameter(type: ItemSortParameterType.ItemOwner, active: false),
       ItemSortParameter(type: ItemSortParameterType.SubType, active: false),
       ItemSortParameter(type: ItemSortParameterType.ClassType, active: false),
@@ -102,14 +105,14 @@ class ItemSortParameter {
     ItemSortParameterType.DamageType,
     ItemSortParameterType.AmmoType,
     ItemSortParameterType.BucketHash,
-    ItemSortParameterType.Quantity
+    ItemSortParameterType.Quantity,
   ];
 
   static const availablePursuitSorters = [
     ItemSortParameterType.TierType,
     ItemSortParameterType.ExpirationDate,
     ItemSortParameterType.QuestGroup,
-    ItemSortParameterType.Name
+    ItemSortParameterType.Name,
   ];
 
   static List<ItemSortParameter> get defaultPursuitList {

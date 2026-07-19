@@ -13,9 +13,10 @@ class LanguageButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
-          backgroundColor: selected ? context.theme.primaryLayers : Colors.transparent,
-          elevation: 0,
-          padding: const EdgeInsets.all(8)),
+        backgroundColor: selected ? context.theme.primaryLayers : Colors.transparent,
+        elevation: 0,
+        padding: const EdgeInsets.all(8),
+      ),
       child: _child,
       onPressed: () {
         onPressed();

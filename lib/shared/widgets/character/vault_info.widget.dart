@@ -23,29 +23,34 @@ class VaultInfoWidget extends StatelessWidget with DestinySettingsConsumer {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        buildSeasonalRankRow(context),
-        SizedBox(height: 4),
-        Expanded(
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              buildCharacterDetails(context),
-              buildItemCount(context),
-            ],
-          ),
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.end,
+    return Stack(
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Expanded(child: buildCurrencies(context)),
+            buildSeasonalRankRow(context),
+            SizedBox(height: 4),
+            Expanded(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  buildCharacterDetails(context),
+                  buildItemCount(context),
+                ],
+              ),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(child: buildCurrencies(context)),
+              ],
+            ),
+            SizedBox(height: 4),
           ],
         ),
-        SizedBox(height: 4),
-      ]),
-    ]);
+      ],
+    );
   }
 
   Widget buildCurrencies(BuildContext context) {
@@ -55,21 +60,23 @@ class VaultInfoWidget extends StatelessWidget with DestinySettingsConsumer {
     return Wrap(
       alignment: WrapAlignment.end,
       children: currencies
-          .map((e) => Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Container(
-                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(e.itemHash),
-                    width: 16,
-                    height: 16,
-                  ),
-                  Container(
-                    width: 4,
-                  ),
-                  Text(numberFormatter.format(e.quantity)),
-                  Container(width: 8),
-                ].toList(),
-              ))
+          .map(
+            (e) => Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(e.itemHash),
+                  width: 16,
+                  height: 16,
+                ),
+                Container(
+                  width: 4,
+                ),
+                Text(numberFormatter.format(e.quantity)),
+                Container(width: 8),
+              ].toList(),
+            ),
+          )
           .toList(),
     );
   }

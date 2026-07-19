@@ -25,11 +25,11 @@ class RecordDetailsBloc extends ChangeNotifier {
   ObjectiveTrackingBloc trackingBloc;
 
   RecordDetailsBloc(BuildContext context, int recordHash)
-      : this._recordHash = recordHash,
-        profileBloc = context.read<ProfileBloc>(),
-        manifestBloc = context.read<ManifestService>(),
-        trackingBloc = context.read<ObjectiveTrackingBloc>(),
-        super() {
+    : this._recordHash = recordHash,
+      profileBloc = context.read<ProfileBloc>(),
+      manifestBloc = context.read<ManifestService>(),
+      trackingBloc = context.read<ObjectiveTrackingBloc>(),
+      super() {
     _init();
   }
 

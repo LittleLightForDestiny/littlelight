@@ -62,23 +62,22 @@ abstract class BaseItemDetailsView extends StatelessWidget {
     return Scaffold(
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
-        children:
-            [
-              Expanded(
-                child: Stack(
-                  children: [
-                    buildBody(context, hasFooter: footer != null),
-                    Positioned(
-                      left: 0,
-                      bottom: 0,
-                      right: 0,
-                      child: buildNotificationWidget(context, hasFooter: footer != null),
-                    ),
-                  ],
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                buildBody(context, hasFooter: footer != null),
+                Positioned(
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  child: buildNotificationWidget(context, hasFooter: footer != null),
                 ),
-              ),
-              footer,
-            ].whereType<Widget>().toList(),
+              ],
+            ),
+          ),
+          footer,
+        ].whereType<Widget>().toList(),
       ),
     );
   }
@@ -93,75 +92,73 @@ abstract class BaseItemDetailsView extends StatelessWidget {
   Widget buildLandscapeBody(BuildContext context, {required bool hasFooter}) {
     return CustomScrollView(
       controller: scrollController,
-      slivers:
-          [
-            DetailsItemLandscapeCoverWidget(
-              state,
-              socketState,
-            ),
-            buildDescription(context),
-            buildWishlistInfo(context),
-            buildLockState(context),
-            buildActions(context),
-            buildDuplicates(context),
-            buildCraftedLevel(context),
-            ...buildIntrinsicPerks(context),
-            ...buildArmorEnergy(context),
-            buildStats(context),
-            ...buildSupers(context),
-            ...buildAbilities(context),
-            ...buildReusablePerks(context),
-            ...buildMods(context),
-            buildItemSet(context),
-            buildWishlistBuilds(context),
-            buildWishlistNotes(context),
-            buildItemProgress(context),
-            buildQuestSteps(context),
-            buildRewards(context),
-            buildItemNotes(context),
-            buildItemTags(context),
-            buildItemLoadouts(context),
-            buildLore(context),
-            buildCollectibleInfo(context),
-            buildRawData(context),
-            buildEmptySpace(context, hasFooter: hasFooter),
-          ].whereType<Widget>().toList(),
+      slivers: [
+        DetailsItemLandscapeCoverWidget(
+          state,
+          socketState,
+        ),
+        buildDescription(context),
+        buildWishlistInfo(context),
+        buildLockState(context),
+        buildActions(context),
+        buildDuplicates(context),
+        buildCraftedLevel(context),
+        ...buildIntrinsicPerks(context),
+        ...buildArmorEnergy(context),
+        buildStats(context),
+        ...buildSupers(context),
+        ...buildAbilities(context),
+        ...buildReusablePerks(context),
+        ...buildMods(context),
+        buildItemSet(context),
+        buildWishlistBuilds(context),
+        buildWishlistNotes(context),
+        buildItemProgress(context),
+        buildQuestSteps(context),
+        buildRewards(context),
+        buildItemNotes(context),
+        buildItemTags(context),
+        buildItemLoadouts(context),
+        buildLore(context),
+        buildCollectibleInfo(context),
+        buildRawData(context),
+        buildEmptySpace(context, hasFooter: hasFooter),
+      ].whereType<Widget>().toList(),
     );
   }
 
   Widget buildPortraitBody(BuildContext context, {required bool hasFooter}) {
     return CustomScrollView(
       controller: scrollController,
-      slivers:
-          [
-            DetailsItemCoverWidget(state),
-            buildDescription(context),
-            buildWishlistInfo(context),
-            buildLockState(context),
-            buildActions(context),
-            buildDuplicates(context),
-            buildCraftedLevel(context),
-            ...buildIntrinsicPerks(context),
-            ...buildArmorEnergy(context),
-            buildStats(context),
-            ...buildSupers(context),
-            ...buildAbilities(context),
-            ...buildReusablePerks(context),
-            ...buildMods(context),
-            buildItemSet(context),
-            buildWishlistBuilds(context),
-            buildWishlistNotes(context),
-            buildItemProgress(context),
-            buildQuestSteps(context),
-            buildRewards(context),
-            buildItemNotes(context),
-            buildItemTags(context),
-            buildItemLoadouts(context),
-            buildLore(context),
-            buildCollectibleInfo(context),
-            buildRawData(context),
-            buildEmptySpace(context, hasFooter: hasFooter),
-          ].whereType<Widget>().toList(),
+      slivers: [
+        DetailsItemCoverWidget(state),
+        buildDescription(context),
+        buildWishlistInfo(context),
+        buildLockState(context),
+        buildActions(context),
+        buildDuplicates(context),
+        buildCraftedLevel(context),
+        ...buildIntrinsicPerks(context),
+        ...buildArmorEnergy(context),
+        buildStats(context),
+        ...buildSupers(context),
+        ...buildAbilities(context),
+        ...buildReusablePerks(context),
+        ...buildMods(context),
+        buildItemSet(context),
+        buildWishlistBuilds(context),
+        buildWishlistNotes(context),
+        buildItemProgress(context),
+        buildQuestSteps(context),
+        buildRewards(context),
+        buildItemNotes(context),
+        buildItemTags(context),
+        buildItemLoadouts(context),
+        buildLore(context),
+        buildCollectibleInfo(context),
+        buildRawData(context),
+        buildEmptySpace(context, hasFooter: hasFooter),
+      ].whereType<Widget>().toList(),
     );
   }
 

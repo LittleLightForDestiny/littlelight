@@ -34,22 +34,24 @@ class CollectiblesSearchView extends StatelessWidget {
   }
 
   Widget buildBody(BuildContext context) {
-    return Column(children: [
-      Expanded(
-        child: Stack(
-          children: [
-            buildResultList(context),
-            Positioned(
-              child: buildNotifications(context),
-              bottom: 0,
-              left: 0,
-              right: 0,
-            ),
-          ],
+    return Column(
+      children: [
+        Expanded(
+          child: Stack(
+            children: [
+              buildResultList(context),
+              Positioned(
+                child: buildNotifications(context),
+                bottom: 0,
+                left: 0,
+                right: 0,
+              ),
+            ],
+          ),
         ),
-      ),
-      buildFooter(context),
-    ]);
+        buildFooter(context),
+      ],
+    );
   }
 
   Widget buildResultList(BuildContext context) {
@@ -93,13 +95,15 @@ class CollectiblesSearchView extends StatelessWidget {
     final hasSelection = context.watch<SelectionBloc>().hasSelection;
     final bottomPadding = context.mediaQuery.viewPadding.bottom;
     if (!hasSelection) return Container();
-    return Column(children: [
-      SelectedItemsWidget(),
-      if (bottomPadding > 0)
-        Container(
-          color: context.theme.surfaceLayers.layer1,
-          child: BusyIndicatorBottomGradientWidget(),
-        ),
-    ]);
+    return Column(
+      children: [
+        SelectedItemsWidget(),
+        if (bottomPadding > 0)
+          Container(
+            color: context.theme.surfaceLayers.layer1,
+            child: BusyIndicatorBottomGradientWidget(),
+          ),
+      ],
+    );
   }
 }

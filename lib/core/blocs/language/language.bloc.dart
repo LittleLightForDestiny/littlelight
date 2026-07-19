@@ -45,8 +45,11 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
 
     if (countryCode != null) {
       _systemLanguage = languages
-          .firstWhereOrNull((language) =>
-              language.code.startsWith(languageCode.toLowerCase()) && language.code.endsWith(countryCode.toLowerCase()))
+          .firstWhereOrNull(
+            (language) =>
+                language.code.startsWith(languageCode.toLowerCase()) &&
+                language.code.endsWith(countryCode.toLowerCase()),
+          )
           ?.code;
     }
 
@@ -85,7 +88,7 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
     LanguageInfo(code: 'pt-br', name: "Português Brasileiro"),
     LanguageInfo(code: 'ru', name: "Русский"),
     LanguageInfo(code: 'zh-cht', name: "繁體中文"),
-    LanguageInfo(code: 'zh-chs', name: "简体中文")
+    LanguageInfo(code: 'zh-chs', name: "简体中文"),
   ];
 
   Future<String> getTranslation(String text, {String? languageCode, Map<String, String> replace = const {}}) async {
@@ -100,8 +103,12 @@ class LanguageBloc extends ChangeNotifier with StorageConsumer, ManifestConsumer
     return _replace(translatedText, replace);
   }
 
-  String translate(String text,
-      {String? languageCode, Map<String, String> replace = const {}, String? overrideDefaultText}) {
+  String translate(
+    String text, {
+    String? languageCode,
+    Map<String, String> replace = const {},
+    String? overrideDefaultText,
+  }) {
     String code = languageCode ?? currentLanguage;
     Map<String, String>? translationMap = _translationMaps[code];
     if (translationMap == null) {

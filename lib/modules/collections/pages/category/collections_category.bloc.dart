@@ -17,20 +17,25 @@ class CollectionsCategoryBloc extends CollectionsBloc {
   DestinyPresentationNodeDefinition? _rootNode;
 
   CollectionsCategoryBloc(BuildContext context, int this.rootNodeHash, {List<int>? parentNodeHashes})
-      : this._parentNodeHashes = parentNodeHashes,
-        super(context);
+    : this._parentNodeHashes = parentNodeHashes,
+      super(context);
 
   @override
   Future<void> loadDefinitions() async {
     await loadNodeDefinitions([rootNodeHash]);
     final rootNode = nodeDefinitions[rootNodeHash];
-    final childNodeHashes = rootNode?.children?.presentationNodes //
+    final childNodeHashes =
+        rootNode
+            ?.children
+            ?.presentationNodes //
             ?.map((e) => e.presentationNodeHash)
             .whereType<int>() ??
         [];
     await loadNodeDefinitions(childNodeHashes);
-    final tabNodes =
-        childNodeHashes.map((e) => nodeDefinitions[e]).whereType<DestinyPresentationNodeDefinition>().toList();
+    final tabNodes = childNodeHashes
+        .map((e) => nodeDefinitions[e])
+        .whereType<DestinyPresentationNodeDefinition>()
+        .toList();
 
     _rootNode = rootNode;
     _tabNodes = tabNodes;
@@ -51,10 +56,13 @@ class CollectionsCategoryBloc extends CollectionsBloc {
     if (presentationNodeHash == null) return;
     final previousParentHashes = this.parentNodeHashes;
     Navigator.of(context).push(
-      CollectionsSubcategoryPageRoute(presentationNodeHash, parentNodeHashes: [
-        if (previousParentHashes != null) ...previousParentHashes,
-        if (parentHashes != null) ...parentHashes,
-      ]),
+      CollectionsSubcategoryPageRoute(
+        presentationNodeHash,
+        parentNodeHashes: [
+          if (previousParentHashes != null) ...previousParentHashes,
+          if (parentHashes != null) ...parentHashes,
+        ],
+      ),
     );
   }
 

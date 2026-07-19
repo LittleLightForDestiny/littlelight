@@ -50,9 +50,9 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer {
   EquipLoadoutBloc(
     this.context,
     String loadoutId,
-  )   : _loadoutsBloc = context.read<LoadoutsBloc>(),
-        _inventoryBloc = context.read<InventoryBloc>(),
-        _profileBloc = context.read<ProfileBloc>() {
+  ) : _loadoutsBloc = context.read<LoadoutsBloc>(),
+      _inventoryBloc = context.read<InventoryBloc>(),
+      _profileBloc = context.read<ProfileBloc>() {
     _asyncInit(loadoutId);
   }
 
@@ -68,10 +68,12 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer {
     _equippableItems = _getEquippableItems(itemIndex);
     _unequippableItems = _getUnequippableItems(itemIndex);
     final characters = _profileBloc.characters
-        ?.map((e) => TransferDestination(
-              TransferDestinationType.character,
-              character: e,
-            ))
+        ?.map(
+          (e) => TransferDestination(
+            TransferDestinationType.character,
+            character: e,
+          ),
+        )
         .toList();
     if (characters == null) return;
     _equipCharacters = _getEquipCharacters(itemIndex, characters);
@@ -81,17 +83,19 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer {
 
   Map<DestinyClass, List<LoadoutItemInfo?>>? _getEquippableItems(LoadoutItemIndex loadout) {
     Map<DestinyClass, List<LoadoutItemInfo?>> result = {};
-    result[DestinyClass.Unknown] = _genericEquippable //
-        .map((b) => loadout.slots[b]?.genericEquipped)
-        .whereType<LoadoutItemInfo?>()
-        .toList();
+    result[DestinyClass.Unknown] =
+        _genericEquippable //
+            .map((b) => loadout.slots[b]?.genericEquipped)
+            .whereType<LoadoutItemInfo?>()
+            .toList();
 
     final classes = [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock];
     for (final c in classes) {
-      result[c] = _specificEquippable //
-          .map((b) => loadout.slots[b]?.classSpecificEquipped[c])
-          .whereType<LoadoutItemInfo?>()
-          .toList();
+      result[c] =
+          _specificEquippable //
+              .map((b) => loadout.slots[b]?.classSpecificEquipped[c])
+              .whereType<LoadoutItemInfo?>()
+              .toList();
     }
 
     result.removeWhere((key, value) => value.every((i) => i?.inventoryItem == null));
@@ -100,7 +104,9 @@ class EquipLoadoutBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   List<LoadoutItemInfo>? _getUnequippableItems(LoadoutItemIndex loadout) {
-    return loadout.slots.values //
+    return loadout
+        .slots
+        .values //
         .map((s) => s.unequipped)
         .fold<List<LoadoutItemInfo>>([], (pv, v) => pv + v)
         .where((element) => element.inventoryItem != null)

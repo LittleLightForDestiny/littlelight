@@ -8,28 +8,24 @@ part of 'd2_clarity_table_cell.dart';
 
 ClarityTableCell _$ClarityTableCellFromJson(Map<String, dynamic> json) =>
     ClarityTableCell(
-      text: json['text'] as String?,
-      classNames: (json['classNames'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e,
-              unknownValue: ClarityClassNames.Unknown))
-          .toList(),
-    )
-      ..title = (json['title'] as List<dynamic>?)
-          ?.map(ClarityDescription.fromJson)
-          .toList()
+        text: json['text'] as String?,
+        classNames: (json['classNames'] as List<dynamic>?)
+            ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e, unknownValue: ClarityClassNames.Unknown))
+            .toList(),
+      )
+      ..title = (json['title'] as List<dynamic>?)?.map(ClarityDescription.fromJson).toList()
       ..formula = $enumDecodeNullable(
-          _$ClarityFormulaTypeEnumMap, json['formula'],
-          unknownValue: ClarityFormulaType.Unknown);
+        _$ClarityFormulaTypeEnumMap,
+        json['formula'],
+        unknownValue: ClarityFormulaType.Unknown,
+      );
 
-Map<String, dynamic> _$ClarityTableCellToJson(ClarityTableCell instance) =>
-    <String, dynamic>{
-      'text': instance.text,
-      'title': instance.title,
-      'formula': _$ClarityFormulaTypeEnumMap[instance.formula],
-      'classNames': instance.classNames
-          ?.map((e) => _$ClarityClassNamesEnumMap[e]!)
-          .toList(),
-    };
+Map<String, dynamic> _$ClarityTableCellToJson(ClarityTableCell instance) => <String, dynamic>{
+  'text': instance.text,
+  'title': instance.title,
+  'formula': _$ClarityFormulaTypeEnumMap[instance.formula],
+  'classNames': instance.classNames?.map((e) => _$ClarityClassNamesEnumMap[e]!).toList(),
+};
 
 const _$ClarityClassNamesEnumMap = {
   ClarityClassNames.Spacer: 'spacer',

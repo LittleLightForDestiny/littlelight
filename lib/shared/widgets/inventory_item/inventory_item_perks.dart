@@ -25,27 +25,34 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
   Widget build(BuildContext context) {
     final definition = context.definition<DestinyInventoryItemDefinition>(itemInfo.itemHash);
     final sockets = itemInfo.sockets;
-    final socketCategory = definition?.sockets?.socketCategories //
+    final socketCategory = definition
+        ?.sockets
+        ?.socketCategories //
         ?.firstWhereOrNull((c) => c.socketCategoryHash == categoryHash);
     final socket = socketCategory?.socketIndexes;
     final reusable = itemInfo.reusablePlugs;
     if (socket == null || socket.isEmpty) return Container();
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: socket //
-          .where((p) => (sockets?[p].isVisible ?? false) && (sockets?[p].isEnabled ?? false))
-          .map((p) {
-            return includeUnequipped
-                ? buildSocket(context, reusable?["$p"], sockets?[p], definition?.sockets?.socketEntries?[p])
-                : buildPlug(context, sockets?[p].plugHash);
-          })
-          .whereType<Widget>()
-          .toList(),
+      children:
+          socket //
+              .where((p) => (sockets?[p].isVisible ?? false) && (sockets?[p].isEnabled ?? false))
+              .map((p) {
+                return includeUnequipped
+                    ? buildSocket(context, reusable?["$p"], sockets?[p], definition?.sockets?.socketEntries?[p])
+                    : buildPlug(context, sockets?[p].plugHash);
+              })
+              .whereType<Widget>()
+              .toList(),
     );
   }
 
-  Widget? buildSocket(BuildContext context, List<DestinyItemPlugBase>? plugs, DestinyItemSocketState? socket,
-      DestinyItemSocketEntryDefinition? socketDef) {
+  Widget? buildSocket(
+    BuildContext context,
+    List<DestinyItemPlugBase>? plugs,
+    DestinyItemSocketState? socket,
+    DestinyItemSocketEntryDefinition? socketDef,
+  ) {
     if (plugs != null) {
       return Column(
         mainAxisSize: MainAxisSize.min,
@@ -66,14 +73,16 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
         .whereType<int>()
         .map((plugSetHash) => profile.getProfilePlugSets(plugSetHash))
         .whereType<List<DestinyItemPlug>>()
-        .expand((plugSet) => (plugSet)
-            .where((plugDef) {
-              final canInsert = plugDef.canInsert ?? false;
-              final enabled = plugDef.enabled ?? false;
-              return canInsert && enabled;
-            })
-            .map((plugDef) => plugDef.plugItemHash)
-            .whereType<int>())
+        .expand(
+          (plugSet) => (plugSet)
+              .where((plugDef) {
+                final canInsert = plugDef.canInsert ?? false;
+                final enabled = plugDef.enabled ?? false;
+                return canInsert && enabled;
+              })
+              .map((plugDef) => plugDef.plugItemHash)
+              .whereType<int>(),
+        )
         .toSet();
     final reusablePlugHashes = socketDef?.reusablePlugItems?.map((e) => e.plugItemHash).whereType<int>();
     if (reusablePlugHashes != null) hashes.addAll(reusablePlugHashes);
@@ -91,15 +100,16 @@ class InventoryItemPerks extends StatelessWidget with WishlistsConsumer {
     final category = definition?.plug?.plugCategoryIdentifier;
     if (category == 'origins' || (category?.endsWith('masterworks.trackers') ?? false)) return null;
     return Stack(
-        fit: StackFit.loose,
-        children: [
-          Positioned.fill(child: buildWishlistBackground(context, plugHash) ?? Container()),
-          SizedBox(
-            width: plugSize,
-            height: plugSize,
-            child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash),
-          ),
-        ].whereType<Widget>().toList());
+      fit: StackFit.loose,
+      children: [
+        Positioned.fill(child: buildWishlistBackground(context, plugHash) ?? Container()),
+        SizedBox(
+          width: plugSize,
+          height: plugSize,
+          child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash),
+        ),
+      ].whereType<Widget>().toList(),
+    );
   }
 
   Widget? buildWishlistBackground(BuildContext context, int plugHash) {

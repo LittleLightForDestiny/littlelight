@@ -17,8 +17,8 @@ class DestinyLoadoutsBloc extends ChangeNotifier {
   Map<String, List<DestinyLoadoutInfo>> _loadouts = {};
 
   DestinyLoadoutsBloc(this.context)
-      : profileBloc = context.read<ProfileBloc>(),
-        manifest = context.read<ManifestService>() {
+    : profileBloc = context.read<ProfileBloc>(),
+      manifest = context.read<ManifestService>() {
     _init();
   }
 
@@ -81,7 +81,8 @@ class DestinyLoadoutsBloc extends ChangeNotifier {
   }
 
   void openLoadout(DestinyLoadoutInfo loadout) {
-    Navigator.of(context)
-        .push(DestinyLoadoutDetailsPageRoute(characterId: loadout.characterId, loadoutIndex: loadout.index));
+    Navigator.of(
+      context,
+    ).push(DestinyLoadoutDetailsPageRoute(characterId: loadout.characterId, loadoutIndex: loadout.index));
   }
 }

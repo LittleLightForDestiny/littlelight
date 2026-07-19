@@ -15,7 +15,7 @@ class MenuBox extends StatelessWidget {
           BoxShadow(
             color: context.theme.secondarySurfaceLayers.layer3,
             blurRadius: 3,
-          )
+          ),
         ],
         borderRadius: BorderRadius.circular(4),
         color: getBackgroundColor(context),

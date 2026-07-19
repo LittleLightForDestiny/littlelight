@@ -47,7 +47,8 @@ class DuplicatedItemListWidget extends StatelessWidget {
         sections(context),
         mainAxisSpacing: 2,
         crossAxisSpacing: 2,
-        padding: (padding ?? EdgeInsets.zero) +
+        padding:
+            (padding ?? EdgeInsets.zero) +
             EdgeInsets.only(
               left: context.mediaQuery.padding.left,
               right: context.mediaQuery.padding.right,

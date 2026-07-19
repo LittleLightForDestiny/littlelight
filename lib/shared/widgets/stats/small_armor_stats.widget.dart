@@ -22,25 +22,30 @@ class SmallArmorStatsWidget extends StatelessWidget with WishlistsConsumer {
     final firstRow = stats.values.take(3);
     final secondRow = stats.values.skip(3).take(3);
     return Table(
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        defaultColumnWidth: IntrinsicColumnWidth(),
-        columnWidths: {
-          0: FixedColumnWidth(iconSize + iconRightMargin),
-          2: FixedColumnWidth(iconSize + iconLeftMargin + iconRightMargin),
-          4: FixedColumnWidth(iconSize + iconLeftMargin + iconRightMargin),
-        },
-        children: [
-          TableRow(
-              children: firstRow //
+      defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+      defaultColumnWidth: IntrinsicColumnWidth(),
+      columnWidths: {
+        0: FixedColumnWidth(iconSize + iconRightMargin),
+        2: FixedColumnWidth(iconSize + iconLeftMargin + iconRightMargin),
+        4: FixedColumnWidth(iconSize + iconLeftMargin + iconRightMargin),
+      },
+      children: [
+        TableRow(
+          children:
+              firstRow //
                   .expand((stat) => buildStat(context, stat))
                   .whereType<Widget>()
-                  .toList()),
-          TableRow(
-              children: secondRow //
+                  .toList(),
+        ),
+        TableRow(
+          children:
+              secondRow //
                   .expand((stat) => buildStat(context, stat))
                   .whereType<Widget>()
-                  .toList())
-        ]);
+                  .toList(),
+        ),
+      ],
+    );
   }
 
   List<Widget> buildStat(BuildContext context, DestinyStat stat) {

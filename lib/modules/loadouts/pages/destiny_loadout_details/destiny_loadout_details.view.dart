@@ -35,13 +35,16 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
           Container(
             color: context.theme.surfaceLayers.layer1,
             padding: EdgeInsets.only(top: viewPadding.top + kToolbarHeight),
-            child: Column(children: [
-              Expanded(
+            child: Column(
+              children: [
+                Expanded(
                   child: SingleChildScrollView(
-                padding: EdgeInsets.all(4) + EdgeInsets.only(bottom: 200),
-                child: buildBody(context),
-              )),
-            ]),
+                    padding: EdgeInsets.all(4) + EdgeInsets.only(bottom: 200),
+                    child: buildBody(context),
+                  ),
+                ),
+              ],
+            ),
           ),
           Positioned(
             top: 0,
@@ -58,63 +61,65 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
     final viewPadding = context.mediaQuery.viewPadding;
     final barBackgroundHeight = viewPadding.top + kToolbarHeight;
     return Container(
-        height: barBackgroundHeight,
-        child: Stack(
-          children: [
-            Positioned(
-              left: 0,
-              top: 0,
-              right: 0,
+      height: barBackgroundHeight,
+      child: Stack(
+        children: [
+          Positioned(
+            left: 0,
+            top: 0,
+            right: 0,
+            height: barBackgroundHeight,
+            child: Container(
               height: barBackgroundHeight,
-              child: Container(
-                height: barBackgroundHeight,
-                child: ManifestImageWidget<DestinyLoadoutColorDefinition>(
-                  state.selectedColorHash,
-                  urlExtractor: (def) => def.colorImagePath,
-                  fit: BoxFit.cover,
-                ),
+              child: ManifestImageWidget<DestinyLoadoutColorDefinition>(
+                state.selectedColorHash,
+                urlExtractor: (def) => def.colorImagePath,
+                fit: BoxFit.cover,
               ),
             ),
-            Positioned(
-                top: viewPadding.top,
-                left: 0,
-                right: 0,
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      width: kToolbarHeight,
-                      height: kToolbarHeight,
-                      alignment: Alignment.center,
-                      child: BackButton(),
-                    ),
-                    Container(
-                      height: kToolbarHeight,
-                      alignment: Alignment.center,
-                      child: ManifestText<DestinyLoadoutNameDefinition>(
-                        state.selectedNameHash,
-                        textExtractor: (def) => def.name?.toUpperCase(),
-                        style: context.textTheme.itemNameHighDensity.copyWith(fontSize: 16),
-                      ),
-                    ),
-                    Expanded(child: Container()),
-                    Container(
-                      width: kToolbarHeight,
-                      height: kToolbarHeight,
-                      child: ManifestImageWidget<DestinyLoadoutIconDefinition>(
-                        state.selectedIconHash,
-                        urlExtractor: (def) => def.iconImagePath,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.center,
-                      ),
-                    ),
-                    Container(
-                      width: 16,
-                    ),
-                  ],
-                )),
-          ],
-        ));
+          ),
+          Positioned(
+            top: viewPadding.top,
+            left: 0,
+            right: 0,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: kToolbarHeight,
+                  height: kToolbarHeight,
+                  alignment: Alignment.center,
+                  child: BackButton(),
+                ),
+                Container(
+                  height: kToolbarHeight,
+                  alignment: Alignment.center,
+                  child: ManifestText<DestinyLoadoutNameDefinition>(
+                    state.selectedNameHash,
+                    textExtractor: (def) => def.name?.toUpperCase(),
+                    style: context.textTheme.itemNameHighDensity.copyWith(fontSize: 16),
+                  ),
+                ),
+                Expanded(child: Container()),
+                Container(
+                  width: kToolbarHeight,
+                  height: kToolbarHeight,
+                  child: ManifestImageWidget<DestinyLoadoutIconDefinition>(
+                    state.selectedIconHash,
+                    urlExtractor: (def) => def.iconImagePath,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.center,
+                  ),
+                ),
+                Container(
+                  width: 16,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildBody(BuildContext context) {
@@ -149,23 +154,24 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
     final selected = state.selectedColorHash;
     final selectedIndex = selected != null ? colorHashes.indexOf(selected) : 0;
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PaginatedScrollableGridView.withExpectedItemSize(
-          colorHashes,
-          itemBuilder: (hash) => buildSelectableButton(
-            context,
-            selected: hash == selected,
-            onTap: () => bloc.selectedColorHash = hash,
-            child: ManifestImageWidget<DestinyLoadoutColorDefinition>(
-              hash,
-              urlExtractor: (def) => def.colorImagePath,
-            ),
+      padding: EdgeInsets.all(4),
+      child: PaginatedScrollableGridView.withExpectedItemSize(
+        colorHashes,
+        itemBuilder: (hash) => buildSelectableButton(
+          context,
+          selected: hash == selected,
+          onTap: () => bloc.selectedColorHash = hash,
+          child: ManifestImageWidget<DestinyLoadoutColorDefinition>(
+            hash,
+            urlExtractor: (def) => def.colorImagePath,
           ),
-          gridSpacing: 4,
-          maxRows: 1,
-          expectedCrossAxisSize: 48,
-          initialFocus: selectedIndex,
-        ));
+        ),
+        gridSpacing: 4,
+        maxRows: 1,
+        expectedCrossAxisSize: 48,
+        initialFocus: selectedIndex,
+      ),
+    );
   }
 
   Widget buildManageIcon(BuildContext context) {
@@ -174,23 +180,24 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
     final selected = state.selectedIconHash;
     final selectedIndex = selected != null ? iconHashes.indexOf(selected) : 0;
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PaginatedScrollableGridView.withExpectedItemSize(
-          iconHashes,
-          itemBuilder: (hash) => buildSelectableButton(
-            context,
-            selected: hash == selected,
-            onTap: () => bloc.selectedIconHash = hash,
-            child: ManifestImageWidget<DestinyLoadoutIconDefinition>(
-              hash,
-              urlExtractor: (def) => def.iconImagePath,
-            ),
+      padding: EdgeInsets.all(4),
+      child: PaginatedScrollableGridView.withExpectedItemSize(
+        iconHashes,
+        itemBuilder: (hash) => buildSelectableButton(
+          context,
+          selected: hash == selected,
+          onTap: () => bloc.selectedIconHash = hash,
+          child: ManifestImageWidget<DestinyLoadoutIconDefinition>(
+            hash,
+            urlExtractor: (def) => def.iconImagePath,
           ),
-          gridSpacing: 4,
-          maxRows: 1,
-          expectedCrossAxisSize: 48,
-          initialFocus: selectedIndex,
-        ));
+        ),
+        gridSpacing: 4,
+        maxRows: 1,
+        expectedCrossAxisSize: 48,
+        initialFocus: selectedIndex,
+      ),
+    );
   }
 
   Widget buildManageName(BuildContext context) {
@@ -199,29 +206,30 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
     final selected = state.selectedNameHash;
     final selectedIndex = selected != null ? nameHashes.indexOf(selected) : 0;
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PaginatedScrollableGridView.withExpectedItemSize(
-          nameHashes,
-          itemBuilder: (hash) => buildSelectableTextButton(
-            context,
-            selected: hash == selected,
-            onTap: () => bloc.selectedNameHash = hash,
-            child: Container(
-              padding: EdgeInsets.all(4),
-              child: ManifestText<DestinyLoadoutNameDefinition>(
-                hash,
-                textExtractor: (def) => def.name,
-                style: context.textTheme.itemNameHighDensity,
-                overflow: TextOverflow.ellipsis,
-              ),
+      padding: EdgeInsets.all(4),
+      child: PaginatedScrollableGridView.withExpectedItemSize(
+        nameHashes,
+        itemBuilder: (hash) => buildSelectableTextButton(
+          context,
+          selected: hash == selected,
+          onTap: () => bloc.selectedNameHash = hash,
+          child: Container(
+            padding: EdgeInsets.all(4),
+            child: ManifestText<DestinyLoadoutNameDefinition>(
+              hash,
+              textExtractor: (def) => def.name,
+              style: context.textTheme.itemNameHighDensity,
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          gridSpacing: 4,
-          maxRows: 3,
-          expectedCrossAxisSize: 120,
-          itemMainAxisExtent: 32,
-          initialFocus: selectedIndex,
-        ));
+        ),
+        gridSpacing: 4,
+        maxRows: 3,
+        expectedCrossAxisSize: 120,
+        itemMainAxisExtent: 32,
+        initialFocus: selectedIndex,
+      ),
+    );
   }
 
   Widget buildSelectableButton(
@@ -229,53 +237,51 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
     required Widget child,
     bool selected = false,
     VoidCallback? onTap,
-  }) =>
-      Stack(
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(
-                width: 1.5,
-                color: selected ? context.theme.onSurfaceLayers : context.theme.onSurfaceLayers.layer3,
-              ),
-            ),
-            child: child,
+  }) => Stack(
+    children: [
+      Container(
+        decoration: BoxDecoration(
+          border: Border.all(
+            width: 1.5,
+            color: selected ? context.theme.onSurfaceLayers : context.theme.onSurfaceLayers.layer3,
           ),
-          Material(
-            color: selected ? Colors.transparent : Colors.black26,
-            child: InkWell(onTap: onTap),
-          ),
-        ],
-      );
+        ),
+        child: child,
+      ),
+      Material(
+        color: selected ? Colors.transparent : Colors.black26,
+        child: InkWell(onTap: onTap),
+      ),
+    ],
+  );
 
   Widget buildSelectableTextButton(
     BuildContext context, {
     required Widget child,
     bool selected = false,
     VoidCallback? onTap,
-  }) =>
-      Stack(
-        fit: StackFit.expand,
-        children: [
-          Container(
-            margin: EdgeInsets.all(2),
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: selected ? context.theme.primaryLayers : context.theme.surfaceLayers.layer3,
-              borderRadius: BorderRadius.circular(16),
-              border: Border.all(
-                width: 2,
-                color: selected ? context.theme.onSurfaceLayers : Colors.transparent,
-              ),
-            ),
-            child: child,
+  }) => Stack(
+    fit: StackFit.expand,
+    children: [
+      Container(
+        margin: EdgeInsets.all(2),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: selected ? context.theme.primaryLayers : context.theme.surfaceLayers.layer3,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            width: 2,
+            color: selected ? context.theme.onSurfaceLayers : Colors.transparent,
           ),
-          Material(
-            color: Colors.transparent,
-            child: InkWell(onTap: onTap),
-          ),
-        ],
-      );
+        ),
+        child: child,
+      ),
+      Material(
+        color: Colors.transparent,
+        child: InkWell(onTap: onTap),
+      ),
+    ],
+  );
 
   Widget buildItems(BuildContext context) {
     final items = state.loadout?.items;
@@ -303,25 +309,26 @@ class DestinyLoadoutDetailsView extends StatelessWidget {
 
   Widget buildItemNotFound(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
-        child: Row(
-          children: [
-            Container(
-              width: 72,
-              height: 72,
-              padding: EdgeInsets.all(16),
-              decoration: BoxDecoration(border: Border.all(color: context.theme.onSurfaceLayers.layer3, width: 2)),
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                _notFoundIconHash,
-                color: context.theme.errorLayers.layer3,
-              ),
+      padding: EdgeInsets.all(8),
+      child: Row(
+        children: [
+          Container(
+            width: 72,
+            height: 72,
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(border: Border.all(color: context.theme.onSurfaceLayers.layer3, width: 2)),
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+              _notFoundIconHash,
+              color: context.theme.errorLayers.layer3,
             ),
-            Container(
-              width: 16,
-            ),
-            Text("Item not found".translate(context)),
-          ],
-        ));
+          ),
+          Container(
+            width: 16,
+          ),
+          Text("Item not found".translate(context)),
+        ],
+      ),
+    );
   }
 
   Widget buildFab(BuildContext context) {

@@ -27,28 +27,29 @@ class SealInfoWidget extends StatelessWidget {
     final objectiveDef = context.definition<DestinyObjectiveDefinition>(objective?.objectiveHash);
     final genderHash = profile.lastPlayedCharacter?.character.genderHash;
     return Container(
-        margin: EdgeInsets.only(top: 8),
-        width: 180,
-        child: Column(
-          children: [
-            buildProgressBar(
-              context,
-              objectiveDefinition: objectiveDefinition,
-              isGilded: isGilded,
-              isInitialComplete: isInitialComplete,
-              currentProgress: objective?.progress ?? 0,
-              completionValue: objectiveDef?.completionValue ?? 1,
-            ),
-            buildSealTitle(
-              context,
-              genderHash: genderHash,
-              isInitialComplete: isInitialComplete,
-              isGilded: isGilded,
-              currentProgress: objective?.progress ?? 0,
-              completionValue: objectiveDef?.completionValue,
-            ),
-          ],
-        ));
+      margin: EdgeInsets.only(top: 8),
+      width: 180,
+      child: Column(
+        children: [
+          buildProgressBar(
+            context,
+            objectiveDefinition: objectiveDefinition,
+            isGilded: isGilded,
+            isInitialComplete: isInitialComplete,
+            currentProgress: objective?.progress ?? 0,
+            completionValue: objectiveDef?.completionValue ?? 1,
+          ),
+          buildSealTitle(
+            context,
+            genderHash: genderHash,
+            isInitialComplete: isInitialComplete,
+            isGilded: isGilded,
+            currentProgress: objective?.progress ?? 0,
+            completionValue: objectiveDef?.completionValue,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildProgressBar(
@@ -65,16 +66,20 @@ class SealInfoWidget extends StatelessWidget {
     final bgColor = isGilded
         ? theme.achievementLayers
         : isInitialComplete
-            ? theme.tierLayers.superior
-            : theme.surfaceLayers.layer2;
+        ? theme.tierLayers.superior
+        : theme.surfaceLayers.layer2;
     final color = useGildingObjective ? context.theme.achievementLayers.layer1 : context.theme.tierLayers.superior;
     final progress = currentProgress / completionValue;
     return Container(
-        alignment: Alignment.centerLeft,
-        height: 8.0,
-        margin: EdgeInsets.only(bottom: 2),
-        color: bgColor.withValues(alpha: .5),
-        child: FractionallySizedBox(widthFactor: progress.clamp(0, 1), child: Container(color: color)));
+      alignment: Alignment.centerLeft,
+      height: 8.0,
+      margin: EdgeInsets.only(bottom: 2),
+      color: bgColor.withValues(alpha: .5),
+      child: FractionallySizedBox(
+        widthFactor: progress.clamp(0, 1),
+        child: Container(color: color),
+      ),
+    );
   }
 
   Widget buildSealTitle(
@@ -94,28 +99,32 @@ class SealInfoWidget extends StatelessWidget {
     final color = isGilded
         ? theme.achievementLayers
         : isInitialComplete
-            ? theme.tierLayers.superior
-            : theme.surfaceLayers.layer2;
+        ? theme.tierLayers.superior
+        : theme.surfaceLayers.layer2;
 
     return Container(
-        padding: const EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          border: Border.all(color: color, width: 2),
-          color: color.withValues(alpha: .5),
-        ),
-        child: Row(children: [
+      padding: const EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        border: Border.all(color: color, width: 2),
+        color: color.withValues(alpha: .5),
+      ),
+      child: Row(
+        children: [
           Expanded(
-              child: Text(
-            title ?? "",
-            softWrap: false,
-            overflow: TextOverflow.fade,
-          )),
+            child: Text(
+              title ?? "",
+              softWrap: false,
+              overflow: TextOverflow.fade,
+            ),
+          ),
           buildSealProgress(
             context,
             currentProgress: currentProgress,
             completionValue: completionValue,
           ),
-        ]));
+        ],
+      ),
+    );
   }
 
   Widget buildSealProgress(BuildContext context, {int currentProgress = 0, int? completionValue}) {

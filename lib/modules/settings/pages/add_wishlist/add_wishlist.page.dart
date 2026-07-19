@@ -22,29 +22,30 @@ class AddWishlistPageState extends State<AddWishlistPage> {
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
-        length: 2,
-        child: Scaffold(
-          appBar: AppBar(
-            centerTitle: false,
-            title: buildTitle(context),
-            bottom: TabBar(
-              tabs: [
-                Container(padding: const EdgeInsets.all(8), child: Text("Community".translate(context))),
-                Container(padding: const EdgeInsets.all(8), child: Text("Custom".translate(context))),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            children: [
-              AddCommunityWishlistForm(),
-              AddCustomWishlistForm(),
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: false,
+          title: buildTitle(context),
+          bottom: TabBar(
+            tabs: [
+              Container(padding: const EdgeInsets.all(8), child: Text("Community".translate(context))),
+              Container(padding: const EdgeInsets.all(8), child: Text("Custom".translate(context))),
             ],
           ),
-        ));
+        ),
+        body: TabBarView(
+          children: [
+            AddCommunityWishlistForm(),
+            AddCustomWishlistForm(),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildTitle(BuildContext context) => Text(
-        "Add Wishlist".translate(context),
-        key: const Key("title"),
-      );
+    "Add Wishlist".translate(context),
+    key: const Key("title"),
+  );
 }

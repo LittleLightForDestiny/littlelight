@@ -17,42 +17,45 @@ class LoadoutCharacterHeaderWidget extends StatelessWidget {
     final className = character.getGenderedClassName(classDef);
     final raceName = character.getGenderedRaceName(raceDef);
     return ClipRRect(
-        borderRadius: BorderRadius.circular(4),
-        child: Stack(
-          children: [
-            Positioned.fill(
-                child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+      borderRadius: BorderRadius.circular(4),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
               character.character.emblemHash,
               urlExtractor: (def) => def.secondarySpecial,
               fit: BoxFit.cover,
               alignment: Alignment.centerLeft,
-            )),
-            Container(
-              padding: EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  AspectRatio(
-                      aspectRatio: 1,
-                      child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                        character.character.emblemHash,
-                        fit: BoxFit.cover,
-                      )),
-                  Container(
-                    width: 4,
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(className, style: context.textTheme.itemNameHighDensity),
-                      Container(height: 2),
-                      Text(raceName, style: context.textTheme.caption),
-                    ],
-                  ),
-                ],
-              ),
             ),
-          ],
-        ));
+          ),
+          Container(
+            padding: EdgeInsets.all(8),
+            child: Row(
+              children: [
+                AspectRatio(
+                  aspectRatio: 1,
+                  child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    character.character.emblemHash,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                Container(
+                  width: 4,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(className, style: context.textTheme.itemNameHighDensity),
+                    Container(height: 2),
+                    Text(raceName, style: context.textTheme.caption),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

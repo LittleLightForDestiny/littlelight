@@ -17,8 +17,9 @@ class CharacterInfoContainerWidget extends StatelessWidget {
     if (character == null) return child;
     final classDefinition = context.definition<DestinyClassDefinition>(character.character.classHash);
     return Container(
-        margin: EdgeInsets.only(bottom: 4.0),
-        child: Stack(children: [
+      margin: EdgeInsets.only(bottom: 4.0),
+      child: Stack(
+        children: [
           Positioned.fill(
             child: Container(
               foregroundDecoration: BoxDecoration(
@@ -41,17 +42,22 @@ class CharacterInfoContainerWidget extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Container(
-                    padding: EdgeInsets.symmetric(horizontal: 4),
-                    child: Row(children: [
+                  padding: EdgeInsets.symmetric(horizontal: 4),
+                  child: Row(
+                    children: [
                       Text(
                         character.getGenderedClassName(classDefinition),
                         style: context.textTheme.highlight,
-                      )
-                    ])),
-                child
+                      ),
+                    ],
+                  ),
+                ),
+                child,
               ],
             ),
-          )
-        ]));
+          ),
+        ],
+      ),
+    );
   }
 }

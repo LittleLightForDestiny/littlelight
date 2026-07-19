@@ -5,7 +5,9 @@ class DefinitionItemDetailsPageRoute extends MaterialPageRoute {
   final int itemHash;
 
   DefinitionItemDetailsPageRoute(this.itemHash)
-      : super(builder: (context) {
+    : super(
+        builder: (context) {
           return DefinitionItemDetailsPage(itemHash);
-        });
+        },
+      );
 }

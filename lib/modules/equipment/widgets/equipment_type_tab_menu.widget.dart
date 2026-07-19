@@ -28,8 +28,9 @@ class EquipmentTypeTabMenuWidget extends CustomTabMenu {
   Widget buildButton(BuildContext context, int index) {
     final mq = MediaQuery.of(context);
     return Container(
-        padding: const EdgeInsets.all(4) + EdgeInsets.only(bottom: mq.viewPadding.bottom),
-        child: buildIcon(context, index));
+      padding: const EdgeInsets.all(4) + EdgeInsets.only(bottom: mq.viewPadding.bottom),
+      child: buildIcon(context, index),
+    );
   }
 
   Widget buildIcon(BuildContext context, int index) {
@@ -57,13 +58,14 @@ class EquipmentTypeTabMenuWidget extends CustomTabMenu {
   Widget buildSelectedBackground(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-          gradient: LinearGradient(
-        colors: [
-          context.theme.surfaceLayers.layer2,
-          context.theme.surfaceLayers.layer2.withValues(alpha: 0),
-        ],
-        end: Alignment.bottomCenter,
-      )),
+        gradient: LinearGradient(
+          colors: [
+            context.theme.surfaceLayers.layer2,
+            context.theme.surfaceLayers.layer2.withValues(alpha: 0),
+          ],
+          end: Alignment.bottomCenter,
+        ),
+      ),
     );
   }
 

@@ -22,9 +22,9 @@ class ScrollableGridView<T> extends ScrollableGridViewBase<T> {
 
   @override
   Widget build(BuildContext context) => LayoutBuilder(
-        builder: (context, constraints) {
-          final specs = getSpecs(constraints.maxWidth);
-          return buildScrollableGrid(context, specs);
-        },
-      );
+    builder: (context, constraints) {
+      final specs = getSpecs(constraints.maxWidth);
+      return buildScrollableGrid(context, specs);
+    },
+  );
 }

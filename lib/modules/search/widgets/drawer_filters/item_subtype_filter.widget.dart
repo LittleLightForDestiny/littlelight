@@ -51,10 +51,11 @@ class ItemSubtypeFilterWidget extends BaseDrawerFilterWidget<ItemSubtypeFilterOp
 
   Widget buildIcon(BuildContext context, DamageType type) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: Icon(
-          type.icon,
-          color: type.getColorLayer(context).layer3,
-        ));
+      padding: EdgeInsets.all(4),
+      child: Icon(
+        type.icon,
+        color: type.getColorLayer(context).layer3,
+      ),
+    );
   }
 }

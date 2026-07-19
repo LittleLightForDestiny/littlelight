@@ -19,23 +19,27 @@ class PursuitSearchPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => SearchFilterBloc(context)),
-        ChangeNotifierProvider<SearchSorterBloc>(create: (context) {
-          final activeSorters =
-              context.read<UserSettingsBloc>().itemOrdering?.where((s) => s.active).toList() ?? <ItemSortParameter>[];
-          return SearchSorterBloc(context, activeSorters: activeSorters);
-        }),
+        ChangeNotifierProvider<SearchSorterBloc>(
+          create: (context) {
+            final activeSorters =
+                context.read<UserSettingsBloc>().itemOrdering?.where((s) => s.active).toList() ?? <ItemSortParameter>[];
+            return SearchSorterBloc(context, activeSorters: activeSorters);
+          },
+        ),
         ChangeNotifierProvider(
           create: (context) {
             return PursuitSearchBloc(context);
           },
         ),
-        Provider<ItemInteractionHandlerBloc>(create: (context) {
-          final bloc = context.read<PursuitSearchBloc>();
-          return ItemInteractionHandlerBloc(
-            onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
-            onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
-          );
-        }),
+        Provider<ItemInteractionHandlerBloc>(
+          create: (context) {
+            final bloc = context.read<PursuitSearchBloc>();
+            return ItemInteractionHandlerBloc(
+              onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
+              onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
+            );
+          },
+        ),
       ],
       builder: (context, _) => PursuitSearchView(
         context.read<PursuitSearchBloc>(),

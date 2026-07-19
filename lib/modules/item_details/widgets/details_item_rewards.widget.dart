@@ -26,22 +26,24 @@ class DetailsItemRewardsWidget extends StatelessWidget {
     final items = definition?.value?.itemValue?.where((i) => shouldShowReward(context, i)).toList();
     if (items == null || items.isEmpty) return Container();
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Rewards".translate(context).toUpperCase()),
-          persistenceID: 'item rewards',
-          content: buildContent(context, items),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Rewards".translate(context).toUpperCase()),
+        persistenceID: 'item rewards',
+        content: buildContent(context, items),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context, List<DestinyItemQuantity> items) {
     return Column(
-        mainAxisSize: MainAxisSize.min,
-        children: items
-            .map(
-              (item) => buildRewardItem(context, item),
-            )
-            .toList());
+      mainAxisSize: MainAxisSize.min,
+      children: items
+          .map(
+            (item) => buildRewardItem(context, item),
+          )
+          .toList(),
+    );
   }
 
   Widget buildRewardItem(BuildContext context, DestinyItemQuantity rewardItem) {
@@ -54,26 +56,31 @@ class DetailsItemRewardsWidget extends StatelessWidget {
     final item = DefinitionItemInfo.fromDefinition(def);
     if (def.equippable ?? false) {
       return Container(
-          margin: EdgeInsets.only(bottom: 2),
-          child: Stack(children: [
+        margin: EdgeInsets.only(bottom: 2),
+        child: Stack(
+          children: [
             SizedBox(
               height: InventoryItemWidgetDensity.High.itemHeight,
               child: HighDensityInventoryItem(item),
             ),
             Positioned.fill(
-                child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                enableFeedback: false,
-                onTap: () {},
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  enableFeedback: false,
+                  onTap: () {},
+                ),
               ),
-            ))
-          ]));
+            ),
+          ],
+        ),
+      );
     }
     final quantity = rewardItem.quantity ?? 0;
     return Container(
-        padding: const EdgeInsets.only(bottom: 2),
-        child: Row(children: [
+      padding: const EdgeInsets.only(bottom: 2),
+      child: Row(
+        children: [
           SizedBox(
             width: 24,
             height: 24,
@@ -83,13 +90,19 @@ class DetailsItemRewardsWidget extends StatelessWidget {
             width: 8,
           ),
           Expanded(
-              child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(children: [
-                    ManifestText<DestinyInventoryItemDefinition>(item.itemHash),
-                    if (quantity > 1) Text(" x $quantity"),
-                  ])))
-        ]));
+            child: SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: [
+                  ManifestText<DestinyInventoryItemDefinition>(item.itemHash),
+                  if (quantity > 1) Text(" x $quantity"),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   bool shouldShowReward(BuildContext context, DestinyItemQuantity rewardItem) {

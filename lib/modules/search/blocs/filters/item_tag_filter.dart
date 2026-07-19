@@ -8,8 +8,8 @@ import 'base_item_filter.dart';
 class ItemTagFilter extends BaseItemFilter<ItemTagFilterOptions> {
   ItemNotesBloc? _itemNotes;
   ItemTagFilter(BuildContext context)
-      : this._itemNotes = context.read<ItemNotesBloc>(),
-        super(ItemTagFilterOptions({}));
+    : this._itemNotes = context.read<ItemNotesBloc>(),
+      super(ItemTagFilterOptions({}));
 
   @override
   Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {

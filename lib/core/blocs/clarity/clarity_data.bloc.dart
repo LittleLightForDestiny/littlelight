@@ -23,9 +23,9 @@ class ClarityDataBloc extends ChangeNotifier {
   final UserSettingsBloc userSettings;
 
   ClarityDataBloc(BuildContext context)
-      : languageBloc = context.read<LanguageBloc>(),
-        analytics = context.read<AnalyticsService>(),
-        userSettings = context.read<UserSettingsBloc>();
+    : languageBloc = context.read<LanguageBloc>(),
+      analytics = context.read<AnalyticsService>(),
+      userSettings = context.read<UserSettingsBloc>();
 
   bool isLoading = false;
   Map<int, ClarityItem>? _liveData;

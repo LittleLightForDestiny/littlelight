@@ -33,15 +33,18 @@ class StatsViewItem extends StatelessWidget {
     final precalculated = item.precalculated;
     final missing = item.stats.where((i) => !precalculated.keys.contains(i.statHash));
     return Column(
-      children: <Widget>[
-            Row(children: [
-              Expanded(
-                child: Text("Stat"),
-                flex: 3,
-              ),
-              Expanded(child: Text("Precalculated")),
-              Expanded(child: Text("Via Plugs"))
-            ]),
+      children:
+          <Widget>[
+            Row(
+              children: [
+                Expanded(
+                  child: Text("Stat"),
+                  flex: 3,
+                ),
+                Expanded(child: Text("Precalculated")),
+                Expanded(child: Text("Via Plugs")),
+              ],
+            ),
           ] +
           precalculated.keys.map((key) => buildStat(context, key)).toList() +
           missing.map((e) => buildStat(context, e.statHash)).toList(),
@@ -56,14 +59,15 @@ class StatsViewItem extends StatelessWidget {
     final fromPlugs = equipped + masterwork;
     final hasError = precalculated != fromPlugs;
     return DefaultTextStyle(
-        style: TextStyle(color: hasError ? Colors.red : null),
-        child: Row(
-          children: [
-            Expanded(child: ManifestText<DestinyStatDefinition>(statHash), flex: 3),
-            Expanded(child: Text("$precalculated")),
-            Expanded(child: Text("$fromPlugs")),
-          ],
-        ));
+      style: TextStyle(color: hasError ? Colors.red : null),
+      child: Row(
+        children: [
+          Expanded(child: ManifestText<DestinyStatDefinition>(statHash), flex: 3),
+          Expanded(child: Text("$precalculated")),
+          Expanded(child: Text("$fromPlugs")),
+        ],
+      ),
+    );
   }
 }
 
@@ -76,18 +80,19 @@ class DevToolsStatsView extends StatelessWidget {
         title: Text("Dev Tools Stats"),
         actions: [
           Container(
-              padding: EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  Text("Only with Issues"),
-                  Container(
-                    width: 4,
-                  ),
-                  LLSwitch.callback(state.onlyWithIssues, (p0) {
-                    context.read<DevToolsStatsBloc>().onlyWithIssues = p0;
-                  })
-                ],
-              )),
+            padding: EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Text("Only with Issues"),
+                Container(
+                  width: 4,
+                ),
+                LLSwitch.callback(state.onlyWithIssues, (p0) {
+                  context.read<DevToolsStatsBloc>().onlyWithIssues = p0;
+                }),
+              ],
+            ),
+          ),
         ],
       ),
       body: Stack(

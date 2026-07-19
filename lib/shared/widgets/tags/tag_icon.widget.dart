@@ -36,20 +36,20 @@ class TagIconWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        width: size,
-        height: size,
-        decoration: BoxDecoration(
-          color: backgroundColor,
-          borderRadius: BorderRadius.circular(size),
-          border: Border.all(
-            width: borderWidth,
-            color: foregroundColor ?? backgroundColor ?? Colors.transparent,
-          ),
-        ),
-        child: Icon(
-          icon,
-          size: size * .6,
-          color: foregroundColor,
-        ),
-      );
+    width: size,
+    height: size,
+    decoration: BoxDecoration(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(size),
+      border: Border.all(
+        width: borderWidth,
+        color: foregroundColor ?? backgroundColor ?? Colors.transparent,
+      ),
+    ),
+    child: Icon(
+      icon,
+      size: size * .6,
+      color: foregroundColor,
+    ),
+  );
 }

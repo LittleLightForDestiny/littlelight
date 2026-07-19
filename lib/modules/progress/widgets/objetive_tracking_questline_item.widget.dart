@@ -22,7 +22,7 @@ class ObjectiveTrackingQuestlineItemWidget extends HighDensityInventoryItem {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Flexible(child: super.buildWithDefinition(context, definition)),
-          buildObjectiveProgress(context, definition)
+          buildObjectiveProgress(context, definition),
         ],
       ),
     );
@@ -38,35 +38,42 @@ class ObjectiveTrackingQuestlineItemWidget extends HighDensityInventoryItem {
     if (currentStep == null || currentStep < 0) return Container();
     if (totalSteps == null || totalSteps <= 0) return Container();
     return Container(
-        padding: EdgeInsets.symmetric(vertical: 4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text("{stepType} {currentStep} of {totalSteps}".translate(context, replace: {
-              "stepType": itemType,
-              "currentStep": "${currentStep + 1}",
-              "totalSteps": "$totalSteps",
-            })),
-            buildStepCompletionBars(context, totalSteps, currentStep),
-            Text(
-              definition?.displayProperties?.description ?? "",
-              style: context.textTheme.body,
-            )
-          ],
-        ));
+      padding: EdgeInsets.symmetric(vertical: 4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Text(
+            "{stepType} {currentStep} of {totalSteps}".translate(
+              context,
+              replace: {
+                "stepType": itemType,
+                "currentStep": "${currentStep + 1}",
+                "totalSteps": "$totalSteps",
+              },
+            ),
+          ),
+          buildStepCompletionBars(context, totalSteps, currentStep),
+          Text(
+            definition?.displayProperties?.description ?? "",
+            style: context.textTheme.body,
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildStepCompletionBars(BuildContext context, int total, int completed) {
     return Row(
       children: List.generate(
-          total,
-          (index) => Expanded(
-                child: Container(
-                  height: 4,
-                  margin: EdgeInsets.symmetric(vertical: 4).copyWith(right: 4),
-                  color: index > completed ? context.theme.surfaceLayers.layer3 : context.theme.upgradeLayers.layer1,
-                ),
-              )),
+        total,
+        (index) => Expanded(
+          child: Container(
+            height: 4,
+            margin: EdgeInsets.symmetric(vertical: 4).copyWith(right: 4),
+            color: index > completed ? context.theme.surfaceLayers.layer3 : context.theme.upgradeLayers.layer1,
+          ),
+        ),
+      ),
     );
   }
 
@@ -76,18 +83,20 @@ class ObjectiveTrackingQuestlineItemWidget extends HighDensityInventoryItem {
     if (objectiveHashes == null || objectiveHashes.isEmpty) return Container();
 
     return Container(
-        color: context.theme.surfaceLayers.layer1,
-        padding: EdgeInsets.all(4),
-        child: Column(
-          children: objectiveHashes.map((objectiveHash) {
-            final objective =
-                item.objectives?.objectives?.firstWhereOrNull((objective) => objective.objectiveHash == objectiveHash);
-            return ObjectiveWidget(
-              objectiveHash,
-              objective: objective,
-              placeholder: definition?.displayProperties?.description,
-            );
-          }).toList(),
-        ));
+      color: context.theme.surfaceLayers.layer1,
+      padding: EdgeInsets.all(4),
+      child: Column(
+        children: objectiveHashes.map((objectiveHash) {
+          final objective = item.objectives?.objectives?.firstWhereOrNull(
+            (objective) => objective.objectiveHash == objectiveHash,
+          );
+          return ObjectiveWidget(
+            objectiveHash,
+            objective: objective,
+            placeholder: definition?.displayProperties?.description,
+          );
+        }).toList(),
+      ),
+    );
   }
 }

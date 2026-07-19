@@ -27,34 +27,39 @@ class LoadoutListItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        margin: const EdgeInsets.all(4),
-        clipBehavior: Clip.antiAlias,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: context.theme.surfaceLayers.layer1,
-        ),
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
+      margin: const EdgeInsets.all(4),
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: context.theme.surfaceLayers.layer1,
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
           SizedBox(
             height: kToolbarHeight,
             child: buildTitleBar(context),
           ),
           Expanded(child: buildLoadoutsContainer(context)),
-          buildButtonBar(context)
-        ]));
+          buildButtonBar(context),
+        ],
+      ),
+    );
   }
 
   Widget buildLoadoutsContainer(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(4),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            buildGenericItems(context),
-            buildClassSpecificItems(context, DestinyClass.Titan),
-            buildClassSpecificItems(context, DestinyClass.Hunter),
-            buildClassSpecificItems(context, DestinyClass.Warlock),
-          ],
-        ));
+      padding: const EdgeInsets.all(4),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          buildGenericItems(context),
+          buildClassSpecificItems(context, DestinyClass.Titan),
+          buildClassSpecificItems(context, DestinyClass.Hunter),
+          buildClassSpecificItems(context, DestinyClass.Warlock),
+        ],
+      ),
+    );
   }
 
   Widget buildTitleBar(BuildContext context) {
@@ -63,17 +68,19 @@ class LoadoutListItemWidget extends StatelessWidget {
     return Stack(
       children: [
         Positioned.fill(
-            child: Container(
-          color: context.theme.secondarySurfaceLayers.layer1,
-        )),
+          child: Container(
+            color: context.theme.secondarySurfaceLayers.layer1,
+          ),
+        ),
         if (emblemHash != null)
           Positioned.fill(
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-            emblemHash,
-            fit: BoxFit.cover,
-            urlExtractor: (def) => def.secondarySpecial,
-            alignment: const Alignment(-1, 0),
-          )),
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+              emblemHash,
+              fit: BoxFit.cover,
+              urlExtractor: (def) => def.secondarySpecial,
+              alignment: const Alignment(-1, 0),
+            ),
+          ),
         buildTitle(context),
       ],
     );
@@ -81,12 +88,13 @@ class LoadoutListItemWidget extends StatelessWidget {
 
   Widget buildTitle(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(16),
-        alignment: Alignment.centerLeft,
-        child: Text(
-          loadout.name.toUpperCase(),
-          style: TextStyle(color: Colors.grey.shade200, fontWeight: FontWeight.bold),
-        ));
+      padding: const EdgeInsets.all(16),
+      alignment: Alignment.centerLeft,
+      child: Text(
+        loadout.name.toUpperCase(),
+        style: TextStyle(color: Colors.grey.shade200, fontWeight: FontWeight.bold),
+      ),
+    );
   }
 
   Widget buildButtonBar(BuildContext context) {
@@ -102,11 +110,13 @@ class LoadoutListItemWidget extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 2),
               child: ElevatedButton(
                 style: const ButtonStyle(visualDensity: VisualDensity.comfortable),
-                child: Text("Equip".translate(context).toUpperCase(),
-                    maxLines: 1,
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(
+                  "Equip".translate(context).toUpperCase(),
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 onPressed: () => onAction(LoadoutListItemAction.Equip),
               ),
             ),
@@ -116,11 +126,13 @@ class LoadoutListItemWidget extends StatelessWidget {
               padding: const EdgeInsets.all(2),
               child: ElevatedButton(
                 style: const ButtonStyle(visualDensity: VisualDensity.comfortable),
-                child: Text("Edit".translate(context).toUpperCase(),
-                    maxLines: 1,
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(
+                  "Edit".translate(context).toUpperCase(),
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 onPressed: () => onAction(LoadoutListItemAction.Edit),
               ),
             ),
@@ -133,11 +145,13 @@ class LoadoutListItemWidget extends StatelessWidget {
                   visualDensity: VisualDensity.comfortable,
                   backgroundColor: context.theme.errorLayers,
                 ),
-                child: Text("Delete".translate(context).toUpperCase(),
-                    maxLines: 1,
-                    softWrap: false,
-                    overflow: TextOverflow.fade,
-                    style: const TextStyle(fontWeight: FontWeight.bold)),
+                child: Text(
+                  "Delete".translate(context).toUpperCase(),
+                  maxLines: 1,
+                  softWrap: false,
+                  overflow: TextOverflow.fade,
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
                 onPressed: () => onAction(LoadoutListItemAction.Delete),
               ),
             ),
@@ -161,16 +175,20 @@ class LoadoutListItemWidget extends StatelessWidget {
     if (!hasItem) return Container();
 
     return Row(
-      children: <Widget>[
-        buildClassIcon(DestinyClass.Unknown),
-      ]
-          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped)))
-          .map((e) => Flexible(
+      children:
+          <Widget>[
+                buildClassIcon(DestinyClass.Unknown),
+              ]
+              .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.genericEquipped)))
+              .map(
+                (e) => Flexible(
                   child: Container(
-                padding: const EdgeInsets.all(4),
-                child: AspectRatio(aspectRatio: 1, child: e),
-              )))
-          .toList(),
+                    padding: const EdgeInsets.all(4),
+                    child: AspectRatio(aspectRatio: 1, child: e),
+                  ),
+                ),
+              )
+              .toList(),
     );
   }
 
@@ -188,16 +206,20 @@ class LoadoutListItemWidget extends StatelessWidget {
     if (!hasItem) return Container();
 
     return Row(
-      children: <Widget>[
-        buildClassIcon(destinyClass),
-      ]
-          .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass])))
-          .map((e) => Flexible(
+      children:
+          <Widget>[
+                buildClassIcon(destinyClass),
+              ]
+              .followedBy(genericHashes.map((e) => buildItem(loadout.slots[e]?.classSpecificEquipped[destinyClass])))
+              .map(
+                (e) => Flexible(
                   child: Container(
-                padding: const EdgeInsets.all(4),
-                child: AspectRatio(aspectRatio: 1, child: e),
-              )))
-          .toList(),
+                    padding: const EdgeInsets.all(4),
+                    child: AspectRatio(aspectRatio: 1, child: e),
+                  ),
+                ),
+              )
+              .toList(),
     );
   }
 

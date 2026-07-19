@@ -61,5 +61,5 @@ enum ClarityClassNames {
   Background,
   @JsonValue('center')
   Center,
-  Unknown
+  Unknown,
 }

@@ -60,14 +60,22 @@ Future<_Destinations?> getTransferDestinations(
   if (areAllItemsProfileScoped) {
     if (canTransferToProfile) transferDestinations.add(TransferDestination(TransferDestinationType.profile));
   } else {
-    transferDestinations.addAll(transferCharacters.map((c) => TransferDestination(
+    transferDestinations.addAll(
+      transferCharacters.map(
+        (c) => TransferDestination(
           TransferDestinationType.character,
           character: c,
-        )));
-    equipDestinations.addAll(equipCharacters.map((c) => TransferDestination(
+        ),
+      ),
+    );
+    equipDestinations.addAll(
+      equipCharacters.map(
+        (c) => TransferDestination(
           TransferDestinationType.character,
           character: c,
-        )));
+        ),
+      ),
+    );
   }
 
   if (canTransferToVault) {

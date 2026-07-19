@@ -39,13 +39,14 @@ class MilestoneItemInfoBoxWidget extends StatelessWidget {
             ),
           ),
           Positioned.fill(
-              child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              borderRadius: BorderRadius.circular(4),
-              onTap: onTap,
+            child: Material(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: BorderRadius.circular(4),
+                onTap: onTap,
+              ),
             ),
-          )),
+          ),
         ],
       ),
     );

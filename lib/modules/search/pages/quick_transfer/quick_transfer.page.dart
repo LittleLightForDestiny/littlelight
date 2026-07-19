@@ -19,11 +19,13 @@ class QuickTransferPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => SearchFilterBloc(context)),
-        ChangeNotifierProvider<SearchSorterBloc>(create: (context) {
-          final activeSorters =
-              context.read<UserSettingsBloc>().itemOrdering?.where((s) => s.active).toList() ?? <ItemSortParameter>[];
-          return SearchSorterBloc(context, activeSorters: activeSorters);
-        }),
+        ChangeNotifierProvider<SearchSorterBloc>(
+          create: (context) {
+            final activeSorters =
+                context.read<UserSettingsBloc>().itemOrdering?.where((s) => s.active).toList() ?? <ItemSortParameter>[];
+            return SearchSorterBloc(context, activeSorters: activeSorters);
+          },
+        ),
         ChangeNotifierProvider(
           create: (context) => QuickTransferBloc(
             context,
@@ -31,13 +33,15 @@ class QuickTransferPage extends StatelessWidget {
             characterId: args?.characterId,
           ),
         ),
-        Provider<ItemInteractionHandlerBloc>(create: (context) {
-          final bloc = context.read<QuickTransferBloc>();
-          return ItemInteractionHandlerBloc(
-            onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
-            onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
-          );
-        }),
+        Provider<ItemInteractionHandlerBloc>(
+          create: (context) {
+            final bloc = context.read<QuickTransferBloc>();
+            return ItemInteractionHandlerBloc(
+              onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
+              onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
+            );
+          },
+        ),
       ],
       builder: (context, _) => QuickTransferView(
         context.read<QuickTransferBloc>(),

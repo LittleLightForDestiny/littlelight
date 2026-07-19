@@ -64,24 +64,25 @@ class _StackTransferWidgetState extends State<StackTransferWidget> {
   }
 
   Widget buildSlider(BuildContext context) => Row(
-        children: [
-          Expanded(
-              child: Container(
-            child: Slider(
-              value: sliderValue,
-              onChanged: updateValues,
-              divisions: total,
-            ),
-          )),
-        ],
-      );
+    children: [
+      Expanded(
+        child: Container(
+          child: Slider(
+            value: sliderValue,
+            onChanged: updateValues,
+            divisions: total,
+          ),
+        ),
+      ),
+    ],
+  );
 
   Widget buildCounts(BuildContext context) => AnimatedContainer(
-        padding: EdgeInsets.symmetric(horizontal: 16),
-        duration: Duration(milliseconds: 150),
-        alignment: Alignment((selectedCount / total) * 2 - 1, 0),
-        child: Text("$selectedCount"),
-      );
+    padding: EdgeInsets.symmetric(horizontal: 16),
+    duration: Duration(milliseconds: 150),
+    alignment: Alignment((selectedCount / total) * 2 - 1, 0),
+    child: Text("$selectedCount"),
+  );
 
   Widget buildTransferDestinations(BuildContext context) {
     return TransferDestinationsWidget(

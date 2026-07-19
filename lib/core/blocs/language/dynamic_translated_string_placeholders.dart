@@ -19,8 +19,7 @@ translationPlaceholders(BuildContext context) {
   Text("Edit Loadout".translate(context));
   Text("Transfer to:".translate(context));
   Text("Equip on:".translate(context));
-  Text("Do you really want to delete the loadout {loadoutName} ?"
-      .translate(context));
+  Text("Do you really want to delete the loadout {loadoutName} ?".translate(context));
   Text("Select {bucketName}".translate(context));
   Text("Loadout Name".translate(context));
   Text("Pull".translate(context));
@@ -29,8 +28,7 @@ translationPlaceholders(BuildContext context) {
   Text("Exit".translate(context));
   Text("Login with another account".translate(context));
 
-  Text("If this keeps happening, please try to login with a mainstream browser."
-      .translate(context));
+  Text("If this keeps happening, please try to login with a mainstream browser.".translate(context));
 
   "Please dont open the auth process in another safari window, this could prevent you from getting logged in."
       .translate(context);
@@ -52,8 +50,7 @@ translationPlaceholders(BuildContext context) {
   Text("access_denied".translate(context));
 
   Text("invalid_request".translate(context));
-  Text("We&#39;ve encountered an error, please try again later."
-      .translate(context));
+  Text("We&#39;ve encountered an error, please try again later.".translate(context));
 
   //Raid Phases
   Text("Loyalists".translate(context));

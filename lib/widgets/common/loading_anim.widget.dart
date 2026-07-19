@@ -9,13 +9,15 @@ class LoadingAnimWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final enableEyeCandy = context.select<UserSettingsBloc, bool>((value) => value.enableEyeCandy);
     return Center(
-        child: SizedBox(
-            width: 96,
-            child: Shimmer.fromColors(
-              enabled: enableEyeCandy,
-              baseColor: context.theme.onSurfaceLayers.layer2,
-              highlightColor: context.theme.surfaceLayers.layer2,
-              child: Image.asset("assets/anim/loading.webp"),
-            )));
+      child: SizedBox(
+        width: 96,
+        child: Shimmer.fromColors(
+          enabled: enableEyeCandy,
+          baseColor: context.theme.onSurfaceLayers.layer2,
+          highlightColor: context.theme.surfaceLayers.layer2,
+          child: Image.asset("assets/anim/loading.webp"),
+        ),
+      ),
+    );
   }
 }

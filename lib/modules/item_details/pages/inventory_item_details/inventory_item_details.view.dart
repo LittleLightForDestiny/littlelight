@@ -5,6 +5,9 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 
 class InventoryItemDetailsView extends BaseItemDetailsView {
   InventoryItemDetailsView(
-      ItemDetailsBloc bloc, ItemDetailsBloc state, SocketControllerBloc socketState, SelectionBloc selectionState)
-      : super(bloc, state, socketState, selectionState);
+    ItemDetailsBloc bloc,
+    ItemDetailsBloc state,
+    SocketControllerBloc socketState,
+    SelectionBloc selectionState,
+  ) : super(bloc, state, socketState, selectionState);
 }

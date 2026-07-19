@@ -47,13 +47,13 @@ class AddToLoadoutQuickmenuBloc extends ChangeNotifier {
   List<int>? get selectedBuckets => _selectedBuckets;
 
   AddToLoadoutQuickmenuBloc(this._context, this.item)
-      : loadoutsBloc = _context.read<LoadoutsBloc>(),
-        profileBloc = _context.read<ProfileBloc>(),
-        manifest = _context.read<ManifestService>(),
-        valueStore = _context.read<ScopedValueRepositoryBloc>(),
-        userSettings = _context.read<UserSettingsBloc>(),
-        inventory = _context.read<InventoryBloc>(),
-        super() {
+    : loadoutsBloc = _context.read<LoadoutsBloc>(),
+      profileBloc = _context.read<ProfileBloc>(),
+      manifest = _context.read<ManifestService>(),
+      valueStore = _context.read<ScopedValueRepositoryBloc>(),
+      userSettings = _context.read<UserSettingsBloc>(),
+      inventory = _context.read<InventoryBloc>(),
+      super() {
     _init();
   }
 

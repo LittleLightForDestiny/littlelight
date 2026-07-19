@@ -28,27 +28,36 @@ class CoreActivityRankItemWidget extends StatelessWidget {
     final stepProgress = progression.progressToNextLevel ?? 0;
     final stepTotal = progression.nextLevelAt ?? 1;
     final stepProportional = stepProgress / stepTotal;
-    return Stack(children: [
-      Positioned.fill(
+    return Stack(
+      children: [
+        Positioned.fill(
           child: Container(
-        decoration: BoxDecoration(
-          color: bgColor,
-          borderRadius: BorderRadius.horizontal(
-            left: Radius.circular(256),
-            right: Radius.circular(32),
+            decoration: BoxDecoration(
+              color: bgColor,
+              borderRadius: BorderRadius.horizontal(
+                left: Radius.circular(256),
+                right: Radius.circular(32),
+              ),
+            ),
           ),
         ),
-      )),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          buildIcon(context, rankProgress: rankProportional, stepProgress: stepProportional),
-          Expanded(
-              child: buildInfo(context,
-                  rankProgress: rankProgress, rankTotal: rankTotal, stepProgress: stepProgress, stepTotal: stepTotal)),
-        ],
-      )
-    ]);
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            buildIcon(context, rankProgress: rankProportional, stepProgress: stepProportional),
+            Expanded(
+              child: buildInfo(
+                context,
+                rankProgress: rankProgress,
+                rankTotal: rankTotal,
+                stepProgress: stepProgress,
+                stepTotal: stepTotal,
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
   }
 
   Widget buildIcon(BuildContext context, {double rankProgress = 0, double stepProgress = 0}) {
@@ -94,10 +103,11 @@ class CoreActivityRankItemWidget extends StatelessWidget {
             ),
           ),
           Positioned.fill(
-              child: Padding(
-            padding: EdgeInsets.all(16),
-            child: QueuedNetworkImage.fromBungie(step?.icon),
-          )),
+            child: Padding(
+              padding: EdgeInsets.all(16),
+              child: QueuedNetworkImage.fromBungie(step?.icon),
+            ),
+          ),
           Positioned.fill(
             child: Image.asset(
               'assets/imgs/rank-bg.png',
@@ -144,64 +154,77 @@ class CoreActivityRankItemWidget extends StatelessWidget {
     final levelCap = progression.levelCap ?? 0;
     return Container(
       padding: EdgeInsets.all(2),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Container(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
             decoration: BoxDecoration(
               color: context.theme.surfaceLayers.layer1,
               borderRadius: BorderRadius.circular(4),
             ),
             margin: EdgeInsets.only(bottom: 2),
             padding: EdgeInsets.all(2),
-            child: Row(children: [
-              Expanded(
+            child: Row(
+              children: [
+                Expanded(
                   child: Text(
-                (step?.stepName ?? "").toUpperCase(),
-                style: context.textTheme.itemNameMediumDensity,
-                overflow: TextOverflow.fade,
-                softWrap: false,
-              )),
-              Text("  ${currentLevel + 1}" + (levelCap > 0 ? "/$totalSteps" : ""),
-                  style: context.textTheme.itemNameMediumDensity)
-            ])),
-        Expanded(
+                    (step?.stepName ?? "").toUpperCase(),
+                    style: context.textTheme.itemNameMediumDensity,
+                    overflow: TextOverflow.fade,
+                    softWrap: false,
+                  ),
+                ),
+                Text(
+                  "  ${currentLevel + 1}" + (levelCap > 0 ? "/$totalSteps" : ""),
+                  style: context.textTheme.itemNameMediumDensity,
+                ),
+              ],
+            ),
+          ),
+          Expanded(
             child: Container(
-          alignment: Alignment.centerLeft,
-          padding: EdgeInsets.symmetric(horizontal: 4),
-          child: Text(
-            definition?.displayProperties?.name ?? "",
-            style: context.textTheme.caption,
+              alignment: Alignment.centerLeft,
+              padding: EdgeInsets.symmetric(horizontal: 4),
+              child: Text(
+                definition?.displayProperties?.name ?? "",
+                style: context.textTheme.caption,
+              ),
+            ),
           ),
-        )),
-        buildProgressBar(
-          context,
-          label: "Total progress".translate(
+          buildProgressBar(
             context,
+            label: "Total progress".translate(
+              context,
+            ),
+            progress: rankProgress,
+            total: rankTotal,
+            color: color.mix(context.theme.onSurfaceLayers, 50),
           ),
-          progress: rankProgress,
-          total: rankTotal,
-          color: color.mix(context.theme.onSurfaceLayers, 50),
-        ),
-        buildProgressBar(
-          context,
-          label: "Until next level".translate(
+          buildProgressBar(
             context,
+            label: "Until next level".translate(
+              context,
+            ),
+            progress: stepProgress,
+            total: stepTotal,
+            color: color.mix(context.theme.onSurfaceLayers, 25),
           ),
-          progress: stepProgress,
-          total: stepTotal,
-          color: color.mix(context.theme.onSurfaceLayers, 25),
-        ),
-        Container(
+          Container(
             padding: EdgeInsets.all(2),
             margin: EdgeInsets.only(top: 4),
             decoration: BoxDecoration(
               color: context.theme.surfaceLayers.withValues(alpha: .7),
               borderRadius: BorderRadius.circular(4),
             ),
-            child: Row(children: [
-              Expanded(child: Text("Reset count".translate(context), style: context.textTheme.caption)),
-              Text("${progression.currentResetCount ?? 0}", style: context.textTheme.caption)
-            ])),
-      ]),
+            child: Row(
+              children: [
+                Expanded(child: Text("Reset count".translate(context), style: context.textTheme.caption)),
+                Text("${progression.currentResetCount ?? 0}", style: context.textTheme.caption),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -214,22 +237,27 @@ class CoreActivityRankItemWidget extends StatelessWidget {
         color: context.theme.surfaceLayers.withValues(alpha: .7),
         borderRadius: BorderRadius.circular(4),
       ),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Row(children: [
-          Expanded(child: Text(label, style: context.textTheme.caption)),
-          Text(total > 0 ? "$progress/$total" : "$progress", style: context.textTheme.caption)
-        ]),
-        Container(
-          margin: EdgeInsets.only(top: 2),
-          height: 5,
-          color: context.theme.surfaceLayers.layer2,
-          alignment: Alignment.centerLeft,
-          child: FractionallySizedBox(
-            widthFactor: (progress < total ? progress / total : 0),
-            child: Container(color: color),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text(label, style: context.textTheme.caption)),
+              Text(total > 0 ? "$progress/$total" : "$progress", style: context.textTheme.caption),
+            ],
           ),
-        ),
-      ]),
+          Container(
+            margin: EdgeInsets.only(top: 2),
+            height: 5,
+            color: context.theme.surfaceLayers.layer2,
+            alignment: Alignment.centerLeft,
+            child: FractionallySizedBox(
+              widthFactor: (progress < total ? progress / total : 0),
+              child: Container(color: color),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -40,12 +40,12 @@ class TrackObjectivesButton extends StatelessWidget {
           isTracking ? "Stop tracking".translate(context) : "Track objectives".translate(context),
         ),
         onPressed: () => context.read<ObjectiveTrackingBloc>().changeTrackingStatus(
-              this.type,
-              trackedHash,
-              track: !isTracking,
-              instanceId: this.instanceId,
-              characterId: this.characterId,
-            ),
+          this.type,
+          trackedHash,
+          track: !isTracking,
+          instanceId: this.instanceId,
+          characterId: this.characterId,
+        ),
       ),
     );
   }

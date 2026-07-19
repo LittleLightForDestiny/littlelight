@@ -16,12 +16,16 @@ class EquipLoadoutBottomsheet extends BaseBottomSheet<void> {
 
   @override
   Widget buildContainer(BuildContext context, BuildCallback builder) {
-    return MultiProvider(providers: [
-      ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
-      ChangeNotifierProvider<SocketControllerBloc>(
-          create: (context) => LoadoutItemOptionsSocketControllerBloc(context)),
-      ChangeNotifierProvider(create: (context) => EquipLoadoutQuickmenuBloc(context, character, equip)),
-    ], builder: (context, child) => builder(context));
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
+        ChangeNotifierProvider<SocketControllerBloc>(
+          create: (context) => LoadoutItemOptionsSocketControllerBloc(context),
+        ),
+        ChangeNotifierProvider(create: (context) => EquipLoadoutQuickmenuBloc(context, character, equip)),
+      ],
+      builder: (context, child) => builder(context),
+    );
   }
 
   @override

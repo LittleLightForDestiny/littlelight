@@ -17,9 +17,9 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
   bool _isBusy = false;
 
   InventoryItemSocketControllerBloc(BuildContext context)
-      : _inventoryBloc = context.read<InventoryBloc>(),
-        _profileBloc = context.read<ProfileBloc>(),
-        super(context);
+    : _inventoryBloc = context.read<InventoryBloc>(),
+      _profileBloc = context.read<ProfileBloc>(),
+      super(context);
 
   @override
   Future<void> init(InventoryItemInfo item) async {
@@ -37,11 +37,11 @@ class InventoryItemSocketControllerBloc extends SocketControllerBloc<InventoryIt
 
   @protected
   Future<List<int>?> loadAvailablePlugHashesForSocket(int index) => loadAvailableSocketPlugHashesForInventoryItem(
-        index,
-        item: item,
-        manifest: manifest,
-        profile: _profileBloc,
-      );
+    index,
+    item: item,
+    manifest: manifest,
+    profile: _profileBloc,
+  );
 
   @override
   bool isEquipped(int socketIndex, int plugHash) {

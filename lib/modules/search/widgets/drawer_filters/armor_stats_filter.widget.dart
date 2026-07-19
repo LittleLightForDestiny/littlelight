@@ -17,18 +17,22 @@ class ArmorStatsFilterWidget extends BaseDrawerFilterWidget<ArmorStatsFilterOpti
     return Column(
       children: [
         FilterRangeSliderWidget(
-            min: value.min,
-            max: value.max,
-            availableMin: available.min,
-            availableMax: available.max,
-            onChange: (range) {
-              update(
-                  context,
-                  ArmorStatsFilterOptions(ArmorStatsConstraints(
-                    min: range.start.toInt(),
-                    max: range.end.toInt(),
-                  )));
-            }),
+          min: value.min,
+          max: value.max,
+          availableMin: available.min,
+          availableMax: available.max,
+          onChange: (range) {
+            update(
+              context,
+              ArmorStatsFilterOptions(
+                ArmorStatsConstraints(
+                  min: range.start.toInt(),
+                  max: range.end.toInt(),
+                ),
+              ),
+            );
+          },
+        ),
       ],
     );
   }

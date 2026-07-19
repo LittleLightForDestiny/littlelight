@@ -26,9 +26,9 @@ class LittleLightScrollBehaviour extends ScrollBehavior {
 
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse,
-        PointerDeviceKind.unknown,
-        PointerDeviceKind.trackpad,
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse,
+    PointerDeviceKind.unknown,
+    PointerDeviceKind.trackpad,
+  };
 }

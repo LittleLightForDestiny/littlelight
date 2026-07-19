@@ -46,14 +46,14 @@ class DefinitionItemDetailsBloc extends ItemDetailsBloc {
   List<InventoryItemInfo>? _duplicates;
 
   DefinitionItemDetailsBloc(BuildContext context, int itemHash)
-      : this._itemHash = itemHash,
-        _profileBloc = context.read<ProfileBloc>(),
-        _itemNotesBloc = context.read<ItemNotesBloc>(),
-        _socketControllerBloc = context.read<SocketControllerBloc>(),
-        _manifestBloc = context.read<ManifestService>(),
-        _wishlists = getInjectedWishlistsService(),
-        _userSettingsBloc = context.read<UserSettingsBloc>(),
-        super(context) {
+    : this._itemHash = itemHash,
+      _profileBloc = context.read<ProfileBloc>(),
+      _itemNotesBloc = context.read<ItemNotesBloc>(),
+      _socketControllerBloc = context.read<SocketControllerBloc>(),
+      _manifestBloc = context.read<ManifestService>(),
+      _wishlists = getInjectedWishlistsService(),
+      _userSettingsBloc = context.read<UserSettingsBloc>(),
+      super(context) {
     _init();
   }
 
@@ -100,7 +100,7 @@ class DefinitionItemDetailsBloc extends ItemDetailsBloc {
         context,
         defs,
         _profileBloc.characters ?? [],
-      )
+      ),
     ]).sort(duplicates);
   }
 

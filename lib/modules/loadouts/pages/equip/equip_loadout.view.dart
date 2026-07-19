@@ -44,48 +44,55 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
   }
 
   AppBar buildAppBar(BuildContext context) => AppBar(
-        title: Text(_state(context).loadoutName),
-        flexibleSpace: buildAppBarBackground(context),
-      );
+    title: Text(_state(context).loadoutName),
+    flexibleSpace: buildAppBarBackground(context),
+  );
 
   Widget buildAppBarBackground(BuildContext context) {
     final emblemDefinition = context.definition<DestinyInventoryItemDefinition>(_state(context).emblemHash);
     if (emblemDefinition == null) return Container();
     if (emblemDefinition.secondarySpecial?.isEmpty ?? true) return Container();
     return Container(
-        constraints: const BoxConstraints.expand(),
-        child: QueuedNetworkImage(
-            imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
-            fit: BoxFit.cover,
-            alignment: const Alignment(-.8, 0)));
+      constraints: const BoxConstraints.expand(),
+      child: QueuedNetworkImage(
+        imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
+        fit: BoxFit.cover,
+        alignment: const Alignment(-.8, 0),
+      ),
+    );
   }
 
   Widget buildBody(BuildContext context) {
     final screenPadding = MediaQuery.of(context).padding;
-    return Column(children: [
-      Expanded(
-        child: Container(
-          alignment: Alignment.topCenter,
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(8)
-                .copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
-            child: Container(
-              alignment: Alignment.center,
-              constraints: const BoxConstraints(minWidth: double.maxFinite),
+    return Column(
+      children: [
+        Expanded(
+          child: Container(
+            alignment: Alignment.topCenter,
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(
+                8,
+              ).copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
               child: Container(
-                constraints: const BoxConstraints(maxWidth: LoadoutListItemWidget.maxWidth),
-                child: Column(children: [
-                  buildEquippableItems(context),
-                  Container(height: 16),
-                  buildUnequippable(context),
-                ]),
+                alignment: Alignment.center,
+                constraints: const BoxConstraints(minWidth: double.maxFinite),
+                child: Container(
+                  constraints: const BoxConstraints(maxWidth: LoadoutListItemWidget.maxWidth),
+                  child: Column(
+                    children: [
+                      buildEquippableItems(context),
+                      Container(height: 16),
+                      buildUnequippable(context),
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
         ),
-      ),
-      buildFooter(context),
-    ]);
+        buildFooter(context),
+      ],
+    );
   }
 
   Widget buildEquippableItems(BuildContext context) {
@@ -94,7 +101,8 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
     if (items == null) return Container();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
+      children:
+          [
             HeaderWidget(
               child: Text(
                 "Items to Equip".translate(context).toUpperCase(),
@@ -118,34 +126,39 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
   Widget buildUnequippable(BuildContext context) {
     final unequippable = _state(context).unequippableItems;
     if (unequippable == null || unequippable.isEmpty) return Container();
-    return Column(children: [
-      HeaderWidget(
-        child: Text(
-          "Items to Transfer".translate(context).toUpperCase(),
+    return Column(
+      children: [
+        HeaderWidget(
+          child: Text(
+            "Items to Transfer".translate(context).toUpperCase(),
+          ),
         ),
-      ),
-      Container(
-        height: 8,
-      ),
-      GridView(
-        shrinkWrap: true,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 1),
-        physics: const NeverScrollableScrollPhysics(),
-        children: unequippable
-            .map((e) => Container(
+        Container(
+          height: 8,
+        ),
+        GridView(
+          shrinkWrap: true,
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 7, childAspectRatio: 1),
+          physics: const NeverScrollableScrollPhysics(),
+          children: unequippable
+              .map(
+                (e) => Container(
                   padding: const EdgeInsets.all(2),
                   child: buildItemIcon(context, e.inventoryItem),
-                ))
-            .toList(),
-      ),
-    ]);
+                ),
+              )
+              .toList(),
+        ),
+      ],
+    );
   }
 
   Widget buildEquippableRow(BuildContext context, DestinyClass destinyClass, List<LoadoutItemInfo?>? items) {
     final rowItems = items ?? List<LoadoutItemInfo?>.filled(6, null);
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
-      children: [
+      children:
+          [
             Expanded(child: buildClassIcon(context, destinyClass)),
           ] +
           rowItems
@@ -197,18 +210,19 @@ class EquipLoadoutView extends StatelessWidget with ProfileConsumer {
         top: false,
         child: Container(
           child: TransferDestinationsWidget(
-              equipDestinations: equip,
-              transferDestinations: transfer,
-              onAction: (action, character) {
-                switch (action) {
-                  case TransferActionType.Transfer:
-                    _bloc(context).transferLoadout(character);
-                    return;
-                  case TransferActionType.Equip:
-                    _bloc(context).equipLoadout(character);
-                    return;
-                }
-              }),
+            equipDestinations: equip,
+            transferDestinations: transfer,
+            onAction: (action, character) {
+              switch (action) {
+                case TransferActionType.Transfer:
+                  _bloc(context).transferLoadout(character);
+                  return;
+                case TransferActionType.Equip:
+                  _bloc(context).equipLoadout(character);
+                  return;
+              }
+            },
+          ),
         ),
       ),
     );

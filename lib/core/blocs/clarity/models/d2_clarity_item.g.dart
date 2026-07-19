@@ -7,40 +7,35 @@ part of 'd2_clarity_item.dart';
 // **************************************************************************
 
 ClarityItem _$ClarityItemFromJson(Map<String, dynamic> json) => ClarityItem(
-      hash: json['hash'] as int?,
-      itemHash: json['itemHash'] as int?,
-      name: json['name'] as String?,
-      itemName: json['itemName'] as String?,
-      lastUpload: _dateFromJson(json['lastUpload'] as int),
-      type: $enumDecodeNullable(_$ClarityItemTypeEnumMap, json['type'],
-          unknownValue: ClarityItemType.Unknown),
-      uploadedBy: json['uploadedBy'] as String?,
-      descriptions: (json['descriptions'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(
-            k, (e as List<dynamic>).map(ClarityDescription.fromJson).toList()),
-      ),
-      stats: (json['stats'] as Map<String, dynamic>?)?.map(
-        (k, e) => MapEntry(
-            $enumDecode(_$ClarityStatTypeEnumMap, k),
-            (e as List<dynamic>)
-                .map((e) => ClarityStat.fromJson(e as Map<String, dynamic>))
-                .toList()),
-      ),
-    );
+  hash: json['hash'] as int?,
+  itemHash: json['itemHash'] as int?,
+  name: json['name'] as String?,
+  itemName: json['itemName'] as String?,
+  lastUpload: _dateFromJson(json['lastUpload'] as int),
+  type: $enumDecodeNullable(_$ClarityItemTypeEnumMap, json['type'], unknownValue: ClarityItemType.Unknown),
+  uploadedBy: json['uploadedBy'] as String?,
+  descriptions: (json['descriptions'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(k, (e as List<dynamic>).map(ClarityDescription.fromJson).toList()),
+  ),
+  stats: (json['stats'] as Map<String, dynamic>?)?.map(
+    (k, e) => MapEntry(
+      $enumDecode(_$ClarityStatTypeEnumMap, k),
+      (e as List<dynamic>).map((e) => ClarityStat.fromJson(e as Map<String, dynamic>)).toList(),
+    ),
+  ),
+);
 
-Map<String, dynamic> _$ClarityItemToJson(ClarityItem instance) =>
-    <String, dynamic>{
-      'hash': instance.hash,
-      'itemHash': instance.itemHash,
-      'name': instance.name,
-      'itemName': instance.itemName,
-      'type': _$ClarityItemTypeEnumMap[instance.type],
-      'lastUpload': _dateToJson(instance.lastUpload),
-      'uploadedBy': instance.uploadedBy,
-      'descriptions': instance.descriptions,
-      'stats': instance.stats
-          ?.map((k, e) => MapEntry(_$ClarityStatTypeEnumMap[k]!, e)),
-    };
+Map<String, dynamic> _$ClarityItemToJson(ClarityItem instance) => <String, dynamic>{
+  'hash': instance.hash,
+  'itemHash': instance.itemHash,
+  'name': instance.name,
+  'itemName': instance.itemName,
+  'type': _$ClarityItemTypeEnumMap[instance.type],
+  'lastUpload': _dateToJson(instance.lastUpload),
+  'uploadedBy': instance.uploadedBy,
+  'descriptions': instance.descriptions,
+  'stats': instance.stats?.map((k, e) => MapEntry(_$ClarityStatTypeEnumMap[k]!, e)),
+};
 
 const _$ClarityItemTypeEnumMap = {
   ClarityItemType.ArmorModGeneral: 'Armor Mod General',

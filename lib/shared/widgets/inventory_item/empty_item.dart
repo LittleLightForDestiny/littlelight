@@ -8,9 +8,7 @@ class EmptyItem extends StatelessWidget {
   final double borderWidth;
   final int? bucketHash;
   final InventoryItemWidgetDensity density;
-  const EmptyItem(
-      {Key? key, this.borderWidth = 2, this.bucketHash, required this.density})
-      : super(key: key);
+  const EmptyItem({Key? key, this.borderWidth = 2, this.bucketHash, required this.density}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     if (density == InventoryItemWidgetDensity.Low) {
@@ -32,25 +30,27 @@ class EmptyItem extends StatelessWidget {
   Widget buildLowDensitySubclass(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(borderWidth),
-      child: Stack(children: [
-        Positioned.fill(
-          child: CustomPaint(
-            painter: DiamondShapePainter.color(
-              context.theme.onSurfaceLayers.layer3,
-            ),
-          ),
-        ),
-        Positioned.fill(
-          child: Padding(
-            padding: EdgeInsets.all(borderWidth),
+      child: Stack(
+        children: [
+          Positioned.fill(
             child: CustomPaint(
               painter: DiamondShapePainter.color(
-                context.theme.surfaceLayers.layer1,
+                context.theme.onSurfaceLayers.layer3,
               ),
             ),
           ),
-        ),
-      ]),
+          Positioned.fill(
+            child: Padding(
+              padding: EdgeInsets.all(borderWidth),
+              child: CustomPaint(
+                painter: DiamondShapePainter.color(
+                  context.theme.surfaceLayers.layer1,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 

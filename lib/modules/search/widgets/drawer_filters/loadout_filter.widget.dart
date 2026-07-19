@@ -24,22 +24,25 @@ class LoadoutFilterWidget extends BaseDrawerFilterWidget<LoadoutFilterOptions> {
     final availableLoadouts = allLoadouts.where((t) => availableValues.contains(t.assignedId));
     final hasNone = availableValues.contains(null);
     return Column(
-      children: availableLoadouts.map(
+      children:
+          availableLoadouts.map(
             (loadout) {
               final emblemHash = loadout.emblemHash;
               return FilterButtonWidget(
                 Text(
                   loadout.name.toUpperCase(),
-                  style: TextStyle(shadows: [
-                    Shadow(
-                      color: Colors.black,
-                      blurRadius: 2,
-                    ),
-                    Shadow(
-                      color: Colors.black,
-                      blurRadius: 8,
-                    ),
-                  ]),
+                  style: TextStyle(
+                    shadows: [
+                      Shadow(
+                        color: Colors.black,
+                        blurRadius: 2,
+                      ),
+                      Shadow(
+                        color: Colors.black,
+                        blurRadius: 8,
+                      ),
+                    ],
+                  ),
                 ),
                 background: emblemHash == null
                     ? null
@@ -71,10 +74,11 @@ class LoadoutFilterWidget extends BaseDrawerFilterWidget<LoadoutFilterOptions> {
 
   Widget buildIcon(BuildContext context, DamageType type) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: Icon(
-          type.icon,
-          color: type.getColorLayer(context).layer3,
-        ));
+      padding: EdgeInsets.all(4),
+      child: Icon(
+        type.icon,
+        color: type.getColorLayer(context).layer3,
+      ),
+    );
   }
 }

@@ -23,13 +23,15 @@ class LoadoutItemDetailsPage extends StatelessWidget {
         ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
         ChangeNotifierProvider<SocketControllerBloc>(create: (context) => LoadoutItemSocketControllerBloc(context)),
         ChangeNotifierProvider<ItemDetailsBloc>(create: (context) => LoadoutItemDetailsBloc(context, item: item)),
-        Provider<ItemInteractionHandlerBloc>(create: (context) {
-          final bloc = context.read<ItemDetailsBloc>();
-          return ItemInteractionHandlerBloc(
-            onTap: (item) => item is InventoryItemInfo ? bloc.onDuplicateItemTap(item) : null,
-            onHold: (item) => item is InventoryItemInfo ? bloc.onDuplicateItemHold(item) : null,
-          );
-        }),
+        Provider<ItemInteractionHandlerBloc>(
+          create: (context) {
+            final bloc = context.read<ItemDetailsBloc>();
+            return ItemInteractionHandlerBloc(
+              onTap: (item) => item is InventoryItemInfo ? bloc.onDuplicateItemTap(item) : null,
+              onHold: (item) => item is InventoryItemInfo ? bloc.onDuplicateItemHold(item) : null,
+            );
+          },
+        ),
       ],
       builder: (context, _) => LoadoutItemDetailsView(
         context.read<ItemDetailsBloc>(),

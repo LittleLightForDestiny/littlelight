@@ -20,7 +20,7 @@ class ObjectiveTrackingBountyItemWidget extends HighDensityInventoryItem {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Flexible(child: super.buildWithDefinition(context, definition)),
-          buildObjectiveProgress(context, definition)
+          buildObjectiveProgress(context, definition),
         ],
       ),
     );
@@ -35,20 +35,21 @@ class ObjectiveTrackingBountyItemWidget extends HighDensityInventoryItem {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Expanded(
-              child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(child: buildItemTypeName(context, definition)),
-              buildExpirationDate(context, definition),
-            ],
-          )),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(child: buildItemTypeName(context, definition)),
+                buildExpirationDate(context, definition),
+              ],
+            ),
+          ),
           Container(
             padding: EdgeInsets.only(top: 8),
             child: Text(
               definition.displayProperties?.description ?? "",
               style: context.textTheme.body,
             ),
-          )
+          ),
         ],
       ),
     );
@@ -60,18 +61,20 @@ class ObjectiveTrackingBountyItemWidget extends HighDensityInventoryItem {
     if (objectiveHashes == null || objectiveHashes.isEmpty) return Container();
 
     return Container(
-        color: context.theme.surfaceLayers.layer1,
-        padding: EdgeInsets.all(4),
-        child: Column(
-          children: objectiveHashes.map((objectiveHash) {
-            final objective =
-                item.objectives?.objectives?.firstWhereOrNull((objective) => objective.objectiveHash == objectiveHash);
-            return ObjectiveWidget(
-              objectiveHash,
-              objective: objective,
-              placeholder: definition?.displayProperties?.description,
-            );
-          }).toList(),
-        ));
+      color: context.theme.surfaceLayers.layer1,
+      padding: EdgeInsets.all(4),
+      child: Column(
+        children: objectiveHashes.map((objectiveHash) {
+          final objective = item.objectives?.objectives?.firstWhereOrNull(
+            (objective) => objective.objectiveHash == objectiveHash,
+          );
+          return ObjectiveWidget(
+            objectiveHash,
+            objective: objective,
+            placeholder: definition?.displayProperties?.description,
+          );
+        }).toList(),
+      ),
+    );
   }
 }

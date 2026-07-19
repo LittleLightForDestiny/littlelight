@@ -19,68 +19,68 @@ abstract class CustomTabMenu extends StatelessWidget {
 
   Widget buildVertical(BuildContext context) {
     final itemSize = getButtonSize(context);
-    return Stack(children: [
-      Positioned(
-        right: 0,
-        left: 0,
-        top: 0,
-        height: itemSize * controller.length,
-        child: buildSelectedBackgroundAnimation(context, itemSize),
-      ),
-      Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: List.generate(
-          controller.length,
-          (index) => buildAnimatedButton(context, index, itemSize),
+    return Stack(
+      children: [
+        Positioned(
+          right: 0,
+          left: 0,
+          top: 0,
+          height: itemSize * controller.length,
+          child: buildSelectedBackgroundAnimation(context, itemSize),
         ),
-      ),
-      Positioned(
-        right: 0,
-        left: 0,
-        top: 0,
-        height: itemSize * controller.length,
-        child: buildSelectedIndicatorAnimation(context, itemSize),
-      ),
-    ]);
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: List.generate(
+            controller.length,
+            (index) => buildAnimatedButton(context, index, itemSize),
+          ),
+        ),
+        Positioned(
+          right: 0,
+          left: 0,
+          top: 0,
+          height: itemSize * controller.length,
+          child: buildSelectedIndicatorAnimation(context, itemSize),
+        ),
+      ],
+    );
   }
 
   Widget buildHorizontal(BuildContext context) {
     final itemWidth = getButtonSize(context);
-    return Stack(children: [
-      Positioned(
-        left: 0,
-        top: 0,
-        bottom: 0,
-        width: itemWidth * controller.length,
-        child: buildSelectedBackgroundAnimation(context, itemWidth),
-      ),
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: List.generate(
-          controller.length,
-          (index) => buildAnimatedButton(context, index, itemWidth),
+    return Stack(
+      children: [
+        Positioned(
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: itemWidth * controller.length,
+          child: buildSelectedBackgroundAnimation(context, itemWidth),
         ),
-      ),
-      Positioned(
-        left: 0,
-        top: 0,
-        bottom: 0,
-        width: itemWidth * controller.length,
-        child: buildSelectedIndicatorAnimation(context, itemWidth),
-      ),
-    ]);
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: List.generate(
+            controller.length,
+            (index) => buildAnimatedButton(context, index, itemWidth),
+          ),
+        ),
+        Positioned(
+          left: 0,
+          top: 0,
+          bottom: 0,
+          width: itemWidth * controller.length,
+          child: buildSelectedIndicatorAnimation(context, itemWidth),
+        ),
+      ],
+    );
   }
 
   Alignment getIndicatorAlignment(BuildContext context) {
-    final value =
-        (controller.animation.value / (controller.length - 1)) * 2 - 1;
-    return direction == Axis.vertical
-        ? Alignment(0, value)
-        : Alignment(value, 0);
+    final value = (controller.animation.value / (controller.length - 1)) * 2 - 1;
+    return direction == Axis.vertical ? Alignment(0, value) : Alignment(value, 0);
   }
 
-  Widget buildSelectedIndicatorAnimation(
-      BuildContext context, double buttonSize) {
+  Widget buildSelectedIndicatorAnimation(BuildContext context, double buttonSize) {
     final child = buildSelectedIndicator(context);
     if (child == null) return Container();
     return AnimatedBuilder(
@@ -99,8 +99,7 @@ abstract class CustomTabMenu extends StatelessWidget {
 
   Widget? buildSelectedIndicator(BuildContext context);
 
-  Widget buildSelectedBackgroundAnimation(
-      BuildContext context, double buttonSize) {
+  Widget buildSelectedBackgroundAnimation(BuildContext context, double buttonSize) {
     final child = buildSelectedBackground(context);
     if (child == null) return Container();
     return AnimatedBuilder(
@@ -119,28 +118,29 @@ abstract class CustomTabMenu extends StatelessWidget {
 
   Widget? buildSelectedBackground(BuildContext context);
 
-  Widget buildAnimatedButton(
-      BuildContext context, int index, double buttonSize) {
-    return Stack(children: [
-      AnimatedBuilder(
-        animation: controller.animation,
-        builder: (context, child) => SizedBox(
-          width: direction == Axis.horizontal ? buttonSize : null,
-          height: direction == Axis.vertical ? buttonSize : null,
-          child: buildButton(context, index),
-        ),
-      ),
-      Positioned.fill(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              onItemSelect(index);
-            },
+  Widget buildAnimatedButton(BuildContext context, int index, double buttonSize) {
+    return Stack(
+      children: [
+        AnimatedBuilder(
+          animation: controller.animation,
+          builder: (context, child) => SizedBox(
+            width: direction == Axis.horizontal ? buttonSize : null,
+            height: direction == Axis.vertical ? buttonSize : null,
+            child: buildButton(context, index),
           ),
         ),
-      ),
-    ]);
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                onItemSelect(index);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   void onItemSelect(int index) {

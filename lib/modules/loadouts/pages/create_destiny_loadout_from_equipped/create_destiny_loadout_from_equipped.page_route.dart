@@ -7,7 +7,7 @@ class CreateDestinyLoadoutFromEquippedPageRoute extends MaterialPageRoute {
     required String characterId,
     required int loadoutIndex,
   }) : super(
-          builder: (BuildContext context) =>
-              CreateDestinyLoadoutFromEquippedPage(characterId: characterId, loadoutIndex: loadoutIndex),
-        );
+         builder: (BuildContext context) =>
+             CreateDestinyLoadoutFromEquippedPage(characterId: characterId, loadoutIndex: loadoutIndex),
+       );
 }

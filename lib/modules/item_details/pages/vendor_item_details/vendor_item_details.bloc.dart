@@ -52,14 +52,14 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
   bool get canTrack => false;
 
   VendorItemDetailsBloc(BuildContext context, {VendorItemInfo? item})
-      : _item = item,
-        _itemNotesBloc = context.read<ItemNotesBloc>(),
-        _socketControllerBloc = context.read<SocketControllerBloc>(),
-        _manifestBloc = context.read<ManifestService>(),
-        _wishlists = getInjectedWishlistsService(),
-        _profileBloc = context.read<ProfileBloc>(),
-        _userSettingsBloc = context.read<UserSettingsBloc>(),
-        super(context) {
+    : _item = item,
+      _itemNotesBloc = context.read<ItemNotesBloc>(),
+      _socketControllerBloc = context.read<SocketControllerBloc>(),
+      _manifestBloc = context.read<ManifestService>(),
+      _wishlists = getInjectedWishlistsService(),
+      _profileBloc = context.read<ProfileBloc>(),
+      _userSettingsBloc = context.read<UserSettingsBloc>(),
+      super(context) {
     _init();
   }
 
@@ -121,7 +121,7 @@ class VendorItemDetailsBloc extends ItemDetailsBloc {
         context,
         defs,
         _profileBloc.characters ?? [],
-      )
+      ),
     ]).sort(duplicates);
   }
 

@@ -26,17 +26,19 @@ class DetailsItemRawDataWidget extends StatelessWidget {
       child: Table(
         columnWidths: {0: IntrinsicColumnWidth()},
         children: [
-          TableRow(children: [
-            Container(
-              padding: const EdgeInsets.only(right: 8),
-              child: Text("itemHash:")),
-              SelectableText(bloc.itemHash.toString())]),
+          TableRow(
+            children: [
+              Container(padding: const EdgeInsets.only(right: 8), child: Text("itemHash:")),
+              SelectableText(bloc.itemHash.toString()),
+            ],
+          ),
           if (bloc.item?.instanceId != null)
-            TableRow(children: [
-            Container(
-              padding: const EdgeInsets.only(right: 8),
-              child: Text("instanceId:")),
-              SelectableText(bloc.item?.instanceId ?? "")]),
+            TableRow(
+              children: [
+                Container(padding: const EdgeInsets.only(right: 8), child: Text("instanceId:")),
+                SelectableText(bloc.item?.instanceId ?? ""),
+              ],
+            ),
         ],
       ),
     );

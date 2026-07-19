@@ -39,9 +39,10 @@ class DeepsightFilterWidget extends BaseDrawerFilterWidget<DeepsightFilterOption
 
   Widget buildLabel(BuildContext context, bool type) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: Text(
-          (type ? "Yes".translate(context) : "No".translate(context)).toUpperCase(),
-        ));
+      padding: EdgeInsets.all(4),
+      child: Text(
+        (type ? "Yes".translate(context) : "No".translate(context)).toUpperCase(),
+      ),
+    );
   }
 }

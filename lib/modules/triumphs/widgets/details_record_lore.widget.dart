@@ -20,12 +20,13 @@ class DetailsRecordLoreWidget extends StatelessWidget {
     final loreDef = context.definition<DestinyLoreDefinition>(def?.loreHash);
     if (loreDef == null || loreDef.displayProperties?.description == null) return Container();
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Lore".translate(context).toUpperCase()),
-          persistenceID: 'record lore',
-          content: buildContent(context, loreDef),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Lore".translate(context).toUpperCase()),
+        persistenceID: 'record lore',
+        content: buildContent(context, loreDef),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context, DestinyLoreDefinition loreDef) {
@@ -33,8 +34,10 @@ class DetailsRecordLoreWidget extends StatelessWidget {
     final subtitle = loreDef.subtitle;
     if (text == null) return Container();
     return Container(
-        padding: EdgeInsets.all(8),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      padding: EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
           if (subtitle != null && subtitle.isNotEmpty)
             Container(
               child: SelectableText(
@@ -49,8 +52,10 @@ class DetailsRecordLoreWidget extends StatelessWidget {
             style: context.textTheme.body,
             textAlign: TextAlign.left,
           ),
-          buildExternalReferences(context)
-        ]));
+          buildExternalReferences(context),
+        ],
+      ),
+    );
   }
 
   Widget buildExternalReferences(BuildContext context) {
@@ -68,25 +73,26 @@ class DetailsRecordLoreWidget extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Container(
-              margin: EdgeInsets.only(bottom: 4),
-              padding: EdgeInsets.all(4),
-              decoration: BoxDecoration(
-                color: context.theme.secondarySurfaceLayers.layer0,
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                "Read more at".translate(context),
-                style: context.textTheme.button,
-              )),
+            margin: EdgeInsets.only(bottom: 4),
+            padding: EdgeInsets.all(4),
+            decoration: BoxDecoration(
+              color: context.theme.secondarySurfaceLayers.layer0,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            child: Text(
+              "Read more at".translate(context),
+              style: context.textTheme.button,
+            ),
+          ),
           Wrap(
             children: [
               TheOldGhostLinkButton(
                 contentType: OldGhostContentType.Chapter,
                 hash: loreHash,
                 name: definition?.displayProperties?.name,
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

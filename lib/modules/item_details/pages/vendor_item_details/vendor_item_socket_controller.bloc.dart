@@ -15,9 +15,7 @@ class VendorItemSocketControllerBloc extends SocketControllerBloc<VendorItemInfo
 
   bool _isBusy = false;
 
-  VendorItemSocketControllerBloc(BuildContext context)
-      : profileBloc = context.read<ProfileBloc>(),
-        super(context);
+  VendorItemSocketControllerBloc(BuildContext context) : profileBloc = context.read<ProfileBloc>(), super(context);
 
   @override
   Future<void> init(VendorItemInfo item) async {

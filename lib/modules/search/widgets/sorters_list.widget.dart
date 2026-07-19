@@ -29,11 +29,10 @@ class SortersListWidget extends StatelessWidget {
               shrinkWrap: true,
               itemCount: active.length,
               physics: NeverScrollableScrollPhysics(),
-              itemBuilder:
-                  (context, index) => Container(
-                    key: Key("${active[index].type}_$index"),
-                    child: ActiveSorterWidget.fromParameter(active[index], index),
-                  ),
+              itemBuilder: (context, index) => Container(
+                key: Key("${active[index].type}_$index"),
+                child: ActiveSorterWidget.fromParameter(active[index], index),
+              ),
               onReorderItem: (int oldIndex, int newIndex) {
                 context.read<SearchSorterBloc>().reorderSorters(oldIndex, newIndex);
               },

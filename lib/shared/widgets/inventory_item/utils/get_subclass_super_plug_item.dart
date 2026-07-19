@@ -4,7 +4,10 @@ import 'package:little_light/models/item_info/destiny_item_info.dart';
 import 'package:little_light/services/manifest/manifest.service.dart';
 
 Future<DestinyInventoryItemDefinition?> getSubclassSuperPlugItem(
-    ManifestService manifest, DestinyItemInfo item, DestinyInventoryItemDefinition? definition) async {
+  ManifestService manifest,
+  DestinyItemInfo item,
+  DestinyInventoryItemDefinition? definition,
+) async {
   final hashes = definition?.sockets?.socketCategories?.map((e) => e.socketCategoryHash).toList();
   if (hashes == null) return null;
   final defs = await manifest.getDefinitions<DestinySocketCategoryDefinition>(hashes);
@@ -12,8 +15,9 @@ Future<DestinyInventoryItemDefinition?> getSubclassSuperPlugItem(
   defsList.sort((a, b) => (a.index ?? 0).compareTo(b.index ?? 0));
   final categoryDef = defsList.firstWhereOrNull((def) => def.categoryStyle == DestinySocketCategoryStyle.Supers);
   if (categoryDef == null) return null;
-  final socketCategory =
-      definition?.sockets?.socketCategories?.firstWhereOrNull((c) => c.socketCategoryHash == categoryDef.hash);
+  final socketCategory = definition?.sockets?.socketCategories?.firstWhereOrNull(
+    (c) => c.socketCategoryHash == categoryDef.hash,
+  );
   final socketIndex = socketCategory?.socketIndexes?.firstOrNull;
   if (socketIndex == null) return null;
   final plugHash = item.sockets?[socketIndex].plugHash;

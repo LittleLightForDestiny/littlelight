@@ -12,10 +12,10 @@ class IntrinsicHeightScrollSection extends ScrollableSection {
     this.itemsPerRow = 1,
     double additionalCrossAxisSpacing = 0,
   }) : super.baseConstructor(
-          itemBuilder,
-          itemCount: itemCount,
-          additionalCrossAxisSpacing: additionalCrossAxisSpacing,
-        );
+         itemBuilder,
+         itemCount: itemCount,
+         additionalCrossAxisSpacing: additionalCrossAxisSpacing,
+       );
 
   @override
   double? getRowHeight(SectionBuildOptions options) => null;

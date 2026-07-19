@@ -19,29 +19,29 @@ class ObjectiveTrackingReorderingItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => Container(
-        decoration: BoxDecoration(
-          color: backgroundColor(context),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        padding: EdgeInsets.all(4),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
+    decoration: BoxDecoration(
+      color: backgroundColor(context),
+      borderRadius: BorderRadius.circular(4),
+    ),
+    padding: EdgeInsets.all(4),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        buildHandle(context),
+        buildIcon(context),
+        Container(width: 8),
+        Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            buildHandle(context),
-            buildIcon(context),
-            Container(width: 8),
-            Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildTitle(context),
-                Container(height: 2),
-                buildSubtitle(context),
-              ],
-            ),
+            buildTitle(context),
+            Container(height: 2),
+            buildSubtitle(context),
           ],
         ),
-      );
+      ],
+    ),
+  );
 
   Color? backgroundColor(BuildContext context) {
     switch (this.objective.type) {
@@ -68,17 +68,18 @@ class ObjectiveTrackingReorderingItemWidget extends StatelessWidget {
   }
 
   Widget buildHandle(BuildContext context) => ReorderableDragStartListener(
-      index: index,
-      child: AspectRatio(
-        aspectRatio: 1,
-        child: Container(
-          color: Colors.transparent,
-          child: Icon(
-            Icons.menu,
-            color: foregroundColor(context),
-          ),
+    index: index,
+    child: AspectRatio(
+      aspectRatio: 1,
+      child: Container(
+        color: Colors.transparent,
+        child: Icon(
+          Icons.menu,
+          color: foregroundColor(context),
         ),
-      ));
+      ),
+    ),
+  );
 
   Widget buildIcon(BuildContext context) {
     switch (this.objective.type) {

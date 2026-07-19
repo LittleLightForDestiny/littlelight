@@ -3,10 +3,10 @@ import 'base_filter_values_options.dart';
 
 class MainItemTypeFilterOptions extends BaseFilterOptions<Set<EquipmentBucketGroup>> {
   MainItemTypeFilterOptions(Set<EquipmentBucketGroup> values)
-      : super(
-          values.toSet(),
-          availableValues: values,
-        );
+    : super(
+        values.toSet(),
+        availableValues: values,
+      );
 
   @override
   bool get available => true;

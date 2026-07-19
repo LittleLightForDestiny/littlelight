@@ -33,23 +33,24 @@ class RecordDetailsView extends StatelessWidget {
     return Scaffold(
       appBar: buildAppBar(context),
       body: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Expanded(
-              child: Stack(
-                children: [
-                  buildBody(context, hasFooter: footer != null),
-                  Positioned(
-                    left: 0,
-                    bottom: 0,
-                    right: 0,
-                    child: buildNotificationWidget(context, hasFooter: footer != null),
-                  ),
-                ],
-              ),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                buildBody(context, hasFooter: footer != null),
+                Positioned(
+                  left: 0,
+                  bottom: 0,
+                  right: 0,
+                  child: buildNotificationWidget(context, hasFooter: footer != null),
+                ),
+              ],
             ),
-            footer,
-          ].whereType<Widget>().toList()),
+          ),
+          footer,
+        ].whereType<Widget>().toList(),
+      ),
     );
   }
 
@@ -90,7 +91,7 @@ class RecordDetailsView extends StatelessWidget {
         ),
         useLoadingFooter
             ? SizedBox(height: bottomPadding, child: BusyIndicatorBottomGradientWidget())
-            : BusyIndicatorLineWidget()
+            : BusyIndicatorLineWidget(),
       ],
     );
   }
@@ -174,16 +175,17 @@ class RecordDetailsView extends StatelessWidget {
     final selection = selectionState.selectedItems;
     if (selection.isNotEmpty) {
       return Container(
-          color: context.theme.surfaceLayers.layer1,
-          child: Column(
-            children: [
-              SelectedItemsWidget(),
-              SizedBox(
-                height: mqPadding.bottom,
-                child: BusyIndicatorBottomGradientWidget(),
-              ),
-            ],
-          ));
+        color: context.theme.surfaceLayers.layer1,
+        child: Column(
+          children: [
+            SelectedItemsWidget(),
+            SizedBox(
+              height: mqPadding.bottom,
+              child: BusyIndicatorBottomGradientWidget(),
+            ),
+          ],
+        ),
+      );
     }
     return null;
   }

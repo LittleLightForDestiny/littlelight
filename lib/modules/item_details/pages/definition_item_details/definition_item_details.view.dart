@@ -8,8 +8,11 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 
 class DefinitionItemDetailsView extends BaseItemDetailsView {
   DefinitionItemDetailsView(
-      ItemDetailsBloc bloc, ItemDetailsBloc state, SocketControllerBloc socketState, SelectionBloc selectionState)
-      : super(bloc, state, socketState, selectionState);
+    ItemDetailsBloc bloc,
+    ItemDetailsBloc state,
+    SocketControllerBloc socketState,
+    SelectionBloc selectionState,
+  ) : super(bloc, state, socketState, selectionState);
 
   @override
   Widget? buildLockState(BuildContext context) => null;
@@ -27,13 +30,14 @@ class DefinitionItemDetailsView extends BaseItemDetailsView {
     final builds = state.wishlistBuilds;
     if (builds == null || builds.isEmpty) return null;
     return SliverToBoxAdapter(
-        child: DetailsWishlistBuildsWidget(
-      builds,
-      allSelectedPlugHashes: socketState.allSelectedPlugHashes,
-      allEquippedPlugHashes: socketState.allEquippedPlugHashes,
-      viewAllBuilds: true,
-      enableViewAllBuilds: false,
-    ));
+      child: DetailsWishlistBuildsWidget(
+        builds,
+        allSelectedPlugHashes: socketState.allSelectedPlugHashes,
+        allEquippedPlugHashes: socketState.allEquippedPlugHashes,
+        viewAllBuilds: true,
+        enableViewAllBuilds: false,
+      ),
+    );
   }
 
   @override
@@ -41,10 +45,11 @@ class DefinitionItemDetailsView extends BaseItemDetailsView {
     final notes = state.wishlistNotes;
     if (notes == null || notes.isEmpty) return null;
     return SliverToBoxAdapter(
-        child: DetailsWishlistNotesWidget(
-      notes,
-      viewAllNotes: true,
-      enableViewAllNotes: false,
-    ));
+      child: DetailsWishlistNotesWidget(
+        notes,
+        viewAllNotes: true,
+        enableViewAllNotes: false,
+      ),
+    );
   }
 }

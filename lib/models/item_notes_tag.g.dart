@@ -7,31 +7,26 @@ part of 'item_notes_tag.dart';
 // **************************************************************************
 
 ItemNotesTag _$ItemNotesTagFromJson(Map<String, dynamic> json) => ItemNotesTag(
-      custom: json['custom'] as bool? ?? false,
-      tagId: json['tagId'] as String?,
-      name: json['name'] as String? ?? "",
-      backgroundColorHex: json['backgroundColorHex'] as String? ?? "#00000000",
-      foregroundColorHex: json['foregroundColorHex'] as String? ?? "#FFFFFFFF",
-      defaultTagType:
-          $enumDecodeNullable(_$DefaultTagTypeEnumMap, json['defaultTagType']),
-      icon: $enumDecodeNullable(_$ItemTagIconEnumMap, json['icon']) ??
-          ItemTagIcon.Star,
-      updatedAt: json['updated_at'] == null
-          ? null
-          : DateTime.parse(json['updated_at'] as String),
-    );
+  custom: json['custom'] as bool? ?? false,
+  tagId: json['tagId'] as String?,
+  name: json['name'] as String? ?? "",
+  backgroundColorHex: json['backgroundColorHex'] as String? ?? "#00000000",
+  foregroundColorHex: json['foregroundColorHex'] as String? ?? "#FFFFFFFF",
+  defaultTagType: $enumDecodeNullable(_$DefaultTagTypeEnumMap, json['defaultTagType']),
+  icon: $enumDecodeNullable(_$ItemTagIconEnumMap, json['icon']) ?? ItemTagIcon.Star,
+  updatedAt: json['updated_at'] == null ? null : DateTime.parse(json['updated_at'] as String),
+);
 
-Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) =>
-    <String, dynamic>{
-      'custom': instance.custom,
-      'tagId': instance.tagId,
-      'name': instance.name,
-      'backgroundColorHex': instance.backgroundColorHex,
-      'foregroundColorHex': instance.foregroundColorHex,
-      'icon': _$ItemTagIconEnumMap[instance.icon]!,
-      'defaultTagType': _$DefaultTagTypeEnumMap[instance.defaultTagType],
-      'updated_at': instance.updatedAt?.toIso8601String(),
-    };
+Map<String, dynamic> _$ItemNotesTagToJson(ItemNotesTag instance) => <String, dynamic>{
+  'custom': instance.custom,
+  'tagId': instance.tagId,
+  'name': instance.name,
+  'backgroundColorHex': instance.backgroundColorHex,
+  'foregroundColorHex': instance.foregroundColorHex,
+  'icon': _$ItemTagIconEnumMap[instance.icon]!,
+  'defaultTagType': _$DefaultTagTypeEnumMap[instance.defaultTagType],
+  'updated_at': instance.updatedAt?.toIso8601String(),
+};
 
 const _$DefaultTagTypeEnumMap = {
   DefaultTagType.Favorite: 'Favorite',

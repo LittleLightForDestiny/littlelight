@@ -21,20 +21,25 @@ class DeleteLoadoutView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.center, mainAxisSize: MainAxisSize.min, children: [
-      Flexible(
-        child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              buildMessage(context),
-              buildPreview(context),
-            ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Flexible(
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  buildMessage(context),
+                  buildPreview(context),
+                ],
+              ),
+            ),
           ),
-        ),
+          buildActions(context),
+        ],
       ),
-      buildActions(context),
-    ]));
+    );
   }
 
   Widget buildMessage(BuildContext context) {
@@ -56,26 +61,27 @@ class DeleteLoadoutView extends StatelessWidget {
     return Container(
       color: context.theme.surfaceLayers.layer3,
       child: SafeArea(
-          minimum: EdgeInsets.all(12),
-          top: false,
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: bloc.cancel,
-                  child: Text("No".translate(context)),
-                ),
+        minimum: EdgeInsets.all(12),
+        top: false,
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: bloc.cancel,
+                child: Text("No".translate(context)),
               ),
-              SizedBox(width: 8),
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: context.theme.errorLayers),
-                  onPressed: bloc.delete,
-                  child: Text("Yes".translate(context)),
-                ),
-              )
-            ],
-          )),
+            ),
+            SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: context.theme.errorLayers),
+                onPressed: bloc.delete,
+                child: Text("Yes".translate(context)),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -83,13 +89,14 @@ class DeleteLoadoutView extends StatelessWidget {
     final loadout = bloc.loadout;
     if (loadout == null) return Container();
     return Container(
-        alignment: Alignment.center,
-        child: Container(
-          width: LoadoutListItemWidget.maxWidth,
-          padding: EdgeInsets.all(8),
-          child: IntrinsicHeight(
-            child: Container(child: LoadoutListItemWidget(loadout)),
-          ),
-        ));
+      alignment: Alignment.center,
+      child: Container(
+        width: LoadoutListItemWidget.maxWidth,
+        padding: EdgeInsets.all(8),
+        child: IntrinsicHeight(
+          child: Container(child: LoadoutListItemWidget(loadout)),
+        ),
+      ),
+    );
   }
 }

@@ -19,12 +19,13 @@ class DetailsItemSupersWidget extends StatelessWidget {
     final sockets = state.socketsForCategory(socketCategory);
     if (sockets == null) return Container();
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
-          persistenceID: 'item supers $socketCategoryHash',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
+        persistenceID: 'item supers $socketCategoryHash',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -34,7 +35,7 @@ class DetailsItemSupersWidget extends StatelessWidget {
         buildSupers(context),
         DetailsPlugInfoWidget(
           category: socketCategory,
-        )
+        ),
       ],
     );
   }
@@ -43,22 +44,25 @@ class DetailsItemSupersWidget extends StatelessWidget {
     final state = context.watch<SocketControllerBloc>();
     final sockets = state.socketsForCategory(socketCategory);
     if (sockets == null) return Container();
-    return Stack(children: [
-      Positioned.fill(
+    return Stack(
+      children: [
+        Positioned.fill(
           child: Image.asset(
-        "assets/imgs/perks_grid.png",
-        repeat: ImageRepeat.repeat,
-        alignment: Alignment.topCenter,
-        scale: 1,
-      )),
-      Container(
-        padding: EdgeInsets.all(4),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: sockets.map((e) => buildSocket(context, e)).toList(),
+            "assets/imgs/perks_grid.png",
+            repeat: ImageRepeat.repeat,
+            alignment: Alignment.topCenter,
+            scale: 1,
+          ),
         ),
-      ),
-    ]);
+        Container(
+          padding: EdgeInsets.all(4),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: sockets.map((e) => buildSocket(context, e)).toList(),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildSocket(BuildContext context, PlugSocket socket) {
@@ -67,21 +71,23 @@ class DetailsItemSupersWidget extends StatelessWidget {
     final itemHash = state.itemHash;
     if (itemHash == null) return Container();
     return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: socket.availablePlugHashes.map((plugHash) {
-          final isPlugSelectable = state.isSelectable(socket.index, plugHash);
-          return Container(
-              margin: EdgeInsets.all(4),
-              constraints: BoxConstraints(maxWidth: PerkIconWidget.maxIconSize, maxHeight: PerkIconWidget.maxIconSize),
-              child: SuperIconWidget(
-                plugItemHash: plugHash,
-                itemHash: itemHash,
-                selectable: isPlugSelectable,
-                available: state.isAvailable(socket.index, plugHash),
-                selected: state.isSelected(socket.index, plugHash),
-                equipped: state.isEquipped(socket.index, plugHash),
-                onTap: () => bloc.toggleSelection(socket.index, plugHash),
-              ));
-        }).toList());
+      mainAxisSize: MainAxisSize.min,
+      children: socket.availablePlugHashes.map((plugHash) {
+        final isPlugSelectable = state.isSelectable(socket.index, plugHash);
+        return Container(
+          margin: EdgeInsets.all(4),
+          constraints: BoxConstraints(maxWidth: PerkIconWidget.maxIconSize, maxHeight: PerkIconWidget.maxIconSize),
+          child: SuperIconWidget(
+            plugItemHash: plugHash,
+            itemHash: itemHash,
+            selectable: isPlugSelectable,
+            available: state.isAvailable(socket.index, plugHash),
+            selected: state.isSelected(socket.index, plugHash),
+            equipped: state.isEquipped(socket.index, plugHash),
+            onTap: () => bloc.toggleSelection(socket.index, plugHash),
+          ),
+        );
+      }).toList(),
+    );
   }
 }

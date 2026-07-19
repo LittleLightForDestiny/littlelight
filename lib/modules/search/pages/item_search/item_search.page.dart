@@ -26,11 +26,13 @@ class ItemSearchPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => SearchFilterBloc(context)),
-        ChangeNotifierProvider<SearchSorterBloc>(create: (context) {
-          final activeSorters =
-              context.read<UserSettingsBloc>().itemOrdering?.where((s) => s.active).toList() ?? <ItemSortParameter>[];
-          return SearchSorterBloc(context, activeSorters: activeSorters);
-        }),
+        ChangeNotifierProvider<SearchSorterBloc>(
+          create: (context) {
+            final activeSorters =
+                context.read<UserSettingsBloc>().itemOrdering?.where((s) => s.active).toList() ?? <ItemSortParameter>[];
+            return SearchSorterBloc(context, activeSorters: activeSorters);
+          },
+        ),
         ChangeNotifierProvider(
           create: (context) {
             final currentBucketGroup = this.currentBucketGroup;
@@ -38,13 +40,15 @@ class ItemSearchPage extends StatelessWidget {
             return ItemSearchBloc(context, bucketGroups: groups);
           },
         ),
-        Provider<ItemInteractionHandlerBloc>(create: (context) {
-          final bloc = context.read<ItemSearchBloc>();
-          return ItemInteractionHandlerBloc(
-            onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
-            onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
-          );
-        }),
+        Provider<ItemInteractionHandlerBloc>(
+          create: (context) {
+            final bloc = context.read<ItemSearchBloc>();
+            return ItemInteractionHandlerBloc(
+              onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
+              onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
+            );
+          },
+        ),
       ],
       builder: (context, _) => ItemSearchView(
         context.read<ItemSearchBloc>(),

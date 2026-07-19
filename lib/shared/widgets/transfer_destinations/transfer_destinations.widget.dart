@@ -82,12 +82,13 @@ class TransferDestinationsWidget extends StatelessWidget {
                   children: [
                     if (blocks.length == 1)
                       Expanded(
-                          child: buildCharacterBlock(
-                        context,
-                        expanded: true,
-                        side: _Side.Right,
-                        type: blocks[0],
-                      )),
+                        child: buildCharacterBlock(
+                          context,
+                          expanded: true,
+                          side: _Side.Right,
+                          type: blocks[0],
+                        ),
+                      ),
                     if (blocks.length > 1)
                       buildCharacterBlock(
                         context,
@@ -176,10 +177,11 @@ class TransferDestinationsWidget extends StatelessWidget {
         Container(height: 8),
         Row(
           mainAxisAlignment: side.mainAxisAlignment,
-          children: characters //
-              .map((c) => buildCharacterIcon(context, c, action))
-              .whereType<Widget>()
-              .toList(),
+          children:
+              characters //
+                  .map((c) => buildCharacterIcon(context, c, action))
+                  .whereType<Widget>()
+                  .toList(),
         ),
       ],
     );

@@ -15,12 +15,13 @@ class DetailsRecordObjectiveTrackingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Objective tracking".translate(context).toUpperCase()),
-          persistenceID: 'record objective tracking',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Objective tracking".translate(context).toUpperCase()),
+        persistenceID: 'record objective tracking',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {

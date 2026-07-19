@@ -6,37 +6,27 @@ part of 'd2_clarity_description.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-ClarityDescription _$ClarityDescriptionFromJson(Map<String, dynamic> json) =>
-    ClarityDescription(
-      linesContent: (json['linesContent'] as List<dynamic>?)
-          ?.map((e) => ClarityLineContent.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      classNames: (json['classNames'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e,
-              unknownValue: ClarityClassNames.Unknown))
-          .toList(),
-      table: (json['table'] as List<dynamic>?)
-          ?.map((e) => ClarityTableRow.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      isFormula: json['isFormula'] as bool?,
-      weaponTypes: (json['weaponTypes'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityWeaponTypeEnumMap, e,
-              unknownValue: ClarityWeaponType.Unknown))
-          .toList(),
-    );
+ClarityDescription _$ClarityDescriptionFromJson(Map<String, dynamic> json) => ClarityDescription(
+  linesContent: (json['linesContent'] as List<dynamic>?)
+      ?.map((e) => ClarityLineContent.fromJson(e as Map<String, dynamic>))
+      .toList(),
+  classNames: (json['classNames'] as List<dynamic>?)
+      ?.map((e) => $enumDecode(_$ClarityClassNamesEnumMap, e, unknownValue: ClarityClassNames.Unknown))
+      .toList(),
+  table: (json['table'] as List<dynamic>?)?.map((e) => ClarityTableRow.fromJson(e as Map<String, dynamic>)).toList(),
+  isFormula: json['isFormula'] as bool?,
+  weaponTypes: (json['weaponTypes'] as List<dynamic>?)
+      ?.map((e) => $enumDecode(_$ClarityWeaponTypeEnumMap, e, unknownValue: ClarityWeaponType.Unknown))
+      .toList(),
+);
 
-Map<String, dynamic> _$ClarityDescriptionToJson(ClarityDescription instance) =>
-    <String, dynamic>{
-      'linesContent': instance.linesContent,
-      'table': instance.table,
-      'isFormula': instance.isFormula,
-      'classNames': instance.classNames
-          ?.map((e) => _$ClarityClassNamesEnumMap[e]!)
-          .toList(),
-      'weaponTypes': instance.weaponTypes
-          ?.map((e) => _$ClarityWeaponTypeEnumMap[e]!)
-          .toList(),
-    };
+Map<String, dynamic> _$ClarityDescriptionToJson(ClarityDescription instance) => <String, dynamic>{
+  'linesContent': instance.linesContent,
+  'table': instance.table,
+  'isFormula': instance.isFormula,
+  'classNames': instance.classNames?.map((e) => _$ClarityClassNamesEnumMap[e]!).toList(),
+  'weaponTypes': instance.weaponTypes?.map((e) => _$ClarityWeaponTypeEnumMap[e]!).toList(),
+};
 
 const _$ClarityClassNamesEnumMap = {
   ClarityClassNames.Spacer: 'spacer',

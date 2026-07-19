@@ -18,8 +18,7 @@ class FilterRangeSliderWidget extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<FilterRangeSliderWidget> createState() =>
-      _FilterRangeSliderWidgetState();
+  State<FilterRangeSliderWidget> createState() => _FilterRangeSliderWidgetState();
 }
 
 class _FilterRangeSliderWidgetState extends State<FilterRangeSliderWidget> {
@@ -55,23 +54,24 @@ class _FilterRangeSliderWidgetState extends State<FilterRangeSliderWidget> {
         children: [
           Text("${availableMin.ceil()}"),
           Expanded(
-              child: RangeSlider(
-            values: RangeValues(min, max),
-            min: availableMin,
-            max: availableMax,
-            divisions: divisions,
-            labels: RangeLabels(min.ceil().toString(), max.ceil().toString()),
-            onChanged: (values) {
-              min = values.start;
-              max = values.end;
-              setState(() {});
-            },
-            onChangeEnd: (values) {
-              min = values.start;
-              max = values.end;
-              widget.onChange(values);
-            },
-          )),
+            child: RangeSlider(
+              values: RangeValues(min, max),
+              min: availableMin,
+              max: availableMax,
+              divisions: divisions,
+              labels: RangeLabels(min.ceil().toString(), max.ceil().toString()),
+              onChanged: (values) {
+                min = values.start;
+                max = values.end;
+                setState(() {});
+              },
+              onChangeEnd: (values) {
+                min = values.start;
+                max = values.end;
+                widget.onChange(values);
+              },
+            ),
+          ),
           Text("${availableMax.ceil()}"),
         ],
       ),

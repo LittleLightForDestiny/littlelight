@@ -22,11 +22,16 @@ class DeleteTagView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        child: Column(crossAxisAlignment: CrossAxisAlignment.start, mainAxisSize: MainAxisSize.min, children: [
-      buildMessage(context),
-      buildPreview(context),
-      buildActions(context),
-    ]));
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          buildMessage(context),
+          buildPreview(context),
+          buildActions(context),
+        ],
+      ),
+    );
   }
 
   Widget buildMessage(BuildContext context) {
@@ -47,36 +52,41 @@ class DeleteTagView extends StatelessWidget {
     return Container(
       color: context.theme.surfaceLayers.layer3,
       child: SafeArea(
-          minimum: EdgeInsets.all(12),
-          top: false,
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: bloc.cancel,
-                  child: Text("No".translate(context)),
-                ),
+        minimum: EdgeInsets.all(12),
+        top: false,
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                onPressed: bloc.cancel,
+                child: Text("No".translate(context)),
               ),
-              SizedBox(width: 8),
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: context.theme.errorLayers),
-                  onPressed: bloc.delete,
-                  child: Text("Yes".translate(context)),
-                ),
-              )
-            ],
-          )),
+            ),
+            SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: context.theme.errorLayers),
+                onPressed: bloc.delete,
+                child: Text("Yes".translate(context)),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
   Widget buildPreview(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(8),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
           TagIconWidget.fromTag(bloc.tag),
           SizedBox(width: 8),
           Flexible(child: TagPillWidget.fromTag(bloc.tag)),
-        ]));
+        ],
+      ),
+    );
   }
 }

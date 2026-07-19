@@ -21,12 +21,13 @@ class DetailsItemProgressWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Objectives".translate(context).toUpperCase()),
-          persistenceID: 'item objectives',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Objectives".translate(context).toUpperCase()),
+        persistenceID: 'item objectives',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(
@@ -37,13 +38,14 @@ class DetailsItemProgressWidget extends StatelessWidget {
     if (objectiveHashes == null || objectiveHashes.isEmpty) return Container();
     return Container(
       child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            ...objectiveHashes.map(
-              (oh) => buildObjective(context, oh),
-            ),
-            buildTrackButton(context),
-          ].whereType<Widget>().toList()),
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ...objectiveHashes.map(
+            (oh) => buildObjective(context, oh),
+          ),
+          buildTrackButton(context),
+        ].whereType<Widget>().toList(),
+      ),
     );
   }
 
@@ -57,13 +59,14 @@ class DetailsItemProgressWidget extends StatelessWidget {
     final objectives = itemInfo.objectives?.objectives;
     final objective = objectives?.firstWhere((element) => element.objectiveHash == objectiveHash);
     return Container(
-        padding: EdgeInsets.all(4).copyWith(top: 0),
-        child: ObjectiveWidget(
-          objectiveHash,
-          objective: objective,
-          forceComplete: forceCompletion,
-          placeholder: placeholder,
-        ));
+      padding: EdgeInsets.all(4).copyWith(top: 0),
+      child: ObjectiveWidget(
+        objectiveHash,
+        objective: objective,
+        forceComplete: forceCompletion,
+        placeholder: placeholder,
+      ),
+    );
   }
 
   Widget? buildTrackButton(BuildContext context) {

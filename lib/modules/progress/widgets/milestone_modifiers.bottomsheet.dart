@@ -45,28 +45,32 @@ class MilestoneModifierItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final def = context.definition<DestinyActivityModifierDefinition>(milestoneHash);
     final description = def?.displayProperties?.description;
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          if (def?.displayProperties?.hasIcon ?? false)
-            Container(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            if (def?.displayProperties?.hasIcon ?? false)
+              Container(
                 width: 24,
                 height: 24,
                 margin: EdgeInsets.only(right: 8),
-                child: ManifestImageWidget<DestinyActivityModifierDefinition>(milestoneHash)),
-          Expanded(child: ManifestText<DestinyActivityModifierDefinition>(milestoneHash)),
-        ],
-      ),
-      if (description != null)
-        Container(
-          padding: EdgeInsets.all(4),
-          child: ManifestText<DestinyActivityModifierDefinition>(
-            milestoneHash,
-            textExtractor: (def) => def.displayProperties?.description?.replaceAll('\n\n', '\n'),
-            style: context.textTheme.body,
-          ),
+                child: ManifestImageWidget<DestinyActivityModifierDefinition>(milestoneHash),
+              ),
+            Expanded(child: ManifestText<DestinyActivityModifierDefinition>(milestoneHash)),
+          ],
         ),
-    ]);
+        if (description != null)
+          Container(
+            padding: EdgeInsets.all(4),
+            child: ManifestText<DestinyActivityModifierDefinition>(
+              milestoneHash,
+              textExtractor: (def) => def.displayProperties?.description?.replaceAll('\n\n', '\n'),
+              style: context.textTheme.body,
+            ),
+          ),
+      ],
+    );
   }
 }

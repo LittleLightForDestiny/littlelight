@@ -8,8 +8,8 @@ class EditPriorityTagsView extends SelectTagsView {
     required EditPriorityTagsBloc bloc,
     required EditPriorityTagsBloc state,
   }) : super(
-          key: key,
-          bloc: bloc,
-          state: state,
-        );
+         key: key,
+         bloc: bloc,
+         state: state,
+       );
 }

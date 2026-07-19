@@ -32,13 +32,13 @@ class CharacterIconWidget extends BaseCharacterIconWidget {
     double borderWidth = characterIconDefaultBorderWidth,
     this.hideClassIcon = false,
   }) : super(
-          borderWidth: borderWidth,
-        );
+         borderWidth: borderWidth,
+       );
 
   @override
   Widget buildIcon(BuildContext context) => ManifestImageWidget<DestinyInventoryItemDefinition>(
-        character.character.emblemHash,
-      );
+    character.character.emblemHash,
+  );
 
   @override
   List<Positioned>? buildOverlays(BuildContext context) {
@@ -51,12 +51,13 @@ class CharacterIconWidget extends BaseCharacterIconWidget {
       if (isPlaying)
         Positioned(
           child: Container(
-              margin: EdgeInsets.all(borderWidth * 2),
-              decoration: CornerBadgeDecoration(
-                colors: [context.theme.achievementLayers.layer1],
-                badgeSize: 12.0,
-                position: CornerPosition.TopLeft,
-              )),
+            margin: EdgeInsets.all(borderWidth * 2),
+            decoration: CornerBadgeDecoration(
+              colors: [context.theme.achievementLayers.layer1],
+              badgeSize: 12.0,
+              position: CornerPosition.TopLeft,
+            ),
+          ),
         ),
       Positioned(
         left: borderWidth * 2,

@@ -31,13 +31,14 @@ class DetailsItemCoverEnergyMeterWidget extends DetailsEnergyMeterWidget {
     final sockets = state.socketsForCategory(socketCategory);
     if (sockets == null) return Container();
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 20 * pixelSize),
-        child: DetailsItemCoverPersistentCollapsibleContainer(
-          title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
-          persistenceID: 'item energy meter $socketCategoryHash',
-          content: buildContent(context),
-          pixelSize: pixelSize,
-        ));
+      margin: EdgeInsets.symmetric(vertical: 20 * pixelSize),
+      child: DetailsItemCoverPersistentCollapsibleContainer(
+        title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
+        persistenceID: 'item energy meter $socketCategoryHash',
+        content: buildContent(context),
+        pixelSize: pixelSize,
+      ),
+    );
   }
 
   @override
@@ -64,61 +65,72 @@ class DetailsItemCoverEnergyMeterWidget extends DetailsEnergyMeterWidget {
     final selectedAvailable = state.availableEnergyCapacity?.selected ?? 0;
     final options = socket.availablePlugHashes.where((element) => element != plugItemHash);
     final barBg = context.theme.onSurfaceLayers.layer3.mix(context.theme.surfaceLayers.layer3, 50);
-    return Stack(children: [
-      Row(children: [
-        Expanded(
-          child: Container(
-            height: energyBarSize,
-            padding: EdgeInsets.symmetric(horizontal: 16 * pixelSize),
-            color: barBg,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "$selectedAvailable",
-                  style: context.textTheme.itemPrimaryStatHighDensity.copyWith(fontSize: 36 * pixelSize),
+    return Stack(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                height: energyBarSize,
+                padding: EdgeInsets.symmetric(horizontal: 16 * pixelSize),
+                color: barBg,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "$selectedAvailable",
+                      style: context.textTheme.itemPrimaryStatHighDensity.copyWith(fontSize: 36 * pixelSize),
+                    ),
+                    Container(
+                      width: 16 * pixelSize,
+                    ),
+                    Text(
+                      "Energy".translate(context).toUpperCase(),
+                      style: context.textTheme.caption.copyWith(fontSize: 20 * pixelSize),
+                    ),
+                  ],
                 ),
-                Container(
-                  width: 16 * pixelSize,
-                ),
-                Text(
-                  "Energy".translate(context).toUpperCase(),
-                  style: context.textTheme.caption.copyWith(fontSize: 20 * pixelSize),
-                ),
-              ],
+              ),
+            ),
+            if (options.isNotEmpty)
+              Container(
+                foregroundDecoration: selectedAvailable > equippedAvailable
+                    ? BoxDecoration(
+                        border: Border.all(color: context.theme.primaryLayers.layer2, width: 8 * pixelSize),
+                      )
+                    : null,
+                margin: EdgeInsets.only(left: 8 * pixelSize),
+                padding: EdgeInsets.all(12 * pixelSize),
+                width: energyBarSize,
+                height: energyBarSize,
+                color: barBg,
+                child: Image.asset('assets/imgs/energy-type-icon.png'),
+              ),
+          ],
+        ),
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                final option = options.firstOrNull;
+                if (option == null) return;
+                context.read<SocketControllerBloc>().toggleSelection(socket.index, option);
+              },
             ),
           ),
         ),
-        if (options.isNotEmpty)
-          Container(
-            foregroundDecoration: selectedAvailable > equippedAvailable
-                ? BoxDecoration(border: Border.all(color: context.theme.primaryLayers.layer2, width: 8 * pixelSize))
-                : null,
-            margin: EdgeInsets.only(left: 8 * pixelSize),
-            padding: EdgeInsets.all(12 * pixelSize),
-            width: energyBarSize,
-            height: energyBarSize,
-            color: barBg,
-            child: Image.asset('assets/imgs/energy-type-icon.png'),
-          ),
-      ]),
-      Positioned.fill(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              final option = options.firstOrNull;
-              if (option == null) return;
-              context.read<SocketControllerBloc>().toggleSelection(socket.index, option);
-            },
-          ),
-        ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget buildEnergyPiece(
-      BuildContext context, int index, StatValues? available, StatValues? used, double animationValue) {
+    BuildContext context,
+    int index,
+    StatValues? available,
+    StatValues? used,
+    double animationValue,
+  ) {
     final theme = context.theme;
     final maxAvailable = max(available?.equipped ?? 0, available?.selected ?? 0);
     final maxUsed = max(used?.equipped ?? 0, used?.selected ?? 0);

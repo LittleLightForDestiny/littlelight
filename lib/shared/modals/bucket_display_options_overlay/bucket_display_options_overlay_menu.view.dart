@@ -33,9 +33,9 @@ class BucketDisplayOptionsOverlayMenuView extends BaseOverlayWidget {
   }) {
     const itemSize = 52.0;
     final currentValue = context.watch<ItemSectionOptionsBloc>().getDisplayTypeForItemSection(
-          identifier,
-          defaultValue: defaultValue,
-        );
+      identifier,
+      defaultValue: defaultValue,
+    );
     final selectedIndex = availableOptions.indexOf(currentValue).clamp(0, availableOptions.length - 1);
     double top = sourceTop - 2 - itemSize * selectedIndex;
     final height = itemSize * availableOptions.length;
@@ -48,28 +48,32 @@ class BucketDisplayOptionsOverlayMenuView extends BaseOverlayWidget {
       top = sourceTop - 2 - itemSize * (selectedIndex + difference);
     }
     final canEquip = availableOptions.contains(BucketDisplayType.OnlyEquipped);
-    return Stack(children: [
-      Positioned(
+    return Stack(
+      children: [
+        Positioned(
           right: sourceRight - 4,
           top: top,
           child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: availableOptions
-                  .map(
-                    (option) => SizedBox(
-                      height: itemSize,
-                      child: BucketDisplayMenuOptionWidget(
-                        option,
-                        canEquip: canEquip,
-                        onTap: () {
-                          Navigator.of(context).pop(option);
-                        },
-                        isSelected: option == currentValue,
-                      ),
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: availableOptions
+                .map(
+                  (option) => SizedBox(
+                    height: itemSize,
+                    child: BucketDisplayMenuOptionWidget(
+                      option,
+                      canEquip: canEquip,
+                      onTap: () {
+                        Navigator.of(context).pop(option);
+                      },
+                      isSelected: option == currentValue,
                     ),
-                  )
-                  .toList()))
-    ]);
+                  ),
+                )
+                .toList(),
+          ),
+        ),
+      ],
+    );
   }
 }
 

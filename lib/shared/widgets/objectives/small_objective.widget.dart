@@ -27,12 +27,13 @@ class SmallObjectiveWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Column(
-        children: [
-      buildProgressValue(context),
-      buildProgressBar(context),
-      Container(height: 2),
-      buildTitle(context),
-    ].whereType<Widget>().toList());
+      children: [
+        buildProgressValue(context),
+        buildProgressBar(context),
+        Container(height: 2),
+        buildTitle(context),
+      ].whereType<Widget>().toList(),
+    );
   }
 
   Widget? buildProgressValue(BuildContext context) {
@@ -63,15 +64,16 @@ class SmallObjectiveWidget extends StatelessWidget {
     final progress = objective?.progress ?? 0;
     final total = definition?.completionValue ?? 0;
     return Container(
-        height: 4,
-        color: context.theme.surfaceLayers.layer3,
-        alignment: Alignment.centerLeft,
-        child: progress > 0
-            ? FractionallySizedBox(
-                widthFactor: (progress / total).clamp(0, 1),
-                child: Container(color: getBarColor(context)),
-              )
-            : null);
+      height: 4,
+      color: context.theme.surfaceLayers.layer3,
+      alignment: Alignment.centerLeft,
+      child: progress > 0
+          ? FractionallySizedBox(
+              widthFactor: (progress / total).clamp(0, 1),
+              child: Container(color: getBarColor(context)),
+            )
+          : null,
+    );
   }
 
   Widget? buildTitle(BuildContext context) {

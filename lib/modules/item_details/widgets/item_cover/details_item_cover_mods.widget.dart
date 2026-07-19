@@ -14,7 +14,7 @@ class DetailsItemCoverModsWidget extends DetailsItemModsWidget {
   final double pixelSize;
   final DestinyItemSocketCategoryDefinition socketCategory;
   DetailsItemCoverModsWidget(DestinyItemSocketCategoryDefinition this.socketCategory, {this.pixelSize = 1})
-      : super(socketCategory);
+    : super(socketCategory);
 
   @override
   Widget build(BuildContext context) {
@@ -24,13 +24,14 @@ class DetailsItemCoverModsWidget extends DetailsItemModsWidget {
     if (sockets == null) return Container();
     final showEnergyBar = socketsHaveEnergyMasterwork(context, sockets);
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 10 * pixelSize),
-        child: DetailsItemCoverPersistentCollapsibleContainer(
-          title: buildTitle(context, showEnergyBar),
-          persistenceID: 'item cover mods $socketCategoryHash',
-          content: buildContent(context, showEnergyBar),
-          pixelSize: pixelSize,
-        ));
+      margin: EdgeInsets.symmetric(vertical: 10 * pixelSize),
+      child: DetailsItemCoverPersistentCollapsibleContainer(
+        title: buildTitle(context, showEnergyBar),
+        persistenceID: 'item cover mods $socketCategoryHash',
+        content: buildContent(context, showEnergyBar),
+        pixelSize: pixelSize,
+      ),
+    );
   }
 
   @override
@@ -54,48 +55,52 @@ class DetailsItemCoverModsWidget extends DetailsItemModsWidget {
     final equippedPlugHash = state.equippedPlugHashForSocket(socket.index);
     final isSocketSelected = state.selectedSocketIndex == socket.index;
     final selectedPlugHash = state.selectedPlugHashForSocket(socket.index);
-    return Stack(children: [
-      Container(
-        decoration: BoxDecoration(
-          color: isSocketSelected ? context.theme.onSurfaceLayers.layer0.withValues(alpha: .1) : Colors.transparent,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
-        ),
-        padding: EdgeInsets.all(8 * pixelSize),
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 96 * pixelSize, maxHeight: 96 * pixelSize),
-          child: equippedPlugHash != null && equippedPlugHash != 0
-              ? ModIconWidget(
-                  equippedPlugHash,
-                  selected: false,
-                  equipped: isSocketSelected,
-                  available: state.isAvailable(socket.index, equippedPlugHash),
-                  selectable: state.isSelectable(socket.index, equippedPlugHash),
-                  onTap: () => bloc.toggleSocketSelection(socket.index),
-                )
-              : Container(
-                  color: context.theme.onSurfaceLayers,
-                  padding: EdgeInsets.all(.5),
-                  child: Material(
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            color: isSocketSelected ? context.theme.onSurfaceLayers.layer0.withValues(alpha: .1) : Colors.transparent,
+            borderRadius: BorderRadius.vertical(top: Radius.circular(4)),
+          ),
+          padding: EdgeInsets.all(8 * pixelSize),
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 96 * pixelSize, maxHeight: 96 * pixelSize),
+            child: equippedPlugHash != null && equippedPlugHash != 0
+                ? ModIconWidget(
+                    equippedPlugHash,
+                    selected: false,
+                    equipped: isSocketSelected,
+                    available: state.isAvailable(socket.index, equippedPlugHash),
+                    selectable: state.isSelectable(socket.index, equippedPlugHash),
+                    onTap: () => bloc.toggleSocketSelection(socket.index),
+                  )
+                : Container(
+                    color: context.theme.onSurfaceLayers,
+                    padding: EdgeInsets.all(.5),
+                    child: Material(
                       color: context.theme.surfaceLayers.layer1,
                       child: InkWell(
                         onTap: () => bloc.toggleSocketSelection(socket.index),
-                      ))),
-        ),
-      ),
-      if (selectedPlugHash != null)
-        Positioned(
-          width: 40 * pixelSize,
-          height: 40 * pixelSize,
-          bottom: 4 * pixelSize,
-          right: 4 * pixelSize,
-          child: ModIconWidget(
-            selectedPlugHash,
-            selected: false,
-            equipped: true,
-            borderWidth: 2 * pixelSize,
+                      ),
+                    ),
+                  ),
           ),
         ),
-    ]);
+        if (selectedPlugHash != null)
+          Positioned(
+            width: 40 * pixelSize,
+            height: 40 * pixelSize,
+            bottom: 4 * pixelSize,
+            right: 4 * pixelSize,
+            child: ModIconWidget(
+              selectedPlugHash,
+              selected: false,
+              equipped: true,
+              borderWidth: 2 * pixelSize,
+            ),
+          ),
+      ],
+    );
   }
 
   Widget buildOptions(BuildContext context) {

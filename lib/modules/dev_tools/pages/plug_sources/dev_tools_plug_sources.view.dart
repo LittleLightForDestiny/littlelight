@@ -21,7 +21,7 @@ class DevToolsPlugSourcesViewItem extends StatelessWidget {
             height: 96,
             child: HighDensityInventoryItem(item.item),
           ),
-          buildSockets(context)
+          buildSockets(context),
         ],
       ),
     );
@@ -40,13 +40,16 @@ class DevToolsPlugSourcesViewItem extends StatelessWidget {
     if (plugs == null || plugs.isEmpty) return Container();
     return Row(
       children: plugs
-          .map((e) => Container(
+          .map(
+            (e) => Container(
               width: 24,
               height: 24,
               child: PerkIconWidget(
                 plugItemHash: e.plugItemHash ?? 0,
                 itemHash: item.item.itemHash ?? 0,
-              )))
+              ),
+            ),
+          )
           .toList(),
     );
   }
@@ -61,18 +64,19 @@ class DevToolsPlugSourcesView extends StatelessWidget {
         title: Text("Dev Tools Plug Sources check"),
         actions: [
           Container(
-              padding: EdgeInsets.all(8),
-              child: Row(
-                children: [
-                  Text("Only with Issues"),
-                  Container(
-                    width: 4,
-                  ),
-                  LLSwitch.callback(state.onlyWithIssues, (p0) {
-                    context.read<DevToolsPlugSourcesBloc>().onlyWithIssues = p0;
-                  })
-                ],
-              )),
+            padding: EdgeInsets.all(8),
+            child: Row(
+              children: [
+                Text("Only with Issues"),
+                Container(
+                  width: 4,
+                ),
+                LLSwitch.callback(state.onlyWithIssues, (p0) {
+                  context.read<DevToolsPlugSourcesBloc>().onlyWithIssues = p0;
+                }),
+              ],
+            ),
+          ),
         ],
       ),
       body: Stack(
