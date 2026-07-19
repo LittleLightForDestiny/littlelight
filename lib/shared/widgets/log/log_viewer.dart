@@ -24,6 +24,23 @@ extension on Level {
   }
 }
 
+class LogViewerOverlay extends StatelessWidget {
+  final Widget child;
+  final bool showLogViewer;
+  const LogViewerOverlay(this.child, {this.showLogViewer = false});
+
+  @override
+  Widget build(BuildContext context) {
+    if (!showLogViewer) return child;
+    return Stack(
+      children: [
+        child,
+        Positioned.fill(child: LogViewer()),
+      ],
+    );
+  }
+}
+
 class LogViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -56,16 +73,18 @@ class _LogViewerWidget extends StatelessWidget {
 
   Widget buildEntry(BuildContext context, LogEntry entry) {
     return DefaultTextStyle(
-        style: TextStyle(color: entry.level.color),
-        child: Container(
-          padding: EdgeInsets.all(8),
-          child: Column(
-              children: [
+      style: TextStyle(color: entry.level.color),
+      child: Container(
+        padding: EdgeInsets.all(8),
+        child: Column(
+          children: [
             buildMessage(context, entry),
             buildError(context, entry),
             buildStackTrace(context, entry),
-          ].whereType<Widget>().toList()),
-        ));
+          ].whereType<Widget>().toList(),
+        ),
+      ),
+    );
   }
 
   Widget? buildMessage(BuildContext context, LogEntry entry) {

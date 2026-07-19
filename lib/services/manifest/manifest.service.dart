@@ -98,7 +98,7 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     var type = DefinitionTableNames.fromClass[T];
     final map = <int, T>{
       for (final h in hashes)
-        if (h != null) h: _cached["${type}_$h"]
+        if (h != null) h: _cached["${type}_$h"],
     };
     return map;
   }
@@ -164,18 +164,22 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
       await for (var data in stream) {
         loaded += data.length;
         sink.add(data);
-        _controller.add(DownloadProgress(
-          downloadedBytes: loaded,
-          totalBytes: totalSize,
-        ));
+        _controller.add(
+          DownloadProgress(
+            downloadedBytes: loaded,
+            totalBytes: totalSize,
+          ),
+        );
       }
       await sink.flush();
       await sink.close();
-      _controller.add(DownloadProgress(
-        downloadedBytes: loaded,
-        totalBytes: totalSize,
-        downloaded: true,
-      ));
+      _controller.add(
+        DownloadProgress(
+          downloadedBytes: loaded,
+          totalBytes: totalSize,
+          downloaded: true,
+        ),
+      );
       List<int> unzippedData = await compute(_extractFromZip, zipFile);
       await currentLanguageStorage.saveManifestDatabase(unzippedData);
       await zipFile.delete();
@@ -189,8 +193,9 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
       }
       currentLanguageStorage.manifestVersion = manifestFileURL;
       _cached.clear();
-      _controller
-          .add(DownloadProgress(downloadedBytes: loaded, totalBytes: totalSize, downloaded: true, unzipped: true));
+      _controller.add(
+        DownloadProgress(downloadedBytes: loaded, totalBytes: totalSize, downloaded: true, unzipped: true),
+      );
     } catch (e, stackTrace) {
       analytics.registerNonFatal(e, stackTrace);
       _controller.add(DownloadError());
@@ -261,17 +266,22 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     return version;
   }
 
-  Future<Map<int, T>> searchDefinitions<T>(List<String>? parameters,
-      {int limit = 50, DefinitionTableIdentityFunction? identity}) async {
+  Future<Map<int, T>> searchDefinitions<T>(
+    List<String>? parameters, {
+    int limit = 50,
+    DefinitionTableIdentityFunction? identity,
+  }) async {
     final tableName = DefinitionTableNames.fromClass[T];
     identity ??= DefinitionTableNames.identities[T];
     Map<int, T> defs = {};
     Database? db = await _openDb();
     String? where;
     if (parameters != null && parameters.isNotEmpty) {
-      where = parameters.map((p) {
-        return "UPPER(json) LIKE UPPER(\"%$p%\")";
-      }).join(" AND ");
+      where = parameters
+          .map((p) {
+            return "UPPER(json) LIKE UPPER(\"%$p%\")";
+          })
+          .join(" AND ");
     }
     if (tableName == null) {
       throw ("no db table found for class $T");
@@ -280,8 +290,12 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
       throw ("no identity found for class $T");
     }
     try {
-      List<Map<String, dynamic>>? results =
-          await db?.query(tableName, columns: ['id', 'json'], where: where, limit: limit);
+      List<Map<String, dynamic>>? results = await db?.query(
+        tableName,
+        columns: ['id', 'json'],
+        where: where,
+        limit: limit,
+      );
       results?.forEach((res) {
         int id = res['id'];
         int hash = id < 0 ? id + 4294967296 : id;
@@ -322,8 +336,12 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
       throw ("no identity found for class $T");
     }
     try {
-      List<Map<String, dynamic>>? results =
-          await db?.query(tableName, columns: ['id', 'json'], where: "id in $idList", whereArgs: searchHashes);
+      List<Map<String, dynamic>>? results = await db?.query(
+        tableName,
+        columns: ['id', 'json'],
+        where: "id in $idList",
+        whereArgs: searchHashes,
+      );
       if (results == null) return <int, T>{};
       for (var res in results) {
         int id = res['id'];
@@ -368,8 +386,12 @@ class ManifestService extends ChangeNotifier with StorageConsumer, BungieApiCons
     int searchHash = hash > 2147483648 ? hash - 4294967296 : hash;
     Database? db = await _openDb();
     try {
-      List<Map<String, dynamic>>? results =
-          await db?.query(tableName, columns: ['json'], where: "id=?", whereArgs: [searchHash]);
+      List<Map<String, dynamic>>? results = await db?.query(
+        tableName,
+        columns: ['json'],
+        where: "id=?",
+        whereArgs: [searchHash],
+      );
       if (results == null || results.isEmpty) {
         return null;
       }

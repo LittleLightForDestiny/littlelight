@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
+import 'package:little_light/utils/replace_file_path_separators.dart';
 
 import 'language_storage.keys.dart';
 import 'storage.base.dart';
@@ -20,7 +21,8 @@ class LanguageStorage extends StorageBase<LanguageStorageKeys> {
 
   Future<String> _getManifestDBPath() async {
     final dbRoot = await getManifestDatabaseRootPath();
-    return "$dbRoot/$basePath/manifest.db";
+
+    return "$dbRoot/$basePath/manifest.db".fixFilePathSeparators();
   }
 
   set manifestVersion(String? manifestVersion) => setString(LanguageStorageKeys.manifestVersion, manifestVersion);

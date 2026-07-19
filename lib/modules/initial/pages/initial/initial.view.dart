@@ -5,6 +5,7 @@ import 'package:little_light/modules/initial/widgets/error.subpage.dart';
 import 'package:little_light/modules/initial/widgets/select_language.subpage.dart';
 import 'package:little_light/modules/initial/widgets/select_membership.subpage.dart';
 import 'package:little_light/modules/initial/widgets/select_wishlists.subpage.dart';
+import 'package:little_light/shared/widgets/log/log_viewer.dart';
 import 'package:little_light/widgets/common/loading_anim.widget.dart';
 import 'package:provider/provider.dart';
 
@@ -20,14 +21,17 @@ class InitialView extends StatefulWidget {
 class InitialViewState extends State<InitialView> {
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: Container(
-      decoration: const BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("assets/imgs/background.jpg"),
-          fit: BoxFit.cover,
+    body: LogViewerOverlay(
+      Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/imgs/background.jpg"),
+            fit: BoxFit.cover,
+          ),
         ),
+        child: Center(child: buildContent(context)),
       ),
-      child: Center(child: buildContent(context)),
+      showLogViewer: false,
     ),
   );
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:get_it/get_it.dart';
 import 'package:little_light/core/utils/logger/logger.wrapper.dart';
 import 'package:little_light/services/analytics/analytics.consumer.dart';
+import 'package:little_light/utils/replace_file_path_separators.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
@@ -24,14 +25,14 @@ abstract class StorageBase<T> with AnalyticsConsumer {
   String getPath(T? key) {
     var trailingSlash = (basePath.length) > 0 ? "/" : "";
     String keyPath = getKeyPath(key);
-    return "$basePath$trailingSlash$keyPath";
+    return "$basePath$trailingSlash$keyPath".fixFilePathSeparators();
   }
 
   String getFilePath(T? key, {StoredFileExtensions? extension}) {
     var trailingSlash = (basePath.length) > 0 ? "/" : "";
     String keyPath = getKeyPath(key);
     final fileExtension = extension?.extension != null ? ".${extension?.extension}" : "";
-    return "$_fileRoot/$basePath$trailingSlash$keyPath$fileExtension";
+    return "$_fileRoot/$basePath$trailingSlash$keyPath$fileExtension".fixFilePathSeparators();
   }
 
   StorageBase([this._path = ""]);
