@@ -1,3 +1,7 @@
+## [2.2.12] - 2026-07-19
+
+Fixes login and manifest download issues
+
 ## [2.2.10] - 2026-07-13
 
 - Small improvements for Monuments of Triumph

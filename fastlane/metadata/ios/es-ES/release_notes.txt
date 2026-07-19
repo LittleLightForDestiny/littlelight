@@ -1,1 +1,1 @@
-- Small improvements for Monuments of Triumph
+Fixes login and manifest download issues
