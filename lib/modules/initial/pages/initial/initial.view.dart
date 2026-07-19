@@ -21,19 +21,17 @@ class InitialView extends StatefulWidget {
 class InitialViewState extends State<InitialView> {
   @override
   Widget build(BuildContext context) => Scaffold(
-    body: Stack(
-      children: [
-        Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/imgs/background.jpg"),
-              fit: BoxFit.cover,
-            ),
+    body: LogViewerOverlay(
+      Container(
+        decoration: const BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("assets/imgs/background.jpg"),
+            fit: BoxFit.cover,
           ),
-          child: Center(child: buildContent(context)),
         ),
-        Positioned.fill(child: LogViewer()),
-      ],
+        child: Center(child: buildContent(context)),
+      ),
+      showLogViewer: false,
     ),
   );
 
