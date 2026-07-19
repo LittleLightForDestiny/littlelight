@@ -16,9 +16,9 @@ class RanksBloc extends ChangeNotifier {
   Map<String, List<DestinyProgression>>? _coreProgressions;
 
   RanksBloc(this.context)
-      : _profileBloc = context.read<ProfileBloc>(),
-        _gameDataBloc = context.read<LittleLightDataBloc>(),
-        _manifest = context.read<ManifestService>() {
+    : _profileBloc = context.read<ProfileBloc>(),
+      _gameDataBloc = context.read<LittleLightDataBloc>(),
+      _manifest = context.read<ManifestService>() {
     _init();
   }
 

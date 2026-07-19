@@ -33,8 +33,12 @@ class DevToolsManifest with StorageConsumer {
     List<int> hashes = [];
     if (db == null) return hashes;
     try {
-      List<Map<String, dynamic>> results =
-          await db.query(tableName, columns: ['id'], where: "json like ?", whereArgs: [pattern]);
+      List<Map<String, dynamic>> results = await db.query(
+        tableName,
+        columns: ['id'],
+        where: "json like ?",
+        whereArgs: [pattern],
+      );
       results.forEach((row) {
         final hash = row['id'].toInt();
         hashes.add(hash < 0 ? hash + (1 << 32) : hash);
@@ -57,16 +61,22 @@ class DevToolsManifest with StorageConsumer {
       if (testNumber == 1) {
         cursor = await db.queryCursor('DestinyInventoryItemDefinition', columns: ['json'], bufferSize: 50);
       } else if (testNumber == 2) {
-        cursor = await db.queryCursor('DestinyInventoryItemDefinition',
-            columns: ['json'], where: 'json LIKE ?', whereArgs: ['%gCategoryId%fragments%']);
+        cursor = await db.queryCursor(
+          'DestinyInventoryItemDefinition',
+          columns: ['json'],
+          where: 'json LIKE ?',
+          whereArgs: ['%gCategoryId%fragments%'],
+        );
       } else {
         // Buffer size must hold all rows when using where clause even with
         // cursor. Bug?
-        cursor = await db.queryCursor('DestinyInventoryItemDefinition',
-            columns: ['json'],
-            where: 'json LIKE ? or json LIKE ?',
-            whereArgs: ['%gCategoryId%fragments%', '%gCategoryId%aspects%'],
-            bufferSize: 500);
+        cursor = await db.queryCursor(
+          'DestinyInventoryItemDefinition',
+          columns: ['json'],
+          where: 'json LIKE ? or json LIKE ?',
+          whereArgs: ['%gCategoryId%fragments%', '%gCategoryId%aspects%'],
+          bufferSize: 500,
+        );
       }
       while (await cursor.moveNext()) {
         final Map<String, dynamic> row = cursor.current;
@@ -132,8 +142,10 @@ class DevToolsManifestPage extends StatelessWidget {
             ),
             ElevatedButton(
               onPressed: () async {
-                List<int> hashes = await DevToolsManifest.instance
-                    .getHashesByPatternSearch('DestinySocketTypeDefinition', '%masterworks.trackers%');
+                List<int> hashes = await DevToolsManifest.instance.getHashesByPatternSearch(
+                  'DestinySocketTypeDefinition',
+                  '%masterworks.trackers%',
+                );
                 logger.info("Got tracker hashes: ${hashes}");
               },
               style: ButtonStyle(visualDensity: VisualDensity.standard),

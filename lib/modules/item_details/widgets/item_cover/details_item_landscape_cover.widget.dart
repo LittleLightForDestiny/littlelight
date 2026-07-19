@@ -83,8 +83,8 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
   DetailsItemCoverDelegate({
     this.minHeight = 50,
     this.maxHeight = 200,
-  })  : lastUpdated = DateTime.now(),
-        super();
+  }) : lastUpdated = DateTime.now(),
+       super();
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -126,20 +126,21 @@ class ItemCoverContentsWidget extends StatelessWidget {
       backgroundColor = definition?.talentGrid?.hudDamageType?.getColorLayer(context);
     }
     return Container(
-        color: backgroundColor,
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-            buildBackground(context, expandRatio),
-            buildSecondaryIcon(context, expandRatio, pixelSize),
-            buildTierBar(context, expandRatio, pixelSize),
-            buildBackButton(context, expandRatio),
-            buildLeftColumn(context, expandRatio, pixelSize),
-            buildIcon(context, expandRatio, pixelSize),
-            buildNameAndType(context, expandRatio, pixelSize),
-            buildRightColumn(context, expandRatio, pixelSize),
-          ].whereType<Widget>().toList(),
-        ));
+      color: backgroundColor,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          buildBackground(context, expandRatio),
+          buildSecondaryIcon(context, expandRatio, pixelSize),
+          buildTierBar(context, expandRatio, pixelSize),
+          buildBackButton(context, expandRatio),
+          buildLeftColumn(context, expandRatio, pixelSize),
+          buildIcon(context, expandRatio, pixelSize),
+          buildNameAndType(context, expandRatio, pixelSize),
+          buildRightColumn(context, expandRatio, pixelSize),
+        ].whereType<Widget>().toList(),
+      ),
+    );
   }
 
   Widget? buildSecondaryIcon(BuildContext context, double expandRatio, double pixelSize) {
@@ -150,15 +151,17 @@ class ItemCoverContentsWidget extends StatelessWidget {
       return null;
     }
     return Positioned(
-        top: -540 * pixelSize * (1 - expandRatio),
-        left: 0,
-        width: 500 * pixelSize,
-        child: Opacity(
-            opacity: opacity * .5,
-            child: QueuedNetworkImage(
-              imageUrl: BungieApiService.url(imgUrl),
-              fit: BoxFit.cover,
-            )));
+      top: -540 * pixelSize * (1 - expandRatio),
+      left: 0,
+      width: 500 * pixelSize,
+      child: Opacity(
+        opacity: opacity * .5,
+        child: QueuedNetworkImage(
+          imageUrl: BungieApiService.url(imgUrl),
+          fit: BoxFit.cover,
+        ),
+      ),
+    );
   }
 
   Widget buildTierBar(BuildContext context, double expandRatio, double pixelSize) {
@@ -167,40 +170,43 @@ class ItemCoverContentsWidget extends StatelessWidget {
     final tierColor = definition?.inventory?.tierType?.getColor(context) ?? Colors.transparent;
     final topPadding = context.topPadding(expandRatio, pixelSize);
     return Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        child: Opacity(
-            opacity: expandRatio,
-            child: Column(
-              children: <Widget>[
-                Container(
-                  height: topPadding * .6,
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(
-                      colors: [
-                        tierColor.withValues(alpha: .6),
-                        tierColor.withValues(alpha: .3),
-                        Colors.transparent,
-                      ],
-                      stops: const [0, .7, 1],
-                    ),
-                  ),
+      top: 0,
+      left: 0,
+      right: 0,
+      child: Opacity(
+        opacity: expandRatio,
+        child: Column(
+          children: <Widget>[
+            Container(
+              height: topPadding * .6,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    tierColor.withValues(alpha: .6),
+                    tierColor.withValues(alpha: .3),
+                    Colors.transparent,
+                  ],
+                  stops: const [0, .7, 1],
                 ),
-                Container(
-                    height: topPadding * .1,
-                    decoration: BoxDecoration(
-                        gradient: LinearGradient(colors: [
-                      tierColor,
-                      tierColor.withValues(alpha: .3),
-                      Colors.transparent,
-                    ], stops: const [
-                      0,
-                      .7,
-                      1
-                    ]))),
-              ],
-            )));
+              ),
+            ),
+            Container(
+              height: topPadding * .1,
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    tierColor,
+                    tierColor.withValues(alpha: .3),
+                    Colors.transparent,
+                  ],
+                  stops: const [0, .7, 1],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildNamebarContents(BuildContext context, double expandRatio) {
@@ -221,10 +227,11 @@ class ItemCoverContentsWidget extends StatelessWidget {
                 ),
               ),
               border: Border(
-                  bottom: BorderSide(
-                color: context.theme.achievementLayers.layer2,
-                width: 3.5,
-              )),
+                bottom: BorderSide(
+                  color: context.theme.achievementLayers.layer2,
+                  width: 3.5,
+                ),
+              ),
             )
           : null,
       padding: EdgeInsets.only(left: nameLeftOffset + 8),
@@ -261,33 +268,35 @@ class ItemCoverContentsWidget extends StatelessWidget {
       textColor = context.theme.onSurfaceLayers;
     }
     return Positioned(
-        top: lerpDouble(paddingTop + 8, 96 * pixelSize, expandRatio),
-        left: lerpDouble(kToolbarHeight * 2, pixelSize * (96.0 * 2 + 24), expandRatio),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            SizedBox(
-                width: pixelSize * 1030,
-                child: Text(
-                  name.toUpperCase(),
-                  maxLines: 1,
-                  softWrap: false,
-                  overflow: TextOverflow.ellipsis,
-                  style: context.textTheme.itemNameScreenshot.copyWith(
-                    color: textColor?.withValues(alpha: .9),
-                    fontSize: lerpDouble(kToolbarHeight * .5, pixelSize * 74, expandRatio),
-                  ),
-                )),
-            Text(
-              definition?.itemTypeDisplayName?.toUpperCase() ?? "",
-              style: context.textTheme.itemTypeScreenshot.copyWith(
-                fontSize: lerpDouble(kToolbarHeight * .3, pixelSize * 34, expandRatio),
-                color: textColor?.withValues(alpha: .8),
+      top: lerpDouble(paddingTop + 8, 96 * pixelSize, expandRatio),
+      left: lerpDouble(kToolbarHeight * 2, pixelSize * (96.0 * 2 + 24), expandRatio),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          SizedBox(
+            width: pixelSize * 1030,
+            child: Text(
+              name.toUpperCase(),
+              maxLines: 1,
+              softWrap: false,
+              overflow: TextOverflow.ellipsis,
+              style: context.textTheme.itemNameScreenshot.copyWith(
+                color: textColor?.withValues(alpha: .9),
+                fontSize: lerpDouble(kToolbarHeight * .5, pixelSize * 74, expandRatio),
               ),
             ),
-          ],
-        ));
+          ),
+          Text(
+            definition?.itemTypeDisplayName?.toUpperCase() ?? "",
+            style: context.textTheme.itemTypeScreenshot.copyWith(
+              fontSize: lerpDouble(kToolbarHeight * .3, pixelSize * 34, expandRatio),
+              color: textColor?.withValues(alpha: .8),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildRightColumn(BuildContext context, double expandRatio, double pixelSize) {
@@ -298,24 +307,28 @@ class ItemCoverContentsWidget extends StatelessWidget {
     final top = context.topPadding(expandRatio, pixelSize);
     final bottom = context.bottomPadding(expandRatio, pixelSize);
     return Positioned(
-        top: top,
-        bottom: context.bottomPadding(expandRatio, pixelSize),
-        right: context.rightPadding(expandRatio, pixelSize),
-        child: SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            child: SizedBox(
-                height: height - top - bottom,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    buildManagementBlock(context, expandRatio, pixelSize),
-                    Expanded(
-                        child: DetailsItemCoverPlugInfoWidget(
-                      pixelSize: pixelSize,
-                    )),
-                    buildStatsBlock(context, expandRatio, pixelSize)
-                  ],
-                ))));
+      top: top,
+      bottom: context.bottomPadding(expandRatio, pixelSize),
+      right: context.rightPadding(expandRatio, pixelSize),
+      child: SingleChildScrollView(
+        physics: const NeverScrollableScrollPhysics(),
+        child: SizedBox(
+          height: height - top - bottom,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              buildManagementBlock(context, expandRatio, pixelSize),
+              Expanded(
+                child: DetailsItemCoverPlugInfoWidget(
+                  pixelSize: pixelSize,
+                ),
+              ),
+              buildStatsBlock(context, expandRatio, pixelSize),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildStatsBlock(BuildContext context, double expandRatio, double pixelSize) {
@@ -325,9 +338,9 @@ class ItemCoverContentsWidget extends StatelessWidget {
     final hasStats = definition?.investmentStats?.isNotEmpty ?? false;
     if (!hasPrimaryStatType && !hasStats) return Container();
     return Opacity(
-        opacity: expandRatio,
-        child: IntrinsicHeight(
-            child: Row(
+      opacity: expandRatio,
+      child: IntrinsicHeight(
+        child: Row(
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -340,7 +353,9 @@ class ItemCoverContentsWidget extends StatelessWidget {
               ),
             if (hasStats) DetailsItemCoverStatsWidget(pixelSize: pixelSize),
           ].whereType<Widget>().toList(),
-        )));
+        ),
+      ),
+    );
   }
 
   Widget buildBackButton(BuildContext context, double expandRatio) {
@@ -350,13 +365,14 @@ class ItemCoverContentsWidget extends StatelessWidget {
     final openColor = context.theme.onSurfaceLayers.layer0;
     final closedColor = isSubclass ? openColor : definition?.inventory?.tierType?.getTextColor(context) ?? openColor;
     return Positioned(
-        left: 0,
-        top: paddingTop,
-        width: kToolbarHeight,
-        height: kToolbarHeight,
-        child: BackButton(
-          color: closedColor.mix(openColor, (expandRatio * 100).ceil().clamp(0, 100)),
-        ));
+      left: 0,
+      top: paddingTop,
+      width: kToolbarHeight,
+      height: kToolbarHeight,
+      child: BackButton(
+        color: closedColor.mix(openColor, (expandRatio * 100).ceil().clamp(0, 100)),
+      ),
+    );
   }
 
   Widget buildLeftColumn(BuildContext context, double expandRatio, double pixelSize) {
@@ -367,31 +383,36 @@ class ItemCoverContentsWidget extends StatelessWidget {
     final closedTopPadding = kToolbarHeight * (1 - expandRatio);
     final topPadding = openTopPadding + closedTopPadding;
     return Positioned(
-        top: topPadding,
-        width: width,
-        left: context.leftPadding(expandRatio, pixelSize),
-        bottom: context.bottomPadding(expandRatio, pixelSize),
-        child: SingleChildScrollView(
-          primary: true,
-          child: Column(
-            children: [
-              Container(
-                margin: EdgeInsets.only(bottom: 20 * pixelSize),
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  definition?.flavorText ?? "",
-                  style: context.textTheme.quote.copyWith(fontSize: 20 * pixelSize),
-                ),
+      top: topPadding,
+      width: width,
+      left: context.leftPadding(expandRatio, pixelSize),
+      bottom: context.bottomPadding(expandRatio, pixelSize),
+      child: SingleChildScrollView(
+        primary: true,
+        child: Column(
+          children: [
+            Container(
+              margin: EdgeInsets.only(bottom: 20 * pixelSize),
+              alignment: Alignment.centerLeft,
+              child: Text(
+                definition?.flavorText ?? "",
+                style: context.textTheme.quote.copyWith(fontSize: 20 * pixelSize),
               ),
-              ...categories.map((c) => buildSocketCategory(context, expandRatio, pixelSize, c)),
-              buildItemSet(context, pixelSize),
-            ],
-          ),
-        ));
+            ),
+            ...categories.map((c) => buildSocketCategory(context, expandRatio, pixelSize, c)),
+            buildItemSet(context, pixelSize),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget buildSocketCategory(
-      BuildContext context, double expandRatio, double pixelSize, DestinyItemSocketCategoryDefinition category) {
+    BuildContext context,
+    double expandRatio,
+    double pixelSize,
+    DestinyItemSocketCategoryDefinition category,
+  ) {
     final categoryDef = context.definition<DestinySocketCategoryDefinition>(category.socketCategoryHash);
     final categoryStyle = categoryDef?.categoryStyle;
     if (categoryStyle == null) return Container();
@@ -419,7 +440,11 @@ class ItemCoverContentsWidget extends StatelessWidget {
     double opacity = expandRatio;
 
     return Positioned(
-        top: 0, bottom: 0, width: width, child: Opacity(opacity: opacity, child: buildBackgroundImage(context)));
+      top: 0,
+      bottom: 0,
+      width: width,
+      child: Opacity(opacity: opacity, child: buildBackgroundImage(context)),
+    );
   }
 
   Widget buildBackgroundImage(BuildContext context) {
@@ -472,28 +497,31 @@ class ItemCoverContentsWidget extends StatelessWidget {
           flex: 2,
           child: SizedBox(
             height: 60 * pixelSize,
-            child: Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-              if (icon != null)
-                Container(
-                  margin: EdgeInsets.only(right: 8 * pixelSize, top: 4 * pixelSize),
-                  alignment: Alignment.bottomCenter,
-                  child: Icon(
-                    icon,
-                    size: 60 * pixelSize,
-                    color: damageType?.getColorLayer(context).layer1,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                if (icon != null)
+                  Container(
+                    margin: EdgeInsets.only(right: 8 * pixelSize, top: 4 * pixelSize),
+                    alignment: Alignment.bottomCenter,
+                    child: Icon(
+                      icon,
+                      size: 60 * pixelSize,
+                      color: damageType?.getColorLayer(context).layer1,
+                    ),
                   ),
-                ),
-              if (primaryStatValue != null)
-                Text(
-                  "$primaryStatValue",
-                  style: context.textTheme.primaryStatValueScreenshot.copyWith(
-                    fontSize: 70 * pixelSize,
+                if (primaryStatValue != null)
+                  Text(
+                    "$primaryStatValue",
+                    style: context.textTheme.primaryStatValueScreenshot.copyWith(
+                      fontSize: 70 * pixelSize,
+                    ),
                   ),
-                ),
-            ]),
+              ],
+            ),
           ),
         ),
-        buildTracker(context, expandRatio, pixelSize)
+        buildTracker(context, expandRatio, pixelSize),
       ].whereType<Widget>().toList(),
     );
   }

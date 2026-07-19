@@ -54,8 +54,9 @@ class AnalyticsService with AuthConsumer {
   void updateCurrentUser() async {
     if (!PlatformCapabilities.firebaseAnalyticsAvailable) return;
     final membershipData = await auth.getMembershipData();
-    final currentMembership =
-        membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == auth.currentMembershipID);
+    final currentMembership = membershipData?.destinyMemberships?.firstWhereOrNull(
+      (m) => m.membershipId == auth.currentMembershipID,
+    );
     final membershipID = auth.currentMembershipID;
     final accountID = auth.currentAccountID;
     final membershipDisplayName = currentMembership?.displayName;

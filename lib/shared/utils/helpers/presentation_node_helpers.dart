@@ -98,7 +98,7 @@ PresentationNodeProgressData getPresentationNodeCompletionData(ProfileBloc profi
   final characterIds = profile.characters?.map((c) => c.characterId).whereType<String>() ?? <String>[];
 
   final charactersProgress = <String, DestinyPresentationNodeComponent?>{
-    for (final c in characterIds) c: profile.getCharacterPresentationNode(c, presentationNodeHash)
+    for (final c in characterIds) c: profile.getCharacterPresentationNode(c, presentationNodeHash),
   };
 
   final allEqual = charactersProgress.values.map((e) => e?.progressValue).whereType<int>().toSet().length <= 1;
@@ -127,7 +127,7 @@ CollectibleData getCollectibleData(ProfileBloc profile, int collectibleHash) {
   final characterIds = profile.characters?.map((c) => c.characterId).whereType<String>() ?? <String>[];
 
   final charactersCollectibles = <String, DestinyCollectibleComponent?>{
-    for (final c in characterIds) c: profile.getCharacterCollectible(c, collectibleHash)
+    for (final c in characterIds) c: profile.getCharacterCollectible(c, collectibleHash),
   };
 
   return CollectibleData(
@@ -141,7 +141,7 @@ RecordProgressData getRecordData(ProfileBloc profile, ObjectiveTrackingBloc trac
   final characterIds = profile.characters?.map((c) => c.characterId).whereType<String>() ?? <String>[];
 
   final charactersRecords = <String, DestinyRecordComponent?>{
-    for (final c in characterIds) c: profile.getCharacterRecord(c, recordHash)
+    for (final c in characterIds) c: profile.getCharacterRecord(c, recordHash),
   };
   return RecordProgressData(
     profile: profileRecord,

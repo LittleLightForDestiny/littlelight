@@ -22,7 +22,7 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
   final VoidCallback? onTap;
 
   const LoadoutSmallListItemWidget(this.loadout, {Key? key, this.classFilter, this.bucketFilter, this.onTap})
-      : super(key: key);
+    : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -36,28 +36,30 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
       ),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(4),
-        child: Stack(children: [
-          Positioned.fill(child: buildBackground(context)),
-          Container(
-            padding: EdgeInsets.all(2),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                buildTitle(context),
-                buildItems(context),
-              ],
-            ),
-          ),
-          Positioned.fill(
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: onTap,
+        child: Stack(
+          children: [
+            Positioned.fill(child: buildBackground(context)),
+            Container(
+              padding: EdgeInsets.all(2),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  buildTitle(context),
+                  buildItems(context),
+                ],
               ),
             ),
-          )
-        ]),
+            Positioned.fill(
+              child: Material(
+                color: Colors.transparent,
+                child: InkWell(
+                  onTap: onTap,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -77,21 +79,23 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
 
   Widget buildTitle(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(4),
-        alignment: Alignment.centerLeft,
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.withValues(alpha: .7),
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Text(
-          loadout.name.toUpperCase(),
-          style: context.textTheme.highlight,
-        ));
+      padding: const EdgeInsets.all(4),
+      alignment: Alignment.centerLeft,
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.withValues(alpha: .7),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Text(
+        loadout.name.toUpperCase(),
+        style: context.textTheme.highlight,
+      ),
+    );
   }
 
   Widget buildItems(BuildContext context) {
-    final items = (loadout.getEquippedItems(null) + loadout.getNonEquippedItems())
-        .where((element) => element.inventoryItem != null);
+    final items = (loadout.getEquippedItems(null) + loadout.getNonEquippedItems()).where(
+      (element) => element.inventoryItem != null,
+    );
     return Container(
       padding: EdgeInsets.all(4),
       child: Wrap(
@@ -117,12 +121,13 @@ class LoadoutSmallListItemWidget extends StatelessWidget {
       }
     }
     return Container(
-        width: 32,
-        height: 32,
-        margin: EdgeInsets.only(right: 1),
-        child: InventoryItemIcon(
-          item,
-          borderSize: .5,
-        ));
+      width: 32,
+      height: 32,
+      margin: EdgeInsets.only(right: 1),
+      child: InventoryItemIcon(
+        item,
+        borderSize: .5,
+      ),
+    );
   }
 }

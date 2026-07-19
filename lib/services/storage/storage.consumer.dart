@@ -30,7 +30,8 @@ extension Storages on StorageConsumer {
     final membershipID = globalStorage.currentMembershipID;
     if (membershipID == null) {
       throw NotInitializedException(
-          Exception("currentMembershipStorage was called before currentMembershipID was set"));
+        Exception("currentMembershipStorage was called before currentMembershipID was set"),
+      );
     }
     return getInjectedMembershipStorage(membershipID);
   }

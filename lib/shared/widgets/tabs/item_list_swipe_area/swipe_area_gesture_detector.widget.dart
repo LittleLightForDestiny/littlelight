@@ -24,7 +24,7 @@ class SwipeAreaGestureDetector extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         Flexible(flex: threshold, child: buildScrollSection(context, top)),
-        Flexible(flex: 100 - threshold, child: buildScrollSection(context, bottom))
+        Flexible(flex: 100 - threshold, child: buildScrollSection(context, bottom)),
       ],
     );
   }

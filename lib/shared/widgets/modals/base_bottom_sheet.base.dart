@@ -20,14 +20,17 @@ abstract class BaseBottomSheet<ReturnType> extends StatelessWidget {
           right: context.mediaQuery.padding.right,
           bottom: context.mediaQuery.viewInsets.bottom,
         ),
-        child: Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-          if (header != null)
-            Container(
-              padding: EdgeInsets.all(8),
-              child: HeaderWidget(child: header),
-            ),
-          Flexible(child: buildContent(context)),
-        ]),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (header != null)
+              Container(
+                padding: EdgeInsets.all(8),
+                child: HeaderWidget(child: header),
+              ),
+            Flexible(child: buildContent(context)),
+          ],
+        ),
       );
     });
   }

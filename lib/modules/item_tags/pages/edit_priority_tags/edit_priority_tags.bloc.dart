@@ -12,9 +12,9 @@ class EditPriorityTagsBloc extends SelectTagsBloc {
   final BuildContext _context;
 
   EditPriorityTagsBloc(this._context)
-      : this._itemNotes = _context.read<ItemNotesBloc>(),
-        this._userSettings = _context.read<UserSettingsBloc>(),
-        super(_context) {
+    : this._itemNotes = _context.read<ItemNotesBloc>(),
+      this._userSettings = _context.read<UserSettingsBloc>(),
+      super(_context) {
     _init();
   }
   void _init() {
@@ -44,8 +44,8 @@ class EditPriorityTagsBloc extends SelectTagsBloc {
 
   @override
   List<ItemNotesTag> get tagsToRemove => _itemNotes.tagsByIds(
-        _userSettings.priorityTags?.whereType<String>().toSet() ?? <String>{},
-      );
+    _userSettings.priorityTags?.whereType<String>().toSet() ?? <String>{},
+  );
 
   @override
   List<ItemNotesTag> get tagsToAdd {

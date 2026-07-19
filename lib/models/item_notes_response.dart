@@ -9,9 +9,7 @@ class NotesResponse {
   List<ItemNotes> notes;
   List<ItemNotesTag> tags;
 
-  NotesResponse({List<ItemNotes>? notes, List<ItemNotesTag>? tags})
-      : notes = notes ?? [],
-        tags = tags ?? [];
+  NotesResponse({List<ItemNotes>? notes, List<ItemNotesTag>? tags}) : notes = notes ?? [], tags = tags ?? [];
 
   factory NotesResponse.fromJson(Map<String, dynamic> json) => _$NotesResponseFromJson(json);
 

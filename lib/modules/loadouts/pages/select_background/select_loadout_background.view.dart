@@ -35,10 +35,12 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
     if (nodesDefinitions == null) return LoadingAnimWidget();
     return MultiSectionScrollView(
       nodesDefinitions
-          .map((def) => [
-                buildCategoryHeaderSection(def),
-                buildCategoryItemsSection(context, def.hash!),
-              ])
+          .map(
+            (def) => [
+              buildCategoryHeaderSection(def),
+              buildCategoryItemsSection(context, def.hash!),
+            ],
+          )
           .flattened
           .whereType<ScrollableSection>()
           .toList(),
@@ -49,10 +51,10 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
   }
 
   ScrollableSection buildCategoryHeaderSection(DestinyPresentationNodeDefinition nodeDef) => FixedHeightScrollSection(
-        60,
-        itemBuilder: (context, _) => buildCategoryItem(context, nodeDef),
-        itemCount: 1,
-      );
+    60,
+    itemBuilder: (context, _) => buildCategoryItem(context, nodeDef),
+    itemCount: 1,
+  );
 
   ScrollableSection? buildCategoryItemsSection(BuildContext context, int hash) {
     final state = context.watch<SelectLoadoutBackgroundBloc>();
@@ -81,27 +83,34 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
         child: Container(
           alignment: Alignment.centerLeft,
           decoration: BoxDecoration(
-            gradient: LinearGradient(begin: const Alignment(0, 0), end: const Alignment(1, 2), colors: [
-              color.withValues(alpha: .05),
-              color.withValues(alpha: .1),
-              color.withValues(alpha: .03),
-              color.withValues(alpha: .1)
-            ]),
+            gradient: LinearGradient(
+              begin: const Alignment(0, 0),
+              end: const Alignment(1, 2),
+              colors: [
+                color.withValues(alpha: .05),
+                color.withValues(alpha: .1),
+                color.withValues(alpha: .03),
+                color.withValues(alpha: .1),
+              ],
+            ),
             border: Border.all(color: color, width: 1),
           ),
           padding: const EdgeInsets.all(16),
-          child: Row(children: [
-            Expanded(
+          child: Row(
+            children: [
+              Expanded(
                 child: Text(
-              "${def.displayProperties?.name}",
-              style: context.textTheme.subtitle,
-            )),
-            ManifestText<DestinyObjectiveDefinition>(
-              def.objectiveHash!,
-              textExtractor: (def) => "${def.completionValue}",
-              style: context.textTheme.subtitle,
-            )
-          ]),
+                  "${def.displayProperties?.name}",
+                  style: context.textTheme.subtitle,
+                ),
+              ),
+              ManifestText<DestinyObjectiveDefinition>(
+                def.objectiveHash!,
+                textExtractor: (def) => "${def.completionValue}",
+                style: context.textTheme.subtitle,
+              ),
+            ],
+          ),
         ),
         onTap: () => context.read<SelectLoadoutBackgroundBloc>().toggleCategory(def.hash!),
       ),
@@ -117,15 +126,16 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
       key: Key('emblem_$hash'),
       children: [
         Positioned.fill(
-            child: Container(
-          decoration: BoxDecoration(
-            border: Border.all(color: color, width: 1),
+          child: Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: color, width: 1),
+            ),
+            child: QueuedNetworkImage.fromBungie(
+              url,
+              fit: BoxFit.cover,
+            ),
           ),
-          child: QueuedNetworkImage.fromBungie(
-            url,
-            fit: BoxFit.cover,
-          ),
-        )),
+        ),
         Material(
           color: Colors.transparent,
           child: InkWell(
@@ -133,7 +143,7 @@ class SelectLoadoutBackgroundView extends StatelessWidget {
               Navigator.of(context).pop(hash);
             },
           ),
-        )
+        ),
       ],
     );
   }

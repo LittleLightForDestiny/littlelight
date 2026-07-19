@@ -6,8 +6,9 @@ class CollectionsSubcategoryPageRoute extends MaterialPageRoute {
     int categoryPresentationNodeHash, {
     List<int>? parentNodeHashes,
   }) : super(
-            builder: (context) => CollectionsSubcategoryPage(
-                  categoryPresentationNodeHash,
-                  parentNodeHashes: parentNodeHashes,
-                ));
+         builder: (context) => CollectionsSubcategoryPage(
+           categoryPresentationNodeHash,
+           parentNodeHashes: parentNodeHashes,
+         ),
+       );
 }

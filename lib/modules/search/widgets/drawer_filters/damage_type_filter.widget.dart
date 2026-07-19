@@ -43,17 +43,18 @@ class DamageTypeFilterWidget extends BaseDrawerFilterWidget<DamageTypeFilterOpti
             selected: values.contains(DamageType.None),
             onTap: () => updateOption(context, data, DamageType.None, false),
             onLongPress: () => updateOption(context, data, DamageType.None, true),
-          )
+          ),
       ],
     );
   }
 
   Widget buildIcon(BuildContext context, DamageType type) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: Icon(
-          type.icon,
-          color: type.getColorLayer(context).layer3,
-        ));
+      padding: EdgeInsets.all(4),
+      child: Icon(
+        type.icon,
+        color: type.getColorLayer(context).layer3,
+      ),
+    );
   }
 }

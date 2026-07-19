@@ -56,14 +56,17 @@ class LoadoutItemOptionsView extends StatelessWidget {
 
   Widget buildLoadout(BuildContext context) {
     return Column(
-      children: state.loadout?.values
-              .map((e) => e != null
-                  ? Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                      child: HighDensityInventoryItem(e),
-                      height: InventoryItemWidgetDensity.High.itemHeight,
-                    )
-                  : Container())
+      children:
+          state.loadout?.values
+              .map(
+                (e) => e != null
+                    ? Container(
+                        margin: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        child: HighDensityInventoryItem(e),
+                        height: InventoryItemWidgetDensity.High.itemHeight,
+                      )
+                    : Container(),
+              )
               .toList() ??
           [],
     );
@@ -71,11 +74,15 @@ class LoadoutItemOptionsView extends StatelessWidget {
 
   Widget buildOptions(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: context.mediaQuery.padding.bottom, top: 8),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      padding: EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: context.mediaQuery.padding.bottom, top: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
           buildRollButton(context),
           buildItemsToInclude(context),
-        ]));
+        ],
+      ),
+    );
   }
 
   Widget buildRollButton(BuildContext context) {
@@ -83,44 +90,54 @@ class LoadoutItemOptionsView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(children: [
-            buildItemTypeSwitch(
-              context,
-              Text("Show items".translate(context)),
-              state.showItems,
-              (value) => bloc.showItems = value,
-            )
-          ]),
+          Row(
+            children: [
+              buildItemTypeSwitch(
+                context,
+                Text("Show items".translate(context)),
+                state.showItems,
+                (value) => bloc.showItems = value,
+              ),
+            ],
+          ),
           Container(height: 4),
-          Row(children: [
-            Expanded(
+          Row(
+            children: [
+              Expanded(
                 child: ElevatedButton(
-                    onPressed: () => bloc.roll(),
-                    child: Text(
-                      "Randomize".translate(context),
-                      softWrap: false,
-                    ))),
-            Container(
-              width: 4,
-            ),
-            Expanded(
+                  onPressed: () => bloc.roll(),
+                  child: Text(
+                    "Randomize".translate(context),
+                    softWrap: false,
+                  ),
+                ),
+              ),
+              Container(
+                width: 4,
+              ),
+              Expanded(
                 child: ElevatedButton(
-                    onPressed: () => bloc.select(),
-                    child: Text(
-                      "Select".translate(context),
-                      softWrap: false,
-                    ))),
-            Container(
-              width: 4,
-            ),
-            Expanded(
+                  onPressed: () => bloc.select(),
+                  child: Text(
+                    "Select".translate(context),
+                    softWrap: false,
+                  ),
+                ),
+              ),
+              Container(
+                width: 4,
+              ),
+              Expanded(
                 child: ElevatedButton(
-                    onPressed: () => bloc.equip(),
-                    child: Text(
-                      "Equip".translate(context),
-                      softWrap: false,
-                    ))),
-          ]),
+                  onPressed: () => bloc.equip(),
+                  child: Text(
+                    "Equip".translate(context),
+                    softWrap: false,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -180,7 +197,7 @@ class LoadoutItemOptionsView extends StatelessWidget {
               SizedBox(
                 width: 4,
               ),
-              LLSwitch.callback(value, setValue)
+              LLSwitch.callback(value, setValue),
             ],
             mainAxisSize: MainAxisSize.min,
           ),

@@ -577,9 +577,7 @@ class MediumDensityInventoryItem extends StatelessWidget with WishlistsConsumer,
             child: ClipRect(
               child: Transform.translate(
                 offset: const Offset(-6, -4),
-                child: Icon(ammoType?.icon,
-                color: ammoType?.color,
-                size: (textStyle.fontSize ?? 16.0) + 4),
+                child: Icon(ammoType?.icon, color: ammoType?.color, size: (textStyle.fontSize ?? 16.0) + 4),
               ),
             ),
           ),

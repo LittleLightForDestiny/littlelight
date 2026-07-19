@@ -103,8 +103,9 @@ class ProfileInfoState extends State<ProfileInfoWidget>
 
   loadUser() async {
     UserMembershipData? membershipData = await auth.getMembershipData();
-    GroupUserInfoCard? currentMembership =
-        membershipData?.destinyMemberships?.firstWhereOrNull((m) => m.membershipId == auth.currentMembershipID);
+    GroupUserInfoCard? currentMembership = membershipData?.destinyMemberships?.firstWhereOrNull(
+      (m) => m.membershipId == auth.currentMembershipID,
+    );
     if (!mounted) return;
     setState(() {
       account = membershipData;
@@ -113,15 +114,17 @@ class ProfileInfoState extends State<ProfileInfoWidget>
   }
 
   Widget buildProfileInfo(BuildContext context) {
-    return Stack(children: [
-      Column(
-        children: <Widget>[
-          SizedBox(height: 150, child: background(context)),
-          SizedBox(height: kToolbarHeight, child: profileInfo(context)),
-        ],
-      ),
-      Positioned(left: 8, bottom: 8, width: 72, height: 72, child: profilePicture(context))
-    ]);
+    return Stack(
+      children: [
+        Column(
+          children: <Widget>[
+            SizedBox(height: 150, child: background(context)),
+            SizedBox(height: kToolbarHeight, child: profileInfo(context)),
+          ],
+        ),
+        Positioned(left: 8, bottom: 8, width: 72, height: 72, child: profilePicture(context)),
+      ],
+    );
   }
 
   Widget get shimmer => const DefaultLoadingShimmer();
@@ -141,22 +144,25 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     return Stack(
       children: <Widget>[
         Positioned.fill(
-            child: url != null
-                ? QueuedNetworkImage(
-                    imageUrl: url,
-                    placeholder: shimmer,
-                    fit: BoxFit.cover,
-                  )
-                : Container()),
+          child: url != null
+              ? QueuedNetworkImage(
+                  imageUrl: url,
+                  placeholder: shimmer,
+                  fit: BoxFit.cover,
+                )
+              : Container(),
+        ),
         Container(
           decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: const [Colors.black26, Colors.transparent, Colors.transparent, Colors.black54],
-                  stops: const [0, .2, .7, 1])),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: const [Colors.black26, Colors.transparent, Colors.transparent, Colors.black54],
+              stops: const [0, .2, .7, 1],
+            ),
+          ),
         ),
-        Positioned(bottom: 4, left: 88, right: 4, child: buildActivityInfo(context))
+        Positioned(bottom: 4, left: 88, right: 4, child: buildActivityInfo(context)),
       ],
     );
   }
@@ -177,58 +183,66 @@ class ProfileInfoState extends State<ProfileInfoWidget>
     if (lastPlayedCharacter == null) return Container();
     final activities = lastPlayedCharacter.activities;
     if (activities?.currentActivityHash == 82913930) {
-      return ManifestText<DestinyPlaceDefinition>(2961497387,
-          textExtractor: (def) => "${def.displayProperties?.description}",
-          style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold));
+      return ManifestText<DestinyPlaceDefinition>(
+        2961497387,
+        textExtractor: (def) => "${def.displayProperties?.description}",
+        style: TextStyle(fontSize: 12, color: Colors.grey.shade100, fontWeight: FontWeight.bold),
+      );
     }
     final activityModeHash = activities?.currentActivityModeHash;
     final activityHash = activities?.currentActivityHash;
-    return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-      activityModeHash != null
-          ? ManifestText<DestinyActivityModeDefinition>(activityModeHash, style: context.textTheme.caption)
-          : Container(),
-      activityHash != null
-          ? ManifestText<DestinyActivityDefinition>(
-              activityHash,
-              style: context.textTheme.highlight,
-            )
-          : Container(),
-    ]);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        activityModeHash != null
+            ? ManifestText<DestinyActivityModeDefinition>(activityModeHash, style: context.textTheme.caption)
+            : Container(),
+        activityHash != null
+            ? ManifestText<DestinyActivityDefinition>(
+                activityHash,
+                style: context.textTheme.highlight,
+              )
+            : Container(),
+      ],
+    );
   }
 
   Widget profilePicture(BuildContext context) {
     String? url = BungieApiService.url(account?.bungieNetUser?.profilePicturePath);
 
     return Container(
-        decoration: BoxDecoration(
-            color: context.theme.surfaceLayers.layer0,
-            border: Border.all(width: 2, color: context.theme.surfaceLayers.layer3)),
-        child: url == null
-            ? shimmer
-            : QueuedNetworkImage(
-                imageUrl: url,
-                placeholder: shimmer,
-                fit: BoxFit.cover,
-              ));
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer0,
+        border: Border.all(width: 2, color: context.theme.surfaceLayers.layer3),
+      ),
+      child: url == null
+          ? shimmer
+          : QueuedNetworkImage(
+              imageUrl: url,
+              placeholder: shimmer,
+              fit: BoxFit.cover,
+            ),
+    );
   }
 
   Widget profileInfo(context) {
     bool isCrossSaveAccount = membership?.membershipId == account?.primaryMembershipId;
     PlatformData? platform = isCrossSaveAccount ? PlatformData.crossPlayData : membership?.membershipType?.data;
     return Container(
-        color: platform?.color,
-        padding: const EdgeInsets.only(left: 80),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: <Widget>[
-            Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: Icon(platform?.icon)),
-            Expanded(child: Text(membership?.displayName ?? "")),
-            IconButton(
-              enableFeedback: false,
-              icon: Transform.rotate(angle: -(_heightFactor?.value ?? 0) * 1.5, child: const Icon(Icons.settings)),
-              onPressed: _handleTap,
-            )
-          ],
-        ));
+      color: platform?.color,
+      padding: const EdgeInsets.only(left: 80),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: <Widget>[
+          Padding(padding: const EdgeInsets.symmetric(horizontal: 8), child: Icon(platform?.icon)),
+          Expanded(child: Text(membership?.displayName ?? "")),
+          IconButton(
+            enableFeedback: false,
+            icon: Transform.rotate(angle: -(_heightFactor?.value ?? 0) * 1.5, child: const Icon(Icons.settings)),
+            onPressed: _handleTap,
+          ),
+        ],
+      ),
+    );
   }
 }

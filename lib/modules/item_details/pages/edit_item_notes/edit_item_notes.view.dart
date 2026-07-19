@@ -25,26 +25,27 @@ class EditItemNotesView extends StatelessWidget {
     return Container(
       color: context.theme.surfaceLayers.layer3,
       child: SafeArea(
-          minimum: EdgeInsets.all(12),
-          top: false,
-          child: Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: context.theme.errorLayers),
-                  onPressed: bloc.cancel,
-                  child: Text("Cancel".translate(context)),
-                ),
+        minimum: EdgeInsets.all(12),
+        top: false,
+        child: Row(
+          children: [
+            Expanded(
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(backgroundColor: context.theme.errorLayers),
+                onPressed: bloc.cancel,
+                child: Text("Cancel".translate(context)),
               ),
-              SizedBox(width: 8),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: bloc.save,
-                  child: Text("Save".translate(context)),
-                ),
-              )
-            ],
-          )),
+            ),
+            SizedBox(width: 8),
+            Expanded(
+              child: ElevatedButton(
+                onPressed: bloc.save,
+                child: Text("Save".translate(context)),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 

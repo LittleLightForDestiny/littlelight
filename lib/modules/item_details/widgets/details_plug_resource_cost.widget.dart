@@ -17,18 +17,20 @@ class DetailsPlugResourceCostWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final itemDef = context.definition<DestinyInventoryItemDefinition>(plugHash);
-    final materialRequirementDef =
-        context.definition<DestinyMaterialRequirementSetDefinition>(itemDef?.plug?.insertionMaterialRequirementHash);
+    final materialRequirementDef = context.definition<DestinyMaterialRequirementSetDefinition>(
+      itemDef?.plug?.insertionMaterialRequirementHash,
+    );
     final materials = materialRequirementDef?.materials;
     if (materials == null || materials.isEmpty) return Container();
     return Container(
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer0,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        margin: EdgeInsets.only(top: 4),
-        padding: EdgeInsets.all(4),
-        child: buildTable(context, materials));
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer0,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      margin: EdgeInsets.only(top: 4),
+      padding: EdgeInsets.all(4),
+      child: buildTable(context, materials),
+    );
   }
 
   Widget buildTable(BuildContext context, List<DestinyMaterialRequirement> materials) {
@@ -43,28 +45,31 @@ class DetailsPlugResourceCostWidget extends StatelessWidget {
   }
 
   TableRow buildStatRow(BuildContext context, DestinyMaterialRequirement requirement) {
-    return TableRow(children: [
-      Container(
+    return TableRow(
+      children: [
+        Container(
           width: 16,
           height: 16,
           child: ManifestImageWidget<DestinyInventoryItemDefinition>(
             requirement.itemHash,
-          )),
-      ManifestText<DestinyInventoryItemDefinition>(
-        requirement.itemHash,
-        softWrap: false,
-        style: context.textTheme.caption,
-      ),
-      Text("${requirement.count}"),
-    ]);
+          ),
+        ),
+        ManifestText<DestinyInventoryItemDefinition>(
+          requirement.itemHash,
+          softWrap: false,
+          style: context.textTheme.caption,
+        ),
+        Text("${requirement.count}"),
+      ],
+    );
   }
 
   Widget buildStatValue(BuildContext context, int value, StatDifferenceType diffType) {
     final color = diffType == StatDifferenceType.Neutral
         ? context.theme.onSurfaceLayers.layer0
         : diffType == StatDifferenceType.Positive
-            ? context.theme.successLayers.layer3
-            : context.theme.errorLayers.layer3;
+        ? context.theme.successLayers.layer3
+        : context.theme.errorLayers.layer3;
     final text = value > 0 ? "+$value" : "$value";
     return Text(
       text,

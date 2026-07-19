@@ -6,7 +6,7 @@ import 'package:little_light/core/routes/pages.dart';
 
 const Map<String, LittleLightRoutePage> _segmentsToPage = {
   "login": LittleLightRoutePage.Login,
-  "": LittleLightRoutePage.Main
+  "": LittleLightRoutePage.Main,
 };
 
 class LittleLightRouteParser {

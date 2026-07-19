@@ -14,17 +14,20 @@ class CollectiblesSearchPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<CollectiblesSearchBloc>(
-            create: (context) => CollectiblesSearchBloc(
-                  context,
-                  rootNode,
-                )),
-        Provider<ItemInteractionHandlerBloc>(create: (context) {
-          final bloc = context.read<CollectiblesSearchBloc>();
-          return ItemInteractionHandlerBloc(
-            onTap: (item) => bloc.onCollectibleTap(item),
-            onHold: (item) => bloc.onCollectibleHold(item),
-          );
-        }),
+          create: (context) => CollectiblesSearchBloc(
+            context,
+            rootNode,
+          ),
+        ),
+        Provider<ItemInteractionHandlerBloc>(
+          create: (context) {
+            final bloc = context.read<CollectiblesSearchBloc>();
+            return ItemInteractionHandlerBloc(
+              onTap: (item) => bloc.onCollectibleTap(item),
+              onHold: (item) => bloc.onCollectibleHold(item),
+            );
+          },
+        ),
       ],
       builder: (context, _) => CollectiblesSearchView(
         context.read<CollectiblesSearchBloc>(),

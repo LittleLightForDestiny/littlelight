@@ -37,25 +37,23 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
     return AspectRatio(
       aspectRatio: 1,
       child: Stack(
-        children:
-            [
-              buildBorder(context),
-              Container(
-                padding: EdgeInsets.all(borderSize),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children:
-                      [
-                        buildBackground(context),
-                        buildIconImage(context),
-                        buildMasterworkOverlay(context),
-                        buildSeasonOverlay(context),
-                        buildCraftedWeaponOverlay(context),
-                        buildGearTier(context),
-                      ].whereType<Widget>().toList(),
-                ),
-              ),
-            ].whereType<Widget>().toList(),
+        children: [
+          buildBorder(context),
+          Container(
+            padding: EdgeInsets.all(borderSize),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                buildBackground(context),
+                buildIconImage(context),
+                buildMasterworkOverlay(context),
+                buildSeasonOverlay(context),
+                buildCraftedWeaponOverlay(context),
+                buildGearTier(context),
+              ].whereType<Widget>().toList(),
+            ),
+          ),
+        ].whereType<Widget>().toList(),
       ),
     );
   }
@@ -216,7 +214,9 @@ class InventoryItemIcon extends StatelessWidget with ManifestConsumer {
               fit: BoxFit.cover,
             ),
           ),
-          Positioned.fill(child: Padding(padding: EdgeInsets.all(borderSize), child: buildIconImage(context))),
+          Positioned.fill(
+            child: Padding(padding: EdgeInsets.all(borderSize), child: buildIconImage(context)),
+          ),
           Positioned.fill(
             child: Padding(
               padding: EdgeInsets.all(borderSize),

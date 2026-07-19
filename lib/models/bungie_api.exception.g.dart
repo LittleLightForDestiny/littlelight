@@ -6,25 +6,25 @@ part of 'bungie_api.exception.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-BungieApiError _$BungieApiErrorFromJson(Map<String, dynamic> json) =>
-    BungieApiError(
-      errorCode: $enumDecodeNullable(
-          _$PlatformErrorCodesEnumMap, json['ErrorCode'],
-          unknownValue: PlatformErrorCodes.ProtectedInvalidEnumValue),
-      errorStatus: json['ErrorStatus'] as String?,
-      error: json['error'] as String?,
-      message: json['Message'] as String?,
-      errorDescription: json['error_description'] as String?,
-    );
+BungieApiError _$BungieApiErrorFromJson(Map<String, dynamic> json) => BungieApiError(
+  errorCode: $enumDecodeNullable(
+    _$PlatformErrorCodesEnumMap,
+    json['ErrorCode'],
+    unknownValue: PlatformErrorCodes.ProtectedInvalidEnumValue,
+  ),
+  errorStatus: json['ErrorStatus'] as String?,
+  error: json['error'] as String?,
+  message: json['Message'] as String?,
+  errorDescription: json['error_description'] as String?,
+);
 
-Map<String, dynamic> _$BungieApiErrorToJson(BungieApiError instance) =>
-    <String, dynamic>{
-      'ErrorCode': _$PlatformErrorCodesEnumMap[instance.errorCode],
-      'ErrorStatus': instance.errorStatus,
-      'error': instance.error,
-      'Message': instance.message,
-      'error_description': instance.errorDescription,
-    };
+Map<String, dynamic> _$BungieApiErrorToJson(BungieApiError instance) => <String, dynamic>{
+  'ErrorCode': _$PlatformErrorCodesEnumMap[instance.errorCode],
+  'ErrorStatus': instance.errorStatus,
+  'error': instance.error,
+  'Message': instance.message,
+  'error_description': instance.errorDescription,
+};
 
 const _$PlatformErrorCodesEnumMap = {
   PlatformErrorCodes.None: 0,
@@ -775,8 +775,7 @@ const _$PlatformErrorCodesEnumMap = {
   PlatformErrorCodes.ClanFireteamScheduledFireteamsDisabled: 3017,
   PlatformErrorCodes.ClanFireteamNotReadyForInvitesNotScheduledYet: 3018,
   PlatformErrorCodes.ClanFireteamNotReadyForInvitesClosed: 3019,
-  PlatformErrorCodes.ClanFireteamScheduledFireteamsRequireAdminPermissions:
-      3020,
+  PlatformErrorCodes.ClanFireteamScheduledFireteamsRequireAdminPermissions: 3020,
   PlatformErrorCodes.ClanFireteamNonPublicMustHaveClan: 3021,
   PlatformErrorCodes.ClanFireteamPublicCreationRestriction: 3022,
   PlatformErrorCodes.ClanFireteamAlreadyJoined: 3023,
@@ -805,10 +804,8 @@ const _$PlatformErrorCodesEnumMap = {
   PlatformErrorCodes.CrossSaveThresholdExceeded: 3208,
   PlatformErrorCodes.CrossSaveIncompatibleMembershipType: 3209,
   PlatformErrorCodes.CrossSaveCouldNotFindLinkedAccountForMembershipType: 3210,
-  PlatformErrorCodes.CrossSaveCouldNotCreateDestinyProfileForMembershipType:
-      3211,
-  PlatformErrorCodes.CrossSaveErrorCreatingDestinyProfileForMembershipType:
-      3212,
+  PlatformErrorCodes.CrossSaveCouldNotCreateDestinyProfileForMembershipType: 3211,
+  PlatformErrorCodes.CrossSaveErrorCreatingDestinyProfileForMembershipType: 3212,
   PlatformErrorCodes.CrossSaveCannotOverrideSelf: 3213,
   PlatformErrorCodes.CrossSaveRecentSilverPurchase: 3214,
   PlatformErrorCodes.CrossSaveSilverBalanceNegative: 3215,

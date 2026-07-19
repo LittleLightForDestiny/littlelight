@@ -59,18 +59,17 @@ class EquipLoadoutQuickmenuView extends StatelessWidget {
   Widget buildOptions(BuildContext context) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8).copyWith(bottom: context.mediaQuery.padding.bottom, top: 8),
-      child:
-          context.mediaQuery.tabletOrBigger
-              ? IntrinsicHeight(
-                child: Row(
-                  children: [
-                    Expanded(child: buildFreeSlotsSlider(context)),
-                    SizedBox(width: 8),
-                    Expanded(child: buildItemsToInclude(context)),
-                  ],
-                ),
-              )
-              : Column(children: [buildFreeSlotsSlider(context), buildItemsToInclude(context)]),
+      child: context.mediaQuery.tabletOrBigger
+          ? IntrinsicHeight(
+              child: Row(
+                children: [
+                  Expanded(child: buildFreeSlotsSlider(context)),
+                  SizedBox(width: 8),
+                  Expanded(child: buildItemsToInclude(context)),
+                ],
+              ),
+            )
+          : Column(children: [buildFreeSlotsSlider(context), buildItemsToInclude(context)]),
     );
   }
 

@@ -17,10 +17,10 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
   final List<DestinyCharacterInfo?> characters;
   final OnCharacterSelect? onSelect;
   const CharacterVerticalTabMenuWidget(this.characters, CustomTabController controller, {this.onSelect})
-      : super(
-          controller,
-          direction: Axis.vertical,
-        );
+    : super(
+        controller,
+        direction: Axis.vertical,
+      );
 
   @override
   double getButtonSize(BuildContext context) => _buttonHeight;
@@ -28,18 +28,22 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
   @override
   Widget build(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(boxShadow: [
+      decoration: BoxDecoration(
+        boxShadow: [
           BoxShadow(
             color: context.theme.secondarySurfaceLayers.layer3,
             blurRadius: 3,
-          )
-        ]),
-        child: ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: SizedBox(
-              width: 256.0,
-              child: super.build(context),
-            )));
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: SizedBox(
+          width: 256.0,
+          child: super.build(context),
+        ),
+      ),
+    );
   }
 
   @override
@@ -119,13 +123,14 @@ class CharacterVerticalTabMenuWidget extends CustomTabMenu {
   @override
   Widget buildSelectedIndicator(BuildContext context) {
     return Container(
-        alignment: Alignment.centerLeft,
-        child: Container(
-          margin: const EdgeInsets.only(left: 2),
-          width: 2,
-          height: _buttonHeight - 16,
-          color: context.theme.onSurfaceLayers.layer0,
-        ));
+      alignment: Alignment.centerLeft,
+      child: Container(
+        margin: const EdgeInsets.only(left: 2),
+        width: 2,
+        height: _buttonHeight - 16,
+        color: context.theme.onSurfaceLayers.layer0,
+      ),
+    );
   }
 
   @override

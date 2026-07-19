@@ -51,13 +51,13 @@ class EquipRandomLoadoutBloc extends ChangeNotifier {
   List<int>? _exoticSlots;
 
   EquipRandomLoadoutBloc(this._context, this.character)
-      : profileBloc = _context.read<ProfileBloc>(),
-        manifest = _context.read<ManifestService>(),
-        valueStore = _context.read<ScopedValueRepositoryBloc>(),
-        inventory = _context.read<InventoryBloc>(),
-        selectionBloc = _context.read<SelectionBloc>(),
-        settings = _context.read<UserSettingsBloc>(),
-        super() {
+    : profileBloc = _context.read<ProfileBloc>(),
+      manifest = _context.read<ManifestService>(),
+      valueStore = _context.read<ScopedValueRepositoryBloc>(),
+      inventory = _context.read<InventoryBloc>(),
+      selectionBloc = _context.read<SelectionBloc>(),
+      settings = _context.read<UserSettingsBloc>(),
+      super() {
     _init();
   }
 
@@ -103,7 +103,7 @@ class EquipRandomLoadoutBloc extends ChangeNotifier {
     final slots = [
       InventoryBucket.subclass,
       ...InventoryBucket.weaponBucketHashes,
-      ...InventoryBucket.armorBucketHashes
+      ...InventoryBucket.armorBucketHashes,
     ];
     final items = <int, List<InventoryItemInfo>>{};
     final exotics = <int, List<InventoryItemInfo>>{};
@@ -142,8 +142,9 @@ class EquipRandomLoadoutBloc extends ChangeNotifier {
     }
 
     final exoticWeaponSlots = exoticSlots.where((s) => InventoryBucket.weaponBucketHashes.contains(s)).toList();
-    final mixedExoticWeaponSlots =
-        mixedExoticSlots.where((s) => InventoryBucket.weaponBucketHashes.contains(s)).toList();
+    final mixedExoticWeaponSlots = mixedExoticSlots
+        .where((s) => InventoryBucket.weaponBucketHashes.contains(s))
+        .toList();
     int? exoticWeaponSlot = exoticWeaponSlots[Random().nextInt(exoticWeaponSlots.length)];
     if (mixedExoticWeaponSlots.length > 0) {
       exoticWeaponSlot = mixedExoticWeaponSlots[Random().nextInt(mixedExoticWeaponSlots.length)];

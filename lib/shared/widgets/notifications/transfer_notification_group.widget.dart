@@ -37,10 +37,9 @@ class TransferNotificationGroup extends StatelessWidget {
     final active = notifications.where((n) => n.active).toList();
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
-      children:
-          active.reversed.map((notification) {
-            return buildActiveNotification(context, notification);
-          }).toList(),
+      children: active.reversed.map((notification) {
+        return buildActiveNotification(context, notification);
+      }).toList(),
     );
   }
 

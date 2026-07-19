@@ -14,13 +14,14 @@ class Loadout {
   @JsonKey(name: 'updated_at')
   DateTime? updatedAt;
 
-  Loadout(
-      {this.assignedId,
-      this.name = "",
-      this.emblemHash,
-      this.equipped = const [],
-      this.unequipped = const [],
-      this.updatedAt});
+  Loadout({
+    this.assignedId,
+    this.name = "",
+    this.emblemHash,
+    this.equipped = const [],
+    this.unequipped = const [],
+    this.updatedAt,
+  });
 
   factory Loadout.fromJson(dynamic json) {
     return _$LoadoutFromJson(json);

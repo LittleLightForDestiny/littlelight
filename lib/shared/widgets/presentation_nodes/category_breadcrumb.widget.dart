@@ -18,20 +18,29 @@ class CategoryBreadcrumbWidget extends StatelessWidget implements PreferredSizeW
   @override
   Widget build(BuildContext context) {
     return Container(
-        constraints: const BoxConstraints.expand(height: 32),
-        child: Material(
-            color: context.theme.secondarySurfaceLayers.layer2,
-            elevation: 0,
-            child: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Container(
-                    padding: const EdgeInsets.all(8),
-                    child: Row(
-                        children: categoryHashes
-                            .mapIndexed<Widget>((index, hash) => Row(children: [
-                                  ManifestText<DestinyPresentationNodeDefinition>(hash),
-                                  if (index < categoryHashes.length - 1) Text(' // ')
-                                ]))
-                            .toList())))));
+      constraints: const BoxConstraints.expand(height: 32),
+      child: Material(
+        color: context.theme.secondarySurfaceLayers.layer2,
+        elevation: 0,
+        child: SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Container(
+            padding: const EdgeInsets.all(8),
+            child: Row(
+              children: categoryHashes
+                  .mapIndexed<Widget>(
+                    (index, hash) => Row(
+                      children: [
+                        ManifestText<DestinyPresentationNodeDefinition>(hash),
+                        if (index < categoryHashes.length - 1) Text(' // '),
+                      ],
+                    ),
+                  )
+                  .toList(),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

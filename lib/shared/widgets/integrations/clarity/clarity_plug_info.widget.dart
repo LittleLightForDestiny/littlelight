@@ -109,7 +109,10 @@ class ClarityPlugInfoWidget extends StatelessWidget {
   Widget? buildDescription(BuildContext context, ClarityDescription description) {
     final lines = description.linesContent;
     if (lines == null) return null;
-    return Container(padding: EdgeInsets.only(bottom: 4), child: RichText(text: buildLineContents(context, lines)));
+    return Container(
+      padding: EdgeInsets.only(bottom: 4),
+      child: RichText(text: buildLineContents(context, lines)),
+    );
   }
 
   InlineSpan buildLineContents(BuildContext context, List<ClarityLineContent> lines) {
@@ -142,12 +145,14 @@ class ClarityPlugInfoWidget extends StatelessWidget {
       style: style,
     );
     return WidgetSpan(
-        child: Material(
-            color: Colors.transparent,
-            child: InkWell(
-              child: textWidget,
-              onTap: () => launchUrlString(link),
-            )));
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          child: textWidget,
+          onTap: () => launchUrlString(link),
+        ),
+      ),
+    );
   }
 
   List<WidgetSpan> buildIcons(BuildContext context, List<ClarityClassNames> classNames) {

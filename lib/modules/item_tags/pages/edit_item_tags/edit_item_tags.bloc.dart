@@ -12,8 +12,8 @@ class EditItemTagsBloc extends SelectTagsBloc {
   final BuildContext _context;
 
   EditItemTagsBloc(this._context, this.itemHash, this.itemInstanceId)
-      : this._itemNotesBloc = _context.read<ItemNotesBloc>(),
-        super(_context) {
+    : this._itemNotesBloc = _context.read<ItemNotesBloc>(),
+      super(_context) {
     _init();
   }
   void _init() {

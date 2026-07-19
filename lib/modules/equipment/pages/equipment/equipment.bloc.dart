@@ -73,10 +73,10 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
   _EquipmentState _equipmentState = _EquipmentState();
 
   EquipmentBloc(this._context)
-      : _profileBloc = _context.read<ProfileBloc>(),
-        _selectionBloc = _context.read<SelectionBloc>(),
-        _userSettingsBloc = _context.read<UserSettingsBloc>(),
-        _itemNotesBloc = _context.read<ItemNotesBloc>() {
+    : _profileBloc = _context.read<ProfileBloc>(),
+      _selectionBloc = _context.read<SelectionBloc>(),
+      _userSettingsBloc = _context.read<UserSettingsBloc>(),
+      _itemNotesBloc = _context.read<ItemNotesBloc>() {
     _init();
   }
   _init() {
@@ -214,10 +214,12 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
   }
 
   void openSearch(EquipmentBucketGroup? currentBucketGroup, DestinyClass? classType) {
-    Navigator.of(_context).push(ItemSearchPageRoute(
-      currentBucketGroup,
-      classType,
-    ));
+    Navigator.of(_context).push(
+      ItemSearchPageRoute(
+        currentBucketGroup,
+        classType,
+      ),
+    );
   }
 
   int? get vaultItemCount => _profileBloc.vaultItemCount;
@@ -225,15 +227,18 @@ class EquipmentBloc extends ChangeNotifier with ManifestConsumer, LittleLightDat
   void openContextMenu(CustomTabController characterTabController, CustomTabController? typeTabController) {
     final characters = this.characters;
     if (characters == null) return;
-    Navigator.of(_context).push(CharacterContextMenuModalRoute(
-      characterTabController,
-      characters: characters,
-      onSearchTap: () {
-        final currentBucketGroup =
-            typeTabController != null ? EquipmentBucketGroup.values[typeTabController.index] : null;
-        final currentClassType = characters[characterTabController.index]?.character.classType;
-        openSearch(currentBucketGroup, currentClassType);
-      },
-    ));
+    Navigator.of(_context).push(
+      CharacterContextMenuModalRoute(
+        characterTabController,
+        characters: characters,
+        onSearchTap: () {
+          final currentBucketGroup = typeTabController != null
+              ? EquipmentBucketGroup.values[typeTabController.index]
+              : null;
+          final currentClassType = characters[characterTabController.index]?.character.classType;
+          openSearch(currentBucketGroup, currentClassType);
+        },
+      ),
+    );
   }
 }

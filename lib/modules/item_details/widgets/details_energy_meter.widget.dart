@@ -26,12 +26,13 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
     final sockets = state.socketsForCategory(socketCategory);
     if (sockets == null) return Container();
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
-          persistenceID: 'item perks $socketCategoryHash',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
+        persistenceID: 'item perks $socketCategoryHash',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -41,7 +42,7 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
         buildEnergyCapacities(context),
         DetailsPlugInfoWidget(
           category: socketCategory,
-        )
+        ),
       ],
     );
   }
@@ -73,10 +74,12 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
   }
 
   Widget buildPlug(BuildContext context, PlugSocket socket, int plugItemHash) {
-    return Column(children: [
-      buildMainInfo(context, socket, plugItemHash),
-      buildBars(context, plugItemHash),
-    ]);
+    return Column(
+      children: [
+        buildMainInfo(context, socket, plugItemHash),
+        buildBars(context, plugItemHash),
+      ],
+    );
   }
 
   Widget buildMainInfo(BuildContext context, PlugSocket socket, int plugItemHash) {
@@ -85,57 +88,61 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
     final selectedAvailable = state.availableEnergyCapacity?.selected ?? 0;
     final options = socket.availablePlugHashes.where((element) => element != plugItemHash);
     final barBg = context.theme.onSurfaceLayers.layer3.mix(context.theme.surfaceLayers.layer3, 50);
-    return Stack(children: [
-      Row(children: [
-        Expanded(
-          child: Container(
-            height: _energyBarSize,
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-            color: barBg,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  "$selectedAvailable",
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+    return Stack(
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Container(
+                height: _energyBarSize,
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                color: barBg,
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    Text(
+                      "$selectedAvailable",
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
+                    ),
+                    Container(
+                      width: 4,
+                    ),
+                    Text(
+                      "Energy".translate(context).toUpperCase(),
+                      style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
+                    ),
+                  ],
                 ),
-                Container(
-                  width: 4,
-                ),
-                Text(
-                  "Energy".translate(context).toUpperCase(),
-                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 16),
-                ),
-              ],
+              ),
+            ),
+            if (options.isNotEmpty)
+              Container(
+                foregroundDecoration: selectedAvailable > equippedAvailable
+                    ? BoxDecoration(border: Border.all(color: context.theme.primaryLayers.layer2, width: 4))
+                    : null,
+                margin: EdgeInsets.only(left: 4),
+                padding: EdgeInsets.all(8),
+                width: _energyBarSize,
+                height: _energyBarSize,
+                color: barBg,
+                child: Image.asset('assets/imgs/energy-type-icon.png'),
+              ),
+          ],
+        ),
+        Positioned.fill(
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                final option = options.firstOrNull;
+                if (option == null) return;
+                context.read<SocketControllerBloc>().toggleSelection(socket.index, option);
+              },
             ),
           ),
         ),
-        if (options.isNotEmpty)
-          Container(
-            foregroundDecoration: selectedAvailable > equippedAvailable
-                ? BoxDecoration(border: Border.all(color: context.theme.primaryLayers.layer2, width: 4))
-                : null,
-            margin: EdgeInsets.only(left: 4),
-            padding: EdgeInsets.all(8),
-            width: _energyBarSize,
-            height: _energyBarSize,
-            color: barBg,
-            child: Image.asset('assets/imgs/energy-type-icon.png'),
-          ),
-      ]),
-      Positioned.fill(
-        child: Material(
-          color: Colors.transparent,
-          child: InkWell(
-            onTap: () {
-              final option = options.firstOrNull;
-              if (option == null) return;
-              context.read<SocketControllerBloc>().toggleSelection(socket.index, option);
-            },
-          ),
-        ),
-      ),
-    ]);
+      ],
+    );
   }
 
   Widget buildBars(BuildContext context, int plugItemHash) {
@@ -144,13 +151,14 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
     final used = state.usedEnergyCapacity;
     return PingPongAnimationBuilder(
       (controller) => Container(
-          padding: const EdgeInsets.only(top: 4),
-          child: Row(
-            children: List.generate(
-              10,
-              (index) => Expanded(child: buildEnergyPiece(context, index, total, used, controller.value)),
-            ),
-          )),
+        padding: const EdgeInsets.only(top: 4),
+        child: Row(
+          children: List.generate(
+            10,
+            (index) => Expanded(child: buildEnergyPiece(context, index, total, used, controller.value)),
+          ),
+        ),
+      ),
       playing: true,
       duration: Duration(seconds: 1),
     );
@@ -173,7 +181,12 @@ class DetailsEnergyMeterWidget extends StatelessWidget {
   }
 
   Widget buildEnergyPiece(
-      BuildContext context, int index, StatValues? available, StatValues? used, double animationValue) {
+    BuildContext context,
+    int index,
+    StatValues? available,
+    StatValues? used,
+    double animationValue,
+  ) {
     final theme = context.theme;
     final maxAvailable = max(available?.equipped ?? 0, available?.selected ?? 0);
     final maxUsed = max(used?.equipped ?? 0, used?.selected ?? 0);

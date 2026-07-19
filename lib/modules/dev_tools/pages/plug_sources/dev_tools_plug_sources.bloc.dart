@@ -54,9 +54,9 @@ class DevToolsPlugSourcesBloc extends ChangeNotifier {
   }
 
   DevToolsPlugSourcesBloc(this.context)
-      : _profile = context.read<ProfileBloc>(),
-        _manifest = context.read<ManifestService>(),
-        super() {
+    : _profile = context.read<ProfileBloc>(),
+      _manifest = context.read<ManifestService>(),
+      super() {
     init();
   }
 

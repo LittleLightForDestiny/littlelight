@@ -28,7 +28,8 @@ class LoadoutItemOptionsBottomSheet extends BaseBottomSheet<LoadoutItemOption> {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<SocketControllerBloc>(
-            create: (context) => LoadoutItemOptionsSocketControllerBloc(context)),
+          create: (context) => LoadoutItemOptionsSocketControllerBloc(context),
+        ),
         ChangeNotifierProvider(create: (context) => LoadoutItemOptionsBloc(context, item)),
       ],
       builder: (context, child) => LoadoutItemOptionsView(

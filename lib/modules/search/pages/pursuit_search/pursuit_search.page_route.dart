@@ -3,7 +3,9 @@ import 'pursuit_search.page.dart';
 
 class PursuitSearchPageRoute extends MaterialPageRoute {
   PursuitSearchPageRoute()
-      : super(builder: (context) {
+    : super(
+        builder: (context) {
           return PursuitSearchPage();
-        });
+        },
+      );
 }

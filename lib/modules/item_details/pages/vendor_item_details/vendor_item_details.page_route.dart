@@ -6,7 +6,9 @@ class VendorItemDetailsPageRoute extends MaterialPageRoute {
   final VendorItemInfo item;
 
   VendorItemDetailsPageRoute(this.item)
-      : super(builder: (context) {
+    : super(
+        builder: (context) {
           return VendorItemDetailsPage(item);
-        });
+        },
+      );
 }

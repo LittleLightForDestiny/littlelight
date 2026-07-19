@@ -60,8 +60,8 @@ class DetailsItemCoverDelegate extends SliverPersistentHeaderDelegate {
   DetailsItemCoverDelegate({
     this.minHeight = 50,
     this.maxHeight = 200,
-  })  : lastUpdated = DateTime.now(),
-        super();
+  }) : lastUpdated = DateTime.now(),
+       super();
 
   @override
   Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
@@ -98,17 +98,18 @@ class ItemCoverContentsWidget extends StatelessWidget {
       backgroundColor = definition?.talentGrid?.hudDamageType?.getColorLayer(context);
     }
     return Container(
-        color: backgroundColor,
-        child: Stack(
-          fit: StackFit.expand,
-          children: <Widget>[
-            buildBackground(context, expandRatio),
-            buildBasicStats(context, expandRatio),
-            buildNameBar(context, expandRatio),
-            buildIcon(context, expandRatio),
-            buildBackButton(context, expandRatio),
-          ],
-        ));
+      color: backgroundColor,
+      child: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          buildBackground(context, expandRatio),
+          buildBasicStats(context, expandRatio),
+          buildNameBar(context, expandRatio),
+          buildIcon(context, expandRatio),
+          buildBackButton(context, expandRatio),
+        ],
+      ),
+    );
   }
 
   Widget buildNameBar(BuildContext context, double expandRatio) {
@@ -139,10 +140,11 @@ class ItemCoverContentsWidget extends StatelessWidget {
                 ),
               ),
               border: Border(
-                  bottom: BorderSide(
-                color: context.theme.achievementLayers.layer2,
-                width: 3.5,
-              )),
+                bottom: BorderSide(
+                  color: context.theme.achievementLayers.layer2,
+                  width: 3.5,
+                ),
+              ),
             )
           : null,
       padding: EdgeInsets.only(left: nameLeftOffset + 8),
@@ -191,10 +193,11 @@ class ItemCoverContentsWidget extends StatelessWidget {
     double opacity = expandRatio;
 
     return Positioned(
-        top: 0,
-        bottom: kToolbarHeight,
-        width: width,
-        child: Opacity(opacity: opacity, child: buildBackgroundImage(context)));
+      top: 0,
+      bottom: kToolbarHeight,
+      width: width,
+      child: Opacity(opacity: opacity, child: buildBackgroundImage(context)),
+    );
   }
 
   Widget buildBackgroundImage(BuildContext context) {
@@ -225,17 +228,19 @@ class ItemCoverContentsWidget extends StatelessWidget {
 
   Widget buildBasicStats(BuildContext context, double expandRatio) {
     return Positioned(
-        bottom: kToolbarHeight + 16,
-        right: 16,
-        child: Opacity(
-            opacity: expandRatio,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                buildPrimaryStat(context),
-                buildTracker(context),
-              ].whereType<Widget>().toList(),
-            )));
+      bottom: kToolbarHeight + 16,
+      right: 16,
+      child: Opacity(
+        opacity: expandRatio,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            buildPrimaryStat(context),
+            buildTracker(context),
+          ].whereType<Widget>().toList(),
+        ),
+      ),
+    );
   }
 
   Widget? buildPrimaryStat(BuildContext context) {
@@ -263,22 +268,36 @@ class ItemCoverContentsWidget extends StatelessWidget {
           Container(child: Icon(classType.icon, size: 28, color: context.theme.onSurfaceLayers.layer2)),
         if (classType != DestinyClass.Unknown && (damageType != DamageType.None || value != null))
           Container(
-              height: 27, //
-              child: VerticalDivider(thickness: 1, width: 12, color: context.theme.onSurfaceLayers.layer0)),
-        if (ammoType != DestinyAmmunitionType.None)
-          Container(padding: EdgeInsets.only(right: 10), child: Icon(ammoType.icon, color: ammoType.color, size: 28)),
+            height: 27, //
+            child: VerticalDivider(thickness: 1, width: 12, color: context.theme.onSurfaceLayers.layer0),
+          ),
         if (ammoType != DestinyAmmunitionType.None)
           Container(
-              height: 27, //
-              child: VerticalDivider(thickness: 1, width: 8, color: context.theme.onSurfaceLayers.layer0)),
+            padding: EdgeInsets.only(right: 10),
+            child: Icon(ammoType.icon, color: ammoType.color, size: 28),
+          ),
+        if (ammoType != DestinyAmmunitionType.None)
+          Container(
+            height: 27, //
+            child: VerticalDivider(thickness: 1, width: 8, color: context.theme.onSurfaceLayers.layer0),
+          ),
         if (damageType != DamageType.None)
-          Container(padding: EdgeInsets.only(right: 4), height: 28, child: Icon(damageType.icon, color: damageColor)),
+          Container(
+            padding: EdgeInsets.only(right: 4),
+            height: 28,
+            child: Icon(damageType.icon, color: damageColor),
+          ),
         if (value != null)
           Container(
-              child: Text(
-            "$value",
-            style: context.textTheme.itemPrimaryStatHighDensity.copyWith(fontSize: 32, height: .4, color: damageColor),
-          )),
+            child: Text(
+              "$value",
+              style: context.textTheme.itemPrimaryStatHighDensity.copyWith(
+                fontSize: 32,
+                height: .4,
+                color: damageColor,
+              ),
+            ),
+          ),
         if (value != null && label != null)
           Container(
             padding: EdgeInsets.only(left: 4),

@@ -40,16 +40,25 @@ class PresentationNodeListWidget extends StatelessWidget {
     final presentationNodeBuilder = this.presentationNodeBuilder;
     final collectibleBuilder = this.collectibleBuilder;
     final recordBuilder = this.recordBuilder;
-    final presentationNodes = this.childNodes ??
-        def?.children?.presentationNodes //
+    final presentationNodes =
+        this.childNodes ??
+        def
+            ?.children
+            ?.presentationNodes //
             ?.whereType<DestinyPresentationNodeChildEntry>()
             .toList();
-    final collectibles = this.collectibles ??
-        def?.children?.collectibles //
+    final collectibles =
+        this.collectibles ??
+        def
+            ?.children
+            ?.collectibles //
             ?.whereType<DestinyPresentationNodeCollectibleChildEntry>()
             .toList();
-    final records = this.records ??
-        def?.children?.records //
+    final records =
+        this.records ??
+        def
+            ?.children
+            ?.records //
             ?.whereType<DestinyPresentationNodeRecordChildEntry>()
             .toList();
     return MultiSectionScrollView(
@@ -74,9 +83,10 @@ class PresentationNodeListWidget extends StatelessWidget {
             itemsPerRow: itemsPerRow,
             itemCount: records.length,
             itemBuilder: (context, index) => recordBuilder(context, records[index]),
-          )
+          ),
       ],
-      padding: (padding ?? EdgeInsets.all(0)) +
+      padding:
+          (padding ?? EdgeInsets.all(0)) +
           EdgeInsets.only(
             left: context.mediaQuery.padding.left,
             right: context.mediaQuery.padding.right,

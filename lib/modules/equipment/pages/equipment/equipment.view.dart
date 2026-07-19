@@ -36,7 +36,10 @@ class EquipmentView extends StatelessWidget {
   }
 
   Widget buildSpecificLayout(
-      BuildContext context, CustomTabController typeTabController, CustomTabController characterTabController) {
+    BuildContext context,
+    CustomTabController typeTabController,
+    CustomTabController characterTabController,
+  ) {
     if (context.mediaQuery.isLandscape || context.mediaQuery.laptopOrBigger) {
       return EquipmentLandscapeView(bloc, state, characterTabController: characterTabController);
     }

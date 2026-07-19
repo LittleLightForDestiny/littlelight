@@ -42,8 +42,8 @@ class CustomTabController extends ChangeNotifier {
     required AnimationController animationController,
     required this.length,
     required this.dragMultiplier,
-  })  : _currentValue = initialValue,
-        _animationController = animationController;
+  }) : _currentValue = initialValue,
+       _animationController = animationController;
 
   @override
   void dispose() {

@@ -16,8 +16,11 @@ class ClassTypeFilterWidget extends BaseDrawerFilterWidget<ClassTypeFilterOption
   Widget buildOptions(BuildContext context, ClassTypeFilterOptions data) {
     final availableValues = data.availableValues;
     if (availableValues.length <= 1) return Container();
-    final validValues =
-        [DestinyClass.Titan, DestinyClass.Hunter, DestinyClass.Warlock].where((e) => availableValues.contains(e));
+    final validValues = [
+      DestinyClass.Titan,
+      DestinyClass.Hunter,
+      DestinyClass.Warlock,
+    ].where((e) => availableValues.contains(e));
     final hasNone = availableValues.contains(DestinyClass.Unknown);
     final values = data.value;
     return Column(
@@ -42,16 +45,17 @@ class ClassTypeFilterWidget extends BaseDrawerFilterWidget<ClassTypeFilterOption
             selected: values.contains(DestinyClass.Unknown),
             onTap: () => updateOption(context, data, DestinyClass.Unknown, false),
             onLongPress: () => updateOption(context, data, DestinyClass.Unknown, true),
-          )
+          ),
       ],
     );
   }
 
   Widget buildIcon(BuildContext context, DestinyClass type) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: Icon(
-          type.icon,
-        ));
+      padding: EdgeInsets.all(4),
+      child: Icon(
+        type.icon,
+      ),
+    );
   }
 }

@@ -8,8 +8,8 @@ class EditItemTagsView extends SelectTagsView {
     required EditItemTagsBloc bloc,
     required EditItemTagsBloc state,
   }) : super(
-          key: key,
-          bloc: bloc,
-          state: state,
-        );
+         key: key,
+         bloc: bloc,
+         state: state,
+       );
 }

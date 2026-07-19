@@ -34,14 +34,15 @@ class LoadoutItemOptionsView extends StatelessWidget {
         children: [
           Flexible(
             child: SingleChildScrollView(
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    buildItemInfo(context),
-                    buildPlugs(context),
-                  ],
-                )),
+              scrollDirection: Axis.vertical,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  buildItemInfo(context),
+                  buildPlugs(context),
+                ],
+              ),
+            ),
           ),
           buildOptions(context),
         ],

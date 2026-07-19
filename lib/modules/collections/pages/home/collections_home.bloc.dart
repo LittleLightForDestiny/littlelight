@@ -31,10 +31,10 @@ class CollectionsHomeBloc extends CollectionsBloc {
   final UserSettingsBloc userSettings;
 
   CollectionsHomeBloc(BuildContext context)
-      : this.destinySettings = getInjectedDestinySettingsService(),
-        this.analytics = getInjectedAnalyticsService(),
-        this.userSettings = context.read<UserSettingsBloc>(),
-        super(context);
+    : this.destinySettings = getInjectedDestinySettingsService(),
+      this.analytics = getInjectedAnalyticsService(),
+      this.userSettings = context.read<UserSettingsBloc>(),
+      super(context);
 
   @override
   init() {
@@ -51,20 +51,24 @@ class CollectionsHomeBloc extends CollectionsBloc {
       destinySettings.badgesRootNode,
     ].whereType<int>();
     await loadNodeDefinitions(nodeHashes);
-    _tabNodeDefinitions = nodeHashes //
-        .map((e) => nodeDefinitions[e])
-        .whereType<DestinyPresentationNodeDefinition>()
-        .toList();
+    _tabNodeDefinitions =
+        nodeHashes //
+            .map((e) => nodeDefinitions[e])
+            .whereType<DestinyPresentationNodeDefinition>()
+            .toList();
   }
 
   @override
   void openPresentationNode(int? presentationNodeHash, {List<int>? parentHashes}) {
     if (presentationNodeHash == null) return;
     Navigator.of(context).push(
-      CollectionsCategoryPageRoute(presentationNodeHash, parentNodeHashes: [
-        if (parentHashes != null) ...parentHashes,
+      CollectionsCategoryPageRoute(
         presentationNodeHash,
-      ]),
+        parentNodeHashes: [
+          if (parentHashes != null) ...parentHashes,
+          presentationNodeHash,
+        ],
+      ),
     );
   }
 

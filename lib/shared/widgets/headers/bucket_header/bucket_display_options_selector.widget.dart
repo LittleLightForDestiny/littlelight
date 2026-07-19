@@ -44,12 +44,14 @@ class BucketDisplayOptionsSelector extends StatelessWidget {
       context.read<ItemSectionOptionsBloc>().setDisplayTypeForItemSection(identifier, type);
 
   void openMenu(BuildContext context, GlobalKey globalKey) async {
-    final type = await Navigator.of(context).push(BucketDisplayOptionsOverlayMenuRoute(
-      identifier: identifier,
-      defaultValue: defaultType,
-      availableOptions: this.availableOptions,
-      buttonKey: globalKey,
-    ));
+    final type = await Navigator.of(context).push(
+      BucketDisplayOptionsOverlayMenuRoute(
+        identifier: identifier,
+        defaultValue: defaultType,
+        availableOptions: this.availableOptions,
+        buttonKey: globalKey,
+      ),
+    );
     if (type != null) {
       setCurrentType(context, type);
     }

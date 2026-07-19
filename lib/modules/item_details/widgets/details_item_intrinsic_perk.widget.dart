@@ -24,12 +24,13 @@ class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: ManifestText<DestinySocketCategoryDefinition>(category.socketCategoryHash),
-          content: buildContent(context),
-          persistenceID: 'intrinsic perks ${category.socketCategoryHash}',
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: ManifestText<DestinySocketCategoryDefinition>(category.socketCategoryHash),
+        content: buildContent(context),
+        persistenceID: 'intrinsic perks ${category.socketCategoryHash}',
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -56,11 +57,12 @@ class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
     if (state.isEquipped(socketIndex, plugHash) == false) return Container();
     final itemDef = context.definition<DestinyInventoryItemDefinition>(itemHash);
     final breakerType = IntrinsicBreakerUtils.getBreakerType(context, itemDef, plugHash: plugHash);
-    return Column(children: <Widget>[
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
+    return Column(
+      children: <Widget>[
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(
               width: 64,
               child: PerkIconWidget(
                 plugItemHash: plugHash,
@@ -68,35 +70,38 @@ class DetailsItemIntrinsicPerkWidget extends StatelessWidget {
                 selected: state.isSelected(socketIndex, plugHash),
                 equipped: state.isEquipped(socketIndex, plugHash),
                 onTap: () => bloc.toggleSelection(socketIndex, plugHash),
-              )),
-          SizedBox(width: 16),
-          Expanded(
-              child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              ManifestText<DestinyInventoryItemDefinition>(
-                plugHash,
-                uppercase: true,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              Container(height: 4),
-              ManifestText<DestinyInventoryItemDefinition>(
-                plugHash,
-                textExtractor: (def) => def.displayProperties?.description,
-                softWrap: true,
-                style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
-              ),
-            ],
-          )),
-          if (breakerType?.icon != null)
-            Padding(
-              padding: const EdgeInsets.only(left: 16, top: (64 - 32) / 2),
-              child: Icon(breakerType?.icon, size: 32),
             ),
-        ],
-      ),
-      Container(height: 4),
-      ClarityPlugInfoWidget(plugHash),
-    ]);
+            SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  ManifestText<DestinyInventoryItemDefinition>(
+                    plugHash,
+                    uppercase: true,
+                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Container(height: 4),
+                  ManifestText<DestinyInventoryItemDefinition>(
+                    plugHash,
+                    textExtractor: (def) => def.displayProperties?.description,
+                    softWrap: true,
+                    style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w300),
+                  ),
+                ],
+              ),
+            ),
+            if (breakerType?.icon != null)
+              Padding(
+                padding: const EdgeInsets.only(left: 16, top: (64 - 32) / 2),
+                child: Icon(breakerType?.icon, size: 32),
+              ),
+          ],
+        ),
+        Container(height: 4),
+        ClarityPlugInfoWidget(plugHash),
+      ],
+    );
   }
 }

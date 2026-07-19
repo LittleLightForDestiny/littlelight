@@ -47,10 +47,11 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
       bars.add(
         Expanded(
           child: Container(
-              height: 4,
-              width: 4,
-              margin: EdgeInsets.symmetric(horizontal: 1),
-              decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4))),
+            height: 4,
+            width: 4,
+            margin: EdgeInsets.symmetric(horizontal: 1),
+            decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(4)),
+          ),
         ),
       );
     }
@@ -58,7 +59,12 @@ class CharacterGrindOptimizerWidget extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text("${currentAverage.toInt()}", style: context.textTheme.highlight),
-        Expanded(child: Container(padding: EdgeInsets.symmetric(horizontal: 4), child: Row(children: bars))),
+        Expanded(
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 4),
+            child: Row(children: bars),
+          ),
+        ),
         Text("${currentAverage.toInt() + 1}", style: context.textTheme.highlight),
       ],
     );

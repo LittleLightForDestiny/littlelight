@@ -18,8 +18,11 @@ class ExceptionHandler with AuthConsumer, AnalyticsConsumer {
     FlutterError.onError = (FlutterErrorDetails details) {
       final stack = details.stack;
       if (kDebugMode) {
-        FlutterError.dumpErrorToConsole(details.copyWith(
-            stackFilter: (input) => input.where((s) => s.contains('package:little_light') || !s.contains('package:'))));
+        FlutterError.dumpErrorToConsole(
+          details.copyWith(
+            stackFilter: (input) => input.where((s) => s.contains('package:little_light') || !s.contains('package:')),
+          ),
+        );
       } else if (stack != null) {
         Zone.current.handleUncaughtError(details.exception, stack);
       }
@@ -30,17 +33,23 @@ class ExceptionHandler with AuthConsumer, AnalyticsConsumer {
   initCustomErrorMessage() {
     ErrorWidget.builder = (FlutterErrorDetails details) {
       return Container(
-          padding: const EdgeInsets.all(8),
-          alignment: Alignment.center,
-          child: Builder(
-              builder: (context) => Column(mainAxisSize: MainAxisSize.min, children: [
-                    Text("Render Error".translate(context)),
-                    ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).push(ReportErrorDialogRoute(context, error: details));
-                        },
-                        child: Text("Report".translate(context)))
-                  ])));
+        padding: const EdgeInsets.all(8),
+        alignment: Alignment.center,
+        child: Builder(
+          builder: (context) => Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text("Render Error".translate(context)),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.of(context).push(ReportErrorDialogRoute(context, error: details));
+                },
+                child: Text("Report".translate(context)),
+              ),
+            ],
+          ),
+        ),
+      );
     };
   }
 

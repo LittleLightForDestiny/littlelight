@@ -21,13 +21,15 @@ class ProgressPage extends StatelessWidget {
         ChangeNotifierProvider(create: (context) => MilestonesBloc(context)),
         ChangeNotifierProvider(create: (context) => ProgressBloc(context)),
         ChangeNotifierProvider(create: (context) => RanksBloc(context)),
-        Provider<ItemInteractionHandlerBloc>(create: (context) {
-          final bloc = context.read<ProgressBloc>();
-          return ItemInteractionHandlerBloc(
-            onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
-            onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
-          );
-        }),
+        Provider<ItemInteractionHandlerBloc>(
+          create: (context) {
+            final bloc = context.read<ProgressBloc>();
+            return ItemInteractionHandlerBloc(
+              onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
+              onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
+            );
+          },
+        ),
       ],
       builder: (context, _) => ProgressView(
         context.read<ProgressBloc>(),

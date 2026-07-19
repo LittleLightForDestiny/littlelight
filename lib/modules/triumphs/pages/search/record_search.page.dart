@@ -14,10 +14,11 @@ class RecordsSearchPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<RecordsSearchBloc>(
-            create: (context) => RecordsSearchBloc(
-                  context,
-                  rootNode,
-                )),
+          create: (context) => RecordsSearchBloc(
+            context,
+            rootNode,
+          ),
+        ),
       ],
       builder: (context, _) => RecordsSearchView(
         context.read<RecordsSearchBloc>(),

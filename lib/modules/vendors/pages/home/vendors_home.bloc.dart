@@ -26,9 +26,9 @@ class VendorsHomeBloc extends ChangeNotifier with StorageConsumer {
   bool get reordering => _reordering;
 
   VendorsHomeBloc(this.context)
-      : _profileBloc = context.read<ProfileBloc>(),
-        _vendorsBloc = context.read<VendorsBloc>(),
-        _manifestBloc = context.read<ManifestService>() {
+    : _profileBloc = context.read<ProfileBloc>(),
+      _vendorsBloc = context.read<VendorsBloc>(),
+      _manifestBloc = context.read<ManifestService>() {
     _init();
   }
 

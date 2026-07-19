@@ -14,20 +14,22 @@ abstract class BaseCharacterIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final overlays = buildOverlays(context);
-    return Stack(children: [
-      Container(
-        decoration: BoxDecoration(
-          border: borderWidth > 0
-              ? Border.all(
-                  width: borderWidth,
-                  color: context.theme.onSurfaceLayers.layer0,
-                )
-              : null,
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(
+            border: borderWidth > 0
+                ? Border.all(
+                    width: borderWidth,
+                    color: context.theme.onSurfaceLayers.layer0,
+                  )
+                : null,
+          ),
+          child: buildIcon(context),
         ),
-        child: buildIcon(context),
-      ),
-      if (overlays != null) ...overlays,
-    ]);
+        if (overlays != null) ...overlays,
+      ],
+    );
   }
 
   List<Positioned>? buildOverlays(BuildContext context) => null;

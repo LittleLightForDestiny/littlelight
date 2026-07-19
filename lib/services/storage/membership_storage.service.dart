@@ -13,7 +13,8 @@ import 'storage.base.dart';
 
 setupMembershipStorageService() async {
   GetIt.I.registerFactoryParam<MembershipStorage, String, void>(
-      (membershipID, _) => MembershipStorage._internal(membershipID));
+    (membershipID, _) => MembershipStorage._internal(membershipID),
+  );
 }
 
 class MembershipStorage extends StorageBase<MembershipStorageKeys> {
@@ -37,8 +38,10 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<void> saveCachedNotes(Map<String, ItemNotes> notes) async {
     List<dynamic> json = notes.values
-        .where((element) =>
-            (element.notes?.length ?? 0) > 0 || (element.customName?.length ?? 0) > 0 || (element.tags.length) > 0)
+        .where(
+          (element) =>
+              (element.notes?.length ?? 0) > 0 || (element.customName?.length ?? 0) > 0 || (element.tags.length) > 0,
+        )
         .map((l) => l.toJson())
         .toList();
     await setJson(MembershipStorageKeys.cachedNotes, json);
@@ -48,10 +51,12 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
     try {
       final List<dynamic>? json = await getJson(MembershipStorageKeys.cachedTags);
       if (json == null) return null;
-      return Map.fromEntries(json
-          .map((n) => ItemNotesTag.fromJson(n))
-          .where((element) => element.tagId != null)
-          .map((e) => MapEntry(e.tagId!, e)));
+      return Map.fromEntries(
+        json
+            .map((n) => ItemNotesTag.fromJson(n))
+            .where((element) => element.tagId != null)
+            .map((e) => MapEntry(e.tagId!, e)),
+      );
     } catch (e) {
       logger.error("can't parse tags", error: e);
     }
@@ -127,13 +132,17 @@ class MembershipStorage extends StorageBase<MembershipStorageKeys> {
 
   Future<Map<String, DestinyVendorsResponse>?> getCachedVendors() async {
     try {
-      final Map<String, dynamic>? json =
-          await getExpireableJson(MembershipStorageKeys.cachedVendors, const Duration(hours: 12));
+      final Map<String, dynamic>? json = await getExpireableJson(
+        MembershipStorageKeys.cachedVendors,
+        const Duration(hours: 12),
+      );
 
-      return json?.map((key, value) => MapEntry<String, DestinyVendorsResponse>(
-            key,
-            DestinyVendorsResponse.fromJson(value),
-          ));
+      return json?.map(
+        (key, value) => MapEntry<String, DestinyVendorsResponse>(
+          key,
+          DestinyVendorsResponse.fromJson(value),
+        ),
+      );
     } catch (e) {
       logger.error("can't parse cached vendors", error: e);
     }

@@ -42,9 +42,7 @@ class EditTagBloc extends ChangeNotifier {
   late ItemNotesTag _tag;
   ItemNotesTag get tag => _tag;
 
-  EditTagBloc(this._context, ItemNotesTag? tag)
-      : this._itemNotesBloc = _context.read<ItemNotesBloc>(),
-        super() {
+  EditTagBloc(this._context, ItemNotesTag? tag) : this._itemNotesBloc = _context.read<ItemNotesBloc>(), super() {
     _init(tag);
   }
 

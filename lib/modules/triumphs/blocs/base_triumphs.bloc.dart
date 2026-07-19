@@ -40,12 +40,12 @@ abstract class TriumphsBloc extends ChangeNotifier {
   Map<int, PresentationNodeProgressData?>? _presentationNodesCompletionData;
 
   TriumphsBloc(BuildContext this.context)
-      : this.profileBloc = context.read<ProfileBloc>(),
-        this.userSettings = context.read<UserSettingsBloc>(),
-        this.manifest = context.read<ManifestService>(),
-        this.selectionBloc = context.read<SelectionBloc>(),
-        this.trackingBloc = context.read<ObjectiveTrackingBloc>(),
-        super() {
+    : this.profileBloc = context.read<ProfileBloc>(),
+      this.userSettings = context.read<UserSettingsBloc>(),
+      this.manifest = context.read<ManifestService>(),
+      this.selectionBloc = context.read<SelectionBloc>(),
+      this.trackingBloc = context.read<ObjectiveTrackingBloc>(),
+      super() {
     init();
   }
 
@@ -93,16 +93,20 @@ abstract class TriumphsBloc extends ChangeNotifier {
   @protected
   Future<void> updatePresentationNodeChildren(Iterable<int?> presentationNodeHashes) async {
     final nodeDefs = await manifest.getDefinitions<DestinyPresentationNodeDefinition>(presentationNodeHashes);
-    final childHashes = nodeDefs.values.map((e) {
-      final nodeHash = e.hash;
-      final childHashes = e.children?.presentationNodes?.map((e) => e.presentationNodeHash) ?? <int?>[];
-      return [nodeHash, ...childHashes];
-    }).fold<List<int?>>([], (previousValue, element) => previousValue + element).whereType<int>();
+    final childHashes = nodeDefs.values
+        .map((e) {
+          final nodeHash = e.hash;
+          final childHashes = e.children?.presentationNodes?.map((e) => e.presentationNodeHash) ?? <int?>[];
+          return [nodeHash, ...childHashes];
+        })
+        .fold<List<int?>>([], (previousValue, element) => previousValue + element)
+        .whereType<int>();
 
     final completionData = _presentationNodesCompletionData ??= {};
     completionData.addEntries(childHashes.map((e) => MapEntry(e, getPresentationNodeCompletionData(profileBloc, e))));
 
-    final recordChildHashes = nodeDefs.values //
+    final recordChildHashes = nodeDefs
+        .values //
         .map((e) {
           final childHashes = e.children?.records?.map((e) => e.recordHash) ?? <int?>[];
           return childHashes.toList();

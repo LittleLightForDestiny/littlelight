@@ -19,8 +19,8 @@ class DetailsItemCoverStatWidget extends StatelessWidget {
     required StatValues this.modValues,
     this.pixelSize = 1,
   }) : super(
-          key: key,
-        );
+         key: key,
+       );
 
   @override
   Widget build(BuildContext context) {
@@ -139,18 +139,21 @@ class DetailsItemCoverStatWidget extends StatelessWidget {
   Widget buildDirectionBar(BuildContext context) {
     final current = modValues.selected + modValues.selectedMasterwork;
     return Container(
-        width: 212 * pixelSize,
-        alignment: Alignment.centerLeft,
-        padding: EdgeInsets.only(left: 16 * pixelSize, bottom: 8 * pixelSize),
-        child: SizedBox(
-            width: 36 * pixelSize,
-            height: 18 * pixelSize,
-            child: DirectionStatBarWidget(
-                currentValue: modValues.selected.toInt(),
-                equippedValue: current.round(),
-                currentColor: getBaseColor(context),
-                equippedColor: getDiffColor(context, modValues.diffType),
-                backgroundColor: context.theme.surfaceLayers.layer3)));
+      width: 212 * pixelSize,
+      alignment: Alignment.centerLeft,
+      padding: EdgeInsets.only(left: 16 * pixelSize, bottom: 8 * pixelSize),
+      child: SizedBox(
+        width: 36 * pixelSize,
+        height: 18 * pixelSize,
+        child: DirectionStatBarWidget(
+          currentValue: modValues.selected.toInt(),
+          equippedValue: current.round(),
+          currentColor: getBaseColor(context),
+          equippedColor: getDiffColor(context, modValues.diffType),
+          backgroundColor: context.theme.surfaceLayers.layer3,
+        ),
+      ),
+    );
   }
 
   Color getValueColor(BuildContext context) {
@@ -172,7 +175,7 @@ class DetailsItemCoverStatWidget extends StatelessWidget {
 
 class DetailsCoverTotalItemStatWidget extends DetailsItemCoverStatWidget {
   DetailsCoverTotalItemStatWidget({required StatValues modValues, double pixelSize = 1})
-      : super(modValues: modValues, pixelSize: pixelSize);
+    : super(modValues: modValues, pixelSize: pixelSize);
 
   @override
   int get maxValue => 103;

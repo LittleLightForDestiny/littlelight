@@ -6,8 +6,9 @@ class TriumphsSubcategoryPageRoute extends MaterialPageRoute {
     int categoryPresentationNodeHash, {
     List<int>? parentNodeHashes,
   }) : super(
-            builder: (context) => TriumphsSubcategoryPage(
-                  categoryPresentationNodeHash,
-                  parentNodeHashes: parentNodeHashes,
-                ));
+         builder: (context) => TriumphsSubcategoryPage(
+           categoryPresentationNodeHash,
+           parentNodeHashes: parentNodeHashes,
+         ),
+       );
 }

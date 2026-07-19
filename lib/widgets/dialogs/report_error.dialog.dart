@@ -9,11 +9,11 @@ import 'package:little_light/widgets/dialogs/littlelight.base.dialog.dart';
 
 class ReportErrorDialogRoute extends DialogRoute<void> {
   ReportErrorDialogRoute(BuildContext context, {required FlutterErrorDetails error})
-      : super(
-          context: context,
-          builder: (context) => ReportErrorDialog(),
-          settings: RouteSettings(arguments: error),
-        );
+    : super(
+        context: context,
+        builder: (context) => ReportErrorDialog(),
+        settings: RouteSettings(arguments: error),
+      );
 }
 
 extension on BuildContext {
@@ -33,40 +33,51 @@ class ReportErrorDialog extends LittleLightBaseDialog with AuthConsumer, Analyti
     final error = context.errorArgument;
     if (error == null) return Container();
     return Container(
-        child: SingleChildScrollView(
-            child: Column(mainAxisSize: MainAxisSize.min, children: [
-      Text("This will be the info that will be sent along with the error report:".translate(context)),
-      Container(
-        height: 8,
-      ),
-      FutureBuilder<Map<String, String>?>(
-          future: getData(context),
-          builder: (context, data) {
-            String text = "";
-            final fields = data.data;
-            if (fields != null) {
-              for (final key in fields.keys) {
-                final value = fields[key];
-                if (value != null) {
-                  text += "$key : $value \n";
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text("This will be the info that will be sent along with the error report:".translate(context)),
+            Container(
+              height: 8,
+            ),
+            FutureBuilder<Map<String, String>?>(
+              future: getData(context),
+              builder: (context, data) {
+                String text = "";
+                final fields = data.data;
+                if (fields != null) {
+                  for (final key in fields.keys) {
+                    final value = fields[key];
+                    if (value != null) {
+                      text += "$key : $value \n";
+                    }
+                  }
                 }
-              }
-            }
-            final cleanStack =
-                error.stack.toString().split('\n').where((s) => s.contains('package:little_light')).join('\n');
-            text += "exception:\n${error.exceptionAsString()}\n";
-            text += "stackTrace:\n$cleanStack\n";
-            return Container(
-              decoration:
-                  BoxDecoration(color: context.theme.surfaceLayers.layer2, borderRadius: BorderRadius.circular(8)),
-              padding: const EdgeInsets.all(8),
-              child: Text(
-                text,
-                style: const TextStyle(fontSize: 11),
-              ),
-            );
-          })
-    ])));
+                final cleanStack = error.stack
+                    .toString()
+                    .split('\n')
+                    .where((s) => s.contains('package:little_light'))
+                    .join('\n');
+                text += "exception:\n${error.exceptionAsString()}\n";
+                text += "stackTrace:\n$cleanStack\n";
+                return Container(
+                  decoration: BoxDecoration(
+                    color: context.theme.surfaceLayers.layer2,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  padding: const EdgeInsets.all(8),
+                  child: Text(
+                    text,
+                    style: const TextStyle(fontSize: 11),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override

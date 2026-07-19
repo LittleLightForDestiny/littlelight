@@ -34,28 +34,31 @@ class TheOldGhostLinkButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Container(
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: context.theme.primaryLayers),
-        padding: EdgeInsets.all(8),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              height: 64.0,
-              child: Image.asset('assets/imgs/the-old-ghost-logo.png'),
-            ),
-          ],
+    return Stack(
+      children: [
+        Container(
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(4), color: context.theme.primaryLayers),
+          padding: EdgeInsets.all(8),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                height: 64.0,
+                child: Image.asset('assets/imgs/the-old-ghost-logo.png'),
+              ),
+            ],
+          ),
         ),
-      ),
-      Positioned.fill(
+        Positioned.fill(
           child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: () => openLink(context),
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () => openLink(context),
+            ),
+          ),
         ),
-      )),
-    ]);
+      ],
+    );
   }
 
   void openLink(BuildContext context) {

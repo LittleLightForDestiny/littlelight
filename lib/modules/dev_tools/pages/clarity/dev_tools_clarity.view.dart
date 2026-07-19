@@ -21,13 +21,14 @@ class DevToolsClarityView extends StatelessWidget {
             },
           ),
           Positioned(
-              bottom: 8,
-              left: 8,
-              right: 8,
-              child: ElevatedButton(
-                child: Text("Reload"),
-                onPressed: () => context.read<DevToolsClarityBloc>().load(),
-              )),
+            bottom: 8,
+            left: 8,
+            right: 8,
+            child: ElevatedButton(
+              child: Text("Reload"),
+              onPressed: () => context.read<DevToolsClarityBloc>().load(),
+            ),
+          ),
         ],
       ),
     );

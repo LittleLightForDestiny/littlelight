@@ -16,18 +16,21 @@ class CollectionsSubcategoryPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<CollectionsBloc>(
-            create: (context) => CollectionsSubcategoryBloc(
-                  context,
-                  categoryPresentationNodeHash,
-                  parentNodeHashes: parentNodeHashes,
-                )),
-        Provider<ItemInteractionHandlerBloc>(create: (context) {
-          final bloc = context.read<CollectionsBloc>();
-          return ItemInteractionHandlerBloc(
-            onTap: (item) => bloc.onCollectibleTap(item),
-            onHold: (item) => bloc.onCollectibleHold(item),
-          );
-        }),
+          create: (context) => CollectionsSubcategoryBloc(
+            context,
+            categoryPresentationNodeHash,
+            parentNodeHashes: parentNodeHashes,
+          ),
+        ),
+        Provider<ItemInteractionHandlerBloc>(
+          create: (context) {
+            final bloc = context.read<CollectionsBloc>();
+            return ItemInteractionHandlerBloc(
+              onTap: (item) => bloc.onCollectibleTap(item),
+              onHold: (item) => bloc.onCollectibleHold(item),
+            );
+          },
+        ),
       ],
       builder: (context, _) => CollectionsSubcategoryView(
         context.read<CollectionsBloc>(),

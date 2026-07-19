@@ -12,9 +12,14 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
   final double maxWidth;
   final double maxHeight;
 
-  const LittleLightBaseDialog(
-      {Key? key, this.titleBuilder, this.bodyBuilder, this.actionsBuilder, this.maxWidth = 600, this.maxHeight = 400})
-      : super(key: key);
+  const LittleLightBaseDialog({
+    Key? key,
+    this.titleBuilder,
+    this.bodyBuilder,
+    this.actionsBuilder,
+    this.maxWidth = 600,
+    this.maxHeight = 400,
+  }) : super(key: key);
 
   CrossAxisAlignment get crossAxisAlignment => CrossAxisAlignment.stretch;
 
@@ -29,12 +34,13 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
     return Dialog(
       insetPadding: padding,
       child: Container(
-          constraints: BoxConstraints(maxHeight: maxHeight, maxWidth: maxWidth),
-          child: Column(
-            crossAxisAlignment: crossAxisAlignment,
-            mainAxisSize: MainAxisSize.min,
-            children: [buildTitleContainer(context), buildBodyContainer(context), buildActionsContainer(context)],
-          )),
+        constraints: BoxConstraints(maxHeight: maxHeight, maxWidth: maxWidth),
+        child: Column(
+          crossAxisAlignment: crossAxisAlignment,
+          mainAxisSize: MainAxisSize.min,
+          children: [buildTitleContainer(context), buildBodyContainer(context), buildActionsContainer(context)],
+        ),
+      ),
     );
   }
 
@@ -54,7 +60,9 @@ abstract class LittleLightBaseDialog extends StatelessWidget {
   Widget buildBodyContainer(BuildContext context) {
     final body = buildBody(context);
     if (body == null) return Container();
-    return Flexible(child: Container(padding: const EdgeInsets.all(16), child: body));
+    return Flexible(
+      child: Container(padding: const EdgeInsets.all(16), child: body),
+    );
   }
 
   Widget buildActionsContainer(BuildContext context) {

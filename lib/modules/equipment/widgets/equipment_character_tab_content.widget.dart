@@ -72,7 +72,7 @@ class EquipmentCharacterTabContentWidget extends StatelessWidget with ManifestCo
                   currencies: currencies,
                 ),
               ),
-              for (final bucket in buckets) ...buildBucketSections(context, bucket, constraints)
+              for (final bucket in buckets) ...buildBucketSections(context, bucket, constraints),
             ],
             crossAxisSpacing: 0,
             mainAxisSpacing: 0,

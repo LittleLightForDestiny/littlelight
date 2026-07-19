@@ -38,7 +38,7 @@ abstract class BaseDrawerFilterWidget<T extends BaseFilterOptions> extends BaseF
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           DefaultTextStyle(child: buildTitle(context), style: context.textTheme.button),
-          LLSwitch.callback(data.enabled, (value) => updateEnabled(context, value), size: LLSwitchSize.large)
+          LLSwitch.callback(data.enabled, (value) => updateEnabled(context, value), size: LLSwitchSize.large),
         ],
       ),
     );
@@ -46,16 +46,17 @@ abstract class BaseDrawerFilterWidget<T extends BaseFilterOptions> extends BaseF
 
   Widget buildOptionsContainer(BuildContext context, T data) {
     return ClipRect(
-        clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: AnimatedAlign(
-          duration: _animationDuration,
-          alignment: Alignment.center,
-          child: Container(
-            padding: EdgeInsets.all(4),
-            child: buildOptions(context, data),
-          ),
-          heightFactor: data.enabled ? 1 : 0,
-        ));
+      clipBehavior: Clip.antiAliasWithSaveLayer,
+      child: AnimatedAlign(
+        duration: _animationDuration,
+        alignment: Alignment.center,
+        child: Container(
+          padding: EdgeInsets.all(4),
+          child: buildOptions(context, data),
+        ),
+        heightFactor: data.enabled ? 1 : 0,
+      ),
+    );
   }
 
   Widget buildTitle(BuildContext context);

@@ -4,7 +4,7 @@ import 'equip_loadout.page.dart';
 
 class EquipLoadoutPageRoute extends MaterialPageRoute<LoadoutItemIndex> {
   EquipLoadoutPageRoute(String loadoutID)
-      : super(
-          builder: (BuildContext context) => EquipLoadoutPage(loadoutID),
-        );
+    : super(
+        builder: (BuildContext context) => EquipLoadoutPage(loadoutID),
+      );
 }

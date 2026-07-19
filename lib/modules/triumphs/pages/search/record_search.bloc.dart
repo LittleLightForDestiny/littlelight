@@ -47,10 +47,10 @@ class RecordsSearchBloc extends ChangeNotifier {
   }
 
   RecordsSearchBloc(this.context, int this.rootNodeHash)
-      : manifest = context.read<ManifestService>(),
-        profile = context.read<ProfileBloc>(),
-        tracking = context.read<ObjectiveTrackingBloc>(),
-        super() {
+    : manifest = context.read<ManifestService>(),
+      profile = context.read<ProfileBloc>(),
+      tracking = context.read<ObjectiveTrackingBloc>(),
+      super() {
     _init();
   }
 
@@ -104,12 +104,18 @@ class RecordsSearchBloc extends ChangeNotifier {
 
   Future<Set<int>> loadChildrenRecordHashes(int nodeHash) async {
     final definition = await manifest.getDefinition<DestinyPresentationNodeDefinition>(nodeHash);
-    final recordHashes = definition?.children?.records //
+    final recordHashes =
+        definition
+            ?.children
+            ?.records //
             ?.map((e) => e.recordHash)
             .whereType<int>()
             .toSet() ??
         <int>{};
-    final presentationNodeHashes = definition?.children?.presentationNodes //
+    final presentationNodeHashes =
+        definition
+            ?.children
+            ?.presentationNodes //
             ?.map((e) => e.presentationNodeHash)
             .whereType<int>()
             .toSet() ??

@@ -20,10 +20,11 @@ class MilestoneItemModifiersWidget extends StatelessWidget {
         style: context.textTheme.button,
       ),
       content: Row(
-        children: modifierHashes //
-            .map((hash) => buildModifier(context, hash))
-            .whereType<Widget>()
-            .toList(),
+        children:
+            modifierHashes //
+                .map((hash) => buildModifier(context, hash))
+                .whereType<Widget>()
+                .toList(),
       ),
       onTap: onTap,
     );

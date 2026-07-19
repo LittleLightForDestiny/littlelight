@@ -32,10 +32,10 @@ class TriumphsHomeBloc extends TriumphsBloc {
   final UserSettingsBloc userSettings;
 
   TriumphsHomeBloc(BuildContext context)
-      : this.destinySettings = getInjectedDestinySettingsService(),
-        this.analytics = getInjectedAnalyticsService(),
-        this.userSettings = context.read<UserSettingsBloc>(),
-        super(context);
+    : this.destinySettings = getInjectedDestinySettingsService(),
+      this.analytics = getInjectedAnalyticsService(),
+      this.userSettings = context.read<UserSettingsBloc>(),
+      super(context);
 
   @override
   init() {
@@ -58,15 +58,16 @@ class TriumphsHomeBloc extends TriumphsBloc {
       destinySettings.catalystsRootNode,
     ].whereType<int>();
     await loadNodeDefinitions({...tabNodeHashes, ...additionalTabNodeHashes});
-    _tabNodeDefinitions = tabNodeHashes //
-        .map((e) => nodeDefinitions[e])
-        .whereType<DestinyPresentationNodeDefinition>()
-        .toList();
+    _tabNodeDefinitions =
+        tabNodeHashes //
+            .map((e) => nodeDefinitions[e])
+            .whereType<DestinyPresentationNodeDefinition>()
+            .toList();
     _additionalTabNodes = {
       destinySettings.triumphsRootNode: [
         nodeDefinitions[destinySettings.loreRootNode],
         nodeDefinitions[destinySettings.catalystsRootNode],
-      ].whereType<DestinyPresentationNodeDefinition>().toList()
+      ].whereType<DestinyPresentationNodeDefinition>().toList(),
     };
   }
 
@@ -74,10 +75,13 @@ class TriumphsHomeBloc extends TriumphsBloc {
   void openPresentationNode(int? presentationNodeHash, {List<int>? parentHashes}) {
     if (presentationNodeHash == null) return;
     Navigator.of(context).push(
-      TriumphsCategoryPageRoute(presentationNodeHash, parentNodeHashes: [
-        if (parentHashes != null) ...parentHashes,
+      TriumphsCategoryPageRoute(
         presentationNodeHash,
-      ]),
+        parentNodeHashes: [
+          if (parentHashes != null) ...parentHashes,
+          presentationNodeHash,
+        ],
+      ),
     );
   }
 

@@ -13,9 +13,7 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
 
   Map<int, int?> _fakeEquippedPlugs = {};
 
-  DefinitionItemSocketControllerBloc(BuildContext context)
-      : _profileBloc = context.read<ProfileBloc>(),
-        super(context);
+  DefinitionItemSocketControllerBloc(BuildContext context) : _profileBloc = context.read<ProfileBloc>(), super(context);
 
   @override
   Future<void> init(DefinitionItemInfo item) async {
@@ -39,7 +37,8 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
     final sources = socket.plugSources;
     if (sources == null) return null;
     final available = <int>{};
-    final isPlugSet = sources.contains(SocketPlugSources.CharacterPlugSet) ||
+    final isPlugSet =
+        sources.contains(SocketPlugSources.CharacterPlugSet) ||
         sources.contains(SocketPlugSources.ProfilePlugSet) ||
         sources.value == 0;
     final isInventorySourced = sources.contains(SocketPlugSources.InventorySourced);
@@ -154,15 +153,17 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
 
     if (randomPlugSetHash != 0) {
       final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(randomPlugSetHash);
-      final contains = plugSetDef?.reusablePlugItems
-          ?.any((element) => element.plugItemHash == plugHash && (element.currentlyCanRoll ?? false));
+      final contains = plugSetDef?.reusablePlugItems?.any(
+        (element) => element.plugItemHash == plugHash && (element.currentlyCanRoll ?? false),
+      );
       return contains ?? false;
     }
 
     if (reusablePlugSetHash != 0) {
       final plugSetDef = await manifest.getDefinition<DestinyPlugSetDefinition>(reusablePlugSetHash);
-      final contains = plugSetDef?.reusablePlugItems
-          ?.any((element) => element.plugItemHash == plugHash && (element.currentlyCanRoll ?? false));
+      final contains = plugSetDef?.reusablePlugItems?.any(
+        (element) => element.plugItemHash == plugHash && (element.currentlyCanRoll ?? false),
+      );
       return contains ?? false;
     }
 
@@ -186,25 +187,25 @@ class DefinitionItemSocketControllerBloc extends SocketControllerBloc<Definition
       final socketDef = sockets[socketIndex];
       final socketMap = weaponLevelMap[socketIndex] ??= {};
       [
-        for (final plugSetHash in <int?>{socketDef.reusablePlugSetHash, socketDef.randomizedPlugSetHash})
-          if ((plugSetHash ?? 0) > 0) await manifest.getDefinition<DestinyPlugSetDefinition>(plugSetHash)
-      ]
+            for (final plugSetHash in <int?>{socketDef.reusablePlugSetHash, socketDef.randomizedPlugSetHash})
+              if ((plugSetHash ?? 0) > 0) await manifest.getDefinition<DestinyPlugSetDefinition>(plugSetHash),
+          ]
           .whereType<DestinyPlugSetDefinition>()
           .map((plugSet) => plugSet.reusablePlugItems)
           .whereType<List<DestinyItemSocketEntryPlugItemRandomizedDefinition>>()
           .expand((plugDef) => (plugDef))
           .whereType<DestinyItemSocketEntryPlugItemRandomizedDefinition>()
           .forEach((plugDef) {
-        final plugHash = plugDef.plugItemHash ?? 0;
-        final level = plugDef.craftingRequirements?.requiredLevel ?? 0;
-        if (plugHash > 0 && level > 0) {
-          final unlockRequirements = plugDef.craftingRequirements?.unlockRequirements;
-          if (unlockRequirements?.isNotEmpty ?? false) {
-            final levelText = unlockRequirements?.last.failureDescription;
-            if (levelText != null) socketMap[plugHash] = levelText;
-          }
-        }
-      });
+            final plugHash = plugDef.plugItemHash ?? 0;
+            final level = plugDef.craftingRequirements?.requiredLevel ?? 0;
+            if (plugHash > 0 && level > 0) {
+              final unlockRequirements = plugDef.craftingRequirements?.unlockRequirements;
+              if (unlockRequirements?.isNotEmpty ?? false) {
+                final levelText = unlockRequirements?.last.failureDescription;
+                if (levelText != null) socketMap[plugHash] = levelText;
+              }
+            }
+          });
     }
     return weaponLevelMap;
   }

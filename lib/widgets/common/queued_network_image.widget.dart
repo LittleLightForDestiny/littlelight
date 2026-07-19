@@ -11,15 +11,15 @@ class QueuedNetworkImage extends StatelessWidget {
   final BoxFit fit;
   final Color? color;
 
-  const QueuedNetworkImage(
-      {required this.imageUrl,
-      this.placeholder,
-      this.fit = BoxFit.contain,
-      this.alignment = Alignment.center,
-      this.fadeInDuration,
-      this.color,
-      Key? key})
-      : super(key: key);
+  const QueuedNetworkImage({
+    required this.imageUrl,
+    this.placeholder,
+    this.fit = BoxFit.contain,
+    this.alignment = Alignment.center,
+    this.fadeInDuration,
+    this.color,
+    Key? key,
+  }) : super(key: key);
 
   factory QueuedNetworkImage.fromBungie(
     String? relativeURL, {
@@ -29,16 +29,15 @@ class QueuedNetworkImage extends StatelessWidget {
     Duration? fadeInDuration,
     Key? key,
     Color? color,
-  }) =>
-      QueuedNetworkImage(
-        imageUrl: BungieApiService.url(relativeURL),
-        placeholder: placeholder,
-        fit: fit,
-        alignment: alignment,
-        fadeInDuration: fadeInDuration,
-        key: key,
-        color: color,
-      );
+  }) => QueuedNetworkImage(
+    imageUrl: BungieApiService.url(relativeURL),
+    placeholder: placeholder,
+    fit: fit,
+    alignment: alignment,
+    fadeInDuration: fadeInDuration,
+    key: key,
+    color: color,
+  );
 
   @override
   Widget build(BuildContext context) {

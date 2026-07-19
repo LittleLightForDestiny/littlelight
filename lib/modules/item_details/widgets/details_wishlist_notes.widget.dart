@@ -24,12 +24,13 @@ class DetailsWishlistNotesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Wishlist Notes".translate(context).toUpperCase()),
-          persistenceID: 'wishlist notes',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Wishlist Notes".translate(context).toUpperCase()),
+        persistenceID: 'wishlist notes',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -38,7 +39,7 @@ class DetailsWishlistNotesWidget extends StatelessWidget {
       child: Column(
         children: [
           buildAllWishlistsToggle(context),
-          ...builds.entries.map((b) => buildWishlist(context, b.key, b.value)).whereType<Widget>().toList()
+          ...builds.entries.map((b) => buildWishlist(context, b.key, b.value)).whereType<Widget>().toList(),
         ].whereType<Widget>().toList(),
       ),
     );
@@ -47,23 +48,24 @@ class DetailsWishlistNotesWidget extends StatelessWidget {
   Widget? buildAllWishlistsToggle(BuildContext context) {
     if (!enableViewAllNotes) return null;
     return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: context.theme.surfaceLayers.layer3,
-        ),
-        padding: EdgeInsets.all(4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "View all notes".translate(context),
-              style: context.textTheme.highlight,
-            ),
-            LLSwitch.callback(viewAllNotes, (value) {
-              onToggleViewAllNotes?.call(value);
-            }),
-          ],
-        ));
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: context.theme.surfaceLayers.layer3,
+      ),
+      padding: EdgeInsets.all(4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "View all notes".translate(context),
+            style: context.textTheme.highlight,
+          ),
+          LLSwitch.callback(viewAllNotes, (value) {
+            onToggleViewAllNotes?.call(value);
+          }),
+        ],
+      ),
+    );
   }
 
   Widget? buildWishlist(
@@ -79,9 +81,12 @@ class DetailsWishlistNotesWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       margin: EdgeInsets.only(top: 8),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        ...columns,
-      ]),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          ...columns,
+        ],
+      ),
     );
   }
 
@@ -96,26 +101,30 @@ class DetailsWishlistNotesWidget extends StatelessWidget {
           ),
           padding: EdgeInsets.all(4),
           margin: EdgeInsets.all(4),
-          child: Row(children: [
-            ...tags.map(
-              (e) => Container(
-                child: WishlistBadgeWidget(e),
-                margin: EdgeInsets.only(right: 4),
+          child: Row(
+            children: [
+              ...tags.map(
+                (e) => Container(
+                  child: WishlistBadgeWidget(e),
+                  margin: EdgeInsets.only(right: 4),
+                ),
               ),
-            ),
-            Expanded(
+              Expanded(
                 child: Text(
-              wishlistName,
-              style: context.textTheme.highlight,
-            )),
-          ]),
+                  wishlistName,
+                  style: context.textTheme.highlight,
+                ),
+              ),
+            ],
+          ),
         ),
         Container(
-            padding: EdgeInsets.all(8),
-            child: Text(
-              notes,
-              style: context.textTheme.body,
-            )),
+          padding: EdgeInsets.all(8),
+          child: Text(
+            notes,
+            style: context.textTheme.body,
+          ),
+        ),
       ],
     );
   }

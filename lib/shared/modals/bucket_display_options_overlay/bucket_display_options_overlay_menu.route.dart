@@ -10,16 +10,16 @@ class BucketDisplayOptionsOverlayMenuRoute extends RawDialogRoute<BucketDisplayT
     required String identifier,
     required BucketDisplayType defaultValue,
   }) : super(
-          transitionDuration: Duration(milliseconds: 300),
-          barrierColor: Colors.transparent,
-          transitionBuilder: (context, animation, secondaryAnimation, child) => child,
-          pageBuilder: (context, animation, secondaryAnimation) => BucketDisplayOptionsOverlayMenuView(
-            buttonKey: buttonKey,
-            identifier: identifier,
-            defaultValue: defaultValue,
-            canEquip: canEquip,
-            availableOptions: availableOptions,
-            animation: animation,
-          ),
-        );
+         transitionDuration: Duration(milliseconds: 300),
+         barrierColor: Colors.transparent,
+         transitionBuilder: (context, animation, secondaryAnimation, child) => child,
+         pageBuilder: (context, animation, secondaryAnimation) => BucketDisplayOptionsOverlayMenuView(
+           buttonKey: buttonKey,
+           identifier: identifier,
+           defaultValue: defaultValue,
+           canEquip: canEquip,
+           availableOptions: availableOptions,
+           animation: animation,
+         ),
+       );
 }

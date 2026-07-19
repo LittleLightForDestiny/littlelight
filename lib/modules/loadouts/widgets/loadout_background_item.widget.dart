@@ -15,10 +15,11 @@ class LoadoutBackgroundItemWidget extends StatelessWidget {
     return Container(
       child: buildEmblemBackground(context),
       decoration: BoxDecoration(
-          border: Border.all(
-        color: context.theme.onSurfaceLayers.layer2,
-        width: 1,
-      )),
+        border: Border.all(
+          color: context.theme.onSurfaceLayers.layer2,
+          width: 1,
+        ),
+      ),
     );
   }
 
@@ -28,23 +29,28 @@ class LoadoutBackgroundItemWidget extends StatelessWidget {
     if (definition == null) return const DefaultLoadingShimmer();
     String? url = definition.secondarySpecial;
     if (url == null) return const DefaultLoadingShimmer();
-    return Stack(children: [
-      Positioned.fill(
+    return Stack(
+      children: [
+        Positioned.fill(
           child: QueuedNetworkImage.fromBungie(
-        definition.secondarySpecial,
-        alignment: Alignment.centerLeft,
-        fadeInDuration: const Duration(milliseconds: 300),
-        fit: BoxFit.cover,
-        placeholder: const DefaultLoadingShimmer(),
-      )),
-      Positioned.fill(
+            definition.secondarySpecial,
+            alignment: Alignment.centerLeft,
+            fadeInDuration: const Duration(milliseconds: 300),
+            fit: BoxFit.cover,
+            placeholder: const DefaultLoadingShimmer(),
+          ),
+        ),
+        Positioned.fill(
           child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                onTap: () {
-                  Navigator.pop(context, definition.hash);
-                },
-              )))
-    ]);
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: () {
+                Navigator.pop(context, definition.hash);
+              },
+            ),
+          ),
+        ),
+      ],
+    );
   }
 }

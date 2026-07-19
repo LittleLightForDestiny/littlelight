@@ -7,8 +7,10 @@ class ItemSectionOptionsBloc extends ChangeNotifier {
   final UserSettingsBloc _userSettings;
   ItemSectionOptionsBloc(BuildContext context) : _userSettings = context.read<UserSettingsBloc>();
 
-  BucketDisplayType getDisplayTypeForItemSection(String id,
-      {BucketDisplayType defaultValue = BucketDisplayType.Medium}) {
+  BucketDisplayType getDisplayTypeForItemSection(
+    String id, {
+    BucketDisplayType defaultValue = BucketDisplayType.Medium,
+  }) {
     final stored = _userSettings.getDisplayOptionsForItemSection(id)?.type;
     if (stored != null) return stored;
     return defaultValue;

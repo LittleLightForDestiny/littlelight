@@ -21,12 +21,12 @@ class CollectionsHomeView extends BaseCollectionsView {
   String getTitle(BuildContext context) => "Collections".translate(context);
 
   Widget? buildAppBarLeading(BuildContext context) => IconButton(
-        enableFeedback: false,
-        icon: const Icon(Icons.menu),
-        onPressed: () {
-          Scaffold.of(context).openDrawer();
-        },
-      );
+    enableFeedback: false,
+    icon: const Icon(Icons.menu),
+    onPressed: () {
+      Scaffold.of(context).openDrawer();
+    },
+  );
 
   Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
     return Container(

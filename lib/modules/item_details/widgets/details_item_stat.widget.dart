@@ -17,22 +17,24 @@ class DetailsItemStatWidget extends StatelessWidget {
     Key? key,
     required StatValues this.modValues,
   }) : super(
-          key: key,
-        );
+         key: key,
+       );
 
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (ctx, constraints) => SizedBox(
-          height: 18,
-          child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Flexible(child: buildLabel(context)),
-                buildValue(context),
-                buildConstrainedBar(context, constraints)
-              ])),
+        height: 18,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Flexible(child: buildLabel(context)),
+            buildValue(context),
+            buildConstrainedBar(context, constraints),
+          ],
+        ),
+      ),
     );
   }
 
@@ -73,17 +75,20 @@ class DetailsItemStatWidget extends StatelessWidget {
 
     if (modValues.type == StatType.Direction) {
       return Container(
-          width: width,
-          alignment: Alignment.centerLeft,
-          padding: const EdgeInsets.symmetric(vertical: 2),
-          child: SizedBox(
-              width: 40,
-              child: DirectionStatBarWidget(
-                  currentValue: modValues.selected.toInt(),
-                  equippedValue: current.round(),
-                  currentColor: getBaseColor(context),
-                  equippedColor: getDiffColor(context, modValues.diffType),
-                  backgroundColor: context.theme.surfaceLayers.layer3)));
+        width: width,
+        alignment: Alignment.centerLeft,
+        padding: const EdgeInsets.symmetric(vertical: 2),
+        child: SizedBox(
+          width: 40,
+          child: DirectionStatBarWidget(
+            currentValue: modValues.selected.toInt(),
+            equippedValue: current.round(),
+            currentColor: getBaseColor(context),
+            equippedColor: getDiffColor(context, modValues.diffType),
+            backgroundColor: context.theme.surfaceLayers.layer3,
+          ),
+        ),
+      );
     }
 
     if (modValues.type == StatType.NoBar) {

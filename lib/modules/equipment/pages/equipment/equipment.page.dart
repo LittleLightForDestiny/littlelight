@@ -14,14 +14,16 @@ class EquipmentPage extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<ScopedValueRepositoryBloc>(create: (context) => ScopedValueRepositoryBloc()),
         ChangeNotifierProvider<EquipmentBloc>(create: (context) => EquipmentBloc(context)),
-        Provider<ItemInteractionHandlerBloc>(create: (context) {
-          final bloc = context.read<EquipmentBloc>();
-          return ItemInteractionHandlerBloc(
-            onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
-            onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
-            onEmptySlotTap: (bucketHash, characterId) => bloc.openQuickTransfer(bucketHash, characterId),
-          );
-        }),
+        Provider<ItemInteractionHandlerBloc>(
+          create: (context) {
+            final bloc = context.read<EquipmentBloc>();
+            return ItemInteractionHandlerBloc(
+              onTap: (item) => item is InventoryItemInfo ? bloc.onItemTap(item) : null,
+              onHold: (item) => item is InventoryItemInfo ? bloc.onItemHold(item) : null,
+              onEmptySlotTap: (bucketHash, characterId) => bloc.openQuickTransfer(bucketHash, characterId),
+            );
+          },
+        ),
       ],
       builder: (context, _) => EquipmentView(
         context.read<EquipmentBloc>(),

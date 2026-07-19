@@ -14,19 +14,23 @@ class DuplicatedItemsPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (context) => SearchFilterBloc(context)),
-        ChangeNotifierProvider<SearchSorterBloc>(create: (context) {
-          final activeSorters =
-              context.read<UserSettingsBloc>().itemOrdering?.where((s) => s.active).toList() ?? <ItemSortParameter>[];
-          return SearchSorterBloc(context, activeSorters: activeSorters);
-        }),
+        ChangeNotifierProvider<SearchSorterBloc>(
+          create: (context) {
+            final activeSorters =
+                context.read<UserSettingsBloc>().itemOrdering?.where((s) => s.active).toList() ?? <ItemSortParameter>[];
+            return SearchSorterBloc(context, activeSorters: activeSorters);
+          },
+        ),
         ChangeNotifierProvider(create: (context) => DuplicatedItemsBloc(context)),
-        Provider<ItemInteractionHandlerBloc>(create: (context) {
-          final bloc = context.read<DuplicatedItemsBloc>();
-          return ItemInteractionHandlerBloc(
-            onTap: (item) => bloc.onItemTap(item),
-            onHold: (item) => bloc.onItemHold(item),
-          );
-        }),
+        Provider<ItemInteractionHandlerBloc>(
+          create: (context) {
+            final bloc = context.read<DuplicatedItemsBloc>();
+            return ItemInteractionHandlerBloc(
+              onTap: (item) => bloc.onItemTap(item),
+              onHold: (item) => bloc.onItemHold(item),
+            );
+          },
+        ),
       ],
       builder: (context, _) => DuplicatedItemsView(
         context.read<DuplicatedItemsBloc>(),

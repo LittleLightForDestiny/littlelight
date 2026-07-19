@@ -14,12 +14,10 @@ class SingleRunAnimationBuilder extends BaseAnimationBuilder {
   }) : super(builder, key: key, duration: duration);
 
   @override
-  SingleRunAnimationBuilderState createState() =>
-      SingleRunAnimationBuilderState();
+  SingleRunAnimationBuilderState createState() => SingleRunAnimationBuilderState();
 }
 
-class SingleRunAnimationBuilderState
-    extends BaseAnimationBuilderState<SingleRunAnimationBuilder> {
+class SingleRunAnimationBuilderState extends BaseAnimationBuilderState<SingleRunAnimationBuilder> {
   @override
   void initState() {
     super.initState();

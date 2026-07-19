@@ -49,11 +49,12 @@ class CharacterMilestonesTabContentWidget extends StatelessWidget with ManifestC
             },
             itemCount: milestones.length,
             itemsPerRow: context.mediaQuery.responsiveValue(1, tablet: 2, desktop: 3),
-          )
+          ),
         ],
         crossAxisSpacing: context.mediaQuery.responsiveValue(8, tablet: 16),
         mainAxisSpacing: context.mediaQuery.responsiveValue(8, tablet: 16),
-        padding: EdgeInsets.all(context.mediaQuery.responsiveValue<double>(8.0, tablet: 16.0)).copyWith(top: 0) +
+        padding:
+            EdgeInsets.all(context.mediaQuery.responsiveValue<double>(8.0, tablet: 16.0)).copyWith(top: 0) +
             EdgeInsets.only(
               left: context.mediaQuery.padding.left,
               right: context.mediaQuery.padding.right,

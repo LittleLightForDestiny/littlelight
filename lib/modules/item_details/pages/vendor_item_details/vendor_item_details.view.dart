@@ -6,8 +6,11 @@ import 'package:little_light/shared/blocs/socket_controller/socket_controller.bl
 
 class VendorItemDetailsView extends BaseItemDetailsView {
   VendorItemDetailsView(
-      ItemDetailsBloc bloc, ItemDetailsBloc state, SocketControllerBloc socketState, SelectionBloc selectionState)
-      : super(bloc, state, socketState, selectionState);
+    ItemDetailsBloc bloc,
+    ItemDetailsBloc state,
+    SocketControllerBloc socketState,
+    SelectionBloc selectionState,
+  ) : super(bloc, state, socketState, selectionState);
 
   @override
   Widget? buildItemNotes(BuildContext context) => null;

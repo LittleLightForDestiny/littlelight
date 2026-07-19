@@ -7,22 +7,18 @@ part of 'd2_clarity_stat.dart';
 // **************************************************************************
 
 ClarityStat _$ClarityStatFromJson(Map<String, dynamic> json) => ClarityStat(
-      active: json['active'],
-      passive: json['passive'],
-      weaponTypes: (json['weaponTypes'] as List<dynamic>?)
-          ?.map((e) => $enumDecode(_$ClarityWeaponTypeEnumMap, e,
-              unknownValue: ClarityWeaponType.Unknown))
-          .toList(),
-    );
+  active: json['active'],
+  passive: json['passive'],
+  weaponTypes: (json['weaponTypes'] as List<dynamic>?)
+      ?.map((e) => $enumDecode(_$ClarityWeaponTypeEnumMap, e, unknownValue: ClarityWeaponType.Unknown))
+      .toList(),
+);
 
-Map<String, dynamic> _$ClarityStatToJson(ClarityStat instance) =>
-    <String, dynamic>{
-      'active': instance.active,
-      'passive': instance.passive,
-      'weaponTypes': instance.weaponTypes
-          ?.map((e) => _$ClarityWeaponTypeEnumMap[e]!)
-          .toList(),
-    };
+Map<String, dynamic> _$ClarityStatToJson(ClarityStat instance) => <String, dynamic>{
+  'active': instance.active,
+  'passive': instance.passive,
+  'weaponTypes': instance.weaponTypes?.map((e) => _$ClarityWeaponTypeEnumMap[e]!).toList(),
+};
 
 const _$ClarityWeaponTypeEnumMap = {
   ClarityWeaponType.Fusion: 'Fusion',

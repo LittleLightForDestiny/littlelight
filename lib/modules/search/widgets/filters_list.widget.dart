@@ -53,7 +53,7 @@ class FiltersListWidget extends StatelessWidget {
           /// LL specific stuff
           ItemTagFilterWidget(),
           LoadoutFilterWidget(),
-          WishlistTagsFilterWidget()
+          WishlistTagsFilterWidget(),
         ],
       ),
     );

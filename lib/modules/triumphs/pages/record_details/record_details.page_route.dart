@@ -5,7 +5,9 @@ class RecordDetailsPageRoute extends MaterialPageRoute {
   final int recordHash;
 
   RecordDetailsPageRoute(this.recordHash)
-      : super(builder: (context) {
+    : super(
+        builder: (context) {
           return RecordDetailsPage(recordHash);
-        });
+        },
+      );
 }

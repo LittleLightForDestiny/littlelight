@@ -5,9 +5,11 @@ import 'package:little_light/widgets/common/corner_badge.decoration.dart';
 class WishlistCornerBadgeDecoration extends CornerBadgeDecoration {
   final Set<WishlistTag> tags;
 
-  const WishlistCornerBadgeDecoration(this.tags,
-      {double badgeSize = 1, CornerPosition position = CornerPosition.TopRight})
-      : super(badgeSize: badgeSize, colors: const [], position: position);
+  const WishlistCornerBadgeDecoration(
+    this.tags, {
+    double badgeSize = 1,
+    CornerPosition position = CornerPosition.TopRight,
+  }) : super(badgeSize: badgeSize, colors: const [], position: position);
 
   @override
   List<Color> get badgeColors {
@@ -62,7 +64,7 @@ class WishlistBadgePainter extends CornerBadgePainter {
   List<Color> borderColors;
 
   WishlistBadgePainter(List<Color> colors, this.borderColors, double badgeSize, CornerPosition position)
-      : super(colors, badgeSize, position);
+    : super(colors, badgeSize, position);
 
   @override
   void paint(Canvas canvas, Offset offset, ImageConfiguration configuration) {

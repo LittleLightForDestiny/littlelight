@@ -10,8 +10,7 @@ class LittleLightWishlist {
 
   Map<String, String>? versionRedirects;
 
-  LittleLightWishlist(
-      {this.name, this.description, required this.data, this.versionRedirects});
+  LittleLightWishlist({this.name, this.description, required this.data, this.versionRedirects});
 
   factory LittleLightWishlist.fromJson(dynamic json) {
     return _$LittleLightWishlistFromJson(json);
@@ -31,14 +30,15 @@ class LittleLightWishlistBuild {
   List<String> tags;
   List<String>? authors;
   String? originalWishlist;
-  LittleLightWishlistBuild(
-      {this.name,
-      this.description,
-      required this.plugs,
-      required this.hash,
-      required this.tags,
-      this.authors,
-      this.originalWishlist});
+  LittleLightWishlistBuild({
+    this.name,
+    this.description,
+    required this.plugs,
+    required this.hash,
+    required this.tags,
+    this.authors,
+    this.originalWishlist,
+  });
 
   factory LittleLightWishlistBuild.fromJson(dynamic json) {
     return _$LittleLightWishlistBuildFromJson(json);

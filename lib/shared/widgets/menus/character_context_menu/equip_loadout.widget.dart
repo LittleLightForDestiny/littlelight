@@ -19,49 +19,50 @@ class EquipLoadoutWidget extends StatelessWidget {
     final classType = character.character.classType;
     if (classType == null) return SizedBox();
     return Container(
-        padding: EdgeInsets.all(4),
-        decoration: BoxDecoration(
-          color: context.theme.surfaceLayers.layer3,
-          borderRadius: BorderRadius.circular(4),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            MenuBoxTitle(
-              "Loadout".translate(context),
-            ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                ElevatedButton(
-                  style: ButtonStyle(visualDensity: VisualDensity.standard),
-                  child: Text("Equip".translate(context).toUpperCase()),
-                  onPressed: () async {
-                    final bloc = context.read<CharacterContextMenuBloc>();
-                    bloc.openLoadoutTransfer(context, character, true);
-                  },
-                ),
-                Container(height: 4),
-                ElevatedButton(
-                  style: ButtonStyle(visualDensity: VisualDensity.standard),
-                  child: Text("Transfer".translate(context).toUpperCase()),
-                  onPressed: () {
-                    final bloc = context.read<CharacterContextMenuBloc>();
-                    bloc.openLoadoutTransfer(context, character, false);
-                  },
-                ),
-                Container(height: 4),
-                ElevatedButton(
-                  style: ButtonStyle(visualDensity: VisualDensity.standard),
-                  child: Text("Random".translate(context).toUpperCase()),
-                  onPressed: () {
-                    final bloc = context.read<CharacterContextMenuBloc>();
-                    bloc.openEquipRandomLoadout(context, character);
-                  },
-                ),
-              ],
-            ),
-          ],
-        ));
+      padding: EdgeInsets.all(4),
+      decoration: BoxDecoration(
+        color: context.theme.surfaceLayers.layer3,
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          MenuBoxTitle(
+            "Loadout".translate(context),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              ElevatedButton(
+                style: ButtonStyle(visualDensity: VisualDensity.standard),
+                child: Text("Equip".translate(context).toUpperCase()),
+                onPressed: () async {
+                  final bloc = context.read<CharacterContextMenuBloc>();
+                  bloc.openLoadoutTransfer(context, character, true);
+                },
+              ),
+              Container(height: 4),
+              ElevatedButton(
+                style: ButtonStyle(visualDensity: VisualDensity.standard),
+                child: Text("Transfer".translate(context).toUpperCase()),
+                onPressed: () {
+                  final bloc = context.read<CharacterContextMenuBloc>();
+                  bloc.openLoadoutTransfer(context, character, false);
+                },
+              ),
+              Container(height: 4),
+              ElevatedButton(
+                style: ButtonStyle(visualDensity: VisualDensity.standard),
+                child: Text("Random".translate(context).toUpperCase()),
+                onPressed: () {
+                  final bloc = context.read<CharacterContextMenuBloc>();
+                  bloc.openEquipRandomLoadout(context, character);
+                },
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

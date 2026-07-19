@@ -17,7 +17,7 @@ class DetailsItemCoverPerksWidget extends DetailsItemPerksWidget {
   final double pixelSize;
 
   DetailsItemCoverPerksWidget(DestinyItemSocketCategoryDefinition socketCategory, {this.pixelSize = 1})
-      : super(socketCategory);
+    : super(socketCategory);
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +26,14 @@ class DetailsItemCoverPerksWidget extends DetailsItemPerksWidget {
     final sockets = state.socketsForCategory(socketCategory);
     if (sockets == null) return Container();
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 20 * pixelSize),
-        child: DetailsItemCoverPersistentCollapsibleContainer(
-          title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
-          persistenceID: 'item cover perks $socketCategoryHash',
-          content: buildContent(context),
-          pixelSize: pixelSize,
-        ));
+      margin: EdgeInsets.symmetric(vertical: 20 * pixelSize),
+      child: DetailsItemCoverPersistentCollapsibleContainer(
+        title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
+        persistenceID: 'item cover perks $socketCategoryHash',
+        content: buildContent(context),
+        pixelSize: pixelSize,
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -49,31 +50,38 @@ class DetailsItemCoverPerksWidget extends DetailsItemPerksWidget {
     final state = context.watch<SocketControllerBloc>();
     final sockets = state.socketsForCategory(socketCategory);
     if (sockets == null) return Container();
-    return Stack(children: [
-      Positioned.fill(
+    return Stack(
+      children: [
+        Positioned.fill(
           child: Image.asset(
-        "assets/imgs/perks_grid.png",
-        repeat: ImageRepeat.repeat,
-        alignment: Alignment.topCenter,
-        scale: 1 / pixelSize,
-      )),
-      Container(
-        padding: EdgeInsets.all(8 * pixelSize),
-        child: IntrinsicHeight(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: sockets.map((e) => buildSocket(context, e)).foldIndexed<List<Widget>>(
-                <Widget>[],
-                (index, list, element) =>
-                    list +
-                    [
-                      Flexible(child: element),
-                      if (index < sockets.length - 1) buildDivider(context),
-                    ]).toList(),
+            "assets/imgs/perks_grid.png",
+            repeat: ImageRepeat.repeat,
+            alignment: Alignment.topCenter,
+            scale: 1 / pixelSize,
           ),
         ),
-      ),
-    ]);
+        Container(
+          padding: EdgeInsets.all(8 * pixelSize),
+          child: IntrinsicHeight(
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: sockets
+                  .map((e) => buildSocket(context, e))
+                  .foldIndexed<List<Widget>>(
+                    <Widget>[],
+                    (index, list, element) =>
+                        list +
+                        [
+                          Flexible(child: element),
+                          if (index < sockets.length - 1) buildDivider(context),
+                        ],
+                  )
+                  .toList(),
+            ),
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildDivider(BuildContext context) {
@@ -96,38 +104,41 @@ class DetailsItemCoverPerksWidget extends DetailsItemPerksWidget {
     final random = [selected, equipped].whereType<int>().firstWhereOrNull((h) => !available.contains(h));
     return Column(
       mainAxisSize: MainAxisSize.min,
-      children: socket.availablePlugHashes.map((plugHash) {
+      children:
+          socket.availablePlugHashes.map((plugHash) {
             final isPlugSelectable = state.isSelectable(socket.index, plugHash);
             return Container(
-                margin: EdgeInsets.all(8 * pixelSize),
-                width: 80 * pixelSize,
-                height: 80 * pixelSize,
-                child: PerkIconWidget(
-                  plugItemHash: plugHash,
-                  itemHash: itemHash,
-                  selectable: isPlugSelectable,
-                  available: state.isAvailable(socket.index, plugHash),
-                  selected: state.isSelected(socket.index, plugHash),
-                  equipped: state.isEquipped(socket.index, plugHash),
-                  onTap: () => bloc.toggleSelection(socket.index, plugHash),
-                  wishlistIconSize: 28 * pixelSize,
-                ));
+              margin: EdgeInsets.all(8 * pixelSize),
+              width: 80 * pixelSize,
+              height: 80 * pixelSize,
+              child: PerkIconWidget(
+                plugItemHash: plugHash,
+                itemHash: itemHash,
+                selectable: isPlugSelectable,
+                available: state.isAvailable(socket.index, plugHash),
+                selected: state.isSelected(socket.index, plugHash),
+                equipped: state.isEquipped(socket.index, plugHash),
+                onTap: () => bloc.toggleSelection(socket.index, plugHash),
+                wishlistIconSize: 28 * pixelSize,
+              ),
+            );
           }).toList() +
           [
             if (hasRandomPlugs)
               Container(
-                  margin: EdgeInsets.all(8 * pixelSize),
-                  width: 80 * pixelSize,
-                  height: 80 * pixelSize,
-                  child: PerkIconWidget(
-                    plugItemHash: random ?? _randomPerkIconHash,
-                    itemHash: itemHash,
-                    selected: selected == random && selected != null,
-                    equipped: equipped == random && equipped != null,
-                    available: random != null ? state.isAvailable(socket.index, random) : true,
-                    wishlistIconSize: 28 * pixelSize,
-                    onTap: () => bloc.toggleSocketSelection(socket.index),
-                  ))
+                margin: EdgeInsets.all(8 * pixelSize),
+                width: 80 * pixelSize,
+                height: 80 * pixelSize,
+                child: PerkIconWidget(
+                  plugItemHash: random ?? _randomPerkIconHash,
+                  itemHash: itemHash,
+                  selected: selected == random && selected != null,
+                  equipped: equipped == random && equipped != null,
+                  available: random != null ? state.isAvailable(socket.index, random) : true,
+                  wishlistIconSize: 28 * pixelSize,
+                  onTap: () => bloc.toggleSocketSelection(socket.index),
+                ),
+              ),
           ],
     );
   }

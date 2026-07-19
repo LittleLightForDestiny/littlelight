@@ -46,24 +46,29 @@ class StatSelectionBottomSheet extends StatelessWidget with ManifestConsumer {
   @override
   Widget build(BuildContext context) {
     final future = manifest.getDefinitions<DestinyStatDefinition>(statHashes);
-    return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-      Container(
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        Container(
           padding: EdgeInsets.all(8),
-          child: HeaderWidget(child: Text("Select a stat".translate(context).toUpperCase()))),
-      Flexible(
+          child: HeaderWidget(child: Text("Select a stat".translate(context).toUpperCase())),
+        ),
+        Flexible(
           child: FutureBuilder<Map<int, DestinyStatDefinition>>(
-        future: future,
-        builder: (context, snapshot) {
-          final values = snapshot.data?.values;
-          if (values == null) return Container();
-          final ordered = values
-              .sorted((a, b) => (a.index ?? 0).compareTo(b.index ?? 0)) //
-              .map((d) => d.hash)
-              .whereType<int>();
-          return buildAttributeList(context, ordered.toList());
-        },
-      )),
-    ]);
+            future: future,
+            builder: (context, snapshot) {
+              final values = snapshot.data?.values;
+              if (values == null) return Container();
+              final ordered = values
+                  .sorted((a, b) => (a.index ?? 0).compareTo(b.index ?? 0)) //
+                  .map((d) => d.hash)
+                  .whereType<int>();
+              return buildAttributeList(context, ordered.toList());
+            },
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildAttributeList(BuildContext context, List<int> hashes) {

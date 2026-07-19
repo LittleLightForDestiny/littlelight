@@ -17,58 +17,64 @@ class VendorsListItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(children: [
-      Positioned(
-        top: 0,
-        left: 0,
-        right: 0,
-        child: buildBackground(context),
-      ),
-      Container(
-        decoration: BoxDecoration(border: Border.all(color: context.theme.surfaceLayers.layer3, width: 1)),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            buildHeader(context),
-            Expanded(child: buildContent(context)),
-          ],
+    return Stack(
+      children: [
+        Positioned(
+          top: 0,
+          left: 0,
+          right: 0,
+          child: buildBackground(context),
         ),
-      ),
-      Positioned.fill(
+        Container(
+          decoration: BoxDecoration(border: Border.all(color: context.theme.surfaceLayers.layer3, width: 1)),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              buildHeader(context),
+              Expanded(child: buildContent(context)),
+            ],
+          ),
+        ),
+        Positioned.fill(
           child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
+            color: Colors.transparent,
+            child: InkWell(
+              onTap: onTap,
+            ),
+          ),
         ),
-      ))
-    ]);
+      ],
+    );
   }
 
   Widget buildBackground(BuildContext context) {
     final definition = context.definition<DestinyVendorDefinition>(data.vendor.vendorHash);
     final url = definition?.locations?.first.backgroundImagePath ?? definition?.displayProperties?.largeIcon;
-    return Stack(fit: StackFit.passthrough, children: [
-      QueuedNetworkImage(
-        fit: BoxFit.fitWidth,
-        alignment: Alignment.topLeft,
-        imageUrl: BungieApiService.url(url),
-      ),
-      Positioned.fill(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: <Color>[
-                context.theme.surfaceLayers.layer0,
-                context.theme.surfaceLayers.layer0.withValues(alpha: .2),
-              ],
-              begin: Alignment.bottomCenter,
-              end: Alignment.center,
+    return Stack(
+      fit: StackFit.passthrough,
+      children: [
+        QueuedNetworkImage(
+          fit: BoxFit.fitWidth,
+          alignment: Alignment.topLeft,
+          imageUrl: BungieApiService.url(url),
+        ),
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: <Color>[
+                  context.theme.surfaceLayers.layer0,
+                  context.theme.surfaceLayers.layer0.withValues(alpha: .2),
+                ],
+                begin: Alignment.bottomCenter,
+                end: Alignment.center,
+              ),
             ),
           ),
         ),
-      )
-    ]);
+      ],
+    );
   }
 
   Widget buildHeader(BuildContext context) {
@@ -94,8 +100,9 @@ class VendorsListItemWidget extends StatelessWidget {
             child: Container(
               padding: EdgeInsets.all(4),
               decoration: BoxDecoration(
-                  color: context.theme.surfaceLayers.layer0.withValues(alpha: .7),
-                  borderRadius: BorderRadius.circular(4)),
+                color: context.theme.surfaceLayers.layer0.withValues(alpha: .7),
+                borderRadius: BorderRadius.circular(4),
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -149,11 +156,12 @@ class VendorsListItemWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-            padding: const EdgeInsets.only(bottom: 4),
-            child: Text(
-              catDefinition?.displayProperties?.name?.toUpperCase() ?? "",
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
-            )),
+          padding: const EdgeInsets.only(bottom: 4),
+          child: Text(
+            catDefinition?.displayProperties?.name?.toUpperCase() ?? "",
+            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+          ),
+        ),
         Flexible(child: buildCategoryItems(context, category)),
         const SizedBox(height: 8),
       ],
@@ -165,11 +173,12 @@ class VendorsListItemWidget extends StatelessWidget {
     final indexes = category.itemIndexes?.reversed;
     if (indexes == null) return Container();
     return SizedBox(
-        height: 36,
-        child: SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-                children: indexes.map((index) => buildItem(context, definition?.itemList?[index], index)).toList())));
+      height: 36,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(children: indexes.map((index) => buildItem(context, definition?.itemList?[index], index)).toList()),
+      ),
+    );
   }
 
   Widget buildItem(BuildContext context, DestinyVendorItemDefinition? item, int index) {
@@ -178,24 +187,26 @@ class VendorsListItemWidget extends StatelessWidget {
     return Container(
       margin: EdgeInsets.only(right: 4),
       decoration: BoxDecoration(border: Border.all(color: context.theme.onSurfaceLayers, width: 1)),
-      child: Stack(children: [
-        Container(
-          height: 36,
-          constraints: BoxConstraints(minWidth: 36, maxWidth: 64),
-          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-            item?.itemHash,
-            key: Key("item_${item?.itemHash}"),
-            fit: BoxFit.cover,
-            placeholder: Container(width: 32, child: DefaultLoadingShimmer()),
-          ),
-        ),
-        if (sale.saleStatus != VendorItemStatus.Success)
-          Positioned.fill(
-            child: Container(
-              color: context.theme.surfaceLayers.withValues(alpha: .6),
+      child: Stack(
+        children: [
+          Container(
+            height: 36,
+            constraints: BoxConstraints(minWidth: 36, maxWidth: 64),
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+              item?.itemHash,
+              key: Key("item_${item?.itemHash}"),
+              fit: BoxFit.cover,
+              placeholder: Container(width: 32, child: DefaultLoadingShimmer()),
             ),
-          )
-      ]),
+          ),
+          if (sale.saleStatus != VendorItemStatus.Success)
+            Positioned.fill(
+              child: Container(
+                color: context.theme.surfaceLayers.withValues(alpha: .6),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

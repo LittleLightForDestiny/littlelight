@@ -44,7 +44,7 @@ class DividerIndicatorOverlay extends StatelessWidget {
       mainAxisSize: MainAxisSize.max,
       children: [
         Flexible(flex: threshold, child: buildScrollSection(context, top)),
-        Flexible(flex: 100 - threshold, child: buildScrollSection(context, bottom))
+        Flexible(flex: 100 - threshold, child: buildScrollSection(context, bottom)),
       ],
     );
   }
@@ -70,15 +70,16 @@ class DividerIndicatorOverlay extends StatelessWidget {
       ),
       alignment: Alignment.center,
       child: Container(
-          padding: EdgeInsets.all(4),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-            color: context.theme.surfaceLayers.layer0,
-          ),
-          child: Text(
-            type.label(context).toUpperCase(),
-            style: context.textTheme.title.copyWith(color: color.withValues(alpha: 1)),
-          )),
+        padding: EdgeInsets.all(4),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          color: context.theme.surfaceLayers.layer0,
+        ),
+        child: Text(
+          type.label(context).toUpperCase(),
+          style: context.textTheme.title.copyWith(color: color.withValues(alpha: 1)),
+        ),
+      ),
     );
   }
 }

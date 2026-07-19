@@ -9,9 +9,7 @@ import 'base_item_filter.dart';
 class LoadoutFilter extends BaseItemFilter<LoadoutFilterOptions> {
   final Map<String, Set<String>> _loadoutsByItem = {};
   final LoadoutsBloc _loadoutsBloc;
-  LoadoutFilter(BuildContext context)
-      : _loadoutsBloc = context.read<LoadoutsBloc>(),
-        super(LoadoutFilterOptions({}));
+  LoadoutFilter(BuildContext context) : _loadoutsBloc = context.read<LoadoutsBloc>(), super(LoadoutFilterOptions({}));
 
   @override
   Future<List<DestinyItemInfo>> filter(BuildContext context, List<DestinyItemInfo> items) async {

@@ -13,7 +13,7 @@ class EnergyLevelConstraints {
 
 class EnergyLevelFilterOptions extends BaseFilterOptions<EnergyLevelConstraints> {
   EnergyLevelFilterOptions([EnergyLevelConstraints? value])
-      : super(value ?? EnergyLevelConstraints(min: -99, max: 99), availableValues: EnergyLevelConstraints());
+    : super(value ?? EnergyLevelConstraints(min: -99, max: 99), availableValues: EnergyLevelConstraints());
 
   @override
   bool get available => availableValues.max > availableValues.min;

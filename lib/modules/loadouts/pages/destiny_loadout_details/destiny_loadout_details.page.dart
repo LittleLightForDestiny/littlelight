@@ -18,11 +18,12 @@ class DestinyLoadoutDetailsPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
-            create: (context) => DestinyLoadoutDetailsBloc(
-                  context,
-                  characterId: characterId,
-                  loadoutIndex: loadoutIndex,
-                ))
+          create: (context) => DestinyLoadoutDetailsBloc(
+            context,
+            characterId: characterId,
+            loadoutIndex: loadoutIndex,
+          ),
+        ),
       ],
       builder: (context, _) => DestinyLoadoutDetailsView(
         bloc: context.read<DestinyLoadoutDetailsBloc>(),

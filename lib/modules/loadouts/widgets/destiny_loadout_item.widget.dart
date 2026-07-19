@@ -13,12 +13,17 @@ class DestinyLoadoutItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(8),
-        child: Row(children: [
+      padding: EdgeInsets.all(8),
+      child: Row(
+        children: [
           buildItemIcon(context),
           Container(width: 8),
-          Expanded(child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: buildItemMods(context))),
-        ]));
+          Expanded(
+            child: SingleChildScrollView(scrollDirection: Axis.horizontal, child: buildItemMods(context)),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildItemIcon(BuildContext context) {
@@ -38,10 +43,13 @@ class DestinyLoadoutItemWidget extends StatelessWidget {
       return buildModIcons(context, ["shader", "intrinsics", "skins"]);
     }
     if (def?.isSubclass ?? false) {
-      return Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        buildModIcons(context, ["supers", "fragments", "trinkets"]),
-        buildModIcons(context, ["movement", "class_abilities", "supers", "aspects", "melee", "grenade", "totems"])
-      ]);
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          buildModIcons(context, ["supers", "fragments", "trinkets"]),
+          buildModIcons(context, ["movement", "class_abilities", "supers", "aspects", "melee", "grenade", "totems"]),
+        ],
+      );
     }
     return Container();
   }
@@ -66,10 +74,11 @@ class DestinyLoadoutItemWidget extends StatelessWidget {
           if (plugCategoryId == null) return Container();
           if (categoryIdentifiersDenylist.any((pattern) => plugCategoryId.contains(pattern))) return Container();
           return Container(
-              margin: EdgeInsets.all(2),
-              width: 40,
-              height: 40,
-              child: ManifestImageWidget<DestinyInventoryItemDefinition>(p));
+            margin: EdgeInsets.all(2),
+            width: 40,
+            height: 40,
+            child: ManifestImageWidget<DestinyInventoryItemDefinition>(p),
+          );
         },
       ).toList(),
     );

@@ -35,12 +35,13 @@ class DetailsWishlistBuildsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Wishlist Builds".translate(context).toUpperCase()),
-          persistenceID: 'wishlist builds',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Wishlist Builds".translate(context).toUpperCase()),
+        persistenceID: 'wishlist builds',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -49,7 +50,7 @@ class DetailsWishlistBuildsWidget extends StatelessWidget {
       child: Column(
         children: [
           buildAllWishlistsToggle(context),
-          ...builds.entries.map((b) => buildWishlist(context, b.key, b.value)).whereType<Widget>().toList()
+          ...builds.entries.map((b) => buildWishlist(context, b.key, b.value)).whereType<Widget>().toList(),
         ].whereType<Widget>().toList(),
       ),
     );
@@ -58,23 +59,24 @@ class DetailsWishlistBuildsWidget extends StatelessWidget {
   Widget? buildAllWishlistsToggle(BuildContext context) {
     if (!enableViewAllBuilds) return null;
     return Container(
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(4),
-          color: context.theme.surfaceLayers.layer3,
-        ),
-        padding: EdgeInsets.all(4),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              "View all builds".translate(context),
-              style: context.textTheme.highlight,
-            ),
-            LLSwitch.callback(viewAllBuilds, (value) {
-              onToggleViewAllBuilds?.call(value);
-            }),
-          ],
-        ));
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(4),
+        color: context.theme.surfaceLayers.layer3,
+      ),
+      padding: EdgeInsets.all(4),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            "View all builds".translate(context),
+            style: context.textTheme.highlight,
+          ),
+          LLSwitch.callback(viewAllBuilds, (value) {
+            onToggleViewAllBuilds?.call(value);
+          }),
+        ],
+      ),
+    );
   }
 
   Widget? buildWishlist(
@@ -93,24 +95,27 @@ class DetailsWishlistBuildsWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
       ),
       margin: EdgeInsets.only(top: 8),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        Container(
-          decoration: BoxDecoration(
-            color: context.theme.secondarySurfaceLayers.layer1,
-            borderRadius: BorderRadius.circular(4),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Container(
+            decoration: BoxDecoration(
+              color: context.theme.secondarySurfaceLayers.layer1,
+              borderRadius: BorderRadius.circular(4),
+            ),
+            padding: EdgeInsets.all(4),
+            margin: EdgeInsets.all(4),
+            child: Text(
+              wishlistName,
+              style: context.textTheme.highlight,
+            ),
           ),
-          padding: EdgeInsets.all(4),
-          margin: EdgeInsets.all(4),
-          child: Text(
-            wishlistName,
-            style: context.textTheme.highlight,
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: columns.map((e) => Expanded(child: e)).toList(),
           ),
-        ),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: columns.map((e) => Expanded(child: e)).toList(),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 
@@ -159,12 +164,15 @@ class DetailsWishlistBuildsWidget extends StatelessWidget {
     ParsedWishlistBuild wishlistBuild,
   ) {
     return Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: wishlistBuild.plugs
-            .map((perks) => Column(
-                  children: perks.map((p) => buildWishlistPlug(context, p)).toList(),
-                ))
-            .toList());
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: wishlistBuild.plugs
+          .map(
+            (perks) => Column(
+              children: perks.map((p) => buildWishlistPlug(context, p)).toList(),
+            ),
+          )
+          .toList(),
+    );
   }
 
   Widget buildWishlistPlug(BuildContext context, int plugHash) {
@@ -174,30 +182,32 @@ class DetailsWishlistBuildsWidget extends StatelessWidget {
     final available = !equipped && (allAvailablePlugHashes?.contains(plugHash) ?? false);
     final enhanced = def?.inventory?.tierType == TierType.Common;
     return Container(
-        margin: EdgeInsets.only(right: 2, bottom: 2),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(_perkIconSize),
-          border: selected ? Border.all(color: context.theme.onSurfaceLayers, width: .5) : null,
-          color: (equipped || selected)
-              ? context.theme.primaryLayers.layer1.withValues(alpha: selected ? 1 : .7)
-              : available
-                  ? context.theme.primaryLayers.layer1.withValues(alpha: .4)
-                  : Colors.transparent,
-        ),
-        foregroundDecoration: enhanced
-            ? BoxDecoration(
-                borderRadius: BorderRadius.circular(_perkIconSize),
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    context.theme.achievementLayers.layer0.withValues(alpha: .5),
-                    context.theme.achievementLayers.layer0.withValues(alpha: 0),
-                  ],
-                ))
-            : null,
-        width: _perkIconSize,
-        height: _perkIconSize,
-        child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash));
+      margin: EdgeInsets.only(right: 2, bottom: 2),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(_perkIconSize),
+        border: selected ? Border.all(color: context.theme.onSurfaceLayers, width: .5) : null,
+        color: (equipped || selected)
+            ? context.theme.primaryLayers.layer1.withValues(alpha: selected ? 1 : .7)
+            : available
+            ? context.theme.primaryLayers.layer1.withValues(alpha: .4)
+            : Colors.transparent,
+      ),
+      foregroundDecoration: enhanced
+          ? BoxDecoration(
+              borderRadius: BorderRadius.circular(_perkIconSize),
+              gradient: LinearGradient(
+                begin: Alignment.bottomCenter,
+                end: Alignment.topCenter,
+                colors: [
+                  context.theme.achievementLayers.layer0.withValues(alpha: .5),
+                  context.theme.achievementLayers.layer0.withValues(alpha: 0),
+                ],
+              ),
+            )
+          : null,
+      width: _perkIconSize,
+      height: _perkIconSize,
+      child: ManifestImageWidget<DestinyInventoryItemDefinition>(plugHash),
+    );
   }
 }

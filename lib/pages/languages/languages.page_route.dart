@@ -3,7 +3,7 @@ import 'package:little_light/pages/languages/languages.page.dart';
 
 class LanguagesPageRoute extends MaterialPageRoute {
   LanguagesPageRoute()
-      : super(
-          builder: (context) => LanguagesPage(),
-        );
+    : super(
+        builder: (context) => LanguagesPage(),
+      );
 }

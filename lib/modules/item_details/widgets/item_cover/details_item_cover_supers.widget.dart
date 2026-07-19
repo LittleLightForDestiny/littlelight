@@ -10,7 +10,7 @@ import 'details_item_cover_persistent_collapsible_container.dart';
 class DetailsItemCoverSupersWidget extends DetailsItemSupersWidget {
   final double pixelSize;
   DetailsItemCoverSupersWidget(DestinyItemSocketCategoryDefinition socketCategory, {this.pixelSize = 1})
-      : super(socketCategory);
+    : super(socketCategory);
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +19,14 @@ class DetailsItemCoverSupersWidget extends DetailsItemSupersWidget {
     final sockets = state.socketsForCategory(socketCategory);
     if (sockets == null) return Container();
     return Container(
-        margin: EdgeInsets.symmetric(vertical: 20 * pixelSize),
-        child: DetailsItemCoverPersistentCollapsibleContainer(
-          title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
-          persistenceID: 'item cover supers $socketCategoryHash',
-          content: buildContent(context),
-          pixelSize: pixelSize,
-        ));
+      margin: EdgeInsets.symmetric(vertical: 20 * pixelSize),
+      child: DetailsItemCoverPersistentCollapsibleContainer(
+        title: ManifestText<DestinySocketCategoryDefinition>(socketCategoryHash),
+        persistenceID: 'item cover supers $socketCategoryHash',
+        content: buildContent(context),
+        pixelSize: pixelSize,
+      ),
+    );
   }
 
   @override
@@ -51,21 +52,23 @@ class DetailsItemCoverSupersWidget extends DetailsItemSupersWidget {
     final itemHash = state.itemHash;
     if (itemHash == null) return Container();
     return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: socket.availablePlugHashes.map((plugHash) {
-          final isPlugSelectable = state.isSelectable(socket.index, plugHash);
-          return Container(
-              margin: EdgeInsets.all(4 * pixelSize),
-              constraints: BoxConstraints(maxWidth: 96 * pixelSize, maxHeight: 96 * pixelSize),
-              child: SuperIconWidget(
-                plugItemHash: plugHash,
-                itemHash: itemHash,
-                selectable: isPlugSelectable,
-                available: state.isAvailable(socket.index, plugHash),
-                selected: state.isSelected(socket.index, plugHash),
-                equipped: state.isEquipped(socket.index, plugHash),
-                onTap: () => bloc.toggleSelection(socket.index, plugHash),
-              ));
-        }).toList());
+      mainAxisSize: MainAxisSize.min,
+      children: socket.availablePlugHashes.map((plugHash) {
+        final isPlugSelectable = state.isSelectable(socket.index, plugHash);
+        return Container(
+          margin: EdgeInsets.all(4 * pixelSize),
+          constraints: BoxConstraints(maxWidth: 96 * pixelSize, maxHeight: 96 * pixelSize),
+          child: SuperIconWidget(
+            plugItemHash: plugHash,
+            itemHash: itemHash,
+            selectable: isPlugSelectable,
+            available: state.isAvailable(socket.index, plugHash),
+            selected: state.isSelected(socket.index, plugHash),
+            equipped: state.isEquipped(socket.index, plugHash),
+            onTap: () => bloc.toggleSelection(socket.index, plugHash),
+          ),
+        );
+      }).toList(),
+    );
   }
 }

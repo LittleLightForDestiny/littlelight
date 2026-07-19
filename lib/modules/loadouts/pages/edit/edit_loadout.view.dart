@@ -27,12 +27,13 @@ class EditLoadoutView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: buildAppBar(context),
-      body: Column(children: [
-        Expanded(
-          child: Stack(
-            children: [
-              buildBody(context),
-              Positioned(
+      body: Column(
+        children: [
+          Expanded(
+            child: Stack(
+              children: [
+                buildBody(context),
+                Positioned(
                   bottom: 0,
                   left: 0,
                   right: 0,
@@ -45,31 +46,35 @@ class EditLoadoutView extends StatelessWidget {
                       ),
                       BusyIndicatorLineWidget(),
                     ],
-                  ))
-            ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ),
-        buildFooter(context),
-      ]),
+          buildFooter(context),
+        ],
+      ),
     );
   }
 
   AppBar buildAppBar(BuildContext context) => AppBar(
-        title: state.creating ? Text("Create Loadout".translate(context)) : Text("Edit Loadout".translate(context)),
-        centerTitle: false,
-        flexibleSpace: buildAppBarBackground(context),
-      );
+    title: state.creating ? Text("Create Loadout".translate(context)) : Text("Edit Loadout".translate(context)),
+    centerTitle: false,
+    flexibleSpace: buildAppBarBackground(context),
+  );
 
   Widget buildAppBarBackground(BuildContext context) {
     final emblemDefinition = context.definition<DestinyInventoryItemDefinition>(state.emblemHash);
     if (emblemDefinition == null) return Container();
     if (emblemDefinition.secondarySpecial?.isEmpty ?? true) return Container();
     return Container(
-        constraints: const BoxConstraints.expand(),
-        child: QueuedNetworkImage(
-            imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
-            fit: BoxFit.cover,
-            alignment: const Alignment(-.8, 0)));
+      constraints: const BoxConstraints.expand(),
+      child: QueuedNetworkImage(
+        imageUrl: BungieApiService.url(emblemDefinition.secondarySpecial),
+        fit: BoxFit.cover,
+        alignment: const Alignment(-.8, 0),
+      ),
+    );
   }
 
   Widget buildBody(BuildContext context) {
@@ -91,31 +96,34 @@ class EditLoadoutView extends StatelessWidget {
             itemCount: state.bucketHashes.length,
           ),
         ],
-        padding: const EdgeInsets.all(8)
-            .copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
+        padding: const EdgeInsets.all(
+          8,
+        ).copyWith(top: 0, left: max(screenPadding.left, 8), right: max(screenPadding.right, 8)),
       ),
     );
   }
 
   Widget buildNameTextField(BuildContext context) {
     return Container(
-        key: Key("textfieldvalue loaded ${state.loading}"),
-        padding: const EdgeInsets.all(8),
-        child: TextFormField(
-          autocorrect: false,
-          initialValue: state.loadoutName,
-          onChanged: (value) => bloc.loadoutName = value,
-          decoration: InputDecoration(labelText: context.translate("Loadout Name")),
-        ));
+      key: Key("textfieldvalue loaded ${state.loading}"),
+      padding: const EdgeInsets.all(8),
+      child: TextFormField(
+        autocorrect: false,
+        initialValue: state.loadoutName,
+        onChanged: (value) => bloc.loadoutName = value,
+        decoration: InputDecoration(labelText: context.translate("Loadout Name")),
+      ),
+    );
   }
 
   Widget buildSelectBackgroundButton(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(8),
-        child: ElevatedButton(
-          child: Text("Select Loadout Background".translate(context)),
-          onPressed: () => bloc.openBackgroundEmblemSelect(),
-        ));
+      padding: const EdgeInsets.all(8),
+      child: ElevatedButton(
+        child: Text("Select Loadout Background".translate(context)),
+        onPressed: () => bloc.openBackgroundEmblemSelect(),
+      ),
+    );
   }
 
   Widget buildSlot(BuildContext context, int index) {
@@ -140,12 +148,14 @@ class EditLoadoutView extends StatelessWidget {
 
   Widget buildFooter(BuildContext context) {
     return Material(
-        elevation: 1,
-        color: context.theme.secondarySurfaceLayers,
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(child: buildAppBarBackground(context)),
-            Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      elevation: 1,
+      color: context.theme.secondarySurfaceLayers,
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(child: buildAppBarBackground(context)),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
               Container(
                 height: kToolbarHeight,
                 padding: const EdgeInsets.all(8),
@@ -155,8 +165,10 @@ class EditLoadoutView extends StatelessWidget {
                 ),
               ),
               BusyIndicatorBottomGradientWidget(),
-            ])
-          ],
-        ));
+            ],
+          ),
+        ],
+      ),
+    );
   }
 }

@@ -18,15 +18,18 @@ class DetailsItemDuplicatesWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Container(
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return Container(
           padding: EdgeInsets.all(4),
           child: PersistentCollapsibleContainer(
             title: Text("Duplicates".translate(context).toUpperCase()),
             persistenceID: 'item duplicates',
             content: buildContent(context, constraints),
-          ));
-    });
+          ),
+        );
+      },
+    );
   }
 
   Widget buildContent(BuildContext context, BoxConstraints constraints) {

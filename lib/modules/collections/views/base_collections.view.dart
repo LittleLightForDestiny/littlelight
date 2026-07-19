@@ -14,38 +14,45 @@ abstract class BaseCollectionsView extends BasePresentationNodeView {
   Widget? buildEndDrawer(BuildContext context) {
     final userSettings = context.read<UserSettingsBloc>();
     return Drawer(
-        child: Column(children: [
-      AppBar(
-        title: Text("Settings".translate(context)),
-        actions: <Widget>[Container()],
-        centerTitle: false,
-        leading: IconButton(
-          enableFeedback: false,
-          icon: const Icon(Icons.close),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
-      ),
-      SingleChildScrollView(
-          padding: const EdgeInsets.all(8),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: <Widget>[
-            SwitchOptionWidget(
-              "Hide Unavailable Items".translate(context).toUpperCase(),
-              "Hide collectible items that are currently unavailable.".translate(context),
-              value: userSettings.hideUnavailableCollectibles,
-              onChanged: (value) => userSettings.hideUnavailableCollectibles = value,
+      child: Column(
+        children: [
+          AppBar(
+            title: Text("Settings".translate(context)),
+            actions: <Widget>[Container()],
+            centerTitle: false,
+            leading: IconButton(
+              enableFeedback: false,
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
             ),
+          ),
+          SingleChildScrollView(
+            padding: const EdgeInsets.all(8),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: <Widget>[
+                SwitchOptionWidget(
+                  "Hide Unavailable Items".translate(context).toUpperCase(),
+                  "Hide collectible items that are currently unavailable.".translate(context),
+                  value: userSettings.hideUnavailableCollectibles,
+                  onChanged: (value) => userSettings.hideUnavailableCollectibles = value,
+                ),
 
-            /// Temporarily disabled
-            // SwitchOptionWidget(
-            //   "Sort Newest to Oldest".translate(context).toUpperCase(),
-            //   "Sort collectibles so that newest items appear first.".translate(context),
-            //   value: userSettings.sortCollectiblesByNewest,
-            //   onChanged: (value) => userSettings.sortCollectiblesByNewest = value,
-            // ),
-          ]))
-    ]));
+                /// Temporarily disabled
+                // SwitchOptionWidget(
+                //   "Sort Newest to Oldest".translate(context).toUpperCase(),
+                //   "Sort collectibles so that newest items appear first.".translate(context),
+                //   value: userSettings.sortCollectiblesByNewest,
+                //   onChanged: (value) => userSettings.sortCollectiblesByNewest = value,
+                // ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   List<Widget>? buildActions(BuildContext context) {

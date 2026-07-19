@@ -24,6 +24,6 @@ extension ObjectiveViewModeToString on ScrollAreaType {
 
 extension StringToScrollAreaType on String {
   ScrollAreaType? get asScrollAreaType => ScrollAreaType.values.firstWhereOrNull(
-        (element) => element.name.toLowerCase() == this.toLowerCase(),
-      );
+    (element) => element.name.toLowerCase() == this.toLowerCase(),
+  );
 }

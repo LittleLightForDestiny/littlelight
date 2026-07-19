@@ -62,16 +62,17 @@ class GameData {
   @BreakerMapConverter()
   Map<int, DestinyBreakerType>? weaponsMissingBreakerType;
 
-  GameData(
-      {required this.softCap,
-      required this.powerfulCap,
-      required this.pinnacleCap,
-      this.relevantCurrencies,
-      this.raidPhases,
-      this.cosmeticSocketCategories,
-      this.craftingSocketCategories,
-      this.deepsightSocketCategories,
-      this.weaponsMissingBreakerType});
+  GameData({
+    required this.softCap,
+    required this.powerfulCap,
+    required this.pinnacleCap,
+    this.relevantCurrencies,
+    this.raidPhases,
+    this.cosmeticSocketCategories,
+    this.craftingSocketCategories,
+    this.deepsightSocketCategories,
+    this.weaponsMissingBreakerType,
+  });
 
   factory GameData.fromJson(dynamic json) {
     return _$GameDataFromJson(json);

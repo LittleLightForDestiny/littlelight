@@ -5,10 +5,10 @@ import 'add_wishlists.bloc.dart';
 
 class AddWishlistPageRoute extends MaterialPageRoute {
   AddWishlistPageRoute()
-      : super(
-          builder: (context) => ChangeNotifierProvider(
-            create: (BuildContext context) => AddWishlistsBloc(context),
-            child: const AddWishlistPage(),
-          ),
-        );
+    : super(
+        builder: (context) => ChangeNotifierProvider(
+          create: (BuildContext context) => AddWishlistsBloc(context),
+          child: const AddWishlistPage(),
+        ),
+      );
 }

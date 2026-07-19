@@ -53,9 +53,9 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
   Set<DestinyClass>? get availableClasses => _availableClasses;
 
   EditLoadoutBloc(this.context, {String? loadoutID, Loadout? preset})
-      : loadoutsBloc = context.read<LoadoutsBloc>(),
-        profileBloc = context.read<ProfileBloc>(),
-        notificationBloc = context.read<NotificationsBloc>() {
+    : loadoutsBloc = context.read<LoadoutsBloc>(),
+      profileBloc = context.read<ProfileBloc>(),
+      notificationBloc = context.read<NotificationsBloc>() {
     _init(loadoutID: loadoutID, preset: preset);
   }
 
@@ -122,12 +122,14 @@ class EditLoadoutBloc extends ChangeNotifier with ManifestConsumer {
       slot?.genericEquipped.inventoryItem?.instanceId,
       ...unequipped,
     ].whereType<String>().toList();
-    final item = await Navigator.of(context).push(SelectLoadoutItemPageRoute(
-      bucketHash: bucketHash,
-      classType: classType,
-      idsToAvoid: idsToAvoid,
-      emblemHash: emblemHash,
-    ));
+    final item = await Navigator.of(context).push(
+      SelectLoadoutItemPageRoute(
+        bucketHash: bucketHash,
+        classType: classType,
+        idsToAvoid: idsToAvoid,
+        emblemHash: emblemHash,
+      ),
+    );
     if (item == null) return;
     final result = await _itemIndex?.addItem(manifest, item, equipped: equipped);
     notifyUser(result);

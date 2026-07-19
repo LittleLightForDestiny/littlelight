@@ -49,7 +49,7 @@ abstract class BasePresentationNodeView extends StatelessWidget {
                   ],
                 ),
               ),
-              buildSelection(context)
+              buildSelection(context),
             ],
           ),
           endDrawer: buildEndDrawer(context),
@@ -84,40 +84,46 @@ abstract class BasePresentationNodeView extends StatelessWidget {
     if (breadcrumbHashes == null) return null;
     final tabController = DefaultTabController.of(context);
     return PreferredSize(
-        child: AnimatedBuilder(
-            animation: tabController,
-            builder: (context, _) {
-              final current = tabController.index;
-              List<int> hashes = [...breadcrumbHashes];
-              final nodesLength = tabNodes?.length ?? 0;
-              if (nodesLength > current) {
-                final hash = tabNodes?[current].hash;
-                hashes = [...hashes, if (hash != null) hash];
-              }
-              return CategoryBreadcrumbWidget(categoryHashes: hashes);
-            }),
-        preferredSize: Size.fromHeight(32.0));
+      child: AnimatedBuilder(
+        animation: tabController,
+        builder: (context, _) {
+          final current = tabController.index;
+          List<int> hashes = [...breadcrumbHashes];
+          final nodesLength = tabNodes?.length ?? 0;
+          if (nodesLength > current) {
+            final hash = tabNodes?[current].hash;
+            hashes = [...hashes, if (hash != null) hash];
+          }
+          return CategoryBreadcrumbWidget(categoryHashes: hashes);
+        },
+      ),
+      preferredSize: Size.fromHeight(32.0),
+    );
   }
 
   PreferredSizeWidget? buildTabBar(BuildContext context) {
     final nodes = tabNodes;
     if (nodes == null || nodes.length <= 1) return null;
     final tabBar = TabBar(
-        labelPadding: const EdgeInsets.all(0),
-        indicatorColor: context.theme.onSurfaceLayers,
-        isScrollable: scrollableTabBar,
-        tabs: nodes.map((n) => buildTabButton(context, n)).toList());
+      labelPadding: const EdgeInsets.all(0),
+      indicatorColor: context.theme.onSurfaceLayers,
+      isScrollable: scrollableTabBar,
+      tabs: nodes.map((n) => buildTabButton(context, n)).toList(),
+    );
     return PreferredSize(
-        preferredSize: tabBar.preferredSize,
-        child: Material(
-          color: context.theme.secondarySurfaceLayers.layer1,
-          elevation: 2,
-          child: LayoutBuilder(
-              builder: (context, constraints) => Container(
-                  constraints: BoxConstraints(minWidth: constraints.maxWidth),
-                  height: tabBar.preferredSize.height,
-                  child: tabBar)),
-        ));
+      preferredSize: tabBar.preferredSize,
+      child: Material(
+        color: context.theme.secondarySurfaceLayers.layer1,
+        elevation: 2,
+        child: LayoutBuilder(
+          builder: (context, constraints) => Container(
+            constraints: BoxConstraints(minWidth: constraints.maxWidth),
+            height: tabBar.preferredSize.height,
+            child: tabBar,
+          ),
+        ),
+      ),
+    );
   }
 
   Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
@@ -133,12 +139,14 @@ abstract class BasePresentationNodeView extends StatelessWidget {
     if (nodes == null) return LoadingAnimWidget();
     return TabBarView(
       children: nodes
-          .map((node) => buildTab(
-                context,
-                node,
-                const EdgeInsets.all(4).copyWith(bottom: 64.0) +
-                    EdgeInsets.only(bottom: hasFooter ? 0 : mq.viewPadding.bottom),
-              ))
+          .map(
+            (node) => buildTab(
+              context,
+              node,
+              const EdgeInsets.all(4).copyWith(bottom: 64.0) +
+                  EdgeInsets.only(bottom: hasFooter ? 0 : mq.viewPadding.bottom),
+            ),
+          )
           .toList(),
     );
   }
@@ -163,10 +171,12 @@ abstract class BasePresentationNodeView extends StatelessWidget {
     final hasSelection = context.watch<SelectionBloc>().hasSelection;
     final bottomPadding = context.mediaQuery.viewPadding.bottom;
     if (!hasSelection) return Container();
-    return Column(children: [
-      SelectedItemsWidget(),
-      if (bottomPadding > 0)
-        Container(color: context.theme.surfaceLayers.layer1, child: BusyIndicatorBottomGradientWidget()),
-    ]);
+    return Column(
+      children: [
+        SelectedItemsWidget(),
+        if (bottomPadding > 0)
+          Container(color: context.theme.surfaceLayers.layer1, child: BusyIndicatorBottomGradientWidget()),
+      ],
+    );
   }
 }

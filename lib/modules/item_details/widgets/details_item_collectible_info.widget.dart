@@ -20,23 +20,28 @@ class DetailsItemCollectibleInfoWidget extends StatelessWidget {
     final sourceString = collectibleDef?.sourceString;
     if (sourceString == null || sourceString.isEmpty) return Container();
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("How to get".translate(context).toUpperCase()),
-          persistenceID: 'item collectible info',
-          content: buildContent(context, sourceString),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("How to get".translate(context).toUpperCase()),
+        persistenceID: 'item collectible info',
+        content: buildContent(context, sourceString),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context, String text) {
     return Container(
-        padding: EdgeInsets.all(8),
-        child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
+      padding: EdgeInsets.all(8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
           SelectableText(
             text,
             style: context.textTheme.body,
             textAlign: TextAlign.left,
           ),
-        ]));
+        ],
+      ),
+    );
   }
 }

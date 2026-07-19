@@ -48,7 +48,11 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
 
   Future<BungieNetToken> refreshToken(String refreshToken) {
     return OAuth.refreshToken(
-        Client(autoRefreshToken: false), appConfig.clientId, appConfig.clientSecret, refreshToken);
+      Client(autoRefreshToken: false),
+      appConfig.clientId,
+      appConfig.clientSecret,
+      refreshToken,
+    );
   }
 
   Future<DestinyProfileResponse?> getCurrentProfile(List<DestinyComponentType> components) async {
@@ -64,10 +68,17 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
   }
 
   Future<DestinyProfileResponse?> getProfile(
-      List<DestinyComponentType> components, String membershipId, BungieMembershipType membershipType,
-      [BungieNetToken? token]) async {
-    DestinyProfileResponseResponse response =
-        await Destiny2.getProfile(Client(token: token), components, membershipId, membershipType);
+    List<DestinyComponentType> components,
+    String membershipId,
+    BungieMembershipType membershipType, [
+    BungieNetToken? token,
+  ]) async {
+    DestinyProfileResponseResponse response = await Destiny2.getProfile(
+      Client(token: token),
+      components,
+      membershipId,
+      membershipType,
+    );
     return response.response;
   }
 
@@ -80,12 +91,21 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     DestinyVendorsResponseResponse response = await Destiny2.getVendors(
-        Client(token: token), characterId, components, membershipID, DestinyVendorFilter.None, membershipType);
+      Client(token: token),
+      characterId,
+      components,
+      membershipID,
+      DestinyVendorFilter.None,
+      membershipType,
+    );
     return response.response;
   }
 
   Future<DestinyVendorResponse?> getVendor(
-      List<DestinyComponentType> components, String characterId, int vendorHash) async {
+    List<DestinyComponentType> components,
+    String characterId,
+    int vendorHash,
+  ) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipID = membership?.membershipId;
@@ -118,7 +138,12 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
   }
 
   Future<int?> transferItem(
-      int itemHash, int stackSize, bool transferToVault, String? itemId, String characterId) async {
+    int itemHash,
+    int stackSize,
+    bool transferToVault,
+    String? itemId,
+    String characterId,
+  ) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipID = membership?.membershipId;
@@ -127,14 +152,15 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     Int32Response response = await Destiny2.transferItem(
-        Client(token: token),
-        DestinyItemTransferRequest()
-          ..itemReferenceHash = itemHash
-          ..stackSize = stackSize
-          ..transferToVault = transferToVault
-          ..itemId = itemId
-          ..characterId = characterId
-          ..membershipType = membershipType);
+      Client(token: token),
+      DestinyItemTransferRequest()
+        ..itemReferenceHash = itemHash
+        ..stackSize = stackSize
+        ..transferToVault = transferToVault
+        ..itemId = itemId
+        ..characterId = characterId
+        ..membershipType = membershipType,
+    );
     return response.response;
   }
 
@@ -146,13 +172,14 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     Int32Response response = await Destiny2.pullFromPostmaster(
-        Client(token: token),
-        DestinyPostmasterTransferRequest()
-          ..itemReferenceHash = itemHash
-          ..stackSize = stackSize
-          ..itemId = itemId
-          ..characterId = characterId
-          ..membershipType = membershipType);
+      Client(token: token),
+      DestinyPostmasterTransferRequest()
+        ..itemReferenceHash = itemHash
+        ..stackSize = stackSize
+        ..itemId = itemId
+        ..characterId = characterId
+        ..membershipType = membershipType,
+    );
     return response.response;
   }
 
@@ -164,11 +191,12 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     Int32Response response = await Destiny2.equipItem(
-        Client(token: token),
-        DestinyItemActionRequest()
-          ..itemId = itemId
-          ..characterId = characterId
-          ..membershipType = membershipType);
+      Client(token: token),
+      DestinyItemActionRequest()
+        ..itemId = itemId
+        ..characterId = characterId
+        ..membershipType = membershipType,
+    );
     return response.response;
   }
 
@@ -261,12 +289,13 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     var response = await Destiny2.setItemLockState(
-        Client(token: token),
-        DestinyItemStateRequest()
-          ..itemId = itemId
-          ..membershipType = membershipType
-          ..characterId = characterId
-          ..state = locked);
+      Client(token: token),
+      DestinyItemStateRequest()
+        ..itemId = itemId
+        ..membershipType = membershipType
+        ..characterId = characterId
+        ..state = locked,
+    );
     return response.response;
   }
 
@@ -278,12 +307,13 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     var response = await Destiny2.setQuestTrackedState(
-        Client(token: token),
-        DestinyItemStateRequest()
-          ..itemId = itemId
-          ..membershipType = membershipType
-          ..characterId = characterId
-          ..state = tracked);
+      Client(token: token),
+      DestinyItemStateRequest()
+        ..itemId = itemId
+        ..membershipType = membershipType
+        ..characterId = characterId
+        ..state = tracked,
+    );
     return response.response;
   }
 
@@ -295,11 +325,12 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
       throw NotAuthorizedException(_credentialsMissingException);
     }
     var response = await Destiny2.equipItems(
-        Client(token: token),
-        DestinyItemSetActionRequest()
-          ..itemIds = itemIds
-          ..characterId = characterId
-          ..membershipType = membershipType);
+      Client(token: token),
+      DestinyItemSetActionRequest()
+        ..itemIds = itemIds
+        ..characterId = characterId
+        ..membershipType = membershipType,
+    );
     return response.response?.equipResults;
   }
 
@@ -309,7 +340,11 @@ class BungieApiService with AuthConsumer, AppConfigConsumer {
   }
 
   Future<DestinyItemChangeResponse?> applySocket(
-      String itemInstanceID, int plugHash, int socketIndex, String characterID) async {
+    String itemInstanceID,
+    int plugHash,
+    int socketIndex,
+    String characterID,
+  ) async {
     BungieNetToken? token = await auth.getCurrentToken();
     GroupUserInfoCard? membership = await auth.getMembership();
     final membershipType = membership?.membershipType;

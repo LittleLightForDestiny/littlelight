@@ -11,8 +11,12 @@ class DetailsTransferBlockWidget extends StatelessWidget {
   final List<TransferDestination>? transferDestinations;
   final List<TransferDestination>? equipDestinations;
   final DestinyItemInfo item;
-  DetailsTransferBlockWidget(this.item,
-      {this.transferDestinations = const [], this.equipDestinations = const [], this.onAction});
+  DetailsTransferBlockWidget(
+    this.item, {
+    this.transferDestinations = const [],
+    this.equipDestinations = const [],
+    this.onAction,
+  });
 
   @override
   Widget build(BuildContext context) {

@@ -34,12 +34,13 @@ class ItemSearchDrawerWidget extends StatelessWidget {
               ),
             ),
             Expanded(
-                child: TabBarView(
-              children: [
-                FiltersListWidget(padding: EdgeInsets.only(bottom: mq.viewPadding.bottom)),
-                SortersListWidget(padding: EdgeInsets.only(bottom: mq.viewPadding.bottom)),
-              ],
-            )),
+              child: TabBarView(
+                children: [
+                  FiltersListWidget(padding: EdgeInsets.only(bottom: mq.viewPadding.bottom)),
+                  SortersListWidget(padding: EdgeInsets.only(bottom: mq.viewPadding.bottom)),
+                ],
+              ),
+            ),
           ],
         ),
       ),

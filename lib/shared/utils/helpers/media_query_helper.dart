@@ -68,11 +68,11 @@ class MediaQueryHelper {
   bool biggerThan([ScreenSize size = ScreenSize.ExtraSmall]) => context.mediaQuery.biggerThan(size);
 
   T responsiveValue<T>(T phone, {T? tablet, T? laptop, T? desktop}) => context.mediaQuery.responsiveValue(
-        phone,
-        tablet: tablet,
-        laptop: laptop,
-        desktop: desktop,
-      );
+    phone,
+    tablet: tablet,
+    laptop: laptop,
+    desktop: desktop,
+  );
 
   bool smallerThan([ScreenSize size = ScreenSize.ExtraSmall]) => context.mediaQuery.smallerThan(size);
 }

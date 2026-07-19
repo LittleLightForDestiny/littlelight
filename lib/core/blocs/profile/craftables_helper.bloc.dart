@@ -18,10 +18,10 @@ class CraftablesHelperBloc extends ChangeNotifier {
   Map<int, int?> _itemToCraftedPlugHashMap = {};
 
   CraftablesHelperBloc(BuildContext context)
-      : _profileBloc = context.read<ProfileBloc>(),
-        _manifest = context.read<ManifestService>(),
-        _littleLightDataBloc = context.read<LittleLightDataBloc>(),
-        super();
+    : _profileBloc = context.read<ProfileBloc>(),
+      _manifest = context.read<ManifestService>(),
+      _littleLightDataBloc = context.read<LittleLightDataBloc>(),
+      super();
 
   DestinyRecordComponent? getPatternProgressRecord(int itemHash) {
     final hasKey = _itemToRecordHashMap.containsKey(itemHash);
@@ -61,9 +61,11 @@ class CraftablesHelperBloc extends ChangeNotifier {
     final name = itemDef?.displayProperties?.name;
     if (name == null) return;
     final recordDefs = await _manifest.searchDefinitions<DestinyRecordDefinition>([name]);
-    final recordDef = recordDefs.values.firstWhereOrNull((element) =>
-        element.displayProperties?.name == name &&
-        element.completionInfo?.toastStyle == DestinyRecordToastStyle.CraftingRecipeUnlocked);
+    final recordDef = recordDefs.values.firstWhereOrNull(
+      (element) =>
+          element.displayProperties?.name == name &&
+          element.completionInfo?.toastStyle == DestinyRecordToastStyle.CraftingRecipeUnlocked,
+    );
     if (recordDef == null) return;
     _itemToRecordHashMap[itemHash] = recordDef.hash;
     notifyListeners();

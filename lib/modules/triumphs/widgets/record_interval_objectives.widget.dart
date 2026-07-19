@@ -47,9 +47,11 @@ class RecordIntervalObjectivesWidget extends StatelessWidget {
     final recordObjective = recordObjectives?[index];
     final previousRecordObjective = index > 0 ? (recordObjectives?[index - 1]) : null;
 
-    final isComplete = recordObjective?.complete == true || //
+    final isComplete =
+        recordObjective?.complete == true || //
         (progressRecord?.intervalsRedeemedCount ?? 0) > index;
-    final isPreviousComplete = previousRecordObjective?.complete == true || //
+    final isPreviousComplete =
+        previousRecordObjective?.complete == true || //
         (progressRecord?.intervalsRedeemedCount ?? 0) > index - 1;
 
     final stepCount = recordObjectives?.length ?? defObjectives?.length ?? 0;

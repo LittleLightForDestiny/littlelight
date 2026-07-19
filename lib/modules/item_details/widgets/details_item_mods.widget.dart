@@ -170,26 +170,25 @@ class DetailsItemModsWidget extends StatelessWidget {
           padding: EdgeInsets.all(8),
           child: Container(
             constraints: BoxConstraints(maxWidth: PerkIconWidget.maxIconSize, maxHeight: PerkIconWidget.maxIconSize),
-            child:
-                equippedPlugHash != null && equippedPlugHash != 0
-                    ? ModIconWidget(
-                      equippedPlugHash,
-                      selected: false,
-                      equipped: isSocketSelected,
-                      available: state.isAvailable(socket.index, equippedPlugHash),
-                      selectable: state.isSelectable(socket.index, equippedPlugHash),
-                      onTap: () => bloc.toggleSocketSelection(socket.index),
-                    )
-                    : Container(
-                      color: context.theme.onSurfaceLayers,
-                      padding: EdgeInsets.all(.5),
-                      child: Material(
-                        color: context.theme.surfaceLayers.layer1,
-                        child: InkWell(
-                          onTap: () => bloc.toggleSocketSelection(socket.index),
-                        ),
+            child: equippedPlugHash != null && equippedPlugHash != 0
+                ? ModIconWidget(
+                    equippedPlugHash,
+                    selected: false,
+                    equipped: isSocketSelected,
+                    available: state.isAvailable(socket.index, equippedPlugHash),
+                    selectable: state.isSelectable(socket.index, equippedPlugHash),
+                    onTap: () => bloc.toggleSocketSelection(socket.index),
+                  )
+                : Container(
+                    color: context.theme.onSurfaceLayers,
+                    padding: EdgeInsets.all(.5),
+                    child: Material(
+                      color: context.theme.surfaceLayers.layer1,
+                      child: InkWell(
+                        onTap: () => bloc.toggleSocketSelection(socket.index),
                       ),
                     ),
+                  ),
           ),
         ),
         if (selectedPlugHash != null)
@@ -273,10 +272,9 @@ class DetailsItemModsWidget extends StatelessWidget {
       height: 8,
       margin: EdgeInsets.all(2),
       child: Container(
-        color:
-            isUsed
-                ? theme.errorLayers.withValues(alpha: .8)
-                : context.theme.onSurfaceLayers.layer0.withValues(alpha: .5),
+        color: isUsed
+            ? theme.errorLayers.withValues(alpha: .8)
+            : context.theme.onSurfaceLayers.layer0.withValues(alpha: .5),
       ),
     );
   }

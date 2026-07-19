@@ -32,13 +32,14 @@ class QuickTransferView extends StatelessWidget {
         ),
         actions: [
           Builder(
-              builder: (context) => IconButton(
-                    enableFeedback: false,
-                    icon: const Icon(Icons.filter_list),
-                    onPressed: () {
-                      Scaffold.of(context).openEndDrawer();
-                    },
-                  )),
+            builder: (context) => IconButton(
+              enableFeedback: false,
+              icon: const Icon(Icons.filter_list),
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
+            ),
+          ),
         ],
       ),
       endDrawer: buildEndDrawer(context),
@@ -52,16 +53,17 @@ class QuickTransferView extends StatelessWidget {
       children: [
         buildResultList(context),
         Positioned(
-            bottom: 0,
-            right: 0,
-            left: 0,
-            child: Column(
-              children: [
-                Container(padding: EdgeInsets.all(8), alignment: Alignment.bottomRight, child: NotificationsWidget()),
-                if (viewPaddingBottom <= 0) BusyIndicatorLineWidget(),
-                if (viewPaddingBottom > 0) BusyIndicatorBottomGradientWidget()
-              ],
-            )),
+          bottom: 0,
+          right: 0,
+          left: 0,
+          child: Column(
+            children: [
+              Container(padding: EdgeInsets.all(8), alignment: Alignment.bottomRight, child: NotificationsWidget()),
+              if (viewPaddingBottom <= 0) BusyIndicatorLineWidget(),
+              if (viewPaddingBottom > 0) BusyIndicatorBottomGradientWidget(),
+            ],
+          ),
+        ),
       ],
     );
   }

@@ -7,12 +7,12 @@ enum ErrorNotificationType {
   onCombatZoneEquipError,
   genericApplyModError,
   onCombatZoneApplyModError,
-  genericUpdateError
+  genericUpdateError,
 }
 
 class ErrorNotificationEvent extends NotificationEvent {
   final ErrorNotificationType errorType;
 
   ErrorNotificationEvent(this.errorType, {DestinyItemComponent? item, String? characterId})
-      : super(null, item: item, characterId: characterId);
+    : super(null, item: item, characterId: characterId);
 }

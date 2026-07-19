@@ -16,8 +16,11 @@ class BreakerTypeFilterWidget extends BaseDrawerFilterWidget<BreakerTypeFilterOp
   Widget buildOptions(BuildContext context, BreakerTypeFilterOptions data) {
     final availableValues = data.availableValues;
     if (availableValues.length <= 1) return Container();
-    final validValues = [DestinyBreakerType.ShieldPiercing, DestinyBreakerType.Stagger, DestinyBreakerType.Disruption]
-        .where((e) => availableValues.contains(e));
+    final validValues = [
+      DestinyBreakerType.ShieldPiercing,
+      DestinyBreakerType.Stagger,
+      DestinyBreakerType.Disruption,
+    ].where((e) => availableValues.contains(e));
     final values = data.value;
     return Column(
       children: [
@@ -41,9 +44,10 @@ class BreakerTypeFilterWidget extends BaseDrawerFilterWidget<BreakerTypeFilterOp
 
   Widget buildIcon(BuildContext context, DestinyBreakerType type) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: Icon(
-          type.icon,
-        ));
+      padding: EdgeInsets.all(4),
+      child: Icon(
+        type.icon,
+      ),
+    );
   }
 }

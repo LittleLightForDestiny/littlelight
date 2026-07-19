@@ -40,10 +40,10 @@ class ObjectivesBloc extends ChangeNotifier {
   }
 
   ObjectivesBloc(BuildContext this.context)
-      : this._tracking = context.read<ObjectiveTrackingBloc>(),
-        _profile = context.read<ProfileBloc>(),
-        _manifest = context.read<ManifestService>(),
-        _userSettings = context.read<UserSettingsBloc>() {
+    : this._tracking = context.read<ObjectiveTrackingBloc>(),
+      _profile = context.read<ProfileBloc>(),
+      _manifest = context.read<ManifestService>(),
+      _userSettings = context.read<UserSettingsBloc>() {
     _init();
   }
 

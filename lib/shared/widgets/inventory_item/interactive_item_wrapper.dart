@@ -33,43 +33,46 @@ class InteractiveItemWrapper extends StatelessWidget {
     final hash = item?.itemHash;
     final itemInstanceId = item?.instanceId;
     return LayoutBuilder(
-        key: Key("selectable $hash $itemInstanceId"),
-        builder: (context, constraints) {
-          if (constraints.maxWidth > InventoryItemWidgetDensity.High.idealWidth) {
-            return buildWithDensity(context, InventoryItemWidgetDensity.High);
-          }
-          if (constraints.maxWidth > InventoryItemWidgetDensity.Medium.idealWidth) {
-            return buildWithDensity(context, InventoryItemWidgetDensity.Medium);
-          }
-          return buildWithDensity(context, InventoryItemWidgetDensity.Low);
-        });
+      key: Key("selectable $hash $itemInstanceId"),
+      builder: (context, constraints) {
+        if (constraints.maxWidth > InventoryItemWidgetDensity.High.idealWidth) {
+          return buildWithDensity(context, InventoryItemWidgetDensity.High);
+        }
+        if (constraints.maxWidth > InventoryItemWidgetDensity.Medium.idealWidth) {
+          return buildWithDensity(context, InventoryItemWidgetDensity.Medium);
+        }
+        return buildWithDensity(context, InventoryItemWidgetDensity.Low);
+      },
+    );
   }
 
   Widget buildWithDensity(BuildContext context, InventoryItemWidgetDensity density) {
     final hash = item?.itemHash;
     if (hash == null) return Container();
     return DefinitionProviderWidget<DestinyInventoryItemDefinition>(
-        hash,
-        (def) => Stack(
-              children: [
-                Positioned.fill(
-                  child: Padding(
-                    padding: EdgeInsets.all(itemMargin),
-                    child: child,
-                  ),
-                ),
-                Positioned.fill(child: buildSelectedBorder(context)),
-                Positioned.fill(
-                  child: buildButton(context, density, def),
-                )
-              ],
-            ));
+      hash,
+      (def) => Stack(
+        children: [
+          Positioned.fill(
+            child: Padding(
+              padding: EdgeInsets.all(itemMargin),
+              child: child,
+            ),
+          ),
+          Positioned.fill(child: buildSelectedBorder(context)),
+          Positioned.fill(
+            child: buildButton(context, density, def),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildSelectedBorder(BuildContext context) {
     final hash = item?.itemHash;
     if (hash == null) return Container();
-    final isSelected = overrideSelection ??
+    final isSelected =
+        overrideSelection ??
         context.watch<SelectionBloc>().isSelected(hash, instanceId: item?.instanceId, stackIndex: item?.stackIndex);
     if (!isSelected) return Container();
     return Container(

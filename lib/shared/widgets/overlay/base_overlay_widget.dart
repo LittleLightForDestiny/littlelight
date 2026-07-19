@@ -15,45 +15,51 @@ abstract class BaseOverlayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      final sourceRenderBox = buttonKey.currentContext?.findRenderObject();
-      if (!(sourceRenderBox is RenderBox)) return Container();
-      final rect = Rect.fromPoints(
-        sourceRenderBox.localToGlobal(sourceRenderBox.size.topLeft(Offset.zero)),
-        sourceRenderBox.localToGlobal(sourceRenderBox.size.bottomRight(Offset.zero)),
-      );
-      final top = rect.top;
-      final left = rect.left;
-      final bottom = constraints.maxHeight - rect.bottom;
-      final right = constraints.maxWidth - rect.right;
-      final fullsizeMaskRect = Rect.fromLTRB(
-          -constraints.maxWidth * 2, -constraints.maxHeight, constraints.maxWidth * 2, constraints.maxHeight * 2);
-      final animation = this.animation;
-      if (animation == null) return Container();
-      return AnimatedBuilder(
-        animation: animation,
-        builder: (context, child) =>
-            ClipOval(clipper: _OvalClipper(Rect.lerp(rect, fullsizeMaskRect, animation.value)!), child: child),
-        child: Material(
-          color: Colors.transparent,
-          child: Stack(
-            children: [
-              buildDismissBackground(context),
-              Positioned.fill(
-                child: buildOverlay(
-                  context,
-                  sourceTop: top,
-                  sourceLeft: left,
-                  sourceBottom: bottom,
-                  sourceRight: right,
-                  constraints: constraints,
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final sourceRenderBox = buttonKey.currentContext?.findRenderObject();
+        if (!(sourceRenderBox is RenderBox)) return Container();
+        final rect = Rect.fromPoints(
+          sourceRenderBox.localToGlobal(sourceRenderBox.size.topLeft(Offset.zero)),
+          sourceRenderBox.localToGlobal(sourceRenderBox.size.bottomRight(Offset.zero)),
+        );
+        final top = rect.top;
+        final left = rect.left;
+        final bottom = constraints.maxHeight - rect.bottom;
+        final right = constraints.maxWidth - rect.right;
+        final fullsizeMaskRect = Rect.fromLTRB(
+          -constraints.maxWidth * 2,
+          -constraints.maxHeight,
+          constraints.maxWidth * 2,
+          constraints.maxHeight * 2,
+        );
+        final animation = this.animation;
+        if (animation == null) return Container();
+        return AnimatedBuilder(
+          animation: animation,
+          builder: (context, child) =>
+              ClipOval(clipper: _OvalClipper(Rect.lerp(rect, fullsizeMaskRect, animation.value)!), child: child),
+          child: Material(
+            color: Colors.transparent,
+            child: Stack(
+              children: [
+                buildDismissBackground(context),
+                Positioned.fill(
+                  child: buildOverlay(
+                    context,
+                    sourceTop: top,
+                    sourceLeft: left,
+                    sourceBottom: bottom,
+                    sourceRight: right,
+                    constraints: constraints,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      );
-    });
+        );
+      },
+    );
   }
 
   Widget buildDismissBackground(BuildContext context) {

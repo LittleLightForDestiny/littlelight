@@ -240,12 +240,14 @@ class ProfileBloc extends ChangeNotifier
         final items = c.value.items;
         if (items != null)
           for (final item in items) {
-            _itemCache.add(_createItemInfoFromInventory(
-              item,
-              characterId,
-              item.itemInstanceId,
-              profile,
-            ));
+            _itemCache.add(
+              _createItemInfoFromInventory(
+                item,
+                characterId,
+                item.itemInstanceId,
+                profile,
+              ),
+            );
           }
       }
     }
@@ -256,12 +258,14 @@ class ProfileBloc extends ChangeNotifier
         final items = c.value.items;
         if (items != null)
           for (final item in items) {
-            _itemCache.add(_createItemInfoFromInventory(
-              item,
-              characterId,
-              item.itemInstanceId,
-              profile,
-            ));
+            _itemCache.add(
+              _createItemInfoFromInventory(
+                item,
+                characterId,
+                item.itemInstanceId,
+                profile,
+              ),
+            );
           }
       }
     }
@@ -269,12 +273,14 @@ class ProfileBloc extends ChangeNotifier
 
     if (profileInventory != null)
       for (final item in profileInventory) {
-        _itemCache.add(_createItemInfoFromInventory(
-          item,
-          null,
-          item.itemInstanceId,
-          profile,
-        ));
+        _itemCache.add(
+          _createItemInfoFromInventory(
+            item,
+            null,
+            item.itemInstanceId,
+            profile,
+          ),
+        );
       }
   }
 
@@ -324,13 +330,12 @@ class ProfileBloc extends ChangeNotifier
   DestinyCharacterInfo _createCharacterInfo(
     DestinyCharacterComponent character,
     DestinyProfileResponse profile,
-  ) =>
-      DestinyCharacterInfo(
-        character,
-        progression: profile.characterProgressions?.data?[character.characterId],
-        activities: profile.characterActivities?.data?[character.characterId],
-        loadouts: profile.characterLoadouts?.data?[character.characterId]?.loadouts,
-      );
+  ) => DestinyCharacterInfo(
+    character,
+    progression: profile.characterProgressions?.data?[character.characterId],
+    activities: profile.characterActivities?.data?[character.characterId],
+    loadouts: profile.characterLoadouts?.data?[character.characterId]?.loadouts,
+  );
 
   int? stringVariable(String? hash, {String? characterId}) {
     if (characterId != null) {
@@ -465,10 +470,12 @@ class ProfileBloc extends ChangeNotifier
     if (characterId == null) throw 'TODO: specific exception';
     if (bucketHash == null) throw 'TODO: specific exception';
     await bungieAPI.equipItem(itemInstanceId, characterId);
-    final currentlyEquipped = allItems.firstWhereOrNull((i) =>
-        i.bucketHash == bucketHash && //
-        i.characterId == characterId &&
-        (i.instanceInfo?.isEquipped ?? false));
+    final currentlyEquipped = allItems.firstWhereOrNull(
+      (i) =>
+          i.bucketHash == bucketHash && //
+          i.characterId == characterId &&
+          (i.instanceInfo?.isEquipped ?? false),
+    );
     currentlyEquipped?.instanceInfo?.isEquipped = false;
     itemInfo.instanceInfo?.isEquipped = true;
     final currentlyEquippedIndex = allItems.indexOf(currentlyEquipped ?? itemInfo);
@@ -493,10 +500,12 @@ class ProfileBloc extends ChangeNotifier
       final def = await manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
       final itemInfo = allInstancedItems.firstWhereOrNull((i) => i.instanceId == instanceId);
       final bucketHash = def?.inventory?.bucketTypeHash;
-      final currentlyEquipped = allItems.firstWhereOrNull((i) =>
-          i.bucketHash == bucketHash && //
-          i.characterId == characterId &&
-          (i.instanceInfo?.isEquipped ?? false));
+      final currentlyEquipped = allItems.firstWhereOrNull(
+        (i) =>
+            i.bucketHash == bucketHash && //
+            i.characterId == characterId &&
+            (i.instanceInfo?.isEquipped ?? false),
+      );
       if (itemInfo == null) continue;
       if (instanceId != currentlyEquipped?.instanceId) {
         currentlyEquipped?.instanceInfo?.isEquipped = false;
@@ -692,10 +701,13 @@ class ProfileBloc extends ChangeNotifier
     if (characterId == null) throw "Can't apply plugs on an item without a characterId";
     await bungieAPI.applySocket(instanceId, plugHash, socketIndex, characterId);
     final sockets = item.sockets;
-    final currentItem = allItems.firstWhereOrNull((i) =>
-            i.instanceId == item.instanceId && //
-            item.itemHash == item.itemHash &&
-            item.stackIndex == item.stackIndex) ??
+    final currentItem =
+        allItems.firstWhereOrNull(
+          (i) =>
+              i.instanceId == item.instanceId && //
+              item.itemHash == item.itemHash &&
+              item.stackIndex == item.stackIndex,
+        ) ??
         item;
     item = currentItem;
     if (sockets != null) {

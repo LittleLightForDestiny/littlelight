@@ -38,16 +38,17 @@ class DestinySettingsService with StorageConsumer, BungieApiConsumer, ManifestCo
     }
     var seasonPassHash = seasonDef?.seasonPassHash;
     if (seasonPassHash == null) {
-      seasonPassHash = seasonDef?.seasonPassList?.where((e) {
-        final seasonPassStartDate = e.seasonPassStartDate;
-        final seasonPassEndDate = e.seasonPassEndDate;
-        if (seasonPassStartDate == null || seasonPassEndDate == null) return false;
-        final seasonPassStart = DateTime.parse(seasonPassStartDate);
-        final seasonPassEnd = DateTime.parse(seasonPassEndDate);
-        return now.isAfter(seasonPassStart) && now.isBefore(seasonPassEnd);
-      })
-      .map((e) => e.seasonPassHash)
-      .firstOrNull;
+      seasonPassHash = seasonDef?.seasonPassList
+          ?.where((e) {
+            final seasonPassStartDate = e.seasonPassStartDate;
+            final seasonPassEndDate = e.seasonPassEndDate;
+            if (seasonPassStartDate == null || seasonPassEndDate == null) return false;
+            final seasonPassStart = DateTime.parse(seasonPassStartDate);
+            final seasonPassEnd = DateTime.parse(seasonPassEndDate);
+            return now.isAfter(seasonPassStart) && now.isBefore(seasonPassEnd);
+          })
+          .map((e) => e.seasonPassHash)
+          .firstOrNull;
     }
     _currentSettings = settings;
     _currentSeasonPassDef = await manifest.getDefinition<DestinySeasonPassDefinition>(seasonPassHash);

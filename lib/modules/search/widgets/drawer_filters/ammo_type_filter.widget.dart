@@ -16,8 +16,11 @@ class AmmoTypeFilterWidget extends BaseDrawerFilterWidget<AmmoTypeFilterOptions>
   Widget buildOptions(BuildContext context, AmmoTypeFilterOptions data) {
     final availableValues = data.availableValues;
     if (availableValues.length <= 1) return Container();
-    final validValues = [DestinyAmmunitionType.Primary, DestinyAmmunitionType.Special, DestinyAmmunitionType.Heavy]
-        .where((e) => availableValues.contains(e));
+    final validValues = [
+      DestinyAmmunitionType.Primary,
+      DestinyAmmunitionType.Special,
+      DestinyAmmunitionType.Heavy,
+    ].where((e) => availableValues.contains(e));
     final hasNone = availableValues.contains(DestinyAmmunitionType.None);
     final values = data.value;
     return Column(
@@ -42,17 +45,18 @@ class AmmoTypeFilterWidget extends BaseDrawerFilterWidget<AmmoTypeFilterOptions>
             selected: values.contains(DestinyAmmunitionType.None),
             onTap: () => updateOption(context, data, DestinyAmmunitionType.None, false),
             onLongPress: () => updateOption(context, data, DestinyAmmunitionType.None, true),
-          )
+          ),
       ],
     );
   }
 
   Widget buildIcon(BuildContext context, DestinyAmmunitionType type) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: Icon(
-          type.icon,
-          color: type.color,
-        ));
+      padding: EdgeInsets.all(4),
+      child: Icon(
+        type.icon,
+        color: type.color,
+      ),
+    );
   }
 }

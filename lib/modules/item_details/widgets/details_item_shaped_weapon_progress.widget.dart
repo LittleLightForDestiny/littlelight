@@ -16,12 +16,13 @@ class DetailsItemCraftedProgressWidget extends StatelessWidget {
     final isCrafted = state.item?.state?.contains(ItemState.Crafted) ?? false;
     if (!isCrafted) return Container();
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Crafting progress".translate(context).toUpperCase()),
-          persistenceID: 'crafting progress info',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Crafting progress".translate(context).toUpperCase()),
+        persistenceID: 'crafting progress info',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -32,22 +33,24 @@ class DetailsItemCraftedProgressWidget extends StatelessWidget {
     final craftingDate = objectives.elementAtOrNull(2);
     if (levelProgression == null && weaponLevel == null && craftingDate == null) return Container();
     return Column(
-        children: [
-      buildProgressBar(context, weaponLevel),
-      buildProgressBar(context, levelProgression),
-      buildProgressBar(context, craftingDate),
-    ].whereType<Widget>().toList());
+      children: [
+        buildProgressBar(context, weaponLevel),
+        buildProgressBar(context, levelProgression),
+        buildProgressBar(context, craftingDate),
+      ].whereType<Widget>().toList(),
+    );
   }
 
   Widget? buildProgressBar(BuildContext context, DestinyObjectiveProgress? objective) {
     final objectiveHash = objective?.objectiveHash;
     if (objectiveHash == null) return null;
     return Container(
-        padding: const EdgeInsets.only(top: 8),
-        child: ObjectiveWidget(
-          objectiveHash,
-          objective: objective,
-          barColor: context.theme.highlightedObjectiveLayers,
-        ));
+      padding: const EdgeInsets.only(top: 8),
+      child: ObjectiveWidget(
+        objectiveHash,
+        objective: objective,
+        barColor: context.theme.highlightedObjectiveLayers,
+      ),
+    );
   }
 }

@@ -18,17 +18,18 @@ class QueuedTransfer extends QueuedAction<TransferNotification> {
     required TransferNotification? notification,
     required this.destination,
     this.stackSize = 1,
-  })  : _startedOnPostmaster = item.bucketHash == InventoryBucket.lostItems,
-        super(
-          item: item,
-          notification: notification,
-        );
+  }) : _startedOnPostmaster = item.bucketHash == InventoryBucket.lostItems,
+       super(
+         item: item,
+         notification: notification,
+       );
 
   void cancel(BuildContext context) {
     super.cancel(context);
     if (started) {
       notification?.error(
-          "Transfer cancelled in favor of a newer transfer on the same item".translate(context, useReadContext: true));
+        "Transfer cancelled in favor of a newer transfer on the same item".translate(context, useReadContext: true),
+      );
     } else {
       notification?.dismiss();
     }

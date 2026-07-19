@@ -18,10 +18,14 @@ extension TransferErrorMessages on BuildContext {
       default:
         if (exception != null) {
           getInjectedAnalyticsService().registerNonFatal(
-              Exception("Got an unexpected error code during a transfer ${exception.errorCode}"), null);
+            Exception("Got an unexpected error code during a transfer ${exception.errorCode}"),
+            null,
+          );
         }
-        return "The operation couldn't be completed because of an unexpected error"
-            .translate(this, useReadContext: true);
+        return "The operation couldn't be completed because of an unexpected error".translate(
+          this,
+          useReadContext: true,
+        );
     }
   }
 }

@@ -83,9 +83,9 @@ class PerkIconWidget extends StatelessWidget {
                   ),
                   if (isEnhanced)
                     Positioned.fill(
-                        child: Container(
-                      margin: EdgeInsets.all(4 * scale),
-                      decoration: BoxDecoration(
+                      child: Container(
+                        margin: EdgeInsets.all(4 * scale),
+                        decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(_maxPerkIconSize),
                           gradient: LinearGradient(
                             begin: Alignment.bottomCenter,
@@ -94,21 +94,25 @@ class PerkIconWidget extends StatelessWidget {
                               context.theme.achievementLayers.layer0,
                               context.theme.achievementLayers.layer0.withValues(alpha: 0),
                             ],
-                          )),
-                    )),
+                          ),
+                        ),
+                      ),
+                    ),
                   Padding(
-                      padding: EdgeInsets.all(intrinsic ? 0 : 4 * scale),
-                      child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                        plugItemHash,
-                        noIconPlaceholder: Container(),
-                        placeholder: DefaultLoadingShimmer(
-                            child: Container(
+                    padding: EdgeInsets.all(intrinsic ? 0 : 4 * scale),
+                    child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                      plugItemHash,
+                      noIconPlaceholder: Container(),
+                      placeholder: DefaultLoadingShimmer(
+                        child: Container(
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(64),
                             color: Colors.white,
                           ),
-                        )),
-                      )),
+                        ),
+                      ),
+                    ),
+                  ),
                   InkWell(
                     customBorder: isRound ? CircleBorder() : RoundedRectangleBorder(borderRadius: radius),
                     onTap: selectable ? onTap : null,
@@ -155,7 +159,7 @@ class PerkIconWidget extends StatelessWidget {
         Transform.translate(
           offset: Offset(wishlistIconSize * .2, -wishlistIconSize * .2),
           child: pvp ?? Container(),
-        )
+        ),
       ],
     );
   }

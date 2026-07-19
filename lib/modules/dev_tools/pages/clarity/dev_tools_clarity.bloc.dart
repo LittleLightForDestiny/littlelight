@@ -16,9 +16,9 @@ class DevToolsClarityBloc extends ChangeNotifier {
   Set<String>? types;
 
   DevToolsClarityBloc(this.context)
-      : _profile = context.read<ProfileBloc>(),
-        _clarity = context.read<ClarityDataBloc>(),
-        super() {
+    : _profile = context.read<ProfileBloc>(),
+      _clarity = context.read<ClarityDataBloc>(),
+      super() {
     init();
   }
 

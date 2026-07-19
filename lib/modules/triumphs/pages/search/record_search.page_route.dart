@@ -3,8 +3,9 @@ import 'package:little_light/modules/triumphs/pages/search/record_search.page.da
 
 class RecordsSearchPageRoute extends MaterialPageRoute {
   RecordsSearchPageRoute(int rootNode)
-      : super(
-            builder: (context) => RecordsSearchPage(
-                  rootNode,
-                ));
+    : super(
+        builder: (context) => RecordsSearchPage(
+          rootNode,
+        ),
+      );
 }

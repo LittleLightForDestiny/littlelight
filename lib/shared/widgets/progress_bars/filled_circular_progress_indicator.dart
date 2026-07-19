@@ -11,13 +11,13 @@ class FilledCircularProgressIndicator extends ProgressIndicator {
     String? semanticsLabel,
     String? semanticsValue,
   }) : super(
-          key: key,
-          value: value,
-          backgroundColor: backgroundColor,
-          valueColor: valueColor,
-          semanticsLabel: semanticsLabel,
-          semanticsValue: semanticsValue,
-        );
+         key: key,
+         value: value,
+         backgroundColor: backgroundColor,
+         valueColor: valueColor,
+         semanticsLabel: semanticsLabel,
+         semanticsValue: semanticsValue,
+       );
 
   Widget _buildSemanticsWrapper({
     required BuildContext context,
@@ -42,17 +42,23 @@ class FilledCircularProgressIndicator extends ProgressIndicator {
 }
 
 // Tweens used by circular progress indicator
-final Animatable<double> _kStrokeHeadTween = CurveTween(
-  curve: const Interval(0.0, 0.5, curve: Curves.fastOutSlowIn),
-).chain(CurveTween(
-  curve: const SawTooth(5),
-));
+final Animatable<double> _kStrokeHeadTween =
+    CurveTween(
+      curve: const Interval(0.0, 0.5, curve: Curves.fastOutSlowIn),
+    ).chain(
+      CurveTween(
+        curve: const SawTooth(5),
+      ),
+    );
 
-final Animatable<double> _kStrokeTailTween = CurveTween(
-  curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
-).chain(CurveTween(
-  curve: const SawTooth(5),
-));
+final Animatable<double> _kStrokeTailTween =
+    CurveTween(
+      curve: const Interval(0.5, 1.0, curve: Curves.fastOutSlowIn),
+    ).chain(
+      CurveTween(
+        curve: const SawTooth(5),
+      ),
+    );
 
 final Animatable<int> _kStepTween = StepTween(begin: 0, end: 5);
 
@@ -90,7 +96,12 @@ class _FilledCircularProgressIndicatorState extends State<FilledCircularProgress
   }
 
   Widget _buildIndicator(
-      BuildContext context, double headValue, double tailValue, int stepValue, double rotationValue) {
+    BuildContext context,
+    double headValue,
+    double tailValue,
+    int stepValue,
+    double rotationValue,
+  ) {
     return widget._buildSemanticsWrapper(
       context: context,
       child: Container(
@@ -142,12 +153,12 @@ class _CircularProgressIndicatorPainter extends CustomPainter {
     required this.tailValue,
     required this.stepValue,
     required this.rotationValue,
-  })  : arcStart = value != null
-            ? _startAngle
-            : _startAngle + tailValue * 3 / 2 * math.pi + rotationValue * math.pi * 1.7 - stepValue * 0.8 * math.pi,
-        arcSweep = value != null
-            ? value.clamp(0.0, 1.0) * _sweep
-            : math.max(headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi, _epsilon);
+  }) : arcStart = value != null
+           ? _startAngle
+           : _startAngle + tailValue * 3 / 2 * math.pi + rotationValue * math.pi * 1.7 - stepValue * 0.8 * math.pi,
+       arcSweep = value != null
+           ? value.clamp(0.0, 1.0) * _sweep
+           : math.max(headValue * 3 / 2 * math.pi - tailValue * 3 / 2 * math.pi, _epsilon);
 
   final Color? backgroundColor;
   final Color valueColor;

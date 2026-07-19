@@ -82,21 +82,22 @@ class MainScreenState extends State<MainScreen> with AuthConsumer {
   Widget build(BuildContext context) {
     if (currentScreen == null) return Container();
     return PopScope(
-        onPopInvokedWithResult: (_, result) => _exitApp(context),
-        child: Scaffold(
-          key: MainScreenScaffoldGlobalKey,
-          drawer: Container(
-            child: SideMenuWidget(
-              onPageChange: (page) {
-                currentScreen = page;
-                setState(() {});
-              },
-            ),
+      onPopInvokedWithResult: (_, result) => _exitApp(context),
+      child: Scaffold(
+        key: MainScreenScaffoldGlobalKey,
+        drawer: Container(
+          child: SideMenuWidget(
+            onPageChange: (page) {
+              currentScreen = page;
+              setState(() {});
+            },
           ),
-          body: currentScreen,
-          resizeToAvoidBottomInset: false,
-          // resizeToAvoidBottomPadding: false,
-        ));
+        ),
+        body: currentScreen,
+        resizeToAvoidBottomInset: false,
+        // resizeToAvoidBottomPadding: false,
+      ),
+    );
   }
 
   Future<bool> _exitApp(BuildContext context) async {

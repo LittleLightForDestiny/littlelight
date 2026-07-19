@@ -40,12 +40,12 @@ class SelectLoadoutItemBloc extends ChangeNotifier with ManifestConsumer {
     DestinyClass? this.classType,
     int? this.emblemHash,
     List<String>? this.idsToAvoid,
-  })  : this._context = context,
-        this._profileBloc = context.read<ProfileBloc>(),
-        this._filtersBloc = context.read<SearchFilterBloc>(),
-        this._sortersBloc = context.read<SearchSorterBloc>(),
-        this._itemNotesBloc = context.read<ItemNotesBloc>(),
-        super() {
+  }) : this._context = context,
+       this._profileBloc = context.read<ProfileBloc>(),
+       this._filtersBloc = context.read<SearchFilterBloc>(),
+       this._sortersBloc = context.read<SearchSorterBloc>(),
+       this._itemNotesBloc = context.read<ItemNotesBloc>(),
+       super() {
     _init();
   }
 

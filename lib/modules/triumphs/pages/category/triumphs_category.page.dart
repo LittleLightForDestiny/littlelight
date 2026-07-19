@@ -15,11 +15,12 @@ class TriumphsCategoryPage extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<TriumphsBloc>(
-            create: (context) => TriumphsCategoryBloc(
-                  context,
-                  categoryPresentationNodeHash,
-                  parentNodeHashes: parentNodeHashes,
-                )),
+          create: (context) => TriumphsCategoryBloc(
+            context,
+            categoryPresentationNodeHash,
+            parentNodeHashes: parentNodeHashes,
+          ),
+        ),
       ],
       builder: (context, _) => TriumphsCategoryView(
         context.read<TriumphsBloc>(),

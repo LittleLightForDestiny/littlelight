@@ -11,10 +11,12 @@ class SubTypeSorter extends ItemSorter with ManifestConsumer {
 
   @override
   Future<void> prepare(List<DestinyItemInfo> items) async {
-    final hashes = this.definitions.values.fold<List<int>>(
-      [],
-      (l, def) => l + (def.itemCategoryHashes ?? []),
-    ).toSet();
+    final hashes = this.definitions.values
+        .fold<List<int>>(
+          [],
+          (l, def) => l + (def.itemCategoryHashes ?? []),
+        )
+        .toSet();
     final categoryDefs = await manifest.getDefinitions<DestinyItemCategoryDefinition>(hashes);
     for (final categoryDef in categoryDefs.values) {
       final subType = categoryDef.grantDestinySubType ?? DestinyItemSubType.None;

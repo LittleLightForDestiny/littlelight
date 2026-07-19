@@ -3,9 +3,10 @@ import 'package:little_light/modules/vendors/pages/vendor_details/vendor_details
 
 class VendorDetailsPageRoute extends MaterialPageRoute {
   VendorDetailsPageRoute(String characterId, int vendorHash)
-      : super(
-            builder: (context) => VendorDetailsPage(
-                  characterId,
-                  vendorHash,
-                ));
+    : super(
+        builder: (context) => VendorDetailsPage(
+          characterId,
+          vendorHash,
+        ),
+      );
 }

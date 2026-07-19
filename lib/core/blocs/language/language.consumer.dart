@@ -14,12 +14,19 @@ extension LanguageContextConsumer on BuildContext {
     Map<String, String> replace = const {},
     bool useReadContext = false,
     String? overrideDefaultText,
-  }) =>
-      useReadContext
-          ? read<LanguageBloc>()
-              .translate(text, languageCode: languageCode, replace: replace, overrideDefaultText: overrideDefaultText)
-          : watch<LanguageBloc>()
-              .translate(text, languageCode: languageCode, replace: replace, overrideDefaultText: overrideDefaultText);
+  }) => useReadContext
+      ? read<LanguageBloc>().translate(
+          text,
+          languageCode: languageCode,
+          replace: replace,
+          overrideDefaultText: overrideDefaultText,
+        )
+      : watch<LanguageBloc>().translate(
+          text,
+          languageCode: languageCode,
+          replace: replace,
+          overrideDefaultText: overrideDefaultText,
+        );
 }
 
 extension TranslateString on String {
@@ -29,12 +36,11 @@ extension TranslateString on String {
     Map<String, String> replace = const {},
     bool useReadContext = false,
     String? overrideDefaultText,
-  }) =>
-      context.translate(
-        this,
-        languageCode: languageCode,
-        replace: replace,
-        useReadContext: useReadContext,
-        overrideDefaultText: overrideDefaultText,
-      );
+  }) => context.translate(
+    this,
+    languageCode: languageCode,
+    replace: replace,
+    useReadContext: useReadContext,
+    overrideDefaultText: overrideDefaultText,
+  );
 }

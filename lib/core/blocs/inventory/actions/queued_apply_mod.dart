@@ -10,9 +10,9 @@ class QueuedApplyPlugs extends QueuedAction<ApplyPlugsNotification> {
     required ApplyPlugsNotification? notification,
     required this.plugs,
   }) : super(
-          item: item,
-          notification: notification,
-        );
+         item: item,
+         notification: notification,
+       );
 
   void cancel(BuildContext context) {
     super.cancel(context);

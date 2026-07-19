@@ -6,5 +6,5 @@ abstract class LittleLightRoute<T extends Object> extends RouteSettings {
   @override
   T get arguments => super.arguments as T;
   LittleLightRoute({this.page = LittleLightRoutePage.Main, T? arguments})
-      : super(name: page.name, arguments: arguments);
+    : super(name: page.name, arguments: arguments);
 }

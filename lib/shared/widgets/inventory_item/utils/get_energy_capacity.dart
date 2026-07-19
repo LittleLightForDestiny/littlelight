@@ -11,8 +11,9 @@ Future<DestinyEnergyCapacityEntry?> getEnergyCapacity(
 ) async {
   final categoryHash = await getEnergySocketCategoryHash(manifest, definition);
   if (categoryHash == null) return null;
-  final socketCategory =
-      definition.sockets?.socketCategories?.firstWhereOrNull((e) => e.socketCategoryHash == categoryHash);
+  final socketCategory = definition.sockets?.socketCategories?.firstWhereOrNull(
+    (e) => e.socketCategoryHash == categoryHash,
+  );
   if (socketCategory == null) return null;
   final socketIndex = socketCategory.socketIndexes?.firstOrNull;
   if (socketIndex == null) return null;

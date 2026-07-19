@@ -32,15 +32,16 @@ class AddToLoadoutQuickMenuView extends StatelessWidget {
           buildOptions(context),
           Flexible(
             child: SingleChildScrollView(
-                padding: EdgeInsets.all(8).copyWith(
-                  top: 0,
-                  bottom: context.mediaQuery.padding.bottom,
-                ),
-                scrollDirection: Axis.vertical,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [buildLoadoutList(context)],
-                )),
+              padding: EdgeInsets.all(8).copyWith(
+                top: 0,
+                bottom: context.mediaQuery.padding.bottom,
+              ),
+              scrollDirection: Axis.vertical,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [buildLoadoutList(context)],
+              ),
+            ),
           ),
         ],
       ),
@@ -60,15 +61,21 @@ class AddToLoadoutQuickMenuView extends StatelessWidget {
 
   Widget buildOptions(BuildContext context) {
     return Container(
-        padding: EdgeInsets.symmetric(horizontal: 8),
-        child: context.mediaQuery.tabletOrBigger
-            ? IntrinsicHeight(
-                child: Row(children: [
-                Expanded(child: buildFreeSlotsSlider(context)),
-              ]))
-            : Column(children: [
+      padding: EdgeInsets.symmetric(horizontal: 8),
+      child: context.mediaQuery.tabletOrBigger
+          ? IntrinsicHeight(
+              child: Row(
+                children: [
+                  Expanded(child: buildFreeSlotsSlider(context)),
+                ],
+              ),
+            )
+          : Column(
+              children: [
                 buildFreeSlotsSlider(context),
-              ]));
+              ],
+            ),
+    );
   }
 
   Widget buildFreeSlotsSlider(BuildContext context) {
@@ -83,14 +90,17 @@ class AddToLoadoutQuickMenuView extends StatelessWidget {
               borderRadius: BorderRadius.circular(8),
               color: context.theme.surfaceLayers.layer1,
             ),
-            child: Row(children: [
-              Expanded(
+            child: Row(
+              children: [
+                Expanded(
                   child: Text(
-                "As equipped item".translate(context),
-                style: context.textTheme.highlight,
-              )),
-              LLSwitch.callback(state.asEquipped, (value) => bloc.asEquipped = value)
-            ]),
+                    "As equipped item".translate(context),
+                    style: context.textTheme.highlight,
+                  ),
+                ),
+                LLSwitch.callback(state.asEquipped, (value) => bloc.asEquipped = value),
+              ],
+            ),
           ),
         ],
       ),
@@ -101,11 +111,14 @@ class AddToLoadoutQuickMenuView extends StatelessWidget {
     final loadouts = state.loadouts;
     if (loadouts == null) return Container(height: 256, child: LoadingAnimWidget());
     return Column(
-        children: loadouts
-            .map((e) => LoadoutSmallListItemWidget(
-                  e,
-                  onTap: () => bloc.loadoutSelected(e),
-                ))
-            .toList());
+      children: loadouts
+          .map(
+            (e) => LoadoutSmallListItemWidget(
+              e,
+              onTap: () => bloc.loadoutSelected(e),
+            ),
+          )
+          .toList(),
+    );
   }
 }

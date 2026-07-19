@@ -25,15 +25,19 @@ class LoadoutChangeResultNotificationWidget extends BasePersistentNotificationWi
         );
         final removedName = removedDef?.displayProperties?.name ?? "";
         if (removedDef?.isWeapon ?? false) {
-          return Text("You can only equip one exotic weapon at a time. Removing {itemName}.".translate(
+          return Text(
+            "You can only equip one exotic weapon at a time. Removing {itemName}.".translate(
+              context,
+              replace: {"itemName": removedName},
+            ),
+          );
+        }
+        return Text(
+          "You can only equip one exotic armor piece at a time. Removing {itemName}.".translate(
             context,
             replace: {"itemName": removedName},
-          ));
-        }
-        return Text("You can only equip one exotic armor piece at a time. Removing {itemName}.".translate(
-          context,
-          replace: {"itemName": removedName},
-        ));
+          ),
+        );
 
       default:
         return Container();

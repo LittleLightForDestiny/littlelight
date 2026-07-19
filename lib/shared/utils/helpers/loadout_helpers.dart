@@ -162,25 +162,22 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
     );
     final equippingBlockLabel = def?.equippingBlock?.uniqueLabel;
     if (equipped && equippingBlockLabel != null) {
-      final competingItems =
-          slots.values
-              .map((value) => classType == null ? value.genericEquipped : value.classSpecificEquipped[classType])
-              .whereType<LoadoutItemInfo>();
+      final competingItems = slots.values
+          .map((value) => classType == null ? value.genericEquipped : value.classSpecificEquipped[classType])
+          .whereType<LoadoutItemInfo>();
       final hashes = competingItems.map((e) => e.inventoryItem?.itemHash);
       final definitions = await manifest.getDefinitions<DestinyInventoryItemDefinition>(hashes);
-      final blockingHashes =
-          definitions.values
-              .where((d) => d.equippingBlock?.uniqueLabel == equippingBlockLabel)
-              .map((d) => d.hash)
-              .whereType<int>();
-      final blockingItems =
-          competingItems
-              .where(
-                (i) =>
-                    i.inventoryItem?.itemHash != added?.inventoryItem?.itemHash &&
-                    blockingHashes.contains(i.inventoryItem?.itemHash),
-              )
-              .toList();
+      final blockingHashes = definitions.values
+          .where((d) => d.equippingBlock?.uniqueLabel == equippingBlockLabel)
+          .map((d) => d.hash)
+          .whereType<int>();
+      final blockingItems = competingItems
+          .where(
+            (i) =>
+                i.inventoryItem?.itemHash != added?.inventoryItem?.itemHash &&
+                blockingHashes.contains(i.inventoryItem?.itemHash),
+          )
+          .toList();
       if (blockingItems.isNotEmpty) {
         for (final blocking in blockingItems) await removeItem(manifest, blocking.inventoryItem);
         return LoadoutChangeResults(
@@ -236,15 +233,14 @@ extension LoadoutIndexHelpers on LoadoutItemIndex {
       );
       bool hasGenericEquipped =
           slot.value.genericEquipped.itemHash != null || slot.value.genericEquipped.itemPlugs.isNotEmpty;
-      final genericEquipped =
-          hasGenericEquipped
-              ? LoadoutItem(
-                bucketHash: bucketHash,
-                itemHash: slot.value.genericEquipped.itemHash,
-                itemInstanceId: slot.value.genericEquipped.instanceId,
-                socketPlugs: slot.value.genericEquipped.itemPlugs,
-              )
-              : null;
+      final genericEquipped = hasGenericEquipped
+          ? LoadoutItem(
+              bucketHash: bucketHash,
+              itemHash: slot.value.genericEquipped.itemHash,
+              itemInstanceId: slot.value.genericEquipped.instanceId,
+              socketPlugs: slot.value.genericEquipped.itemPlugs,
+            )
+          : null;
       final unequipped = slot.value.unequipped.map(
         (item) => LoadoutItem(
           bucketHash: bucketHash,

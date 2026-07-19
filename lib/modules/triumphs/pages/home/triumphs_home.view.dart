@@ -29,12 +29,12 @@ class TriumphsHomeView extends BaseTriumphsView {
   String getTitle(BuildContext context) => "Triumphs".translate(context);
 
   Widget? buildAppBarLeading(BuildContext context) => IconButton(
-        enableFeedback: false,
-        icon: const Icon(Icons.menu),
-        onPressed: () {
-          Scaffold.of(context).openDrawer();
-        },
-      );
+    enableFeedback: false,
+    icon: const Icon(Icons.menu),
+    onPressed: () {
+      Scaffold.of(context).openDrawer();
+    },
+  );
 
   Widget buildTabButton(BuildContext context, DestinyPresentationNodeDefinition node) {
     return Container(
@@ -51,23 +51,28 @@ class TriumphsHomeView extends BaseTriumphsView {
     final additionalPresentationNodes = state.getAdditionalNodes(node.hash) ?? [];
     final presentationNodes = [
       ...(def?.children?.presentationNodes ?? []),
-      for (final additional in additionalPresentationNodes) ...(additional.children?.presentationNodes ?? [])
+      for (final additional in additionalPresentationNodes) ...(additional.children?.presentationNodes ?? []),
     ].whereType<DestinyPresentationNodeChildEntry>().toList();
 
     return MultiSectionScrollView(
       [
-        FixedHeightScrollSection(_itemHeight,
-            itemsPerRow: itemsPerRow,
-            itemCount: presentationNodes.length,
-            itemBuilder: (context, index) => PresentationNodeItemWidget(presentationNodes[index].presentationNodeHash,
-                progress: state.getProgress(presentationNodes[index].presentationNodeHash),
-                characters: state.characters,
-                onTap: () => bloc.openPresentationNode(
-                      presentationNodes[index].presentationNodeHash,
-                      parentHashes: [node.hash].whereType<int>().toList(),
-                    ))),
+        FixedHeightScrollSection(
+          _itemHeight,
+          itemsPerRow: itemsPerRow,
+          itemCount: presentationNodes.length,
+          itemBuilder: (context, index) => PresentationNodeItemWidget(
+            presentationNodes[index].presentationNodeHash,
+            progress: state.getProgress(presentationNodes[index].presentationNodeHash),
+            characters: state.characters,
+            onTap: () => bloc.openPresentationNode(
+              presentationNodes[index].presentationNodeHash,
+              parentHashes: [node.hash].whereType<int>().toList(),
+            ),
+          ),
+        ),
       ],
-      padding: padding +
+      padding:
+          padding +
           EdgeInsets.only(
             left: context.mediaQuery.padding.left,
             right: context.mediaQuery.padding.right,

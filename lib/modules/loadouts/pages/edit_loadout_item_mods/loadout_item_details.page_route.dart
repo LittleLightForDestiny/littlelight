@@ -6,7 +6,9 @@ class LoadoutItemDetailsPageRoute extends MaterialPageRoute<Map<int, int>> {
   final LoadoutItemInfo item;
 
   LoadoutItemDetailsPageRoute(this.item)
-      : super(builder: (context) {
+    : super(
+        builder: (context) {
           return LoadoutItemDetailsPage(item);
-        });
+        },
+      );
 }

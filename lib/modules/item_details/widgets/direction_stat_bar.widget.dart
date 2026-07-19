@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'dart:math' as math;
 
@@ -21,23 +20,32 @@ class DirectionStatBarWidget extends StatelessWidget {
     var currentDirection = calculateDirection(currentValue);
     var equippedDirection = calculateDirection(equippedValue);
     return Container(
-        child: Stack(children: [
-      Positioned.fill(child: CustomPaint(painter: _SemiCirclePainter(color: backgroundColor))),
-      Positioned.fill(
-          child: CustomPaint(
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: CustomPaint(painter: _SemiCirclePainter(color: backgroundColor)),
+          ),
+          Positioned.fill(
+            child: CustomPaint(
               painter: _SemiCirclePainter(
-        color: equippedColor,
-        arcStart: equippedDirection.min,
-        arcEnd: equippedDirection.max,
-      ))),
-      Positioned.fill(
-          child: CustomPaint(
+                color: equippedColor,
+                arcStart: equippedDirection.min,
+                arcEnd: equippedDirection.max,
+              ),
+            ),
+          ),
+          Positioned.fill(
+            child: CustomPaint(
               painter: _SemiCirclePainter(
-        color: currentColor,
-        arcStart: currentDirection.min,
-        arcEnd: currentDirection.max,
-      )))
-    ]));
+                color: currentColor,
+                arcStart: currentDirection.min,
+                arcEnd: currentDirection.max,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   _DirectionRange calculateDirection(int value) {
@@ -76,7 +84,12 @@ class _SemiCirclePainter extends CustomPainter {
       ..style = PaintingStyle.fill;
 
     canvas.drawArc(
-        Rect.fromLTRB(0, 0, size.width, size.height * 2), arcStart + math.pi, arcEnd - arcStart, true, paint);
+      Rect.fromLTRB(0, 0, size.width, size.height * 2),
+      arcStart + math.pi,
+      arcEnd - arcStart,
+      true,
+      paint,
+    );
   }
 
   @override

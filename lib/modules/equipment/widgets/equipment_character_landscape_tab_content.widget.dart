@@ -52,45 +52,42 @@ class EquipmentCharacterLandscapeTabContentWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
-        key: Key("character_tab_${character.characterId}"),
-        builder: (context, constraints) => MultiSectionScrollView(
-              [
-                FixedHeightScrollSection(
-                  _characterInfoHeight,
-                  itemBuilder: (context, _) => CharacterInfoWidget(
-                    character,
-                    currencies: currencies,
-                  ),
-                ),
-                ...buildSingleColumnSections(context, InventoryBucket.lostItems, constraints, omitEmpty: true),
-                ...buildSingleColumnSections(context, InventoryBucket.engrams, constraints, omitEmpty: true),
-                buildMultiColumnSection(context, [InventoryBucket.subclass, InventoryBucket.helmet], constraints),
-                buildMultiColumnSection(
-                    context, [InventoryBucket.kineticWeapons, InventoryBucket.gauntlets], constraints),
-                buildMultiColumnSection(
-                    context, [InventoryBucket.energyWeapons, InventoryBucket.chestArmor], constraints),
-                buildMultiColumnSection(context, [InventoryBucket.powerWeapons, InventoryBucket.legArmor], constraints),
-                buildMultiColumnSection(context, [InventoryBucket.ghost, InventoryBucket.classArmor], constraints),
-                buildMultiColumnSection(
-                    context,
-                    [
-                      InventoryBucket.vehicle,
-                      InventoryBucket.ships,
-                      InventoryBucket.emblems,
-                    ],
-                    constraints),
-                ...buildSingleColumnSections(context, InventoryBucket.consumables, constraints),
-                ...buildSingleColumnSections(context, InventoryBucket.modifications, constraints),
-              ],
-              crossAxisSpacing: 0,
-              mainAxisSpacing: 0,
-              padding: const EdgeInsets.all(8).copyWith(top: 0, bottom: 64) +
-                  EdgeInsets.only(
-                    left: context.mediaQuery.padding.left,
-                    right: context.mediaQuery.padding.right,
-                  ),
-              scrollViewKey: scrollViewKey,
-            ));
+      key: Key("character_tab_${character.characterId}"),
+      builder: (context, constraints) => MultiSectionScrollView(
+        [
+          FixedHeightScrollSection(
+            _characterInfoHeight,
+            itemBuilder: (context, _) => CharacterInfoWidget(
+              character,
+              currencies: currencies,
+            ),
+          ),
+          ...buildSingleColumnSections(context, InventoryBucket.lostItems, constraints, omitEmpty: true),
+          ...buildSingleColumnSections(context, InventoryBucket.engrams, constraints, omitEmpty: true),
+          buildMultiColumnSection(context, [InventoryBucket.subclass, InventoryBucket.helmet], constraints),
+          buildMultiColumnSection(context, [InventoryBucket.kineticWeapons, InventoryBucket.gauntlets], constraints),
+          buildMultiColumnSection(context, [InventoryBucket.energyWeapons, InventoryBucket.chestArmor], constraints),
+          buildMultiColumnSection(context, [InventoryBucket.powerWeapons, InventoryBucket.legArmor], constraints),
+          buildMultiColumnSection(context, [InventoryBucket.ghost, InventoryBucket.classArmor], constraints),
+          buildMultiColumnSection(context, [
+            InventoryBucket.vehicle,
+            InventoryBucket.ships,
+            InventoryBucket.emblems,
+          ], constraints),
+          ...buildSingleColumnSections(context, InventoryBucket.consumables, constraints),
+          ...buildSingleColumnSections(context, InventoryBucket.modifications, constraints),
+        ],
+        crossAxisSpacing: 0,
+        mainAxisSpacing: 0,
+        padding:
+            const EdgeInsets.all(8).copyWith(top: 0, bottom: 64) +
+            EdgeInsets.only(
+              left: context.mediaQuery.padding.left,
+              right: context.mediaQuery.padding.right,
+            ),
+        scrollViewKey: scrollViewKey,
+      ),
+    );
   }
 
   ScrollableSection buildMultiColumnSection(BuildContext context, List<int> bucketHashes, BoxConstraints constraints) {
@@ -251,40 +248,42 @@ class EquipmentCharacterLandscapeTabContentWidget extends StatelessWidget {
     final idealCount = unequippedDensity?.getIdealCount(columnWidth) ?? 5;
     final unequippedCount = ((bucketDefCount) / idealCount).ceil() * idealCount;
     final key = "${character.characterId} $bucketHash";
-    return Column(children: [
-      Container(
-        height: _bucketHeaderHeight,
-        child: BucketHeaderListItemWidget(
-          bucketHash,
-          menuGlobalKey: context.getGlobalKeyFor(key),
-          canEquip: equipped != null,
-          itemCount: bucketContent.unequipped.length + (bucketContent.equipped != null ? 1 : 0),
-          defaultType: defaultDisplayType,
+    return Column(
+      children: [
+        Container(
+          height: _bucketHeaderHeight,
+          child: BucketHeaderListItemWidget(
+            bucketHash,
+            menuGlobalKey: context.getGlobalKeyFor(key),
+            canEquip: equipped != null,
+            itemCount: bucketContent.unequipped.length + (bucketContent.equipped != null ? 1 : 0),
+            defaultType: defaultDisplayType,
+          ),
         ),
-      ),
-      if (equipped != null)
-        buildShrinkwrapItemSection(
-          context,
-          bucketContent,
-          [equipped],
-          equippedDensity,
-          1,
-          1,
-          1,
-          false,
-        ),
-      if (unequippedDensity != null)
-        buildShrinkwrapItemSection(
-          context,
-          bucketContent,
-          unequipped,
-          unequippedDensity,
-          idealCount,
-          unequippedCount,
-          bucketDefCount,
-          bucketDef?.hasTransferDestination == true,
-        ),
-    ]);
+        if (equipped != null)
+          buildShrinkwrapItemSection(
+            context,
+            bucketContent,
+            [equipped],
+            equippedDensity,
+            1,
+            1,
+            1,
+            false,
+          ),
+        if (unequippedDensity != null)
+          buildShrinkwrapItemSection(
+            context,
+            bucketContent,
+            unequipped,
+            unequippedDensity,
+            idealCount,
+            unequippedCount,
+            bucketDefCount,
+            bucketDef?.hasTransferDestination == true,
+          ),
+      ],
+    );
   }
 
   Widget buildShrinkwrapItemSection(
@@ -318,14 +317,15 @@ class EquipmentCharacterLandscapeTabContentWidget extends StatelessWidget {
       return Column(
         children: itemRows.map((rowItems) {
           return Row(
-              children: rowItems.map((item) {
-            return Expanded(
-              child: Container(
-                height: itemHeight + 4,
-                child: item,
-              ),
-            );
-          }).toList());
+            children: rowItems.map((item) {
+              return Expanded(
+                child: Container(
+                  height: itemHeight + 4,
+                  child: item,
+                ),
+              );
+            }).toList(),
+          );
         }).toList(),
       );
     }
@@ -333,14 +333,15 @@ class EquipmentCharacterLandscapeTabContentWidget extends StatelessWidget {
       return Column(
         children: itemRows.map((rowItems) {
           return Row(
-              children: rowItems.map((item) {
-            return Expanded(
-              child: AspectRatio(
-                aspectRatio: itemAspectRatio,
-                child: item,
-              ),
-            );
-          }).toList());
+            children: rowItems.map((item) {
+              return Expanded(
+                child: AspectRatio(
+                  aspectRatio: itemAspectRatio,
+                  child: item,
+                ),
+              );
+            }).toList(),
+          );
         }).toList(),
       );
     }

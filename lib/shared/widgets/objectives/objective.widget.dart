@@ -38,22 +38,26 @@ class ObjectiveWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: const EdgeInsets.all(4),
-        child: Row(children: [
+      padding: const EdgeInsets.all(4),
+      child: Row(
+        children: [
           if (!omitCheckBox) buildCheck(context),
           Expanded(
             child: buildBar(context),
-          )
-        ]));
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildCheck(BuildContext context) {
     return Container(
-        decoration: BoxDecoration(border: Border.all(width: 1, color: getForegroundColor(context))),
-        width: _objectiveBarHeight,
-        height: _objectiveBarHeight,
-        padding: const EdgeInsets.all(2),
-        child: buildCheckFill(context));
+      decoration: BoxDecoration(border: Border.all(width: 1, color: getForegroundColor(context))),
+      width: _objectiveBarHeight,
+      height: _objectiveBarHeight,
+      padding: const EdgeInsets.all(2),
+      child: buildCheckFill(context),
+    );
   }
 
   Widget? buildCheckFill(BuildContext context) {
@@ -85,28 +89,29 @@ class ObjectiveWidget extends StatelessWidget {
       );
     }
     return Container(
-        margin: const EdgeInsets.only(left: 4),
-        height: _objectiveBarHeight,
-        decoration: isComplete ? null : BoxDecoration(border: Border.all(width: 1, color: getForegroundColor(context))),
-        child: Stack(
-          children: <Widget>[
-            Positioned.fill(
-              child: buildProgressBar(context),
+      margin: const EdgeInsets.only(left: 4),
+      height: _objectiveBarHeight,
+      decoration: isComplete ? null : BoxDecoration(border: Border.all(width: 1, color: getForegroundColor(context))),
+      child: Stack(
+        children: <Widget>[
+          Positioned.fill(
+            child: buildProgressBar(context),
+          ),
+          Positioned.fill(
+            left: 4,
+            right: 4,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(child: buildTitle(context)),
+                buildProgressValue(context),
+              ],
             ),
-            Positioned.fill(
-              left: 4,
-              right: 4,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(child: buildTitle(context)),
-                  buildProgressValue(context),
-                ],
-              ),
-            ),
-          ],
-        ));
+          ),
+        ],
+      ),
+    );
   }
 
   Widget buildTitle(BuildContext context) {
@@ -181,13 +186,14 @@ class ObjectiveWidget extends StatelessWidget {
     Color? color = Color.lerp(getBarColor(context), getBackgroundColor(context), .1);
     if (isComplete) return Container();
     return Container(
-        margin: const EdgeInsets.all(2),
-        color: getBackgroundColor(context),
-        alignment: Alignment.centerLeft,
-        child: FractionallySizedBox(
-          widthFactor: (progress / total).clamp(0, 1),
-          child: Container(color: color),
-        ));
+      margin: const EdgeInsets.all(2),
+      color: getBackgroundColor(context),
+      alignment: Alignment.centerLeft,
+      child: FractionallySizedBox(
+        widthFactor: (progress / total).clamp(0, 1),
+        child: Container(color: color),
+      ),
+    );
   }
 
   Color? getBarColor(BuildContext context) {

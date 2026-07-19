@@ -25,8 +25,8 @@ class VendorDetailsBloc extends ChangeNotifier {
   List<DestinyVendorCategory>? get categories => _categories;
 
   VendorDetailsBloc(this.context, this.characterId, this.vendorHash)
-      : _vendorsBloc = context.read<VendorsBloc>(),
-        _manifest = context.read<ManifestService>() {
+    : _vendorsBloc = context.read<VendorsBloc>(),
+      _manifest = context.read<ManifestService>() {
     _init();
   }
 

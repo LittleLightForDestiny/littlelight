@@ -94,8 +94,8 @@ abstract class ScrollableGridViewBase<T> extends StatelessWidget {
     required this.expectedCrossAxisSize,
     this.gridSpacing = 8,
     this.itemMainAxisExtent,
-  })  : _sizeStrategy = PlugGridViewSizeStrategy.ItemSize,
-        itemsPerRow = null;
+  }) : _sizeStrategy = PlugGridViewSizeStrategy.ItemSize,
+       itemsPerRow = null;
 
   const ScrollableGridViewBase.withItemsPerRow(
     this.records, {
@@ -105,8 +105,8 @@ abstract class ScrollableGridViewBase<T> extends StatelessWidget {
     required int this.itemsPerRow,
     this.gridSpacing = 8,
     this.itemMainAxisExtent,
-  })  : _sizeStrategy = PlugGridViewSizeStrategy.PerRow,
-        expectedCrossAxisSize = null;
+  }) : _sizeStrategy = PlugGridViewSizeStrategy.PerRow,
+       expectedCrossAxisSize = null;
 
   ScrollableGridViewSpecifications getSpecs(double gridWidth) {
     if (_sizeStrategy == PlugGridViewSizeStrategy.PerRow) {
@@ -139,21 +139,25 @@ abstract class ScrollableGridViewBase<T> extends StatelessWidget {
     final controller = DefaultTabController.maybeOf(context);
     if (controller != null) {
       return SizedBox(
-          height: specs.tabHeight,
-          child: TabBarView(
-            controller: controller,
-            children: buildTabs(context, specs),
-          ));
+        height: specs.tabHeight,
+        child: TabBarView(
+          controller: controller,
+          children: buildTabs(context, specs),
+        ),
+      );
     }
     return SizedBox(
-        height: specs.tabHeight,
-        child: DefaultTabController(
-            length: specs.pageCount,
-            child: TabBarView(
-                children: buildTabs(
-              context,
-              specs,
-            ))));
+      height: specs.tabHeight,
+      child: DefaultTabController(
+        length: specs.pageCount,
+        child: TabBarView(
+          children: buildTabs(
+            context,
+            specs,
+          ),
+        ),
+      ),
+    );
   }
 
   List<Widget> buildTabs(BuildContext context, ScrollableGridViewSpecifications specs) =>

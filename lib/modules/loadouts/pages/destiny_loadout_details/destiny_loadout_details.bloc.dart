@@ -68,9 +68,9 @@ class DestinyLoadoutDetailsBloc extends ChangeNotifier {
     BuildContext this.context, {
     required this.characterId,
     required this.loadoutIndex,
-  })  : profile = context.read<ProfileBloc>(),
-        manifest = context.read<ManifestService>(),
-        inventory = context.read<InventoryBloc>() {
+  }) : profile = context.read<ProfileBloc>(),
+       manifest = context.read<ManifestService>(),
+       inventory = context.read<InventoryBloc>() {
     _init();
   }
 

@@ -47,9 +47,9 @@ class DevToolsStatsBloc extends ChangeNotifier {
   }
 
   DevToolsStatsBloc(this.context)
-      : _profile = context.read<ProfileBloc>(),
-        _manifest = context.read<ManifestService>(),
-        super() {
+    : _profile = context.read<ProfileBloc>(),
+      _manifest = context.read<ManifestService>(),
+      super() {
     init();
   }
 
@@ -73,10 +73,12 @@ class DevToolsStatsBloc extends ChangeNotifier {
       if (itemHash == null || sockets == null || precalculated == null) continue;
       final equippedPlugHashes = <int, int?>{for (var v in sockets) sockets.indexOf(v): v.plugHash};
       final itemDefinition = await _manifest.getDefinition<DestinyInventoryItemDefinition>(item.itemHash);
-      final statGroupDefinition =
-          await _manifest.getDefinition<DestinyStatGroupDefinition>(itemDefinition?.stats?.statGroupHash);
-      final plugDefinitions =
-          await _manifest.getDefinitions<DestinyInventoryItemDefinition>(equippedPlugHashes.values.toList());
+      final statGroupDefinition = await _manifest.getDefinition<DestinyStatGroupDefinition>(
+        itemDefinition?.stats?.statGroupHash,
+      );
+      final plugDefinitions = await _manifest.getDefinitions<DestinyInventoryItemDefinition>(
+        equippedPlugHashes.values.toList(),
+      );
       final stats = await calculateStats(
         equippedPlugHashes,
         equippedPlugHashes,

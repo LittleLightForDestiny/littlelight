@@ -11,8 +11,8 @@ class LoadoutItemOptionsBloc extends ChangeNotifier {
   final LoadoutItemInfo item;
 
   LoadoutItemOptionsBloc(this._context, this.item)
-      : _socketControllerBloc = _context.read<SocketControllerBloc>(),
-        super() {
+    : _socketControllerBloc = _context.read<SocketControllerBloc>(),
+      super() {
     _init();
   }
   void _init() {

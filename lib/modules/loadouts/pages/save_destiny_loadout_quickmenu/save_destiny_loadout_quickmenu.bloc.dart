@@ -35,10 +35,10 @@ class SaveDestinyLoadoutQuickmenuBloc extends ChangeNotifier {
   }
 
   SaveDestinyLoadoutQuickmenuBloc(this._context, this.character)
-      : profileBloc = _context.read<ProfileBloc>(),
-        manifest = _context.read<ManifestService>(),
-        inventory = _context.read<InventoryBloc>(),
-        super() {
+    : profileBloc = _context.read<ProfileBloc>(),
+      manifest = _context.read<ManifestService>(),
+      inventory = _context.read<InventoryBloc>(),
+      super() {
     _init();
   }
 
@@ -87,8 +87,9 @@ class SaveDestinyLoadoutQuickmenuBloc extends ChangeNotifier {
   }
 
   void editLoadout(DestinyLoadoutInfo loadout) async {
-    Navigator.of(_context)
-        .pushReplacement(DestinyLoadoutDetailsPageRoute(loadoutIndex: loadout.index, characterId: loadout.characterId));
+    Navigator.of(
+      _context,
+    ).pushReplacement(DestinyLoadoutDetailsPageRoute(loadoutIndex: loadout.index, characterId: loadout.characterId));
   }
 
   void cancel() {

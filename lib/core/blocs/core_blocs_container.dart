@@ -24,27 +24,28 @@ import 'user_settings/user_settings.bloc.dart';
 
 class CoreBlocsContainer extends MultiProvider {
   CoreBlocsContainer()
-      : super(
-          providers: [
-            ChangeNotifierProvider<UserSettingsBloc>(create: (context) => UserSettingsBloc(context)),
-            ChangeNotifierProvider(create: (context) => AppLifecycleBloc()),
-            ChangeNotifierProvider(create: (context) => OfflineModeBloc()),
-            ChangeNotifierProvider<ManifestService>(
-                create: (context) => getInjectedManifestService().initContext(context)),
-            ChangeNotifierProvider<LanguageBloc>(create: (context) => getInjectedLanguageService()),
-            ChangeNotifierProvider(create: (context) => ItemNotesBloc(context)),
-            ChangeNotifierProvider(create: (context) => getInjectedLittleLightDataService()),
-            ChangeNotifierProvider<ProfileBloc>(create: (context) => ProfileBloc(context)),
-            ChangeNotifierProvider<WishlistsService>(create: (context) => getInjectedWishlistsService()),
-            ChangeNotifierProvider<NotificationsBloc>(create: (context) => NotificationsBloc()),
-            ChangeNotifierProvider<InventoryBloc>(create: (context) => InventoryBloc(context)),
-            ChangeNotifierProvider<VendorsBloc>(create: (context) => VendorsBloc(context)),
-            ChangeNotifierProvider<LoadoutsBloc>(create: (context) => LoadoutsBloc(context)),
-            ChangeNotifierProvider<SelectionBloc>(create: (context) => SelectionBloc(context)),
-            ChangeNotifierProvider<ItemSectionOptionsBloc>(create: (context) => ItemSectionOptionsBloc(context)),
-            ChangeNotifierProvider<ObjectiveTrackingBloc>(create: (context) => ObjectiveTrackingBloc(context)),
-            ChangeNotifierProvider<ClarityDataBloc>(create: (context) => ClarityDataBloc(context)),
-            ChangeNotifierProvider<CraftablesHelperBloc>(create: (context) => CraftablesHelperBloc(context)),
-          ],
-        );
+    : super(
+        providers: [
+          ChangeNotifierProvider<UserSettingsBloc>(create: (context) => UserSettingsBloc(context)),
+          ChangeNotifierProvider(create: (context) => AppLifecycleBloc()),
+          ChangeNotifierProvider(create: (context) => OfflineModeBloc()),
+          ChangeNotifierProvider<ManifestService>(
+            create: (context) => getInjectedManifestService().initContext(context),
+          ),
+          ChangeNotifierProvider<LanguageBloc>(create: (context) => getInjectedLanguageService()),
+          ChangeNotifierProvider(create: (context) => ItemNotesBloc(context)),
+          ChangeNotifierProvider(create: (context) => getInjectedLittleLightDataService()),
+          ChangeNotifierProvider<ProfileBloc>(create: (context) => ProfileBloc(context)),
+          ChangeNotifierProvider<WishlistsService>(create: (context) => getInjectedWishlistsService()),
+          ChangeNotifierProvider<NotificationsBloc>(create: (context) => NotificationsBloc()),
+          ChangeNotifierProvider<InventoryBloc>(create: (context) => InventoryBloc(context)),
+          ChangeNotifierProvider<VendorsBloc>(create: (context) => VendorsBloc(context)),
+          ChangeNotifierProvider<LoadoutsBloc>(create: (context) => LoadoutsBloc(context)),
+          ChangeNotifierProvider<SelectionBloc>(create: (context) => SelectionBloc(context)),
+          ChangeNotifierProvider<ItemSectionOptionsBloc>(create: (context) => ItemSectionOptionsBloc(context)),
+          ChangeNotifierProvider<ObjectiveTrackingBloc>(create: (context) => ObjectiveTrackingBloc(context)),
+          ChangeNotifierProvider<ClarityDataBloc>(create: (context) => ClarityDataBloc(context)),
+          ChangeNotifierProvider<CraftablesHelperBloc>(create: (context) => CraftablesHelperBloc(context)),
+        ],
+      );
 }

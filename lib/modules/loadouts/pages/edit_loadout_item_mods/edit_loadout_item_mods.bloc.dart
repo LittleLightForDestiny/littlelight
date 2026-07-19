@@ -42,13 +42,13 @@ class LoadoutItemDetailsBloc extends ItemDetailsBloc {
   MappedWishlistNotes? _matchedWishlistNotes;
 
   LoadoutItemDetailsBloc(BuildContext context, {LoadoutItemInfo? item})
-      : _item = item,
-        _profileBloc = context.read<ProfileBloc>(),
-        _itemNotesBloc = context.read<ItemNotesBloc>(),
-        _socketControllerBloc = context.read<SocketControllerBloc>(),
-        _manifestBloc = context.read<ManifestService>(),
-        _wishlists = getInjectedWishlistsService(),
-        super(context) {
+    : _item = item,
+      _profileBloc = context.read<ProfileBloc>(),
+      _itemNotesBloc = context.read<ItemNotesBloc>(),
+      _socketControllerBloc = context.read<SocketControllerBloc>(),
+      _manifestBloc = context.read<ManifestService>(),
+      _wishlists = getInjectedWishlistsService(),
+      super(context) {
     _init();
   }
 
@@ -68,10 +68,12 @@ class LoadoutItemDetailsBloc extends ItemDetailsBloc {
 
   void _updateItem() async {
     final allItems = _profileBloc.allItems;
-    final item = allItems.firstWhereOrNull((item) =>
-        item.itemHash == this.itemHash && //
-        item.instanceId == this.instanceId &&
-        item.stackIndex == this.stackIndex);
+    final item = allItems.firstWhereOrNull(
+      (item) =>
+          item.itemHash == this.itemHash && //
+          item.instanceId == this.instanceId &&
+          item.stackIndex == this.stackIndex,
+    );
     if (item == null) return;
 
     this._item?.inventoryItem = item;

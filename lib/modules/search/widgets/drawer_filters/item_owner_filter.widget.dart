@@ -29,35 +29,40 @@ class ItemOwnerFilterWidget extends BaseDrawerFilterWidget<ItemOwnerFilterOption
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Column(
-            children: availableCharacters
-                .map((char) => FilterButtonWidget(
-                      Row(children: [
-                        Container(
-                          width: 36,
-                          child: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                            char.character.emblemHash,
-                            urlExtractor: (def) => def.secondaryOverlay,
-                            fit: BoxFit.contain,
-                          ),
+          children: availableCharacters
+              .map(
+                (char) => FilterButtonWidget(
+                  Row(
+                    children: [
+                      Container(
+                        width: 36,
+                        child: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                          char.character.emblemHash,
+                          urlExtractor: (def) => def.secondaryOverlay,
+                          fit: BoxFit.contain,
                         ),
-                        SizedBox(width: 8),
-                        ManifestText<DestinyClassDefinition>(
-                          char.character.classHash,
-                          textExtractor: (def) => def.genderedClassNamesByGenderHash?["${char.character.genderHash}"],
-                          uppercase: true,
-                        ),
-                      ]),
-                      background: ManifestImageWidget<DestinyInventoryItemDefinition>(
-                        char.character.emblemHash,
-                        urlExtractor: (def) => def.secondarySpecial,
-                        fit: BoxFit.cover,
-                        alignment: Alignment.centerLeft,
                       ),
-                      selected: selectedCharacters.contains(char.characterId),
-                      onTap: () => updateCharacter(context, data, char.characterId, false),
-                      onLongPress: () => updateCharacter(context, data, char.characterId, true),
-                    ))
-                .toList()),
+                      SizedBox(width: 8),
+                      ManifestText<DestinyClassDefinition>(
+                        char.character.classHash,
+                        textExtractor: (def) => def.genderedClassNamesByGenderHash?["${char.character.genderHash}"],
+                        uppercase: true,
+                      ),
+                    ],
+                  ),
+                  background: ManifestImageWidget<DestinyInventoryItemDefinition>(
+                    char.character.emblemHash,
+                    urlExtractor: (def) => def.secondarySpecial,
+                    fit: BoxFit.cover,
+                    alignment: Alignment.centerLeft,
+                  ),
+                  selected: selectedCharacters.contains(char.characterId),
+                  onTap: () => updateCharacter(context, data, char.characterId, false),
+                  onLongPress: () => updateCharacter(context, data, char.characterId, true),
+                ),
+              )
+              .toList(),
+        ),
         Row(
           children: [
             if (data.availableValues.vault)
@@ -82,13 +87,14 @@ class ItemOwnerFilterWidget extends BaseDrawerFilterWidget<ItemOwnerFilterOption
               Expanded(
                 child: FilterButtonWidget(
                   buildNonCharacterFilterButtonContent(
-                      context,
-                      ManifestImageWidget<DestinyInventoryItemDefinition>(
-                        profileCharacterEmblemHash,
-                        urlExtractor: (def) => def.secondaryOverlay,
-                        fit: BoxFit.contain,
-                      ),
-                      Text("Profile".translate(context).toUpperCase())),
+                    context,
+                    ManifestImageWidget<DestinyInventoryItemDefinition>(
+                      profileCharacterEmblemHash,
+                      urlExtractor: (def) => def.secondaryOverlay,
+                      fit: BoxFit.contain,
+                    ),
+                    Text("Profile".translate(context).toUpperCase()),
+                  ),
                   background: ManifestImageWidget<DestinyInventoryItemDefinition>(
                     profileCharacterEmblemHash,
                     urlExtractor: (def) => def.secondarySpecial,
@@ -124,7 +130,11 @@ class ItemOwnerFilterWidget extends BaseDrawerFilterWidget<ItemOwnerFilterOption
   }
 
   void updateNonCharacterOptions(
-      BuildContext context, ItemOwnerFilterOptions data, _NonCharacterOwners option, bool forceAdd) {
+    BuildContext context,
+    ItemOwnerFilterOptions data,
+    _NonCharacterOwners option,
+    bool forceAdd,
+  ) {
     final value = data.value.clone();
 
     final multiselect = forceAdd || data.value.length > 1;

@@ -38,7 +38,7 @@ abstract class SocketCategoryHashes {
     perksVehicle,
     perksArmor,
     perksGhostShell,
-    perksWeapon
+    perksWeapon,
   };
 
   static const energyCapacity = 760375309;

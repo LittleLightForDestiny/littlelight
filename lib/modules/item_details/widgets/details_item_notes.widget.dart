@@ -13,12 +13,13 @@ class DetailsItemNotesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Item Notes".translate(context).toUpperCase()),
-          persistenceID: 'item notes',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Item Notes".translate(context).toUpperCase()),
+        persistenceID: 'item notes',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -42,11 +43,12 @@ class DetailsItemNotesWidget extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
-            padding: EdgeInsets.all(4),
-            child: Text(
-              label,
-              style: context.textTheme.caption,
-            )),
+          padding: EdgeInsets.all(4),
+          child: Text(
+            label,
+            style: context.textTheme.caption,
+          ),
+        ),
         Container(
           constraints: BoxConstraints(minHeight: minHeight ?? 0),
           decoration: BoxDecoration(
@@ -58,7 +60,7 @@ class DetailsItemNotesWidget extends StatelessWidget {
             value,
             style: context.textTheme.body,
           ),
-        )
+        ),
       ],
     );
   }

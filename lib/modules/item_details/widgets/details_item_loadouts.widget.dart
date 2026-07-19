@@ -20,12 +20,13 @@ class DetailsItemLoadoutsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(4),
-        child: PersistentCollapsibleContainer(
-          title: Text("Loadouts".translate(context).toUpperCase()),
-          persistenceID: 'details item loadouts',
-          content: buildContent(context),
-        ));
+      padding: EdgeInsets.all(4),
+      child: PersistentCollapsibleContainer(
+        title: Text("Loadouts".translate(context).toUpperCase()),
+        persistenceID: 'details item loadouts',
+        content: buildContent(context),
+      ),
+    );
   }
 
   Widget buildContent(BuildContext context) {
@@ -44,20 +45,22 @@ class DetailsItemLoadoutsWidget extends StatelessWidget {
     final loadouts = this.loadouts;
     if (loadouts == null) return [];
     return loadouts
-        .map((l) => LoadoutSmallListItemWidget(
-              l,
-              onTap: () => onSelectLoadout?.call(l),
-            ))
+        .map(
+          (l) => LoadoutSmallListItemWidget(
+            l,
+            onTap: () => onSelectLoadout?.call(l),
+          ),
+        )
         .toList();
   }
 
   Widget buildAddToLoadoutButton(BuildContext context) => Container(
-        padding: EdgeInsets.symmetric(horizontal: 4),
-        child: ElevatedButton(
-          onPressed: onAddToLoadout,
-          child: Text(
-            "Add to Loadout".translate(context),
-          ),
-        ),
-      );
+    padding: EdgeInsets.symmetric(horizontal: 4),
+    child: ElevatedButton(
+      onPressed: onAddToLoadout,
+      child: Text(
+        "Add to Loadout".translate(context),
+      ),
+    ),
+  );
 }

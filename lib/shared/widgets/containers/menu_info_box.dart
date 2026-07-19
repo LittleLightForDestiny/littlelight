@@ -20,7 +20,7 @@ class MenuInfoBox extends StatelessWidget {
   }
 
   Widget buildContent(BuildContext context) => DefaultTextStyle(
-        child: child ?? Container(),
-        style: context.textTheme.button,
-      );
+    child: child ?? Container(),
+    style: context.textTheme.button,
+  );
 }

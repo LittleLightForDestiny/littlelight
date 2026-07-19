@@ -11,9 +11,7 @@ class DeleteDestinyLoadoutBloc extends ChangeNotifier {
 
   DestinyLoadoutInfo loadout;
 
-  DeleteDestinyLoadoutBloc(this._context, this.loadout)
-      : this._profileBloc = _context.read<ProfileBloc>(),
-        super();
+  DeleteDestinyLoadoutBloc(this._context, this.loadout) : this._profileBloc = _context.read<ProfileBloc>(), super();
 
   void cancel() {
     Navigator.of(_context).pop(false);

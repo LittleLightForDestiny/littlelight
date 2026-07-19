@@ -34,14 +34,16 @@ class SelectLoadoutItemPageRoute extends MaterialPageRoute<InventoryItemInfo?> {
     List<String>? idsToAvoid,
     int? emblemHash,
   }) : super(
-            settings: RouteSettings(
-                arguments: SelectLoadoutItemPageRouteArguments(
-              bucketHash: bucketHash,
-              classType: classType,
-              idsToAvoid: idsToAvoid,
-              emblemHash: emblemHash,
-            )),
-            builder: (context) {
-              return SelectLoadoutItemPage();
-            });
+         settings: RouteSettings(
+           arguments: SelectLoadoutItemPageRouteArguments(
+             bucketHash: bucketHash,
+             classType: classType,
+             idsToAvoid: idsToAvoid,
+             emblemHash: emblemHash,
+           ),
+         ),
+         builder: (context) {
+           return SelectLoadoutItemPage();
+         },
+       );
 }

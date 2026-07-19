@@ -17,19 +17,23 @@ class PowerLevelFilterWidget extends BaseDrawerFilterWidget<PowerLevelFilterOpti
     return Column(
       children: [
         FilterRangeSliderWidget(
-            min: value.min,
-            max: value.max,
-            availableMin: available.min,
-            availableMax: available.max,
-            onChange: (range) {
-              update(
-                  context,
-                  PowerLevelFilterOptions(PowerLevelConstraints(
-                    min: range.start.toInt(),
-                    max: range.end.toInt(),
-                    includePowerlessItems: data.value.includePowerlessItems,
-                  )));
-            }),
+          min: value.min,
+          max: value.max,
+          availableMin: available.min,
+          availableMax: available.max,
+          onChange: (range) {
+            update(
+              context,
+              PowerLevelFilterOptions(
+                PowerLevelConstraints(
+                  min: range.start.toInt(),
+                  max: range.end.toInt(),
+                  includePowerlessItems: data.value.includePowerlessItems,
+                ),
+              ),
+            );
+          },
+        ),
       ],
     );
   }

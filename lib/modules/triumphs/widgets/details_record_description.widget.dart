@@ -21,14 +21,15 @@ class DetailsRecordDescriptionWidget extends StatelessWidget {
     final description = definition?.displayProperties?.description;
     if (description == null || description.isEmpty) return Container();
     return Container(
-        padding: EdgeInsets.all(8),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            buildIcon(context),
-            Expanded(child: buildBasicInfo(context)),
-          ].whereType<Widget>().toList(),
-        ));
+      padding: EdgeInsets.all(8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          buildIcon(context),
+          Expanded(child: buildBasicInfo(context)),
+        ].whereType<Widget>().toList(),
+      ),
+    );
   }
 
   Widget buildLoreCover(BuildContext context) {
@@ -42,8 +43,10 @@ class DetailsRecordDescriptionWidget extends StatelessWidget {
             child: ManifestImageWidget<DestinyRecordDefinition>(
               recordHash,
               urlExtractor: (def) {
-                final frames = def.displayProperties?.iconSequences
-                        ?.fold<List<String?>>([], (list, element) => [...list, ...(element.frames ?? [])]).reversed ??
+                final frames =
+                    def.displayProperties?.iconSequences
+                        ?.fold<List<String?>>([], (list, element) => [...list, ...(element.frames ?? [])])
+                        .reversed ??
                     [];
                 return [
                   def.displayProperties?.highResIcon,
@@ -67,10 +70,11 @@ class DetailsRecordDescriptionWidget extends StatelessWidget {
     final hasIcon = (definition?.displayProperties?.hasIcon ?? false) && definition?.displayProperties?.icon != null;
     if (!hasIcon) return null;
     return Container(
-        margin: EdgeInsets.all(4),
-        width: _recordIconSize,
-        height: _recordIconSize,
-        child: ManifestImageWidget<DestinyRecordDefinition>(recordHash));
+      margin: EdgeInsets.all(4),
+      width: _recordIconSize,
+      height: _recordIconSize,
+      child: ManifestImageWidget<DestinyRecordDefinition>(recordHash),
+    );
   }
 
   Widget buildBasicInfo(BuildContext context) {
@@ -91,33 +95,41 @@ class DetailsRecordDescriptionWidget extends StatelessWidget {
   Widget buildTitleBar(BuildContext context) {
     final definition = context.definition<DestinyRecordDefinition>(this.recordHash);
     int? scoreValue = definition?.completionInfo?.scoreValue;
-    return Row(crossAxisAlignment: CrossAxisAlignment.center, children: [
-      Expanded(
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
           child: Container(
-              padding: const EdgeInsets.all(4),
-              child: Text(
-                definition?.displayProperties?.name ?? "",
-                softWrap: true,
-                style: context.textTheme.itemNameHighDensity,
-              ))),
-      Container(
+            padding: const EdgeInsets.all(4),
+            child: Text(
+              definition?.displayProperties?.name ?? "",
+              softWrap: true,
+              style: context.textTheme.itemNameHighDensity,
+            ),
+          ),
+        ),
+        Container(
           padding: const EdgeInsets.only(left: 4, right: 4),
           child: Text(
             "${scoreValue}",
             style: context.textTheme.body,
-          )),
-    ]);
+          ),
+        ),
+      ],
+    );
   }
 
   Widget buildDescription(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(4.0),
-      child: ManifestText<DestinyRecordDefinition>(recordHash,
-          textExtractor: (def) => def.displayProperties?.description ?? "",
-          overflow: TextOverflow.fade,
-          style: context.textTheme.body.copyWith(
-            color: context.theme.onSurfaceLayers,
-          )),
+      child: ManifestText<DestinyRecordDefinition>(
+        recordHash,
+        textExtractor: (def) => def.displayProperties?.description ?? "",
+        overflow: TextOverflow.fade,
+        style: context.textTheme.body.copyWith(
+          color: context.theme.onSurfaceLayers,
+        ),
+      ),
     );
   }
 }

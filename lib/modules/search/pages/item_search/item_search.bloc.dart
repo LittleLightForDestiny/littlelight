@@ -48,15 +48,15 @@ class ItemSearchBloc extends ChangeNotifier with ManifestConsumer {
   }
 
   factory ItemSearchBloc(BuildContext context, {Set<EquipmentBucketGroup> bucketGroups = const {}}) => ItemSearchBloc._(
-        context,
-        context.read<ProfileBloc>(),
-        context.read<SearchFilterBloc>(),
-        context.read<SearchSorterBloc>(),
-        context.read<UserSettingsBloc>(),
-        context.read<SelectionBloc>(),
-        context.read<ItemNotesBloc>(),
-        bucketGroups,
-      );
+    context,
+    context.read<ProfileBloc>(),
+    context.read<SearchFilterBloc>(),
+    context.read<SearchSorterBloc>(),
+    context.read<UserSettingsBloc>(),
+    context.read<SelectionBloc>(),
+    context.read<ItemNotesBloc>(),
+    bucketGroups,
+  );
 
   void _init() async {
     _filtersBloc.getFilter<MainItemTypeFilterOptions>()?.value = this.bucketGroups;

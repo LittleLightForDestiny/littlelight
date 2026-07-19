@@ -166,10 +166,11 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
   }
 
   double _getEquipmentAverage(Map<int, InventoryItemInfo> maxPowerEquipment) {
-    final totalPower = maxPowerEquipment //
-        .values
-        .map<int>((e) => e.primaryStatValue ?? 0)
-        .fold<int>(0, (total, current) => total + current);
+    final totalPower =
+        maxPowerEquipment //
+            .values
+            .map<int>((e) => e.primaryStatValue ?? 0)
+            .fold<int>(0, (total, current) => total + current);
     final itemCount = maxPowerEquipment.length;
     return totalPower / itemCount;
   }
@@ -181,9 +182,10 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
   //   - When at or above the powerful cap, powerfuls drop at power level and only pinnacle
   //     rewards will drop above level.
   double _getAchievableAverage(Map<int, InventoryItemInfo> maxPowerEquipment) {
-    final equipmentPower = maxPowerEquipment //
-        .values
-        .map((e) => (e.primaryStatValue ?? 0));
+    final equipmentPower =
+        maxPowerEquipment //
+            .values
+            .map((e) => (e.primaryStatValue ?? 0));
     int totalPower = equipmentPower.fold(0, (total, current) => total + current);
     final itemCount = maxPowerEquipment.length;
     int currentBase;
@@ -200,12 +202,16 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
   ) {
     const weaponHashes = InventoryBucket.weaponBucketHashes;
     const armorHashes = InventoryBucket.armorBucketHashes;
-    final exoticWeapons = maxPower.entries.where((element) =>
-        element.value != maxNonExotic[element.key] && //
-        weaponHashes.contains(element.key));
-    final exoticArmors = maxPower.entries.where((element) =>
-        element.value != maxNonExotic[element.key] && //
-        armorHashes.contains(element.key));
+    final exoticWeapons = maxPower.entries.where(
+      (element) =>
+          element.value != maxNonExotic[element.key] && //
+          weaponHashes.contains(element.key),
+    );
+    final exoticArmors = maxPower.entries.where(
+      (element) =>
+          element.value != maxNonExotic[element.key] && //
+          armorHashes.contains(element.key),
+    );
     if (exoticWeapons.length <= 1 && exoticArmors.length <= 1) return maxPower;
     final equippableItems = Map<int, InventoryItemInfo>.from(maxNonExotic);
     MapEntry<int, InventoryItemInfo>? exoticWeapon = exoticWeapons.firstOrNull;
@@ -304,21 +310,22 @@ class CharacterContextMenuBloc extends ChangeNotifier with ManifestConsumer, Lit
   void openLoadoutCreation(BuildContext navigatorContext, DestinyCharacterInfo character, bool onlyEquipped) async {
     final loadoutWeaponHashes = InventoryBucket.weaponBucketHashes + [InventoryBucket.subclass];
     final allItems = context.read<ProfileBloc>().allItems;
-    final items = allItems //
-        .where((element) {
-      final isOnCharacter = element.characterId == character.characterId;
-      if (!isOnCharacter) return false;
-      final isEquipped = element.instanceInfo?.isEquipped ?? false;
-      if (onlyEquipped && !isEquipped) return false;
-      final isWeapon = loadoutWeaponHashes.contains(element.bucketHash);
-      final isArmor = InventoryBucket.armorBucketHashes.contains(element.bucketHash);
-      if (!isWeapon && !isArmor) return false;
-      final includeWeapons = enableWeaponsInLoadouts;
-      if (isWeapon) return includeWeapons;
-      final includeArmor = enableArmorsInLoadouts;
-      if (isArmor) return includeArmor;
-      return false;
-    });
+    final items =
+        allItems //
+            .where((element) {
+              final isOnCharacter = element.characterId == character.characterId;
+              if (!isOnCharacter) return false;
+              final isEquipped = element.instanceInfo?.isEquipped ?? false;
+              if (onlyEquipped && !isEquipped) return false;
+              final isWeapon = loadoutWeaponHashes.contains(element.bucketHash);
+              final isArmor = InventoryBucket.armorBucketHashes.contains(element.bucketHash);
+              if (!isWeapon && !isArmor) return false;
+              final includeWeapons = enableWeaponsInLoadouts;
+              if (isWeapon) return includeWeapons;
+              final includeArmor = enableArmorsInLoadouts;
+              if (isArmor) return includeArmor;
+              return false;
+            });
 
     final itemIndex = await LoadoutItemIndex("");
 

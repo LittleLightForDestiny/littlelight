@@ -38,9 +38,11 @@ class DetailsItemStatsWidget extends StatelessWidget {
     final stats = state.stats;
     if (stats == null) return [];
     return stats
-        .map((value) => DetailsItemStatWidget(
-              modValues: value,
-            ))
+        .map(
+          (value) => DetailsItemStatWidget(
+            modValues: value,
+          ),
+        )
         .toList();
   }
 

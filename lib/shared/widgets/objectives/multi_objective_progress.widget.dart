@@ -49,10 +49,11 @@ class MultiObjectiveProgressWidget extends StatelessWidget {
       completionValues[objectiveHash] = value;
     }
     return Column(
-        children: [
-      buildProgressValue(context, totalProgress),
-      buildProgressBars(context, completionValues),
-    ].whereType<Widget>().toList());
+      children: [
+        buildProgressValue(context, totalProgress),
+        buildProgressBars(context, completionValues),
+      ].whereType<Widget>().toList(),
+    );
   }
 
   Widget? buildProgressValue(BuildContext context, double progress) {
@@ -84,16 +85,17 @@ class MultiObjectiveProgressWidget extends StatelessWidget {
   Widget buildProgressBar(BuildContext context, _ObjectiveProgress objectiveProgress) {
     final progress = objectiveProgress.percentComplete;
     return Container(
-        height: 4,
-        margin: EdgeInsets.all(.5),
-        color: context.theme.surfaceLayers.layer3,
-        alignment: Alignment.centerLeft,
-        child: progress > 0
-            ? FractionallySizedBox(
-                widthFactor: progress.clamp(0, 1),
-                child: Container(color: getBarColor(context)),
-              )
-            : null);
+      height: 4,
+      margin: EdgeInsets.all(.5),
+      color: context.theme.surfaceLayers.layer3,
+      alignment: Alignment.centerLeft,
+      child: progress > 0
+          ? FractionallySizedBox(
+              widthFactor: progress.clamp(0, 1),
+              child: Container(color: getBarColor(context)),
+            )
+          : null,
+    );
   }
 
   Color? getBarColor(BuildContext context) {

@@ -18,10 +18,10 @@ class DeleteLoadoutBloc extends ChangeNotifier {
   Loadout? _loadout;
 
   DeleteLoadoutBloc(this._context, this.loadoutId)
-      : this._loadoutsBloc = _context.read<LoadoutsBloc>(),
-        this._profileBloc = _context.read<ProfileBloc>(),
-        this._manifestBloc = _context.read<ManifestService>(),
-        super() {
+    : this._loadoutsBloc = _context.read<LoadoutsBloc>(),
+      this._profileBloc = _context.read<ProfileBloc>(),
+      this._manifestBloc = _context.read<ManifestService>(),
+      super() {
     _init();
   }
 

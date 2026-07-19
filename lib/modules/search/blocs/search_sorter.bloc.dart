@@ -35,9 +35,9 @@ class SearchSorterBloc extends ChangeNotifier with ManifestConsumer {
   set disabledSorters(Set<ItemSortParameterType> value) => _disabledSorters = value;
 
   SearchSorterBloc(this._context, {List<ItemSortParameter>? activeSorters})
-      : _activeSorters = activeSorters?.map((e) => e.clone()).toList() ?? <ItemSortParameter>[],
-        _profileBloc = _context.read<ProfileBloc>(),
-        _userSettingsBloc = _context.read<UserSettingsBloc>();
+    : _activeSorters = activeSorters?.map((e) => e.clone()).toList() ?? <ItemSortParameter>[],
+      _profileBloc = _context.read<ProfileBloc>(),
+      _userSettingsBloc = _context.read<UserSettingsBloc>();
 
   Future<List<DestinyItemInfo>> sort(Iterable<DestinyItemInfo> unsorted) async {
     final priorityTags = _userSettingsBloc.priorityTags ?? <String>[];

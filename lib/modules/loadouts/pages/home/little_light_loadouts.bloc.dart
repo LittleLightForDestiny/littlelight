@@ -47,10 +47,10 @@ class LittleLightLoadoutsBloc extends ChangeNotifier {
   String get lastUpdated => _lastUpdated?.toIso8601String() ?? "";
 
   LittleLightLoadoutsBloc(this.context)
-      : loadoutsBloc = context.read<LoadoutsBloc>(),
-        profileBloc = context.read<ProfileBloc>(),
-        manifest = context.read<ManifestService>(),
-        userSettings = context.read<UserSettingsBloc>() {
+    : loadoutsBloc = context.read<LoadoutsBloc>(),
+      profileBloc = context.read<ProfileBloc>(),
+      manifest = context.read<ManifestService>(),
+      userSettings = context.read<UserSettingsBloc>() {
     _init();
   }
 

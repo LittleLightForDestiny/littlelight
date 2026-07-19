@@ -8,7 +8,7 @@ import 'package:little_light/shared/widgets/objectives/objective.widget.dart';
 
 class ObjectiveTrackingRecordItemWidget extends RecordItemWidget {
   ObjectiveTrackingRecordItemWidget(int? recordHash, {RecordProgressData? progress, Key? key})
-      : super(recordHash, key: key, progress: progress);
+    : super(recordHash, key: key, progress: progress);
 
   @override
   Widget? buildFooter(BuildContext context) {
@@ -19,22 +19,22 @@ class ObjectiveTrackingRecordItemWidget extends RecordItemWidget {
     final objectiveHashes = definition?.objectiveHashes;
     if (objectiveHashes == null) return null;
     return Column(
-        children: objectiveHashes
-            .map((e) {
-              final objective = this
-                  .progress
-                  ?.getProgress(definition?.scope)
-                  ?.objectives
-                  ?.firstWhereOrNull((element) => element.objectiveHash == e);
-              return ObjectiveWidget(
-                e,
-                placeholder: definition?.displayProperties?.name,
-                objective: objective,
-                parentCompleted: isCompleted(context),
-                color: foregroundColor(context),
-              );
-            })
-            .whereType<Widget>()
-            .toList());
+      children: objectiveHashes
+          .map((e) {
+            final objective = this.progress
+                ?.getProgress(definition?.scope)
+                ?.objectives
+                ?.firstWhereOrNull((element) => element.objectiveHash == e);
+            return ObjectiveWidget(
+              e,
+              placeholder: definition?.displayProperties?.name,
+              objective: objective,
+              parentCompleted: isCompleted(context),
+              color: foregroundColor(context),
+            );
+          })
+          .whereType<Widget>()
+          .toList(),
+    );
   }
 }
