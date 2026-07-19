@@ -1051,7 +1051,7 @@ packages:
     source: hosted
     version: "2.5.11"
   sqflite_common_ffi:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: sqflite_common_ffi
       sha256: "5ccd38136edb9beb3213f6927775d52db70dfdadcdb28dad1f625ca9f2b9824f"
@@ -1075,21 +1075,13 @@ packages:
     source: hosted
     version: "2.4.1"
   sqlite3:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sqlite3
       sha256: c73fd75df1332d76a6257f4823ae4df9c791f522b97e4a60cbcad214de1becf4
       url: "https://pub.dev"
     source: hosted
     version: "3.5.0"
-  sqlite3_library_windows:
-    dependency: "direct main"
-    description:
-      name: sqlite3_library_windows
-      sha256: "1620d0e4763994895b0bb29217f798fd18fbb2f36ff6cac569ca03a19fae54d4"
-      url: "https://pub.dev"
-    source: hosted
-    version: "2.1.0+1"
   stack_trace:
     dependency: transitive
     description:
