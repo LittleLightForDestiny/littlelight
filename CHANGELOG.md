@@ -1,3 +1,7 @@
+## [2.2.13] - 2026-09-22
+
+Filter NOT option, new filters, artifact support and Destiny loadout changes
+
 ## [2.2.12] - 2026-07-19
 
 Fixes login and manifest download issues

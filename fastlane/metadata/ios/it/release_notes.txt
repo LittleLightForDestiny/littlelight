@@ -1,1 +1,1 @@
-Fixes login and manifest download issues
+Filter NOT option, new filters, artifact support and Destiny loadout changes
